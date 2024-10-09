@@ -7,7 +7,14 @@ const PORT = process.env.PORT || 3000;
 try {
   // Decode the Base64 string
   const serviceAccountJson = Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT_KEY_BASE64, 'base64').toString('utf8');
-  const serviceAccount = JSON.parse(serviceAccountJson.slice(1, -1)); // Remove the outer quotes
+  let serviceAccount;
+  try {
+    serviceAccount = JSON.parse(serviceAccountJson);
+  } catch (parseError) {
+    console.error('Error parsing Firebase service account JSON:', parseError);
+    console.error('Raw service account string:', serviceAccountJson);
+    throw new Error('Invalid Firebase service account configuration');
+  }
 
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
