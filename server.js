@@ -5,8 +5,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 try {
-  // Initialize Firebase Admin SDK
-  const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
+  // Decode the Base64 string
+  const serviceAccountJson = Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT_KEY_BASE64, 'base64').toString('utf8');
+  const serviceAccount = JSON.parse(serviceAccountJson.slice(1, -1)); // Remove the outer quotes
 
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
