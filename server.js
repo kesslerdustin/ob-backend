@@ -5,23 +5,31 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 try {
-  console.log('Raw Base64 string:', process.env.FIREBASE_SERVICE_ACCOUNT_KEY_BASE64);
+  console.log('Attempting to initialize Firebase Admin SDK...');
+  
   // Decode the Base64 string
   const serviceAccountJson = Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT_KEY_BASE64, 'base64').toString('utf8');
-  console.log('Decoded JSON string:', serviceAccountJson);
+  
+  // Log the first and last 10 characters of the decoded JSON string
+  console.log('Decoded JSON string (truncated):', 
+    serviceAccountJson.substring(0, 10) + '...' + serviceAccountJson.substring(serviceAccountJson.length - 10));
+  
   let serviceAccount;
   try {
     serviceAccount = JSON.parse(serviceAccountJson);
+    console.log('Successfully parsed service account JSON');
   } catch (parseError) {
     console.error('Error parsing Firebase service account JSON:', parseError);
-    console.error('Raw service account string:', serviceAccountJson);
-    throw new Error('Invalid Firebase service account configuration');
+    console.error('First 100 characters of raw service account string:', serviceAccountJson.substring(0, 100));
+    throw new Error('Invalid Firebase service account configuration: ' + parseError.message);
   }
 
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    databaseURL: 'https://outdoor-bible.firebaseio.com' // Replace with your actual database URL
+    databaseURL: 'https://outdoor-bible.firebaseio.com'
   });
+
+  console.log('Firebase Admin SDK initialized successfully');
 
   app.get('/', (req, res) => {
     res.send('Hello from the backend!');
@@ -42,5 +50,6 @@ try {
   });
 } catch (error) {
   console.error('Error initializing Firebase Admin SDK:', error);
+  console.error('Stack trace:', error.stack);
   process.exit(1);
 }
