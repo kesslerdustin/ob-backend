@@ -1,4 +1,3 @@
-require('dotenv').config();
 const express = require('express');
 const admin = require('firebase-admin');
 const app = express();
@@ -7,25 +6,21 @@ const PORT = process.env.PORT || 3000;
 try {
   console.log('Attempting to initialize Firebase Admin SDK...');
   
-  // Decode the Base64 string
-  const serviceAccountJson = Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT_KEY_BASE64, 'base64').toString('utf8');
+  // Check if all required environment variables are set
+  const requiredEnvVars = ['FIREBASE_PROJECT_ID', 'FIREBASE_PRIVATE_KEY', 'FIREBASE_CLIENT_EMAIL'];
+  const missingEnvVars = requiredEnvVars.filter(varName => !process.env[varName]);
   
-  // Log the first and last 10 characters of the decoded JSON string
-  console.log('Decoded JSON string (truncated):', 
-    serviceAccountJson.substring(0, 10) + '...' + serviceAccountJson.substring(serviceAccountJson.length - 10));
-  
-  let serviceAccount;
-  try {
-    serviceAccount = JSON.parse(serviceAccountJson);
-    console.log('Successfully parsed service account JSON');
-  } catch (parseError) {
-    console.error('Error parsing Firebase service account JSON:', parseError);
-    console.error('First 100 characters of raw service account string:', serviceAccountJson.substring(0, 100));
-    throw new Error('Invalid Firebase service account configuration: ' + parseError.message);
+  if (missingEnvVars.length > 0) {
+    throw new Error(`Missing required environment variables: ${missingEnvVars.join(', ')}`);
   }
 
+  // Initialize Firebase Admin SDK with environment variables
   admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
+    credential: admin.credential.cert({
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+    }),
     databaseURL: 'https://outdoor-bible.firebaseio.com'
   });
 
