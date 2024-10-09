@@ -5,8 +5,10 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 try {
+  console.log('Raw Base64 string:', process.env.FIREBASE_SERVICE_ACCOUNT_KEY_BASE64);
   // Decode the Base64 string
   const serviceAccountJson = Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT_KEY_BASE64, 'base64').toString('utf8');
+  console.log('Decoded JSON string:', serviceAccountJson);
   let serviceAccount;
   try {
     serviceAccount = JSON.parse(serviceAccountJson);
