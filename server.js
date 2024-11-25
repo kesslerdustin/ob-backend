@@ -1,9 +1,12 @@
 const express = require('express');
 const axios = require('axios');
 const admin = require('firebase-admin');
+const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const USER_AGENT = 'OutdoorBible/1.0 (https://outdoor-bible.com; contact@outdoor-bible.com)';
+
+app.use(cors());
 
 try {
   console.log('Attempting to initialize Firebase Admin SDK...');
