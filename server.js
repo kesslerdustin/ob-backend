@@ -51,25 +51,40 @@ try {
       
       const axiosConfig = {
         headers: {
-          'User-Agent': USER_AGENT
-        }
+          'User-Agent': USER_AGENT,
+          'Accept': 'application/json'
+        },
+        timeout: 10000 // 10 second timeout
       };
       
-      const searchUrl = `https://${language}.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(term)}&utf8=&format=json`;
-      const response = await axios.get(searchUrl, axiosConfig);
-      const searchResults = response.data.query?.search || [];
+      // First try exact match search
+      const searchUrl = `https://${language}.wikipedia.org/w/api.php?action=query&list=search&srsearch="${encodeURIComponent(term)}"&utf8=&format=json`;
+      const searchResponse = await axios.get(searchUrl, axiosConfig);
+      let searchResults = searchResponse.data.query?.search || [];
+      
+      // If no results with exact match, try without quotes
+      if (searchResults.length === 0) {
+        const fallbackUrl = `https://${language}.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(term)}&utf8=&format=json`;
+        const fallbackResponse = await axios.get(fallbackUrl, axiosConfig);
+        searchResults = fallbackResponse.data.query?.search || [];
+      }
       
       if (searchResults.length === 0) {
         return res.status(404).json({ error: 'No results found' });
       }
-
+      
       const pageId = searchResults[0].pageid;
       
       // Get page details with intro and images
       const pageDetailsUrl = `https://${language}.wikipedia.org/w/api.php?action=query&prop=extracts|sections|pageimages&pageids=${pageId}&explaintext=1&exintro=1&piprop=original&format=json`;
       
-      const pageResponse = await axios.get(pageDetailsUrl);
+      const pageResponse = await axios.get(pageDetailsUrl, axiosConfig);
       const pageData = pageResponse.data.query?.pages[pageId];
+      
+      // Add error checking for pageData
+      if (!pageData) {
+        return res.status(404).json({ error: 'Page data not found' });
+      }
       
       res.json({
         title: pageData.title,
@@ -79,8 +94,11 @@ try {
       });
       
     } catch (error) {
-      console.error('Wiki API error:', error);
-      res.status(500).json({ error: 'Failed to fetch wiki data' });
+      console.error('Wiki API error:', error.response?.data || error.message);
+      res.status(500).json({ 
+        error: 'Failed to fetch wiki data',
+        details: error.message
+      });
     }
   });
 
