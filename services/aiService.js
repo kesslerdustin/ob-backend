@@ -1,20 +1,27 @@
-const { genai } = require('@google/generative-ai');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 require('dotenv').config();
 
-// Initialize the new Gen AI SDK client
-const client = new genai.Client({
-    apiKey: process.env.GOOGLE_API_KEY
+// Initialize the Gemini API with the new model
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+
+// Get the model
+const model = genAI.getGenerativeModel({
+    model: "models/gemini-2.0-flash-exp",
+    generationConfig: {
+        maxOutputTokens: 2048,
+        temperature: 0.9,
+    }
 });
 
 // Regular content generation
 async function generateContent(prompt, context = '') {
     try {
         const fullPrompt = context ? `Context: ${context}\n\nPrompt: ${prompt}` : prompt;
-        const response = await client.models.generateContent({
-            model: 'gemini-2.0-flash-exp',
-            contents: fullPrompt
+        const result = await model.generateContent({
+            contents: [{ text: fullPrompt }]
         });
-        return response.text;
+        const response = await result.response;
+        return response.text();
     } catch (error) {
         console.error('Gemini API error:', error);
         throw error;
@@ -25,10 +32,10 @@ async function generateContent(prompt, context = '') {
 async function generateContentStream(prompt, context = '') {
     try {
         const fullPrompt = context ? `Context: ${context}\n\nPrompt: ${prompt}` : prompt;
-        return await client.models.generateContentStream({
-            model: 'gemini-2.0-flash-exp',
-            contents: fullPrompt
+        const result = await model.generateContentStream({
+            contents: [{ text: fullPrompt }]
         });
+        return result;
     } catch (error) {
         console.error('Gemini API streaming error:', error);
         throw error;
