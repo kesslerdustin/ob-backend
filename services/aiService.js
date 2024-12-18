@@ -47,7 +47,43 @@ async function generateContentStream(prompt, context = '') {
     };
 }
 
+async function searchAndGenerate(prompt) {
+    return new Promise((resolve, reject) => {
+        const pythonScript = path.join(__dirname, 'gemini_service.py');
+        const pythonProcess = spawn('python', [pythonScript, 'search', prompt]);
+        let dataString = '';
+
+        pythonProcess.stdout.on('data', (data) => {
+            dataString += data.toString();
+        });
+
+        pythonProcess.stderr.on('data', (data) => {
+            console.error(`Python Error: ${data}`);
+        });
+
+        pythonProcess.on('close', (code) => {
+            if (code !== 0) {
+                reject(new Error(`Python process exited with code ${code}`));
+                return;
+            }
+            
+            try {
+                const response = JSON.parse(dataString);
+                if (response.success) {
+                    resolve(JSON.stringify(response));
+                } else {
+                    reject(new Error(response.error));
+                }
+            } catch (error) {
+                reject(new Error('Failed to parse Python response'));
+            }
+        });
+    });
+}
+
 module.exports = {
     generateContent,
-    generateContentStream
+    generateContentStream,
+    searchAndGenerate,
+    analyzeImage
 }; 

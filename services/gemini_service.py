@@ -63,10 +63,12 @@ def search_and_generate(prompt):
         for part in response.candidates[0].content.parts:
             text += part.text
 
-        # Include both response and search metadata
+        # Get search metadata
+        search_data = response.candidates[0].grounding_metadata.search_entry_point.rendered_content
+        
         result = {
             "text": text,
-            "search_data": response.candidates[0].grounding_metadata.search_entry_point.rendered_content
+            "search_data": search_data
         }
         return json.dumps({"success": True, "data": result})
     except Exception as e:
