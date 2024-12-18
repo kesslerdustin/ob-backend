@@ -6,7 +6,7 @@ const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 
 // Get the model
 const model = genAI.getGenerativeModel({
-    model: "models/gemini-2.0-flash-exp",
+    model: "gemini-2.0-flash-exp",
     generationConfig: {
         maxOutputTokens: 2048,
         temperature: 0.9,
@@ -18,7 +18,9 @@ async function generateContent(prompt, context = '') {
     try {
         const fullPrompt = context ? `Context: ${context}\n\nPrompt: ${prompt}` : prompt;
         const result = await model.generateContent({
-            contents: [{ text: fullPrompt }]
+            contents: [{
+                parts: [{ textPart: fullPrompt }]
+            }]
         });
         const response = await result.response;
         return response.text();
@@ -33,7 +35,9 @@ async function generateContentStream(prompt, context = '') {
     try {
         const fullPrompt = context ? `Context: ${context}\n\nPrompt: ${prompt}` : prompt;
         const result = await model.generateContentStream({
-            contents: [{ text: fullPrompt }]
+            contents: [{
+                parts: [{ textPart: fullPrompt }]
+            }]
         });
         return result;
     } catch (error) {
