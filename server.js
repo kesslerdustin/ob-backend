@@ -4,14 +4,11 @@ const admin = require('firebase-admin');
 const cors = require('cors');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 require('dotenv').config();
+const aiService = require('./services/aiService');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const USER_AGENT = 'OutdoorBible/1.0 (https://outdoor-bible.com; contact@outdoor-bible.com)';
-
-// Initialize Gemini API
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
 app.use(cors());
 
@@ -118,24 +115,15 @@ try {
         return res.status(400).json({ error: 'Prompt is required' });
       }
 
-      // Construct the full prompt with context if provided
-      let fullPrompt = prompt;
-      if (context) {
-        fullPrompt = `Context: ${context}\n\nPrompt: ${prompt}`;
-      }
-
-      // Generate content using Gemini
-      const result = await model.generateContent(fullPrompt);
-      const response = await result.response;
-      const text = response.text();
+      const analysis = await aiService.generateContent(prompt, context);
 
       res.json({
         success: true,
-        analysis: text
+        analysis
       });
 
     } catch (error) {
-      console.error('Gemini API error:', error);
+      console.error('AI analysis error:', error);
       res.status(500).json({
         success: false,
         error: 'Failed to generate AI response',
@@ -158,14 +146,7 @@ try {
       res.setHeader('Cache-Control', 'no-cache');
       res.setHeader('Connection', 'keep-alive');
 
-      // Construct full prompt
-      let fullPrompt = prompt;
-      if (context) {
-        fullPrompt = `Context: ${context}\n\nPrompt: ${prompt}`;
-      }
-
-      // Generate streaming content
-      const result = await model.generateContentStream(fullPrompt);
+      const result = await aiService.generateContentStream(prompt, context);
 
       // Stream the chunks to the client
       for await (const chunk of result.stream) {
@@ -176,7 +157,7 @@ try {
       res.end();
 
     } catch (error) {
-      console.error('Gemini API streaming error:', error);
+      console.error('AI streaming error:', error);
       res.write(`data: ${JSON.stringify({ error: error.message })}\n\n`);
       res.end();
     }
