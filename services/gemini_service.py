@@ -31,22 +31,14 @@ def analyze_image(prompt, image_path):
         if image_path.startswith(('http://', 'https://')):
             response = requests.get(image_path)
             image_data = BytesIO(response.content)
-            img = Image.open(image_data).convert('RGB')  # Convert to RGB format
+            img = Image.open(image_data).convert('RGB')
         else:
-            img = Image.open(image_path).convert('RGB')  # Convert to RGB format
-        
-        # Convert PIL Image to bytes for Gemini
-        img_byte_arr = BytesIO()
-        img.save(img_byte_arr, format='JPEG')
-        img_byte_arr = img_byte_arr.getvalue()
+            img = Image.open(image_path).convert('RGB')
         
         # Generate content with image
         response = client.models.generate_content(
             model=MODEL_ID,
-            contents=[
-                {"text": prompt},
-                {"image": {"data": img_byte_arr}}
-            ]
+            contents=[prompt, img]
         )
         return json.dumps({"success": True, "text": response.text})
     except Exception as e:
