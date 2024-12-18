@@ -1,1 +1,3 @@
 .env
+tests/images/*
+!tests/images/.gitkeep

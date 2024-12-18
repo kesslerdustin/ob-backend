@@ -24,12 +24,15 @@ def generate_content(prompt):
     except Exception as e:
         return json.dumps({"success": False, "error": str(e)})
 
-def analyze_image(prompt, image_url):
+def analyze_image(prompt, image_path):
     """Vision-based analysis"""
     try:
-        # Load image from URL
-        response = requests.get(image_url)
-        img = Image.open(BytesIO(response.content))
+        # Handle both URLs and local files
+        if image_path.startswith(('http://', 'https://')):
+            response = requests.get(image_path)
+            img = Image.open(BytesIO(response.content))
+        else:
+            img = Image.open(image_path)
         
         # Generate content with image
         response = client.models.generate_content(

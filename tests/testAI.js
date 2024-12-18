@@ -1,9 +1,10 @@
 const aiService = require('../services/aiService');
+const path = require('path');
 
 async function testAI() {
   const mode = process.argv[2] || "text"; // text, vision, search
   const prompt = process.argv[3] || "Tell me a short joke about programming";
-  const imageUrl = process.argv[4] || ""; // Only used for vision mode
+  const imageUrl = process.argv[4] || path.join(__dirname, 'images/test.jpg');
 
   console.log('Testing AI with:');
   console.log('Mode:', mode);
