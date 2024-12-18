@@ -30,14 +30,23 @@ def analyze_image(prompt, image_path):
         # Handle both URLs and local files
         if image_path.startswith(('http://', 'https://')):
             response = requests.get(image_path)
-            img = Image.open(BytesIO(response.content))
+            image_data = BytesIO(response.content)
+            img = Image.open(image_data).convert('RGB')  # Convert to RGB format
         else:
-            img = Image.open(image_path)
+            img = Image.open(image_path).convert('RGB')  # Convert to RGB format
+        
+        # Convert PIL Image to bytes for Gemini
+        img_byte_arr = BytesIO()
+        img.save(img_byte_arr, format='JPEG')
+        img_byte_arr = img_byte_arr.getvalue()
         
         # Generate content with image
         response = client.models.generate_content(
             model=MODEL_ID,
-            contents=[prompt, img]
+            contents=[
+                {"text": prompt},
+                {"image": {"data": img_byte_arr}}
+            ]
         )
         return json.dumps({"success": True, "text": response.text})
     except Exception as e:
