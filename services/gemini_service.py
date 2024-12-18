@@ -6,6 +6,7 @@ from PIL import Image
 import requests
 from io import BytesIO
 from dotenv import load_dotenv
+from google.genai.types import Tool, GenerateContentConfig, GoogleSearch
 
 load_dotenv()
 
@@ -47,7 +48,7 @@ def analyze_image(prompt, image_path):
 def search_and_generate(prompt):
     """Generation with Google Search grounding"""
     try:
-        from google.genai.types import Tool, GenerateContentConfig, GoogleSearch
+        
         
         google_search_tool = Tool(
             google_search=GoogleSearch()
