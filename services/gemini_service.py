@@ -1,5 +1,4 @@
-import google.generativeai as genai
-from google.genai.types import Tool, GenerateContentConfig, GoogleSearch
+from google import genai
 import json
 import sys
 import os
@@ -11,13 +10,16 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Configure the Gemini API
-genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
+client = genai.Client(api_key=os.getenv('GOOGLE_API_KEY'))
+MODEL_ID = "gemini-2.0-flash-exp"
 
 def generate_content(prompt):
     """Standard text generation"""
     try:
-        model = genai.GenerativeModel('gemini-2.0-flash-exp')
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model=MODEL_ID,
+            contents=prompt
+        )
         return json.dumps({"success": True, "text": response.text})
     except Exception as e:
         return json.dumps({"success": False, "error": str(e)})
@@ -29,9 +31,11 @@ def analyze_image(prompt, image_url):
         response = requests.get(image_url)
         img = Image.open(BytesIO(response.content))
         
-        # Initialize vision model
-        model = genai.GenerativeModel('gemini-2.0-flash-exp')
-        response = model.generate_content([prompt, img])
+        # Generate content with image
+        response = client.models.generate_content(
+            model=MODEL_ID,
+            contents=[prompt, img]
+        )
         return json.dumps({"success": True, "text": response.text})
     except Exception as e:
         return json.dumps({"success": False, "error": str(e)})
@@ -39,16 +43,15 @@ def analyze_image(prompt, image_url):
 def search_and_generate(prompt):
     """Generation with Google Search grounding"""
     try:
-        model = genai.GenerativeModel('gemini-2.0-flash-exp')
+        from google.genai.types import Tool, GenerateContentConfig, GoogleSearch
         
-        # Configure search tool
         google_search_tool = Tool(
             google_search=GoogleSearch()
         )
         
-        # Generate with search capability
-        response = model.generate_content(
-            prompt,
+        response = client.models.generate_content(
+            model=MODEL_ID,
+            contents=prompt,
             config=GenerateContentConfig(
                 tools=[google_search_tool],
                 response_modalities=["TEXT"],
@@ -65,7 +68,6 @@ def search_and_generate(prompt):
         return json.dumps({"success": False, "error": str(e)})
 
 if __name__ == "__main__":
-    # Expected args: mode, prompt, [image_url]
     mode = sys.argv[1] if len(sys.argv) > 1 else "text"
     prompt = sys.argv[2] if len(sys.argv) > 2 else "Hello, Gemini!"
     image_url = sys.argv[3] if len(sys.argv) > 3 else None
