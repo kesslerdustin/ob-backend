@@ -1,4 +1,4 @@
-from google.generativeai import genai
+import google.generativeai as genai
 import json
 import sys
 import os
@@ -9,14 +9,12 @@ load_dotenv()
 # Configure the Gemini API
 genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
 
-# Initialize the client
-client = genai.Client(http_options={'api_version': 'v1alpha'})
-model_id = "gemini-2.0-flash-exp"
-config = {"response_modalities": ["TEXT"]}
-
 def generate_response(prompt):
     try:
-        model = genai.GenerativeModel(model_id)
+        # Initialize the model
+        model = genai.GenerativeModel('gemini-2.0-flash-exp')
+        
+        # Generate content
         response = model.generate_content(prompt)
         return json.dumps({"success": True, "text": response.text})
     except Exception as e:
