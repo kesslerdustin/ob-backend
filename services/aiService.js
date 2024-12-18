@@ -1,52 +1,50 @@
-const { GoogleGenerativeAI } = require('@google/generative-ai');
-require('dotenv').config();
-
-// Initialize with v2 API version
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY, {
-    apiEndpoint: 'https://generativelanguage.googleapis.com/v2',
-});
-
-const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash-exp",
-    config: {
-        responseModalities: ["TEXT"]
-    }
-});
+const { spawn } = require('child_process');
+const path = require('path');
 
 async function generateContent(prompt, context = '') {
-    try {
+    return new Promise((resolve, reject) => {
         const fullPrompt = context ? `Context: ${context}\n\nPrompt: ${prompt}` : prompt;
-        console.log('Sending prompt to v2 API:', fullPrompt);
-
-        const result = await model.generateContent({
-            contents: [{ text: fullPrompt }]
-        });
-        console.log('Raw response:', JSON.stringify(result, null, 2));
+        const pythonScript = path.join(__dirname, 'gemini_service.py');
         
-        const response = await result.response;
-        return response.text();
-    } catch (error) {
-        console.error('Gemini API error:', error);
-        // Log the full error for debugging
-        console.error('Full error:', JSON.stringify(error, null, 2));
-        throw error;
-    }
+        const pythonProcess = spawn('python', [pythonScript, fullPrompt]);
+        let dataString = '';
+
+        pythonProcess.stdout.on('data', (data) => {
+            dataString += data.toString();
+        });
+
+        pythonProcess.stderr.on('data', (data) => {
+            console.error(`Python Error: ${data}`);
+        });
+
+        pythonProcess.on('close', (code) => {
+            if (code !== 0) {
+                reject(new Error(`Python process exited with code ${code}`));
+                return;
+            }
+            
+            try {
+                const response = JSON.parse(dataString);
+                if (response.success) {
+                    resolve(response.text);
+                } else {
+                    reject(new Error(response.error));
+                }
+            } catch (error) {
+                reject(new Error('Failed to parse Python response'));
+            }
+        });
+    });
 }
 
 async function generateContentStream(prompt, context = '') {
-    try {
-        const fullPrompt = context ? `Context: ${context}\n\nPrompt: ${prompt}` : prompt;
-        console.log('Sending stream prompt to v2 API:', fullPrompt);
-        
-        const result = await model.generateContentStream({
-            contents: [{ text: fullPrompt }]
-        });
-        return result;
-    } catch (error) {
-        console.error('Gemini API streaming error:', error);
-        console.error('Full stream error:', JSON.stringify(error, null, 2));
-        throw error;
-    }
+    // For now, we'll use non-streaming version as base implementation
+    const response = await generateContent(prompt, context);
+    return {
+        stream: [{
+            text: () => response
+        }]
+    };
 }
 
 module.exports = {
