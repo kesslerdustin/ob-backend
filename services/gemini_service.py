@@ -58,9 +58,14 @@ def search_and_generate(prompt):
             )
         )
         
+        # Extract main response text
+        text = ""
+        for part in response.candidates[0].content.parts:
+            text += part.text
+
         # Include both response and search metadata
         result = {
-            "text": response.text,
+            "text": text,
             "search_data": response.candidates[0].grounding_metadata.search_entry_point.rendered_content
         }
         return json.dumps({"success": True, "data": result})

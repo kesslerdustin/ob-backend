@@ -18,8 +18,15 @@ async function testAI() {
         response = await aiService.analyzeImage(prompt, imageUrl);
         break;
       case 'search':
-        response = await aiService.searchAndGenerate(prompt);
-        break;
+        const searchResponse = await aiService.searchAndGenerate(prompt);
+        const searchData = JSON.parse(searchResponse).data;
+        console.log('AI Response:');
+        console.log('------------');
+        console.log(searchData.text);
+        console.log('\nSearch Results:');
+        console.log('---------------');
+        console.log(searchData.search_data);
+        return; // Early return to avoid duplicate logging
       default: // text
         response = await aiService.generateContent(prompt);
     }
