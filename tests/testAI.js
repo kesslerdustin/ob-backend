@@ -4,7 +4,8 @@ const path = require('path');
 async function testAI() {
   const mode = process.argv[2] || "text"; // text, vision, search
   const prompt = process.argv[3] || "Tell me a short joke about programming";
-  const imageUrl = process.argv[4] || path.join(__dirname, 'images/test.jpg');
+  const defaultImageUrl = "https://fastly.picsum.photos/id/237/200/300.jpg?hmac=TmmQSbShHz9CdQm0NkEjx1Dyh_Y984R9LpNrpvH2D_U";
+  const imageUrl = process.argv[4] || defaultImageUrl;
 
   console.log('Testing AI with:');
   console.log('Mode:', mode);
