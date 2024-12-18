@@ -1,9 +1,9 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 require('dotenv').config();
 
-// Initialize with specific API version for Gemini 2.0
+// Initialize with v2 API version
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY, {
-    apiVersion: 'v1alpha'
+    apiEndpoint: 'https://generativelanguage.googleapis.com/v2',
 });
 
 const model = genAI.getGenerativeModel({
@@ -16,15 +16,19 @@ const model = genAI.getGenerativeModel({
 async function generateContent(prompt, context = '') {
     try {
         const fullPrompt = context ? `Context: ${context}\n\nPrompt: ${prompt}` : prompt;
-        console.log('Sending prompt:', fullPrompt);
+        console.log('Sending prompt to v2 API:', fullPrompt);
 
-        const result = await model.generateContent(fullPrompt);
-        console.log('Raw response:', result);
+        const result = await model.generateContent({
+            contents: [{ text: fullPrompt }]
+        });
+        console.log('Raw response:', JSON.stringify(result, null, 2));
         
         const response = await result.response;
         return response.text();
     } catch (error) {
         console.error('Gemini API error:', error);
+        // Log the full error for debugging
+        console.error('Full error:', JSON.stringify(error, null, 2));
         throw error;
     }
 }
@@ -32,12 +36,15 @@ async function generateContent(prompt, context = '') {
 async function generateContentStream(prompt, context = '') {
     try {
         const fullPrompt = context ? `Context: ${context}\n\nPrompt: ${prompt}` : prompt;
-        console.log('Sending stream prompt:', fullPrompt);
+        console.log('Sending stream prompt to v2 API:', fullPrompt);
         
-        const result = await model.generateContentStream(fullPrompt);
+        const result = await model.generateContentStream({
+            contents: [{ text: fullPrompt }]
+        });
         return result;
     } catch (error) {
         console.error('Gemini API streaming error:', error);
+        console.error('Full stream error:', JSON.stringify(error, null, 2));
         throw error;
     }
 }
