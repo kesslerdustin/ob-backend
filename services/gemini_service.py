@@ -25,10 +25,28 @@ def generate_content(prompt):
     except Exception as e:
         return json.dumps({"success": False, "error": str(e)})
 
-def analyze_image(prompt, image_path):
-    """Vision-based analysis"""
+def analyze_image(prompt, image_path, options=None):
+    """Vision-based analysis with structured output"""
     try:
-        # Handle both URLs and local files
+        options = json.loads(options) if options else {}
+        language = options.get('language', 'en')
+        analysis_type = options.get('type', 'general')
+
+        if analysis_type == 'photo_analysis':
+            structured_prompt = f"""
+            Analyze this image in {language} and provide a structured response.
+            Focus on identifying if it's a point of interest (POI), flora, fauna, or fungi.
+            Return ONLY a JSON object with the following structure:
+            {{
+                "category": "POI|Flora|Fauna|Fungi",
+                "name": "specific name or title",
+                "description": "detailed description"
+            }}
+            """
+        else:
+            structured_prompt = prompt
+
+        # Handle image loading (existing code)
         if image_path.startswith(('http://', 'https://')):
             response = requests.get(image_path)
             image_data = BytesIO(response.content)
@@ -36,11 +54,27 @@ def analyze_image(prompt, image_path):
         else:
             img = Image.open(image_path).convert('RGB')
         
-        # Generate content with image
         response = client.models.generate_content(
             model=MODEL_ID,
-            contents=[prompt, img]
+            contents=[structured_prompt, img]
         )
+
+        # For photo analysis, ensure JSON response
+        if analysis_type == 'photo_analysis':
+            try:
+                result = json.loads(response.text)
+                return json.dumps({"success": True, "data": result})
+            except json.JSONDecodeError:
+                # Fallback if AI doesn't return proper JSON
+                return json.dumps({
+                    "success": True,
+                    "data": {
+                        "category": "Custom",
+                        "name": "",
+                        "description": response.text
+                    }
+                })
+        
         return json.dumps({"success": True, "text": response.text})
     except Exception as e:
         return json.dumps({"success": False, "error": str(e)})

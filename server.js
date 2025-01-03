@@ -180,11 +180,14 @@ try {
       }
 
       console.log('Received file:', req.file);
-      const prompt = "Analyze this image and provide a detailed description of what you see, including any notable features, species identification if applicable, and any other relevant details.";
+      const options = req.body.options ? JSON.parse(req.body.options) : {};
       
-      console.log('Analyzing image...');
-      const analysis = await aiService.analyzeImage(prompt, req.file.path);
-      console.log('Analysis result:', analysis);
+      // Use structured analysis for photo analysis
+      const analysis = await aiService.analyzeImage(
+        "Analyze this image", 
+        req.file.path,
+        options
+      );
 
       // Clean up the uploaded file
       try {
@@ -192,12 +195,11 @@ try {
         console.log('Cleaned up temporary file');
       } catch (cleanupError) {
         console.error('Error cleaning up file:', cleanupError);
-        // Continue execution even if cleanup fails
       }
 
       res.json({
         success: true,
-        analysis
+        ...JSON.parse(analysis)
       });
 
     } catch (error) {
