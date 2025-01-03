@@ -90,13 +90,15 @@ async function analyzeImage(prompt, imageUrl, options = {}) {
     return rateLimiter.enqueue(() => {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
+            
             const pythonProcess = spawn('python', [
                 pythonScript, 
                 'vision', 
                 prompt, 
                 imageUrl,
-                JSON.stringify(options)
+                options
             ]);
+
             let dataString = '';
 
             pythonProcess.stdout.on('data', (data) => {
