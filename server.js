@@ -5,6 +5,8 @@ const cors = require('cors');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 require('dotenv').config();
 const aiService = require('./services/aiService');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -160,6 +162,35 @@ try {
       console.error('AI streaming error:', error);
       res.write(`data: ${JSON.stringify({ error: error.message })}\n\n`);
       res.end();
+    }
+  });
+
+  // Add this endpoint after your existing endpoints
+  app.post('/api/analyze/image', upload.single('image'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ success: false, error: 'No image provided' });
+      }
+
+      const prompt = "Analyze this image and provide a detailed description of what you see, including any notable features, species identification if applicable, and any other relevant details.";
+      
+      const analysis = await aiService.analyzeImage(prompt, req.file.path);
+
+      // Clean up the uploaded file
+      fs.unlinkSync(req.file.path);
+
+      res.json({
+        success: true,
+        analysis
+      });
+
+    } catch (error) {
+      console.error('Image analysis error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to analyze image',
+        details: error.message
+      });
     }
   });
 
