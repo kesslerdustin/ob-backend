@@ -25,6 +25,34 @@ def generate_content(prompt):
     except Exception as e:
         return json.dumps({"success": False, "error": str(e)})
 
+def extract_json_from_text(text):
+    """Extract JSON from text by finding the first valid JSON object"""
+    try:
+        # Find the first '{' and last '}'
+        start_idx = text.find('{')
+        end_idx = text.rfind('}')
+        
+        if start_idx != -1 and end_idx != -1:
+            # Extract potential JSON string
+            json_str = text[start_idx:end_idx + 1]
+            
+            # Remove any non-JSON text that might be inside
+            # This regex pattern matches common natural language interruptions
+            import re
+            # Remove any text that's not part of valid JSON structure
+            cleaned = re.sub(r'(?<![\{\[,:\s])"(?![,:\}\]\s]).*?(?<![\{\[,:\s])"(?![,:\}\]\s])', '', json_str)
+            # Remove any remaining non-JSON characters
+            cleaned = re.sub(r'[^\{\}\[\]",:0-9a-zA-Z\s_-]', '', cleaned)
+            # Fix any double spaces
+            cleaned = re.sub(r'\s+', ' ', cleaned)
+            
+            # Try to parse the cleaned string
+            return json.loads(cleaned)
+    except Exception as e:
+        print(f"JSON extraction failed: {e}")
+        print(f"Original text: {text}")
+        return None
+
 def analyze_image(prompt, image_path, options=None):
     """Vision-based analysis with structured output"""
     try:
@@ -37,9 +65,12 @@ def analyze_image(prompt, image_path, options=None):
             Analyze this image in {language}. You must ONLY return a valid JSON object with no additional text.
             The JSON must have exactly this structure:
             {{
-                "category": "POI|Flora|Fauna|Fungi",
-                "name": "specific name or title",
-                "description": "detailed description"
+                "response_mime_type": "application/json",
+                "data": {{
+                    "category": "POI|Flora|Fauna|Fungi",
+                    "name": "specific name or title",
+                    "description": "detailed description"
+                }}
             }}
             Do not include any other text, explanations, or formatting - ONLY the JSON object.
             """
@@ -61,51 +92,61 @@ def analyze_image(prompt, image_path, options=None):
 
         # For photo analysis, ensure JSON response
         if analysis_type == 'photo_analysis':
-            try:
-                # Clean the response text to extract only JSON
-                response_text = response.text
-                # Find the first '{' and last '}'
-                start_idx = response_text.find('{')
-                end_idx = response_text.rfind('}')
-                
-                if start_idx != -1 and end_idx != -1:
-                    json_str = response_text[start_idx:end_idx + 1]
-                    result = json.loads(json_str)
+            # Extract JSON from response
+            result = extract_json_from_text(response.text)
+            
+            if result:
+                # Check if the response already has the correct structure
+                if "response_mime_type" in result and "data" in result:
+                    # Validate data structure
+                    data = result["data"]
                 else:
-                    # If no JSON structure found, create one from the text
-                    result = {
-                        "category": "Custom",
-                        "name": "AI Analysis",
-                        "description": response_text[:500]  # Limit description length
+                    # Create proper structure from extracted JSON
+                    data = {
+                        "category": result.get("category", "Custom"),
+                        "name": result.get("name", ""),
+                        "description": result.get("description", "")
                     }
-                
-                # Validate the structure
-                required_fields = ["category", "name", "description"]
-                for field in required_fields:
-                    if field not in result:
-                        result[field] = ""
-                
-                # Ensure category is valid
-                valid_categories = ["POI", "Flora", "Fauna", "Fungi", "Custom"]
-                if result["category"] not in valid_categories:
-                    result["category"] = "Custom"
-                
-                return json.dumps({"success": True, "data": result})
-            except json.JSONDecodeError as e:
-                print(f"JSON parsing error: {e}")
-                print(f"Raw response: {response.text}")
-                # Create a fallback response
-                fallback = {
+            else:
+                # Fallback if no valid JSON found
+                data = {
                     "category": "Custom",
                     "name": "AI Analysis",
                     "description": response.text[:500]
                 }
-                return json.dumps({"success": True, "data": fallback})
+
+            # Validate the data structure
+            required_fields = ["category", "name", "description"]
+            for field in required_fields:
+                if field not in data:
+                    data[field] = ""
+            
+            # Ensure category is valid
+            valid_categories = ["POI", "Flora", "Fauna", "Fungi", "Custom"]
+            if data["category"] not in valid_categories:
+                data["category"] = "Custom"
+            
+            # Create the final structured response
+            structured_response = {
+                "response_mime_type": "application/json",
+                "data": data
+            }
+            
+            return json.dumps(structured_response)
         
-        return json.dumps({"success": True, "text": response.text})
+        # For non-photo analysis, wrap the response in the same structure
+        return json.dumps({
+            "response_mime_type": "application/json",
+            "data": {
+                "text": response.text
+            }
+        })
     except Exception as e:
         print(f"Error in analyze_image: {str(e)}")
-        return json.dumps({"success": False, "error": str(e)})
+        return json.dumps({
+            "response_mime_type": "application/json",
+            "error": str(e)
+        })
 
 def search_and_generate(prompt):
     """Generation with Google Search grounding"""
