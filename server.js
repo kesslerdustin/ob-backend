@@ -179,14 +179,15 @@ try {
         return res.status(400).json({ success: false, error: 'No image provided' });
       }
 
-      console.log('Received file:', req.file);
+      // Parse options and ensure they're properly formatted
       const options = req.body.options ? JSON.parse(req.body.options) : {};
+      console.log('Received options:', options); // Debug log
       
       // Get raw response from AI service
       const rawResponse = await aiService.analyzeImage(
         "Analyze this image", 
         req.file.path,
-        options
+        JSON.stringify(options) // Ensure options are properly stringified
       );
 
       // Send the raw text response to the frontend

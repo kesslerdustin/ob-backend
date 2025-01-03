@@ -59,19 +59,20 @@ def analyze_image(prompt, image_path, options=None):
         options = json.loads(options) if options else {}
         language = options.get('language', 'en')
 
+        # Make the prompt more explicit about language requirement
         structured_prompt = f"""
-        Analyze this image in {language}. You MUST respond in {language} language.
+        You MUST analyze this image and respond ONLY in {language} language.
         Return a valid JSON object with this structure:
         {{
             "response_mime_type": "application/json",
             "data": {{
                 "category": "POI|Flora|Fauna|Fungi|Custom",
-                "name": "specific name or title",
-                "description": "detailed description"
+                "name": "specific name or title in {language}",
+                "description": "detailed description in {language}"
             }}
         }}
-        IMPORTANT: The description and name must be in {language} language.
-        Do not include any other text, explanations, or formatting - ONLY the JSON object.
+        IMPORTANT: The entire response including name and description MUST be in {language} language.
+        Do not include any text in other languages. Respond ONLY with the JSON object.
         """
 
         # Handle image loading
