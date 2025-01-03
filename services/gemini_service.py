@@ -77,7 +77,7 @@ def analyze_image(prompt, image_path, options=None):
         else:
             structured_prompt = prompt
 
-        # Handle image loading (existing code)
+        # Handle image loading
         if image_path.startswith(('http://', 'https://')):
             response = requests.get(image_path)
             image_data = BytesIO(response.content)
@@ -90,61 +90,14 @@ def analyze_image(prompt, image_path, options=None):
             contents=[structured_prompt, img]
         )
 
-        # For photo analysis, ensure JSON response
-        if analysis_type == 'photo_analysis':
-            # Extract JSON from response
-            result = extract_json_from_text(response.text)
-            
-            if result:
-                # Check if the response already has the correct structure
-                if "response_mime_type" in result and "data" in result:
-                    # Validate data structure
-                    data = result["data"]
-                else:
-                    # Create proper structure from extracted JSON
-                    data = {
-                        "category": result.get("category", "Custom"),
-                        "name": result.get("name", ""),
-                        "description": result.get("description", "")
-                    }
-            else:
-                # Fallback if no valid JSON found
-                data = {
-                    "category": "Custom",
-                    "name": "AI Analysis",
-                    "description": response.text[:500]
-                }
-
-            # Validate the data structure
-            required_fields = ["category", "name", "description"]
-            for field in required_fields:
-                if field not in data:
-                    data[field] = ""
-            
-            # Ensure category is valid
-            valid_categories = ["POI", "Flora", "Fauna", "Fungi", "Custom"]
-            if data["category"] not in valid_categories:
-                data["category"] = "Custom"
-            
-            # Create the final structured response
-            structured_response = {
-                "response_mime_type": "application/json",
-                "data": data
-            }
-            
-            return json.dumps(structured_response)
-        
-        # For non-photo analysis, wrap the response in the same structure
         return json.dumps({
-            "response_mime_type": "application/json",
-            "data": {
-                "text": response.text
-            }
+            "success": True,
+            "text": response.text
         })
     except Exception as e:
         print(f"Error in analyze_image: {str(e)}")
         return json.dumps({
-            "response_mime_type": "application/json",
+            "success": False,
             "error": str(e)
         })
 
