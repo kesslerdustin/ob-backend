@@ -182,12 +182,15 @@ try {
       console.log('Received file:', req.file);
       const options = req.body.options ? JSON.parse(req.body.options) : {};
       
-      // Use structured analysis for photo analysis
-      const analysis = await aiService.analyzeImage(
+      // Get raw response from AI service
+      const rawResponse = await aiService.analyzeImage(
         "Analyze this image", 
         req.file.path,
         options
       );
+
+      // Parse the AI service response
+      const aiResponse = JSON.parse(rawResponse);
 
       // Clean up the uploaded file
       try {
@@ -197,18 +200,15 @@ try {
         console.error('Error cleaning up file:', cleanupError);
       }
 
-      res.json({
-        success: true,
-        ...JSON.parse(analysis)
-      });
+      // Send the raw text response to the frontend
+      res.json(aiResponse);
 
     } catch (error) {
       console.error('Image analysis error:', error);
       res.status(500).json({
         success: false,
         error: 'Failed to analyze image',
-        details: error.message,
-        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        details: error.message
       });
     }
   });
