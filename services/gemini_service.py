@@ -34,14 +34,14 @@ def analyze_image(prompt, image_path, options=None):
 
         if analysis_type == 'photo_analysis':
             structured_prompt = f"""
-            Analyze this image in {language} and provide a structured response.
-            Focus on identifying if it's a point of interest (POI), flora, fauna, or fungi.
-            Return ONLY a JSON object with the following structure:
+            Analyze this image in {language}. You must ONLY return a valid JSON object with no additional text.
+            The JSON must have exactly this structure:
             {{
                 "category": "POI|Flora|Fauna|Fungi",
                 "name": "specific name or title",
                 "description": "detailed description"
             }}
+            Do not include any other text, explanations, or formatting - ONLY the JSON object.
             """
         else:
             structured_prompt = prompt
@@ -62,21 +62,49 @@ def analyze_image(prompt, image_path, options=None):
         # For photo analysis, ensure JSON response
         if analysis_type == 'photo_analysis':
             try:
-                result = json.loads(response.text)
-                return json.dumps({"success": True, "data": result})
-            except json.JSONDecodeError:
-                # Fallback if AI doesn't return proper JSON
-                return json.dumps({
-                    "success": True,
-                    "data": {
+                # Clean the response text to extract only JSON
+                response_text = response.text
+                # Find the first '{' and last '}'
+                start_idx = response_text.find('{')
+                end_idx = response_text.rfind('}')
+                
+                if start_idx != -1 and end_idx != -1:
+                    json_str = response_text[start_idx:end_idx + 1]
+                    result = json.loads(json_str)
+                else:
+                    # If no JSON structure found, create one from the text
+                    result = {
                         "category": "Custom",
-                        "name": "",
-                        "description": response.text
+                        "name": "AI Analysis",
+                        "description": response_text[:500]  # Limit description length
                     }
-                })
+                
+                # Validate the structure
+                required_fields = ["category", "name", "description"]
+                for field in required_fields:
+                    if field not in result:
+                        result[field] = ""
+                
+                # Ensure category is valid
+                valid_categories = ["POI", "Flora", "Fauna", "Fungi", "Custom"]
+                if result["category"] not in valid_categories:
+                    result["category"] = "Custom"
+                
+                return json.dumps({"success": True, "data": result})
+            except json.JSONDecodeError as e:
+                print(f"JSON parsing error: {e}")
+                print(f"Raw response: {response.text}")
+                # Create a fallback response
+                fallback = {
+                    "category": "Custom",
+                    "name": "AI Analysis",
+                    "description": response.text[:500]
+                }
+                return json.dumps({"success": True, "data": fallback})
         
         return json.dumps({"success": True, "text": response.text})
     except Exception as e:
+        print(f"Error in analyze_image: {str(e)}")
         return json.dumps({"success": False, "error": str(e)})
 
 def search_and_generate(prompt):
