@@ -2,11 +2,17 @@ const express = require('express');
 const axios = require('axios');
 const admin = require('firebase-admin');
 const cors = require('cors');
+const fs = require('fs');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 require('dotenv').config();
 const aiService = require('./services/aiService');
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
+const path = require('path');
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)){
+    fs.mkdirSync(uploadsDir);
+}
+const upload = multer({ dest: uploadsDir });
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -172,12 +178,21 @@ try {
         return res.status(400).json({ success: false, error: 'No image provided' });
       }
 
+      console.log('Received file:', req.file);
       const prompt = "Analyze this image and provide a detailed description of what you see, including any notable features, species identification if applicable, and any other relevant details.";
       
+      console.log('Analyzing image...');
       const analysis = await aiService.analyzeImage(prompt, req.file.path);
+      console.log('Analysis result:', analysis);
 
       // Clean up the uploaded file
-      fs.unlinkSync(req.file.path);
+      try {
+        fs.unlinkSync(req.file.path);
+        console.log('Cleaned up temporary file');
+      } catch (cleanupError) {
+        console.error('Error cleaning up file:', cleanupError);
+        // Continue execution even if cleanup fails
+      }
 
       res.json({
         success: true,
@@ -189,7 +204,8 @@ try {
       res.status(500).json({
         success: false,
         error: 'Failed to analyze image',
-        details: error.message
+        details: error.message,
+        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
       });
     }
   });
