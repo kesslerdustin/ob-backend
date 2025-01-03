@@ -6,7 +6,7 @@ async function generateContent(prompt, context = '') {
         const fullPrompt = context ? `Context: ${context}\n\nPrompt: ${prompt}` : prompt;
         const pythonScript = path.join(__dirname, 'gemini_service.py');
         
-        const pythonProcess = spawn('python', [pythonScript, fullPrompt]);
+        const pythonProcess = spawn('python', [pythonScript, 'text', fullPrompt]);
         let dataString = '';
 
         pythonProcess.stdout.on('data', (data) => {
