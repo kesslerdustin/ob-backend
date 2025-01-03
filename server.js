@@ -13,6 +13,7 @@ if (!fs.existsSync(uploadsDir)){
     fs.mkdirSync(uploadsDir);
 }
 const upload = multer({ dest: uploadsDir });
+const rateLimiter = require('./services/rateLimiter');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -208,6 +209,15 @@ try {
         stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
       });
     }
+  });
+
+  // Add this endpoint to monitor queue status
+  app.get('/api/queue-status', (req, res) => {
+    res.json({
+        queueLength: rateLimiter.queue.length,
+        isProcessing: rateLimiter.isProcessing,
+        estimatedWaitTime: rateLimiter.queue.length * 4 // 4 seconds per request
+    });
   });
 
   app.listen(PORT, () => {
