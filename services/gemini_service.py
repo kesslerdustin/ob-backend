@@ -60,7 +60,8 @@ def analyze_image(prompt, image_path, options=None):
         language = options.get('language', 'en')
 
         structured_prompt = f"""
-        Analyze this image in {language}. Return a valid JSON object with this structure:
+        Analyze this image in {language}. You MUST respond in {language} language.
+        Return a valid JSON object with this structure:
         {{
             "response_mime_type": "application/json",
             "data": {{
@@ -69,6 +70,8 @@ def analyze_image(prompt, image_path, options=None):
                 "description": "detailed description"
             }}
         }}
+        IMPORTANT: The description and name must be in {language} language.
+        Do not include any other text, explanations, or formatting - ONLY the JSON object.
         """
 
         # Handle image loading
