@@ -91,12 +91,15 @@ async function analyzeImage(prompt, imageUrl, options = {}) {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
             
+            const optionsStr = typeof options === 'string' ? options : JSON.stringify(options);
+            console.log('aiService sending options:', optionsStr);
+            
             const pythonProcess = spawn('python', [
                 pythonScript, 
                 'vision', 
                 prompt, 
                 imageUrl,
-                options
+                optionsStr
             ]);
 
             let dataString = '';
@@ -116,15 +119,13 @@ async function analyzeImage(prompt, imageUrl, options = {}) {
                 }
                 
                 try {
-                    // Parse to check for errors but return raw text
                     const response = JSON.parse(dataString);
                     if (response.success) {
-                        resolve(response.text);  // Return the raw text
+                        resolve(response.text);
                     } else {
                         reject(new Error(response.error));
                     }
                 } catch (error) {
-                    // If parsing fails, assume it's raw text
                     resolve(dataString);
                 }
             });

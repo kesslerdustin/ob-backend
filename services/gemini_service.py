@@ -146,9 +146,12 @@ if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "text"
     prompt = sys.argv[2] if len(sys.argv) > 2 else "Hello, Gemini!"
     image_url = sys.argv[3] if len(sys.argv) > 3 else None
+    options = sys.argv[4] if len(sys.argv) > 4 else None  # Get options from command line
+    
+    print(f"Python script received args: mode={mode}, prompt={prompt}, image={image_url}, options={options}")  # Debug log
     
     if mode == "vision":
-        print(analyze_image(prompt, image_url))
+        print(analyze_image(prompt, image_url, options))
     elif mode == "search":
         print(search_and_generate(prompt))
     else:
