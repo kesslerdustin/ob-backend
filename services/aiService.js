@@ -114,14 +114,16 @@ async function analyzeImage(prompt, imageUrl, options = {}) {
                 }
                 
                 try {
+                    // Parse to check for errors but return raw text
                     const response = JSON.parse(dataString);
                     if (response.success) {
-                        resolve(response.text);
+                        resolve(response.text);  // Return the raw text
                     } else {
                         reject(new Error(response.error));
                     }
                 } catch (error) {
-                    reject(new Error('Failed to parse Python response'));
+                    // If parsing fails, assume it's raw text
+                    resolve(dataString);
                 }
             });
         });

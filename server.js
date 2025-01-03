@@ -189,8 +189,11 @@ try {
         options
       );
 
-      // Parse the AI service response
-      const aiResponse = JSON.parse(rawResponse);
+      // Send the raw text response to the frontend
+      res.json({
+        success: true,
+        text: rawResponse  // Send the raw text directly
+      });
 
       // Clean up the uploaded file
       try {
@@ -199,9 +202,6 @@ try {
       } catch (cleanupError) {
         console.error('Error cleaning up file:', cleanupError);
       }
-
-      // Send the raw text response to the frontend
-      res.json(aiResponse);
 
     } catch (error) {
       console.error('Image analysis error:', error);

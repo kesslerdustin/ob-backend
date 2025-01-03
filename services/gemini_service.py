@@ -54,28 +54,22 @@ def extract_json_from_text(text):
         return None
 
 def analyze_image(prompt, image_path, options=None):
-    """Vision-based analysis with structured output"""
+    """Vision-based analysis with raw text output"""
     try:
         options = json.loads(options) if options else {}
         language = options.get('language', 'en')
-        analysis_type = options.get('type', 'general')
 
-        if analysis_type == 'photo_analysis':
-            structured_prompt = f"""
-            Analyze this image in {language}. You must ONLY return a valid JSON object with no additional text.
-            The JSON must have exactly this structure:
-            {{
-                "response_mime_type": "application/json",
-                "data": {{
-                    "category": "POI|Flora|Fauna|Fungi",
-                    "name": "specific name or title",
-                    "description": "detailed description"
-                }}
+        structured_prompt = f"""
+        Analyze this image in {language}. Return a valid JSON object with this structure:
+        {{
+            "response_mime_type": "application/json",
+            "data": {{
+                "category": "POI|Flora|Fauna|Fungi|Custom",
+                "name": "specific name or title",
+                "description": "detailed description"
             }}
-            Do not include any other text, explanations, or formatting - ONLY the JSON object.
-            """
-        else:
-            structured_prompt = prompt
+        }}
+        """
 
         # Handle image loading
         if image_path.startswith(('http://', 'https://')):
