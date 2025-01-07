@@ -149,12 +149,10 @@ def flash_chat(prompt):
             model="gemini-2.0-flash-exp",
             contents=prompt
         )
+        # Simplify the response structure
         return json.dumps({
             "success": True,
-            "response_mime_type": "text/plain",
-            "data": {
-                "text": response.text
-            }
+            "text": response.text
         })
     except Exception as e:
         print(f"Flash chat error: {str(e)}")

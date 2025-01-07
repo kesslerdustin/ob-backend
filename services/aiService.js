@@ -157,7 +157,7 @@ async function flashChat(prompt) {
                 try {
                     const response = JSON.parse(dataString);
                     if (response.success) {
-                        resolve(response.data.text);
+                        resolve(response.text);
                     } else {
                         reject(new Error(response.error));
                     }
