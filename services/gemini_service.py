@@ -59,11 +59,16 @@ def analyze_image(prompt, image_path, options=None):
         options = json.loads(options) if options else {}
         language = options.get('language', 'en')
         analysis_type = options.get('type', 'photo_analysis')
+        context = options.get('context', '')
 
         # Different prompts based on analysis type
         if analysis_type == 'chat_analysis':
             structured_prompt = f"""
-            You are a helpful outdoor guide. Analyze this image and respond in {language} language.
+            You are a helpful outdoor guide. Analyze this image and respond in the language of this classifier:{language} (eg: en - english, de - german, fr - french, etc).
+            
+            Context from the conversation:
+            {context}
+            
             Provide a natural, conversational response about what you see in the image.
             Focus on relevant outdoor, nature, or location-related details.
             Keep the response friendly and informative, as if chatting with a hiking companion.
@@ -150,16 +155,21 @@ def flash_chat(prompt, options=None):
         # Parse options and log
         options = json.loads(options) if options else {}
         language = options.get('language', 'en')
-        print(f"Python - Using language: {language}", file=sys.stderr)  # Debug log
+        context = options.get('context', '')
+        print(f"Python - Using language: {language}", file=sys.stderr)
+        print(f"Python - Context length: {len(context)}", file=sys.stderr)
 
-        # Make language instruction more explicit
+        # Make language instruction more explicit and include context
         localized_prompt = f"""
         IMPORTANT: Respond ONLY in the language with this classifier:{language} (eg: en - english, de - german, fr - french, etc).
         Do not use any other language in your response.
         
+        Context:
+        {context}
+        
         User message: {prompt}
         """
-        print(f"Python - Using prompt: {localized_prompt}", file=sys.stderr)  # Debug log
+        print(f"Python - Using prompt: {localized_prompt}", file=sys.stderr)
 
         response = client.models.generate_content(
             model="gemini-2.0-flash-exp",
