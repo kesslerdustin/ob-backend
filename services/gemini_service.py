@@ -56,31 +56,35 @@ def extract_json_from_text(text):
 def analyze_image(prompt, image_path, options=None):
     """Vision-based analysis with raw text output"""
     try:
-        print(f"Python received options: {options}")  # New log
         options = json.loads(options) if options else {}
         language = options.get('language', 'en')
-        print(f"Using language: {language}")  # New log
+        analysis_type = options.get('type', 'photo_analysis')
 
-        structured_prompt = f"""
-        Analyze this image and respond ONLY in {language} language with a valid JSON object.
-        
-        CRITICAL REQUIREMENTS:
-        1. Use ONLY the {language} language for ALL text fields
-        2. Return EXACTLY this JSON structure:
-        {{
-            "response_mime_type": "application/json",
-            "data": {{
-                "category": "POI|Flora|Fauna|Fungi|Custom",
-                "name": "{language} name/title",
-                "description": "detailed {language} description"
+        # Different prompts based on analysis type
+        if analysis_type == 'chat_analysis':
+            structured_prompt = f"""
+            You are a helpful outdoor guide. Analyze this image and respond in {language} language.
+            Provide a natural, conversational response about what you see in the image.
+            Focus on relevant outdoor, nature, or location-related details.
+            Keep the response friendly and informative, as if chatting with a hiking companion.
+            """
+        else:
+            # Original photo analysis prompt
+            structured_prompt = f"""
+            Analyze this image and respond ONLY in {language} language with a valid JSON object.
+            
+            CRITICAL REQUIREMENTS:
+            1. Use ONLY the {language} language for ALL text fields
+            2. Return EXACTLY this JSON structure:
+            {{
+                "response_mime_type": "application/json",
+                "data": {{
+                    "category": "POI|Flora|Fauna|Fungi|Custom",
+                    "name": "{language} name/title",
+                    "description": "detailed {language} description"
+                }}
             }}
-        }}
-        
-        DO NOT include any English or other languages in the response.
-        DO NOT add any explanatory text outside the JSON structure.
-        """
-        
-        print(f"Using prompt: {structured_prompt}")  # New log
+            """
 
         # Handle image loading
         if image_path.startswith(('http://', 'https://')):
@@ -94,8 +98,6 @@ def analyze_image(prompt, image_path, options=None):
             model=MODEL_ID,
             contents=[structured_prompt, img]
         )
-
-        print(f"AI response: {response.text}")  # New log
 
         return json.dumps({
             "success": True,
