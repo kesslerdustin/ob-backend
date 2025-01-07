@@ -142,6 +142,27 @@ def search_and_generate(prompt):
     except Exception as e:
         return json.dumps({"success": False, "error": str(e)})
 
+def flash_chat(prompt):
+    """Flash chat generation using Gemini 2.0"""
+    try:
+        response = client.models.generate_content(
+            model="gemini-2.0-flash-exp",
+            contents=prompt
+        )
+        return json.dumps({
+            "success": True,
+            "response_mime_type": "text/plain",
+            "data": {
+                "text": response.text
+            }
+        })
+    except Exception as e:
+        print(f"Flash chat error: {str(e)}")
+        return json.dumps({
+            "success": False,
+            "error": str(e)
+        })
+
 if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "text"
     prompt = sys.argv[2] if len(sys.argv) > 2 else "Hello, Gemini!"
@@ -154,5 +175,7 @@ if __name__ == "__main__":
         print(analyze_image(prompt, image_url, options))
     elif mode == "search":
         print(search_and_generate(prompt))
+    elif mode == "flash":
+        print(flash_chat(prompt))
     else:
         print(generate_content(prompt)) 

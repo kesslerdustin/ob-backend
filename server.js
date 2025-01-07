@@ -223,6 +223,31 @@ try {
     });
   });
 
+  app.post('/api/chat/flash', express.json(), async (req, res) => {
+    try {
+        const { prompt } = req.body;
+
+        if (!prompt) {
+            return res.status(400).json({ error: 'Prompt is required' });
+        }
+
+        const response = await aiService.flashChat(prompt);
+        
+        res.json({
+            success: true,
+            text: response
+        });
+
+    } catch (error) {
+        console.error('Flash chat error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to generate response',
+            details: error.message
+        });
+    }
+  });
+
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
