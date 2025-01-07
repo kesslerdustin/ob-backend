@@ -162,6 +162,7 @@ async function flashChat(prompt) {
                         reject(new Error(response.error));
                     }
                 } catch (error) {
+                    console.error('Parse error:', error, 'Raw data:', dataString);
                     reject(new Error('Failed to parse Python response'));
                 }
             });
