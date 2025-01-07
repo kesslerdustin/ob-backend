@@ -165,15 +165,21 @@ if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "text"
     prompt = sys.argv[2] if len(sys.argv) > 2 else "Hello, Gemini!"
     image_url = sys.argv[3] if len(sys.argv) > 3 else None
-    options = sys.argv[4] if len(sys.argv) > 4 else None  # Get options from command line
+    options = sys.argv[4] if len(sys.argv) > 4 else None
     
-    print(f"Python script received args: mode={mode}, prompt={prompt}, image={image_url}, options={options}")  # Debug log
-    
+    # First generate the response
+    response = None
     if mode == "vision":
-        print(analyze_image(prompt, image_url, options))
+        response = analyze_image(prompt, image_url, options)
     elif mode == "search":
-        print(search_and_generate(prompt))
+        response = search_and_generate(prompt)
     elif mode == "flash":
-        print(flash_chat(prompt))
+        response = flash_chat(prompt)
     else:
-        print(generate_content(prompt)) 
+        response = generate_content(prompt)
+    
+    # Print the JSON response first
+    print(response)
+    
+    # Then print debug info to stderr instead of stdout
+    print(f"Python script received args: mode={mode}, prompt={prompt}, image={image_url}, options={options}", file=sys.stderr) 
