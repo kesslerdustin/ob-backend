@@ -226,6 +226,7 @@ try {
   app.post('/api/chat/flash', express.json(), async (req, res) => {
     try {
         const { prompt, language } = req.body;
+        console.log('Server - Received language:', language); // Debug log
 
         if (!prompt) {
             return res.status(400).json({ error: 'Prompt is required' });
