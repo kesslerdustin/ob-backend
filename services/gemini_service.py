@@ -152,7 +152,7 @@ def flash_chat(prompt, options=None):
 
         # Make language instruction more explicit
         localized_prompt = f"""
-        IMPORTANT: Respond ONLY in {language} language.
+        IMPORTANT: Respond ONLY in the language with this classifier:{language} (eg: en - english, de - german, fr - french, etc).
         Do not use any other language in your response.
         
         User message: {prompt}
