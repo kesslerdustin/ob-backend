@@ -142,12 +142,25 @@ def search_and_generate(prompt):
     except Exception as e:
         return json.dumps({"success": False, "error": str(e)})
 
-def flash_chat(prompt):
+def flash_chat(prompt, options=None):
     """Flash chat generation using Gemini 2.0"""
     try:
+        # Parse options to get language
+        options = json.loads(options) if options else {}
+        language = options.get('language', 'en')
+        print(f"Using language: {language}")  # Debug log
+
+        structured_prompt = f"""
+        Respond ONLY in {language} language.
+        
+        User request: {prompt}
+        
+        CRITICAL: Use ONLY the {language} language in your response.
+        """
+
         response = client.models.generate_content(
             model="gemini-2.0-flash-exp",
-            contents=prompt
+            contents=structured_prompt
         )
         # Simplify the response structure
         return json.dumps({
@@ -174,7 +187,7 @@ if __name__ == "__main__":
     elif mode == "search":
         response = search_and_generate(prompt)
     elif mode == "flash":
-        response = flash_chat(prompt)
+        response = flash_chat(prompt, options)
     else:
         response = generate_content(prompt)
     
