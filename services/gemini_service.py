@@ -156,8 +156,13 @@ def flash_chat(prompt, options=None):
         options = json.loads(options) if options else {}
         language = options.get('language', 'en')
         context = options.get('context', '')
-        print(f"Python - Using language: {language}", file=sys.stderr)
-        print(f"Python - Context length: {len(context)}", file=sys.stderr)
+        
+        # Debug logging
+        print(f"Python - Flash Chat Details:", file=sys.stderr)
+        print(f"Language: {language}", file=sys.stderr)
+        print(f"Context length: {len(context)}", file=sys.stderr)
+        print(f"Context preview: {context[:200]}...", file=sys.stderr)
+        print(f"Prompt: {prompt}", file=sys.stderr)
 
         # Make language instruction more explicit and include context
         localized_prompt = f"""
@@ -169,7 +174,8 @@ def flash_chat(prompt, options=None):
         
         User message: {prompt}
         """
-        print(f"Python - Using prompt: {localized_prompt}", file=sys.stderr)
+        print(f"Python - Final prompt being sent to Gemini:", file=sys.stderr)
+        print(localized_prompt, file=sys.stderr)
 
         response = client.models.generate_content(
             model="gemini-2.0-flash-exp",
