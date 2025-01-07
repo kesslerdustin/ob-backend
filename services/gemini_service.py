@@ -145,24 +145,21 @@ def search_and_generate(prompt):
 def flash_chat(prompt, options=None):
     """Flash chat generation using Gemini 2.0"""
     try:
-        # Parse options to get language
+        # Parse options
         options = json.loads(options) if options else {}
         language = options.get('language', 'en')
-        print(f"Using language: {language}")  # Debug log
 
-        structured_prompt = f"""
-        Respond ONLY in {language} language.
-        
-        User request: {prompt}
-        
-        CRITICAL: Use ONLY the {language} language in your response.
+        # Add language instruction to prompt
+        localized_prompt = f"""
+        Please respond in {language} language.
+        User message: {prompt}
         """
 
         response = client.models.generate_content(
             model="gemini-2.0-flash-exp",
-            contents=structured_prompt
+            contents=localized_prompt
         )
-        # Simplify the response structure
+        
         return json.dumps({
             "success": True,
             "text": response.text

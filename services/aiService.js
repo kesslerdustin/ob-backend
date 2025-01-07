@@ -133,11 +133,17 @@ async function analyzeImage(prompt, imageUrl, options = {}) {
     });
 }
 
-async function flashChat(prompt) {
+async function flashChat(prompt, language = 'en') {
     return rateLimiter.enqueue(() => {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
-            const pythonProcess = spawn('python', [pythonScript, 'flash', prompt]);
+            const pythonProcess = spawn('python', [
+                pythonScript, 
+                'flash', 
+                prompt,
+                null, // image parameter
+                JSON.stringify({ language }) // options
+            ]);
             let dataString = '';
 
             pythonProcess.stdout.on('data', (data) => {
