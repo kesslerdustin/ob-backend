@@ -223,35 +223,50 @@ try {
     });
   });
 
-  app.post('/api/chat/flash', express.json(), async (req, res) => {
+  app.post('/api/chat/flash', upload.single('image'), async (req, res) => {
     try {
-      const { prompt, language, context, imageUri } = req.body;
-      console.log('Server - Flash Chat Request:', {
-        prompt,
-        language,
-        contextLength: context?.length || 0,
-        contextPreview: context?.substring(0, 200) + '...',
-        hasImage: !!imageUri
-      });
+        const { prompt, language, context } = req.body;
+        console.log('Server - Flash Chat Request:', {
+            prompt,
+            language,
+            contextLength: context?.length || 0,
+            contextPreview: context?.substring(0, 200) + '...',
+            hasImage: !!req.file
+        });
 
-      if (!prompt) {
-        return res.status(400).json({ error: 'Prompt is required' });
-      }
+        if (!prompt) {
+            return res.status(400).json({ error: 'Prompt is required' });
+        }
 
-      const response = await aiService.flashChat(prompt, language, context, imageUri);
-      
-      res.json({
-        success: true,
-        text: response
-      });
+        const response = await aiService.flashChat(
+            prompt, 
+            language, 
+            context, 
+            req.file?.path || null
+        );
+        
+        // Clean up the uploaded file if it exists
+        if (req.file) {
+            try {
+                fs.unlinkSync(req.file.path);
+                console.log('Cleaned up temporary file');
+            } catch (cleanupError) {
+                console.error('Error cleaning up file:', cleanupError);
+            }
+        }
+
+        res.json({
+            success: true,
+            text: response
+        });
 
     } catch (error) {
-      console.error('Flash chat error:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Failed to generate response',
-        details: error.message
-      });
+        console.error('Flash chat error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to generate response',
+            details: error.message
+        });
     }
   });
 
