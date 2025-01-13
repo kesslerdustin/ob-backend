@@ -186,10 +186,62 @@ async function flashChat(prompt, language = 'en', context = '', imageUri = null)
     });
 }
 
+async function analyzeBiome(location, coordinates, language = 'en') {
+    return rateLimiter.enqueue(() => {
+        return new Promise((resolve, reject) => {
+            const pythonScript = path.join(__dirname, 'gemini_service.py');
+            const options = JSON.stringify({
+                language,
+                type: 'biome_analysis',
+                coordinates
+            });
+            
+            const prompt = `Location: ${location}\nCoordinates: ${coordinates.latitude}, ${coordinates.longitude}`;
+            
+            const pythonProcess = spawn('python', [
+                pythonScript,
+                'biome',
+                prompt,
+                'null',  // no image
+                options
+            ]);
+
+            let dataString = '';
+
+            pythonProcess.stdout.on('data', (data) => {
+                dataString += data.toString();
+            });
+
+            pythonProcess.stderr.on('data', (data) => {
+                console.error(`Python Error: ${data}`);
+            });
+
+            pythonProcess.on('close', (code) => {
+                if (code !== 0) {
+                    reject(new Error(`Python process exited with code ${code}`));
+                    return;
+                }
+                
+                try {
+                    const response = JSON.parse(dataString);
+                    if (response.success) {
+                        resolve(response.text);
+                    } else {
+                        reject(new Error(response.error));
+                    }
+                } catch (error) {
+                    reject(new Error('Failed to parse Python response'));
+                }
+            });
+        });
+    });
+}
+
 module.exports = {
     generateContent,
     generateContentStream,
     searchAndGenerate,
     analyzeImage,
-    flashChat
+    flashChat,
+    analyzeBiome
 }; 

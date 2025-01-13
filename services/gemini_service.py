@@ -200,6 +200,47 @@ def flash_chat(prompt, image_path=None, options=None):
             "error": str(e)
         })
 
+def analyze_biome(prompt, options=None):
+    """Specialized biome analysis using Gemini 2.0"""
+    try:
+        options = json.loads(options) if options else {}
+        language = options.get('language', 'en')
+        coordinates = options.get('coordinates', {})
+        
+        structured_prompt = f"""
+        You are a biome classification expert. For this location:
+        {prompt}
+        
+        Return ONLY:
+        1. The primary biome name (e.g., Temperate broadleaf and mixed forests, Tropical rainforest, etc.)
+        2. Followed by 2-3 major geographic features in parentheses, separated by commas
+        
+        Example format:
+        Temperate broadleaf and mixed forests (rolling hills, river valleys, coastal cliffs)
+        
+        CRITICAL REQUIREMENTS:
+        - Respond in {language} language
+        - Use ONLY the format shown above
+        - No additional text or explanations
+        - Keep feature descriptions very brief (1-2 words each)
+        """
+
+        response = client.models.generate_content(
+            model="gemini-2.0-flash-exp",
+            contents=structured_prompt
+        )
+        
+        return json.dumps({
+            "success": True,
+            "text": response.text.strip()
+        })
+    except Exception as e:
+        print(f"Biome analysis error: {str(e)}")
+        return json.dumps({
+            "success": False,
+            "error": str(e)
+        })
+
 if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "text"
     prompt = sys.argv[2] if len(sys.argv) > 2 else "Hello, Gemini!"
@@ -214,6 +255,8 @@ if __name__ == "__main__":
         response = search_and_generate(prompt)
     elif mode == "flash":
         response = flash_chat(prompt, image_url, options)
+    elif mode == "biome":
+        response = analyze_biome(prompt, options)
     else:
         response = generate_content(prompt)
     

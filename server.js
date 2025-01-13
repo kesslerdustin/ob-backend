@@ -270,6 +270,36 @@ try {
     }
   });
 
+  // Add this new endpoint for biome analysis
+  app.post('/api/analyze/biome', express.json(), async (req, res) => {
+    try {
+      const { location, coordinates, language } = req.body;
+      
+      if (!coordinates || !coordinates.latitude || !coordinates.longitude) {
+        return res.status(400).json({ error: 'Valid coordinates are required' });
+      }
+
+      const response = await aiService.analyzeBiome(
+        location,
+        coordinates,
+        language || 'en'
+      );
+
+      res.json({
+        success: true,
+        biome: response
+      });
+
+    } catch (error) {
+      console.error('Biome analysis error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to analyze biome',
+        details: error.message
+      });
+    }
+  });
+
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
