@@ -152,30 +152,20 @@ def search_and_generate(prompt):
 def flash_chat(prompt, image_path=None, options=None):
     """Flash chat generation using Gemini 2.0 with optional image support"""
     try:
-        # Parse options and log
         options = json.loads(options) if options else {}
         language = options.get('language', 'en')
         context = options.get('context', '')
         
-        # Debug logging
-        print(f"Python - Flash Chat Details:", file=sys.stderr)
-        print(f"Language: {language}", file=sys.stderr)
-        print(f"Context length: {len(context)}", file=sys.stderr)
-        print(f"Context preview: {context[:200]}...", file=sys.stderr)
-        print(f"Prompt: {prompt}", file=sys.stderr)
-        print(f"Has image: {bool(image_path)}", file=sys.stderr)
-
-        # Make language instruction more explicit and include context
+        # Make language instruction more explicit and move it to the end
         localized_prompt = f"""
-        IMPORTANT: Respond ONLY in the language with this classifier:{language} (eg: en - english, de - german, fr - french, etc).
-        Do not use any other language in your response and DO NOT START THE RESPONSE WITH THE CLASSIFIER ITSELF.
+        You are a helpful outdoor guide and survival expert. You have detailed information about the user's location, time, season, weather, surroundings, and possibly a satellite view of their position. Be precise, logical and helpful, and incorporate this contextual information naturally into your responses when relevant.
 
-        You will get detailed information about the user's location and the current time, season, weather, surroundings etc. You might also get a satellite view of the users position. You are a helpful outdoor guide and survival expert. Be precise, logical and helpful.
-        
-        Context:
+        Context about the current location and conditions:
         {context}
         
         User message: {prompt}
+
+        CRITICAL: Respond in {language} language WITHOUT including the language code. Never start your response with language codes like 'de:', 'en:', etc.
         """
 
         # Prepare content list
