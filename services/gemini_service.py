@@ -168,7 +168,9 @@ def flash_chat(prompt, image_path=None, options=None):
         # Make language instruction more explicit and include context
         localized_prompt = f"""
         IMPORTANT: Respond ONLY in the language with this classifier:{language} (eg: en - english, de - german, fr - french, etc).
-        Do not use any other language in your response.
+        Do not use any other language in your response and DO NOT START THE RESPONSE WITH THE CLASSIFIER ITSELF.
+
+        You will get detailed information about the user's location and the current time, season, weather, surroundings etc. You might also get a satellite view of the users position. You are a helpful outdoor guide and survival expert. Be precise, logical and helpful.
         
         Context:
         {context}
