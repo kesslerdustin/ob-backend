@@ -149,8 +149,8 @@ def search_and_generate(prompt):
     except Exception as e:
         return json.dumps({"success": False, "error": str(e)})
 
-def flash_chat(prompt, options=None):
-    """Flash chat generation using Gemini 2.0"""
+def flash_chat(prompt, image_path=None, options=None):
+    """Flash chat generation using Gemini 2.0 with optional image support"""
     try:
         # Parse options and log
         options = json.loads(options) if options else {}
@@ -163,6 +163,7 @@ def flash_chat(prompt, options=None):
         print(f"Context length: {len(context)}", file=sys.stderr)
         print(f"Context preview: {context[:200]}...", file=sys.stderr)
         print(f"Prompt: {prompt}", file=sys.stderr)
+        print(f"Has image: {bool(image_path)}", file=sys.stderr)
 
         # Make language instruction more explicit and include context
         localized_prompt = f"""
@@ -174,12 +175,26 @@ def flash_chat(prompt, options=None):
         
         User message: {prompt}
         """
-        print(f"Python - Final prompt being sent to Gemini:", file=sys.stderr)
-        print(localized_prompt, file=sys.stderr)
+
+        # Prepare content list
+        contents = [localized_prompt]
+
+        # Add image if provided
+        if image_path:
+            try:
+                if image_path.startswith(('http://', 'https://')):
+                    response = requests.get(image_path)
+                    image_data = BytesIO(response.content)
+                    img = Image.open(image_data).convert('RGB')
+                else:
+                    img = Image.open(image_path).convert('RGB')
+                contents.append(img)
+            except Exception as e:
+                print(f"Error loading image: {str(e)}", file=sys.stderr)
 
         response = client.models.generate_content(
             model="gemini-2.0-flash-exp",
-            contents=localized_prompt
+            contents=contents
         )
         
         return json.dumps({
@@ -206,7 +221,7 @@ if __name__ == "__main__":
     elif mode == "search":
         response = search_and_generate(prompt)
     elif mode == "flash":
-        response = flash_chat(prompt, options)
+        response = flash_chat(prompt, image_url, options)
     else:
         response = generate_content(prompt)
     

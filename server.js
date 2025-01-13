@@ -225,19 +225,20 @@ try {
 
   app.post('/api/chat/flash', express.json(), async (req, res) => {
     try {
-      const { prompt, language, context } = req.body;
+      const { prompt, language, context, imageUri } = req.body;
       console.log('Server - Flash Chat Request:', {
         prompt,
         language,
         contextLength: context?.length || 0,
-        contextPreview: context?.substring(0, 200) + '...'
+        contextPreview: context?.substring(0, 200) + '...',
+        hasImage: !!imageUri
       });
 
       if (!prompt) {
         return res.status(400).json({ error: 'Prompt is required' });
       }
 
-      const response = await aiService.flashChat(prompt, language, context);
+      const response = await aiService.flashChat(prompt, language, context, imageUri);
       
       res.json({
         success: true,

@@ -133,25 +133,25 @@ async function analyzeImage(prompt, imageUrl, options = {}) {
     });
 }
 
-async function flashChat(prompt, language = 'en', context = '') {
+async function flashChat(prompt, language = 'en', context = '', imageUri = null) {
     console.log('aiService - Flash Chat:', {
         prompt,
         language,
         contextLength: context?.length || 0,
-        contextPreview: context?.substring(0, 200) + '...'
+        contextPreview: context?.substring(0, 200) + '...',
+        hasImage: !!imageUri
     });
 
     return rateLimiter.enqueue(() => {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
             const options = JSON.stringify({ language, context });
-            console.log('aiService - Sending options to Python:', options);
             
             const pythonProcess = spawn('python', [
                 pythonScript,
                 'flash',
                 prompt,
-                null, // image parameter
+                imageUri, // Pass the image URI
                 options
             ]);
             let dataString = '';
