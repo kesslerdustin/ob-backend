@@ -300,6 +300,36 @@ try {
     }
   });
 
+  // Add this endpoint for weather analysis
+  app.post('/api/analyze/weather', express.json(), async (req, res) => {
+    try {
+      const { prompt, language } = req.body;
+      
+      if (!prompt) {
+        return res.status(400).json({ error: 'Weather information is required' });
+      }
+
+      const response = await aiService.flashChat(
+        prompt,
+        null,  // no image
+        { language, type: 'weather_analysis' }
+      );
+
+      res.json({
+        success: true,
+        analysis: response
+      });
+
+    } catch (error) {
+      console.error('Weather analysis error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to analyze weather',
+        details: error.message
+      });
+    }
+  });
+
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });

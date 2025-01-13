@@ -241,6 +241,44 @@ def analyze_biome(prompt, options=None):
             "error": str(e)
         })
 
+def analyze_weather(prompt, options=None):
+    """Weather analysis using Gemini 2.0"""
+    try:
+        options = json.loads(options) if options else {}
+        language = options.get('language', 'en')
+        
+        structured_prompt = f"""
+        You will receive some information about a location, current weather and a forecast. 
+        Give your expertise on whether or not dangerous weather or circumstances will appear. 
+        What to look out for / prepare for when a person is outside (hiking, traveling, etc). 
+        Make it 2-4 sentences.
+
+        Weather Information:
+        {prompt}
+
+        CRITICAL REQUIREMENTS:
+        - Respond in {language} language
+        - Keep response between 2-4 sentences
+        - Focus on safety and preparation
+        - Be direct and practical
+        """
+
+        response = client.models.generate_content(
+            model="gemini-2.0-flash-exp",
+            contents=structured_prompt
+        )
+        
+        return json.dumps({
+            "success": True,
+            "text": response.text.strip()
+        })
+    except Exception as e:
+        print(f"Weather analysis error: {str(e)}")
+        return json.dumps({
+            "success": False,
+            "error": str(e)
+        })
+
 if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "text"
     prompt = sys.argv[2] if len(sys.argv) > 2 else "Hello, Gemini!"
@@ -257,6 +295,8 @@ if __name__ == "__main__":
         response = flash_chat(prompt, image_url, options)
     elif mode == "biome":
         response = analyze_biome(prompt, options)
+    elif mode == "weather":
+        response = analyze_weather(prompt, options)
     else:
         response = generate_content(prompt)
     
