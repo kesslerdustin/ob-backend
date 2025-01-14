@@ -104,103 +104,103 @@ def analyze_image(prompt, image_path, options=None):
             with taxonkey being the CLOST MATCH of this list: Taxonomy:
 Flora (Plants):
 Trees:
-Beech and oak trees: taxonKey: 1354
-Pine trees: taxonKey: 640
-Maple and horse chestnut trees: taxonKey: 933
-Eucalyptus and myrtle trees: taxonKey: 690
-Willow and poplar trees: taxonKey: 1414
-Monkey puzzle trees: taxonKey: 3924
-Laurel trees: taxonKey: 407
+Fagales: Fagaceae (e.g., beech, oak) taxonKey: 1354
+Pinales: Pinaceae (e.g., pine, spruce) taxonKey: 640
+Sapindales: Sapindaceae (e.g., maple, horse chestnut) taxonKey: 933
+Myrtales: Myrtaceae (e.g., eucalyptus, myrtle) taxonKey: 690
+Malpighiales: Salicaceae (e.g., willow, poplar) taxonKey: 1414
+Araucariales: Araucariaceae (e.g., monkey puzzle tree) taxonKey: 3924
+Laurales: Lauraceae (e.g., laurel, avocado) taxonKey: 407
 Flowering Plants and Shrubs:
-Daisies and sunflowers: taxonKey: 414
-Lilies: taxonKey: 1172
-Roses and apples: taxonKey: 691
-Grasses and sedges: taxonKey: 1369
-Cacti and succulents: taxonKey: 422
-Legume trees: taxonKey: 1370
-Ericas: taxonKey: 1353
+Asterales: Asteraceae (e.g., daisies, sunflowers) taxonKey: 414
+Liliales: Liliaceae (e.g., lilies, tulips) taxonKey: 1172
+Rosales: Rosaceae (e.g., roses, apples) taxonKey: 691
+Poales: Poaceae (e.g., grasses, sedges) taxonKey: 1369
+Caryophyllales: Cactaceae (e.g., cacti, succulents) taxonKey: 422
+Fabales: Fabaceae (e.g., legume trees) taxonKey: 1370
+Ericales: Ericaceae (e.g., ericas) taxonKey: 1353
 Ferns and Allies:
-Polypodiales: taxonKey: 392
-Bryopsida: taxonKey: 327
-Liverworts: taxonKey: 125
+Polypodiales: Polypodiaceae (e.g., true ferns) taxonKey: 392
+Bryopsida: Bryophyta (e.g., mosses) taxonKey: 327
+Marchantiopsida: Marchantiaceae (e.g., liverworts) taxonKey: 125
 Aquatic and Marine Plants:
-Alismatales (water plants): taxonKey: 551
-Ulvophyceae: taxonKey: 195
-Phaeophyceae: taxonKey: 7073593
-Charophyceae (stoneworts): taxonKey: 328
+Alismatales: Alismataceae (e.g., water plants) taxonKey: 551
+Ulvophyceae: Ulvaceae (e.g., green algae) taxonKey: 195
+Phaeophyceae: Phaeophyta (e.g., brown algae) taxonKey: 7073593
+Charophyceae: Characeae (e.g., stoneworts) taxonKey: 328
 Palms and Cycads:
-Palms: taxonKey: 552
-Cycads: taxonKey: 834
+Arecales: Arecaceae (e.g., palms) taxonKey: 552
+Cycadophyta: Cycadaceae (e.g., cycads) taxonKey: 834
 Fauna (Animals):
 Mammals:
-Hoofed mammals: taxonKey: 731
-Carnivorous mammals: taxonKey: 732
-Rabbits and hares: taxonKey: 785
-Rodents: taxonKey: 1459
-Bats: taxonKey: 734
-Shrews and moles: taxonKey: 9469
-Whales, dolphins, and porpoises: taxonKey: 733
-Marsupials: taxonKey: 1452
-Primates: taxonKey: 798
-Monotremata: taxonKey: 791
-Perissodactyla: taxonKey: 795
+Artiodactyla: Bovidae (e.g., deer, antelope) taxonKey: 731
+Carnivora: Felidae (e.g., lions, tigers) taxonKey: 732
+Lagomorpha: Leporidae (e.g., rabbits, hares) taxonKey: 785
+Rodentia: Muridae (e.g., rats, mice) taxonKey: 1459
+Chiroptera: Vespertilionidae (e.g., bats) taxonKey: 734
+Talpidae: Talpidae (e.g., moles, shrews) taxonKey: 9469
+Cetacea: Delphinidae (e.g., dolphins, whales) taxonKey: 733
+Didelphimorphia: Didelphidae (e.g., opossums) taxonKey: 1452
+Primates: Hominidae (e.g., chimpanzees, humans) taxonKey: 798
+Monotremata: Ornithorhynchidae (e.g., platypus) taxonKey: 791
+Perissodactyla: Equidae (e.g., horses, rhinos) taxonKey: 795
 Birds:
-Passeriformes: taxonKey: 729
-Raptors: taxonKey: 7191147
-Waterfowl: taxonKey: 1108
-Landfowl: taxonKey: 723
-Falcons: taxonKey: 5240
-Albatrosses and petrels: taxonKey: 7192755
-Owls: taxonKey: 1450
-Kingfishers: taxonKey: 1447
-Gulls, terns, and plovers: taxonKey: 7192402
-Parrots: taxonKey: 1445
-Storks: taxonKey: 839
+Passeriformes: Passeridae (e.g., sparrows) taxonKey: 729
+Accipitriformes: Accipitridae (e.g., hawks, eagles) taxonKey: 7191147
+Anseriformes: Anatidae (e.g., ducks, geese) taxonKey: 1108
+Galliformes: Phasianidae (e.g., chickens, pheasants) taxonKey: 723
+Falconiformes: Falconidae (e.g., falcons) taxonKey: 5240
+Procellariiformes: Procellariidae (e.g., petrels, albatrosses) taxonKey: 7192755
+Strigiformes: Strigidae (e.g., owls) taxonKey: 1450
+Coraciiformes: Alcedinidae (e.g., kingfishers) taxonKey: 1447
+Charadriiformes: Laridae (e.g., gulls, terns) taxonKey: 7192402
+Psittaciformes: Psittacidae (e.g., parrots) taxonKey: 1445
+Ciconiiformes: Ciconiidae (e.g., storks) taxonKey: 839
 Reptiles:
-Snakes and lizards: taxonKey: 11592253
-Turtles: taxonKey: 11418114
-Crocodiles and alligators: taxonKey: 11493978
-Tuatara: taxonKey: 703
+Squamata: Colubridae (e.g., snakes, lizards) taxonKey: 11592253
+Testudines: Cheloniidae (e.g., turtles) taxonKey: 11418114
+Crocodylia: Crocodylidae (e.g., crocodiles, alligators) taxonKey: 11493978
+Rhynchocephalia: Sphenodontidae (e.g., tuatara) taxonKey: 703
 Amphibians:
-Frogs and toads: taxonKey: 952
-Salamanders: taxonKey: 953
+Anura: Ranidae (e.g., frogs, toads) taxonKey: 952
+Caudata: Salamandridae (e.g., salamanders) taxonKey: 953
 Fish:
-Perch-like fish: taxonKey: 587
-Carps and minnows: taxonKey: 1153
-Catfish: taxonKey: 708
-Salmon and trout: taxonKey: 1313
-Pike: taxonKey: 548
-Sharks and rays: taxonKey: 121
-Eels: taxonKey: 495
-Cod and haddock: taxonKey: 549
+Perciformes: Percidae (e.g., perches) taxonKey: 587
+Cypriniformes: Cyprinidae (e.g., carps, minnows) taxonKey: 1153
+Siluriformes: Siluridae (e.g., catfish) taxonKey: 708
+Salmoniformes: Salmonidae (e.g., salmon, trout) taxonKey: 1313
+Esociformes: Esocidae (e.g., pike) taxonKey: 548
+Elasmobranchii: Carcharhinidae (e.g., sharks) taxonKey: 121
+Anguilliformes: Anguillidae (e.g., eels) taxonKey: 495
+Gadiformes: Gadidae (e.g., cod, haddock) taxonKey: 549
 Invertebrates:
-Spiders: taxonKey: 1496
-Crayfish and crabs: taxonKey: 637
-Butterflies and moths: taxonKey: 797
-Bees, wasps, and ants: taxonKey: 1457
-Beetles: taxonKey: 1470
-Worms: taxonKey: 8166676
-Jellyfish: taxonKey: 352
-Grasshoppers and crickets: taxonKey: 1458
-Termites: taxonKey: 999
-Squid and octopus: taxonKey: 136
-Corals and other jellyfish: taxonKey: 43
-Clams and mussels: taxonKey: 137
-Segmented worms: taxonKey: 42
-Sea stars and sea urchins: taxonKey: 50
+Araneae: Araneidae (e.g., spiders) taxonKey: 1496
+Decapoda: Portunidae (e.g., crabs, crayfish) taxonKey: 637
+Lepidoptera: Nymphalidae (e.g., butterflies, moths) taxonKey: 797
+Hymenoptera: Apidae (e.g., bees, ants) taxonKey: 1457
+Coleoptera: Carabidae (e.g., beetles) taxonKey: 1470
+Oligochaeta: Lumbricidae (e.g., earthworms) taxonKey: 8166676
+Scyphozoa: Cyaneidae (e.g., jellyfish) taxonKey: 352
+Orthoptera: Acrididae (e.g., grasshoppers) taxonKey: 1458
+Isoptera: Termitidae (e.g., termites) taxonKey: 999
+Cephalopoda: Octopodidae (e.g., octopus, squid) taxonKey: 136
+Cnidaria: Cnidaria (e.g., corals) taxonKey: 43
+Bivalvia: Veneridae (e.g., clams, mussels) taxonKey: 137
+Annelida: Polychaeta (e.g., segmented worms) taxonKey: 42
+Echinodermata: Asteriidae (e.g., sea stars, urchins) taxonKey: 50
 Fungi:
 Mushrooms and Fungi:
-Agaricales: taxonKey: 1499
-Polyporales: taxonKey: 1145
-Lecanorales: taxonKey: 1048
+Agaricales: Agaricaceae (e.g., gilled mushrooms) taxonKey: 1499
+Polyporales: Polyporaceae (e.g., bracket fungi) taxonKey: 1145
+Lecanorales: Parmeliaceae (e.g., lichens) taxonKey: 1048
 Lichenized Fungi:
-Peltigerales: taxonKey: 1055
+Peltigerales: Peltigeraceae (e.g., leafy lichens) taxonKey: 1055
 Pathogenic Fungi:
-Smut fungi: taxonKey: 1121
-Rust fungi: taxonKey: 1126
+Ustilaginales: Ustilaginaceae (e.g., smut fungi) taxonKey: 1121
+Pucciniales: Pucciniaceae (e.g., rust fungi) taxonKey: 1126
 Sac Fungi:
-Morels and truffles: taxonKey: 1057
-Hypocreales: taxonKey: 1290
+Pezizales: Morchellaceae (e.g., morels, truffles) taxonKey: 1057
+Hypocreales: Hypocreaceae (e.g., molds) taxonKey: 1290
             """
 
         # Handle image loading
