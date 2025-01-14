@@ -96,7 +96,7 @@ def analyze_image(prompt, image_path, options=None):
                 "data": {{
                     "category": "Flora|Fauna|Fungi",
                     "subcategory": "taxonkey NUMBER (closest matching order)",
-                    "name": "{language} name/title (preferably the latin name)",
+                    "name": "{language} name/title (preferably the common name with latin name in paranthesis)",
                     "description": "detailed {language} description"
                 }}
             }}
