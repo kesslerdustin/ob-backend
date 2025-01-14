@@ -299,7 +299,7 @@ def analyze_info(prompt, options=None):
         Analyze this query and provide detailed information following these rules:
         
         Search Term: {prompt}
-        Language: {language}
+        Language: {language} (eg: de = german response, en = english response)
         Description: {description}
         Location: {location}
         Date: {date}
@@ -356,7 +356,7 @@ def analyze_info(prompt, options=None):
         - Locations: accessibility, attractions, natural beauty, etc.
         - Survival Techniques: difficulty, effectiveness, time investment, etc.
 
-        All content must be in {language} language.
+        All content must be in {language} language (eg: de = german response, en = english response).
         All ratings must be on a 0-10 scale with detailed explanations.
         Include seasonal relevance where applicable.
         """
