@@ -287,68 +287,78 @@ def analyze_weather(prompt, options=None):
         return error_result["error"]
 
 def analyze_info(prompt, options=None):
-    """Information analysis using Gemini 2.0"""
+    """Information analysis using Gemini 2.0 with enhanced prompt structure"""
     try:
         options = json.loads(options) if isinstance(options, str) else options or {}
+        language = options.get('language', 'en')
+        description = options.get('description', '')
+        location = options.get('location', '')
+        date = options.get('date', '')
         
         structured_prompt = f"""
-        You are an outdoor and nature information assistant. Analyze the following query and provide a detailed response in JSON format.
-
-        Query: {prompt}
-
+        Analyze this query and provide detailed information following these rules:
         
-You receive the following inputs:
+        Search Term: {prompt}
+        Language: {language}
+        Description: {description}
+        Location: {location}
+        Date: {date}
 
-Search Term: The primary search term.
-Language Setting: Specifies whether the response should be in German (de) or English (en).
-Description/Introduction (optional): Context or additional details about the search query. If the description contains elements like a species, POI, survival technique, or similar but the information provided doesn't make sense, ignore it and create the correct structure according to the rules.
-Location and Date (optional): Indicates a location and/or date to make the response more relevant.
-Your task is to return a JSON object with clearly defined sections, formatted with HTML. Adjust the content dynamically to match the search term, location, and date for maximum precision and relevance.
+        CRITICAL REQUIREMENTS:
+        1. Return EXACTLY this JSON structure:
+        {{
+          "general": {{
+            "title": "General Description",
+            "content": "A brief description in HTML format"
+          }},
+          "quickFacts": {{
+            "title": "Quick Facts",
+            "content": "<ul><li>Key fact 1</li><li>Key fact 2</li>...</ul>"
+          }},
+          "stats": {{
+            "title": "Stats",
+            "content": "<ul><li>Relevant statistics...</li></ul>"
+          }},
+          "howToSpot": {{
+            "title": "How to Spot",
+            "content": "Location and identification tips"
+          }},
+          "ratings": {{
+            "title": "Ratings",
+            "content": {{
+              "categoryName": {{
+                "title": "Category Title",
+                "score": 0-10,
+                "explanation": "Detailed explanation with seasonal context"
+              }},
+              // Add more rating categories as needed
+            }}
+          }},
+          "history": {{
+            "title": "History",
+            "content": "Historical information with local relevance"
+          }}
+        }}
 
-Key Requirements:
+        2. Use HTML formatting with <b> tags for key terms
+        3. Include historical information when possible
+        4. Add seasonal relevance to ratings
+        5. Reference survival techniques in <b> tags
 
-Highlight key terms: Species names, locations, and techniques must be highlighted using <b> to mark them as potential follow-up search terms.
-Include historical information: Always include a brief historical note, ideally related to the current location. For example, the historical use of birch for tools or spruce resin for medicine.
-Current relevance in ratings: Ratings must always mention seasonal and current relevance. For example, for a birch in winter, note that the sap is currently not drinkable.
-Survival techniques and references: Mention construction and usage methods as well as specific techniques in parentheses and bold, such as "Suitable for shelters (e.g., Lean-To Shelter)."
-Structure for All Search Types:
+        Adapt content based on query type:
+        - For Species: Include population, lifespan, extinction rating, family/order
+        - For Locations: Include area, population, founding year, attractions
+        - For Survival Techniques: Include step-by-step instructions, use cases
+        - For General Terms: Focus on description and quick facts
 
-General Terms: If the search term is not a city, geographical feature, resource, natural POI, species, or survival technique, include:
+        Rating categories by type:
+        - Species: danger, food source, fire material, etc.
+        - Locations: accessibility, attractions, natural beauty, etc.
+        - Survival Techniques: difficulty, effectiveness, time investment, etc.
 
-General description: A general description of the topic.
-Quick facts: A concise list of key facts.
-Locations (e.g., Cities, POIs, Nature Areas): If the search term is a location, include:
-
-Introduction: A brief overview of the location.
-Stats: Key statistics, such as area in km², population, year of foundation, country and region.
-History: A short, interesting history, preferably with local relevance.
-Attractions: Highlights and points of interest.
-Culture & Events: Key cultural features, festivals, or traditions.
-Interesting facts: Unknown or cool details about the location.
-Species (Flora, Fauna, Fungi): If the search term is a species, include:
-
-Introduction: Overview of the species.
-Stats: Size, weight, range; global and local population; lifespan (average and maximum); extinction rating (e.g., "Least Concern" to "Critically Endangered"); biological family and order.
-How to Spot: Features, behavior, and best times/places to observe.
-History/Ecology: Historical or ecological importance, preferably locally relevant.
-Knowledge facts: Key information about the species.
-Relevance to Location/Date (optional): Local relevance details (e.g., seasonal behavior or migration).
-Food Chain/Related Species: Role in the food chain, including prey, predators, or related species, with relevant terms highlighted in bold.
-Survival Techniques/Bushcraft Topics: If the search term is survival- or bushcraft-related, include:
-
-Introduction: A brief overview of the technique.
-Step-by-step instructions: Clear, actionable steps.
-Relevant use cases: Practical applications and potential risks, e.g., "Suitable for shelters (e.g., Lean-To Shelter)."
-Rating Categories (0-10 Points): Add a rating system with explanations. Only show relevant categories and mention seasonal/current relevance!
-
-For Locations: Accessibility, attractions, cultural significance, natural beauty, adventure factor.
-For Fauna: Danger, sighting probability (location/date-dependent), food source, fire material (bones, fat), behavior (aggressiveness, territoriality).
-For Flora: Food source (fruits, seeds, leaves – describe seasonally), shelter material (wood, leaves for shelters), medicinal use, fire material (wood, resin, bark), danger (toxicity, allergies).
-For Fungi: Food source (edible mushrooms with seasonal notes), medicinal use, fire material, danger (toxicity, confusion risks).
-For Survival Techniques: Difficulty, effectiveness, time investment, risk, resource requirement, suitable methods (e.g., bow drill, lean-to shelter, signal fire).
-
-output: 
-
+        All content must be in {language} language.
+        All ratings must be on a 0-10 scale with detailed explanations.
+        Include seasonal relevance where applicable.
         """
 
         response = client.models.generate_content(
