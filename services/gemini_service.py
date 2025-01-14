@@ -257,7 +257,7 @@ def analyze_weather(prompt, options=None):
         {prompt}
 
         CRITICAL REQUIREMENTS:
-        - Respond in {language} language
+        - Respond in {language} (de = german, en = english, etc) language ONLY! DO NOT give any introduction, reply only with the answer.
         - Keep response between 2-4 sentences
         - Focus on safety and preparation
         - Be direct and practical
