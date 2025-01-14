@@ -219,10 +219,13 @@ def analyze_biome(prompt, options=None):
         Temperate broadleaf and mixed forests (rolling hills, river valleys, coastal cliffs)
         
         CRITICAL REQUIREMENTS:
-        - Respond in {language} language
+        - You MUST respond in {language} language (if {language}='de', use German)
+        - Translate BOTH the biome name AND features to {language}
         - Use ONLY the format shown above
         - No additional text or explanations
         - Keep feature descriptions very brief (1-2 words each)
+        
+        Remember: The ENTIRE response must be in {language} language!
         """
 
         response = client.models.generate_content(
