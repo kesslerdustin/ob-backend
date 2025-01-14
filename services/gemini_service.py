@@ -103,7 +103,6 @@ def analyze_image(prompt, image_path, options=None):
 
             with taxonkey being the CLOSEST MATCH of the proper ORDER according this list (use the number): Taxonomy:
 Flora (Plants):
-Trees:
 Fagales: Fagaceae (e.g., beech, oak) taxonKey: 1354
 Pinales: Pinaceae (e.g., pine, spruce) taxonKey: 640
 Sapindales: Sapindaceae (e.g., maple, horse chestnut) taxonKey: 933
@@ -111,7 +110,6 @@ Myrtales: Myrtaceae (e.g., eucalyptus, myrtle) taxonKey: 690
 Malpighiales: Salicaceae (e.g., willow, poplar) taxonKey: 1414
 Araucariales: Araucariaceae (e.g., monkey puzzle tree) taxonKey: 3924
 Laurales: Lauraceae (e.g., laurel, avocado) taxonKey: 407
-Flowering Plants and Shrubs:
 Asterales: Asteraceae (e.g., daisies, sunflowers) taxonKey: 414
 Liliales: Liliaceae (e.g., lilies, tulips) taxonKey: 1172
 Rosales: Rosaceae (e.g., roses, apples) taxonKey: 691
@@ -119,7 +117,6 @@ Poales: Poaceae (e.g., grasses, sedges) taxonKey: 1369
 Caryophyllales: Cactaceae (e.g., cacti, succulents) taxonKey: 422
 Fabales: Fabaceae (e.g., legume trees) taxonKey: 1370
 Ericales: Ericaceae (e.g., ericas) taxonKey: 1353
-Ferns and Allies:
 Polypodiales: Polypodiaceae (e.g., true ferns) taxonKey: 392
 Bryopsida: Bryophyta (e.g., mosses) taxonKey: 327
 Marchantiopsida: Marchantiaceae (e.g., liverworts) taxonKey: 125
