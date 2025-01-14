@@ -366,10 +366,19 @@ def analyze_info(prompt, options=None):
             contents=structured_prompt
         )
         
-        return json.dumps({
-            "success": True,
-            "text": response.text
-        })
+        # Find the first '{' and last '}' to extract JSON content
+        text = response.text
+        start_idx = text.find('{')
+        end_idx = text.rfind('}')
+        
+        if start_idx != -1 and end_idx != -1:
+            json_content = text[start_idx:end_idx + 1]
+            return json.dumps({
+                "success": True,
+                "text": json_content
+            })
+        else:
+            raise Exception("No JSON content found in response")
             
     except Exception as e:
         print(f"Info analysis error: {str(e)}")
