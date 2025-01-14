@@ -326,6 +326,10 @@ def analyze_info(prompt, options=None):
             "title": "Stats",
             "content": "<ul><li>Relevant statistics...</li></ul>"
           }},
+          "history": {{
+            "title": "History",
+            "content": "Historical information with local relevance"
+          }},
           "howToSpot": {{
             "title": "How to Spot",
             "content": "Location and identification tips"
@@ -340,10 +344,6 @@ def analyze_info(prompt, options=None):
               }},
               // Add more rating categories as needed
             }}
-          }},
-          "history": {{
-            "title": "History",
-            "content": "Historical information with local relevance"
           }}
         }}
 
