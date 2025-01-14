@@ -300,7 +300,7 @@ try {
     }
   });
 
-  // Add this endpoint for weather analysis
+  // Update this endpoint for weather analysis
   app.post('/api/analyze/weather', express.json(), async (req, res) => {
     try {
       const { prompt, language } = req.body;
@@ -309,10 +309,9 @@ try {
         return res.status(400).json({ error: 'Weather information is required' });
       }
 
-      const response = await aiService.flashChat(
+      const response = await aiService.analyze_weather(  // Use the dedicated weather function
         prompt,
-        null,  // no image
-        { language, type: 'weather_analysis' }
+        { language }  // Pass options object
       );
 
       res.json({
