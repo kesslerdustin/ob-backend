@@ -366,22 +366,10 @@ def analyze_info(prompt, options=None):
             contents=structured_prompt
         )
         
-        # Ensure response is valid JSON
-        try:
-            json.loads(response.text)
-            return json.dumps({
-                "success": True,
-                "text": response.text.strip()
-            })
-        except json.JSONDecodeError:
-            # If response isn't valid JSON, try to extract JSON from it
-            extracted = extract_json_from_text(response.text)
-            if extracted:
-                return json.dumps({
-                    "success": True,
-                    "text": json.dumps(extracted)
-                })
-            raise Exception("Failed to generate valid JSON response")
+        return json.dumps({
+            "success": True,
+            "text": response.text
+        })
             
     except Exception as e:
         print(f"Info analysis error: {str(e)}")
