@@ -165,7 +165,7 @@ def flash_chat(prompt, image_path=None, options=None):
         
         User message: {prompt}
 
-        CRITICAL: Respond in {language} language WITHOUT including the language code. Never start your response with language codes like 'de:', 'en:', etc. Also do not give any introduction, reply only with the answer.
+        CRITICAL: Respond in {language} language WITHOUT including the language code. Never start your response with language codes like 'de:', 'en:', etc. Also do not give any introduction, reply only with the answer. When referring times or units of measurement, use the language of the user (miles in english, km in german, etc).
         """
 
         # Prepare content list
@@ -366,7 +366,7 @@ def analyze_info(prompt, options=None):
         - Locations: accessibility, attractions, natural beauty, etc.
         - Survival Techniques: difficulty, effectiveness, time investment, etc.
 
-        All content must be in {language} language (eg: de = german response, en = english response).
+        All content must be in {language} language (eg: de = german response, en = english response). When referring times or units of measurement, use the language of the user (miles in english, km in german, etc).
         All ratings must be on a 0-10 scale with detailed explanations.
         Include seasonal relevance where applicable.
         """
