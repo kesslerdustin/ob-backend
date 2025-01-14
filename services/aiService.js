@@ -251,7 +251,7 @@ async function analyze_weather(prompt, options = {}) {
                 pythonScript,
                 'weather',
                 prompt,
-                JSON.stringify(options)
+                JSON.stringify(options)  // Pass options as a JSON string
             ]);
 
             let dataString = '';
@@ -271,18 +271,11 @@ async function analyze_weather(prompt, options = {}) {
                 }
                 
                 try {
-                    // Find the last JSON object in the output
-                    const jsonMatch = dataString.match(/\{[\s\S]*\}/g);
-                    if (jsonMatch) {
-                        const lastJson = jsonMatch[jsonMatch.length - 1];
-                        const response = JSON.parse(lastJson);
-                        if (response.success) {
-                            resolve(response.text);
-                        } else {
-                            reject(new Error(response.error));
-                        }
+                    const response = JSON.parse(dataString);
+                    if (response.success) {
+                        resolve(response.text);
                     } else {
-                        reject(new Error('No valid JSON found in Python response'));
+                        reject(new Error(response.error));
                     }
                 } catch (error) {
                     console.error('Failed to parse Python response:', dataString);

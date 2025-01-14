@@ -303,31 +303,35 @@ try {
   // Update this endpoint for weather analysis
   app.post('/api/analyze/weather', express.json(), async (req, res) => {
     try {
-      const { prompt, language } = req.body;
-      console.log('Server: Received weather analysis request with language:', language);
-      
-      if (!prompt) {
-        return res.status(400).json({ error: 'Weather information is required' });
-      }
+        const { prompt, language } = req.body;
+        console.log('Server: Received weather analysis request:', {
+            promptPreview: prompt.substring(0, 100) + '...',
+            language
+        });
+        
+        if (!prompt) {
+            return res.status(400).json({ error: 'Weather information is required' });
+        }
 
-      const response = await aiService.analyze_weather(
-        prompt,
-        { language }
-      );
-      console.log('Server: Sending response back to client:', response);
+        const response = await aiService.analyze_weather(
+            prompt,
+            { language }
+        );
+        
+        console.log('Server: Generated response in language:', language);
 
-      res.json({
-        success: true,
-        analysis: response
-      });
+        res.json({
+            success: true,
+            analysis: response
+        });
 
     } catch (error) {
-      console.error('Weather analysis error:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Failed to analyze weather',
-        details: error.message
-      });
+        console.error('Weather analysis error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to analyze weather',
+            details: error.message
+        });
     }
   });
 
