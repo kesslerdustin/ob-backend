@@ -241,13 +241,15 @@ async function analyze_weather(prompt, options = {}) {
     return rateLimiter.enqueue(() => {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
+            
+            // Convert options to string properly
             const optionsStr = JSON.stringify(options);
             
             const pythonProcess = spawn('python', [
                 pythonScript,
-                'weather',  // New command for weather analysis
+                'weather',
                 prompt,
-                optionsStr
+                optionsStr  // Pass options as a proper JSON string
             ]);
 
             let dataString = '';
@@ -267,6 +269,9 @@ async function analyze_weather(prompt, options = {}) {
                 }
                 
                 try {
+                    // Add debug log
+                    console.log('Raw Python response:', dataString);
+                    
                     const response = JSON.parse(dataString);
                     if (response.success) {
                         resolve(response.text);
@@ -274,6 +279,7 @@ async function analyze_weather(prompt, options = {}) {
                         reject(new Error(response.error));
                     }
                 } catch (error) {
+                    console.error('Failed to parse Python response:', dataString);
                     reject(new Error('Failed to parse Python response'));
                 }
             });

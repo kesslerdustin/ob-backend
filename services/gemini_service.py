@@ -244,7 +244,12 @@ def analyze_biome(prompt, options=None):
 def analyze_weather(prompt, options=None):
     """Weather analysis using Gemini 2.0"""
     try:
-        options = json.loads(options) if options else {}
+        # Parse options if it's a string
+        if isinstance(options, str):
+            options = json.loads(options)
+        elif options is None:
+            options = {}
+            
         language = options.get('language', 'en')
         print(f"Gemini Service: Analyzing weather with language: {language}")
         
@@ -258,24 +263,26 @@ def analyze_weather(prompt, options=None):
         {prompt}
 
         CRITICAL REQUIREMENTS:
-        - Respond in {language} (de = german, en = english, etc) language ONLY! DO NOT give any introduction, reply only with the answer.
+        - Respond in {language} language ONLY! DO NOT give any introduction, reply only with the answer.
         - Keep response between 2-4 sentences
         - Focus on safety and preparation
         - Be direct and practical
         """
-        print(f"Gemini Service: Using structured prompt with language instruction: {language}")
 
         response = client.models.generate_content(
             model="gemini-2.0-flash-exp",
             contents=structured_prompt
         )
         
+        # Add debug log
+        print(f"Gemini Service: Generated response: {response.text}")
+        
         return json.dumps({
             "success": True,
             "text": response.text.strip()
         })
     except Exception as e:
-        print(f"Weather analysis error: {str(e)}")
+        print(f"Weather analysis error in Python: {str(e)}")
         return json.dumps({
             "success": False,
             "error": str(e)
