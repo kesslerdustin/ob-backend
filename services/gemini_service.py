@@ -287,27 +287,78 @@ def analyze_weather(prompt, options=None):
         return error_result["error"]
 
 def analyze_info(prompt, options=None):
-    """Information analysis using Gemini 2.0"""
+    """Information analysis using Gemini 2.0 with enhanced prompt structure"""
     try:
         options = json.loads(options) if isinstance(options, str) else options or {}
+        language = options.get('language', 'en')
+        description = options.get('description', '')
+        location = options.get('location', '')
+        date = options.get('date', '')
         
         structured_prompt = f"""
-        You are an outdoor and nature information assistant. Analyze the following query and provide a detailed response in JSON format.
-
-        Query: {prompt}
+        Analyze this query and provide detailed information following these rules:
+        
+        Search Term: {prompt}
+        Language: {language}
+        Description: {description}
+        Location: {location}
+        Date: {date}
 
         CRITICAL REQUIREMENTS:
-        1. Return a valid JSON object with this exact structure:
+        1. Return EXACTLY this JSON structure:
         {{
-            "title": "Brief title of the topic",
-            "description": "Detailed explanation",
-            "tips": ["Practical tip 1", "Practical tip 2", "Practical tip 3"],
-            "warnings": ["Warning 1", "Warning 2"] // Optional, include only if relevant
+          "general": {{
+            "title": "General Description",
+            "content": "A brief description in HTML format"
+          }},
+          "quickFacts": {{
+            "title": "Quick Facts",
+            "content": "<ul><li>Key fact 1</li><li>Key fact 2</li>...</ul>"
+          }},
+          "stats": {{
+            "title": "Stats",
+            "content": "<ul><li>Relevant statistics...</li></ul>"
+          }},
+          "howToSpot": {{
+            "title": "How to Spot",
+            "content": "Location and identification tips"
+          }},
+          "ratings": {{
+            "title": "Ratings",
+            "content": {{
+              "categoryName": {{
+                "title": "Category Title",
+                "score": 0-10,
+                "explanation": "Detailed explanation with seasonal context"
+              }},
+              // Add more rating categories as needed
+            }}
+          }},
+          "history": {{
+            "title": "History",
+            "content": "Historical information with local relevance"
+          }}
         }}
-        2. Keep descriptions informative but concise
-        3. Include 2-4 practical tips
-        4. Include warnings only if there are safety concerns
-        5. Focus on outdoor/nature-related aspects
+
+        2. Use HTML formatting with <b> tags for key terms
+        3. Include historical information when possible
+        4. Add seasonal relevance to ratings
+        5. Reference survival techniques in <b> tags
+
+        Adapt content based on query type:
+        - For Species: Include population, lifespan, extinction rating, family/order
+        - For Locations: Include area, population, founding year, attractions
+        - For Survival Techniques: Include step-by-step instructions, use cases
+        - For General Terms: Focus on description and quick facts
+
+        Rating categories by type:
+        - Species: danger, food source, fire material, etc.
+        - Locations: accessibility, attractions, natural beauty, etc.
+        - Survival Techniques: difficulty, effectiveness, time investment, etc.
+
+        All content must be in {language} language.
+        All ratings must be on a 0-10 scale with detailed explanations.
+        Include seasonal relevance where applicable.
         """
 
         response = client.models.generate_content(
