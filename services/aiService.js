@@ -251,7 +251,8 @@ async function analyze_weather(prompt, options = {}) {
                 pythonScript,
                 'weather',
                 prompt,
-                JSON.stringify(options)
+                'null',  // Add this placeholder for image parameter
+                JSON.stringify(options)  // Pass options as the last parameter
             ]);
 
             let dataString = '';

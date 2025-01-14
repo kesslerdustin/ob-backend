@@ -244,12 +244,8 @@ def analyze_biome(prompt, options=None):
 def analyze_weather(prompt, options=None):
     """Weather analysis using Gemini 2.0"""
     try:
-        # Parse options if it's a string
-        if isinstance(options, str):
-            options = json.loads(options)
-        elif options is None:
-            options = {}
-            
+        # Parse options if provided
+        options = json.loads(options) if isinstance(options, str) else options or {}
         language = options.get('language', 'en')
         print(f"Gemini Service: Starting weather analysis with language: {language}", file=sys.stderr)
         
@@ -274,14 +270,10 @@ def analyze_weather(prompt, options=None):
             contents=structured_prompt
         )
         
-        result = {
+        return json.dumps({
             "success": True,
             "text": response.text.strip()
-        }
-        
-        # Only output the final JSON result
-        print(json.dumps(result))
-        return result["text"]
+        })
         
     except Exception as e:
         error_result = {
