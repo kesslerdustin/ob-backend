@@ -295,16 +295,24 @@ async function analyze_weather(prompt, options = {}) {
 }
 
 async function analyzeInfo(prompt, options = {}) {
+    console.log('aiService.analyzeInfo called with:', {
+        prompt,
+        options
+    });
+    
     return rateLimiter.enqueue(() => {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
+            
+            const optionsStr = JSON.stringify(options);
+            console.log('aiService sending options to Python:', optionsStr);
             
             const pythonProcess = spawn('python', [
                 pythonScript,
                 'info',
                 prompt,
                 'null',  // no image
-                JSON.stringify(options)
+                optionsStr
             ]);
 
             let dataString = '';

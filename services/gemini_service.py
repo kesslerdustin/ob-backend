@@ -289,11 +289,18 @@ def analyze_weather(prompt, options=None):
 def analyze_info(prompt, options=None):
     """Information analysis using Gemini 2.0 with enhanced prompt structure"""
     try:
+        # Add debug logging for incoming options
+        print(f"Python analyze_info received options: {options}", file=sys.stderr)
+        
         options = json.loads(options) if isinstance(options, str) else options or {}
+        print(f"Python analyze_info parsed options: {options}", file=sys.stderr)
+        
         language = options.get('language', 'en')
         description = options.get('description', '')
         location = options.get('location', '')
         date = options.get('date', '')
+        
+        print(f"Python analyze_info extracted values: language={language}, description={description}, location={location}, date={date}", file=sys.stderr)
         
         structured_prompt = f"""
         Analyze this query and provide detailed information following these rules:

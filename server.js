@@ -333,13 +333,17 @@ try {
 
   app.post('/api/analyze/info', express.json(), async (req, res) => {
     try {
-      const { prompt } = req.body;
+      const { prompt, options } = req.body;
+      console.log('Server received info analysis request:', {
+        prompt,
+        options
+      });
       
       if (!prompt) {
         return res.status(400).json({ error: 'Prompt is required' });
       }
 
-      const response = await aiService.analyzeInfo(prompt);
+      const response = await aiService.analyzeInfo(prompt, options);
 
       res.json({
         success: true,
