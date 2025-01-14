@@ -95,13 +95,13 @@ def analyze_image(prompt, image_path, options=None):
                 "response_mime_type": "application/json",
                 "data": {{
                     "category": "Flora|Fauna|Fungi",
-                    "subcategory": "taxonkey",
+                    "subcategory": "taxonkey (closest matching order)",
                     "name": "{language} name/title (preferably the latin name)",
                     "description": "detailed {language} description"
                 }}
             }}
 
-            with taxonkey being the CLOST MATCH of this list: Taxonomy:
+            with taxonkey being the CLOST MATCH of the proper ORDER according this list: Taxonomy:
 Flora (Plants):
 Trees:
 Fagales: Fagaceae (e.g., beech, oak) taxonKey: 1354
