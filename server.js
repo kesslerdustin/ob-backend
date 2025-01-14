@@ -333,10 +333,34 @@ try {
 
   app.post('/api/analyze/info', express.json(), async (req, res) => {
     try {
-      const { prompt, options } = req.body;
+      const { prompt } = req.body;
+      
+      // Parse the prompt to extract information
+      const lines = prompt.split('\n');
+      const options = {
+        language: 'en',  // default value
+        description: '',
+        location: '',
+        date: ''
+      };
+
+      // Extract values from prompt
+      lines.forEach(line => {
+        if (line.startsWith('App Language:')) {
+          // Convert 'de-DE' to 'de'
+          options.language = line.split(':')[1].trim().split('-')[0];
+        } else if (line.startsWith('Description:')) {
+          options.description = line.split(':')[1].trim();
+        } else if (line.startsWith('Location:')) {
+          options.location = line.split(':')[1].trim();
+        } else if (line.startsWith('Date:')) {
+          options.date = line.split(':')[1].trim();
+        }
+      });
+
       console.log('Server received info analysis request:', {
         prompt,
-        options
+        options  // Now includes parsed values
       });
       
       if (!prompt) {
