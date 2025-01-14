@@ -304,15 +304,17 @@ try {
   app.post('/api/analyze/weather', express.json(), async (req, res) => {
     try {
       const { prompt, language } = req.body;
+      console.log('Server: Received weather analysis request with language:', language);
       
       if (!prompt) {
         return res.status(400).json({ error: 'Weather information is required' });
       }
 
-      const response = await aiService.analyze_weather(  // Use the dedicated weather function
+      const response = await aiService.analyze_weather(
         prompt,
-        { language }  // Pass options object
+        { language }
       );
+      console.log('Server: Sending response back to client:', response);
 
       res.json({
         success: true,

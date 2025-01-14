@@ -246,6 +246,7 @@ def analyze_weather(prompt, options=None):
     try:
         options = json.loads(options) if options else {}
         language = options.get('language', 'en')
+        print(f"Gemini Service: Analyzing weather with language: {language}")
         
         structured_prompt = f"""
         You will receive some information about a location, current weather and a forecast. 
@@ -262,6 +263,7 @@ def analyze_weather(prompt, options=None):
         - Focus on safety and preparation
         - Be direct and practical
         """
+        print(f"Gemini Service: Using structured prompt with language instruction: {language}")
 
         response = client.models.generate_content(
             model="gemini-2.0-flash-exp",
