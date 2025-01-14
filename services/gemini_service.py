@@ -165,7 +165,7 @@ def flash_chat(prompt, image_path=None, options=None):
         
         User message: {prompt}
 
-        CRITICAL: Respond in {language} language WITHOUT including the language code. Never start your response with language codes like 'de:', 'en:', etc.
+        CRITICAL: Respond in {language} language WITHOUT including the language code. Never start your response with language codes like 'de:', 'en:', etc. Also do not give any introduction, reply only with the answer.
         """
 
         # Prepare content list
