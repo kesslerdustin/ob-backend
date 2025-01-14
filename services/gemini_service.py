@@ -89,6 +89,118 @@ def analyze_image(prompt, image_path, options=None):
                     "description": "detailed {language} description"
                 }}
             }}
+
+            special conditions: IF the category you chose is either flora fauna or fungi, then you MUST return the following JSON structure:
+            {{
+                "response_mime_type": "application/json",
+                "data": {{
+                    "category": "Flora|Fauna|Fungi",
+                    "subcategory": "taxonkey",
+                    "name": "{language} name/title",
+                    "description": "detailed {language} description"
+                }}
+            }}
+
+            with taxonkey being the CLOST MATCH of this list: Taxonomy:
+Flora (Plants):
+Trees:
+Beech and oak trees: taxonKey: 1354
+Pine trees: taxonKey: 640
+Maple and horse chestnut trees: taxonKey: 933
+Eucalyptus and myrtle trees: taxonKey: 690
+Willow and poplar trees: taxonKey: 1414
+Monkey puzzle trees: taxonKey: 3924
+Laurel trees: taxonKey: 407
+Flowering Plants and Shrubs:
+Daisies and sunflowers: taxonKey: 414
+Lilies: taxonKey: 1172
+Roses and apples: taxonKey: 691
+Grasses and sedges: taxonKey: 1369
+Cacti and succulents: taxonKey: 422
+Legume trees: taxonKey: 1370
+Ericas: taxonKey: 1353
+Ferns and Allies:
+Polypodiales: taxonKey: 392
+Bryopsida: taxonKey: 327
+Liverworts: taxonKey: 125
+Aquatic and Marine Plants:
+Alismatales (water plants): taxonKey: 551
+Ulvophyceae: taxonKey: 195
+Phaeophyceae: taxonKey: 7073593
+Charophyceae (stoneworts): taxonKey: 328
+Palms and Cycads:
+Palms: taxonKey: 552
+Cycads: taxonKey: 834
+Fauna (Animals):
+Mammals:
+Hoofed mammals: taxonKey: 731
+Carnivorous mammals: taxonKey: 732
+Rabbits and hares: taxonKey: 785
+Rodents: taxonKey: 1459
+Bats: taxonKey: 734
+Shrews and moles: taxonKey: 9469
+Whales, dolphins, and porpoises: taxonKey: 733
+Marsupials: taxonKey: 1452
+Primates: taxonKey: 798
+Monotremata: taxonKey: 791
+Perissodactyla: taxonKey: 795
+Birds:
+Passeriformes: taxonKey: 729
+Raptors: taxonKey: 7191147
+Waterfowl: taxonKey: 1108
+Landfowl: taxonKey: 723
+Falcons: taxonKey: 5240
+Albatrosses and petrels: taxonKey: 7192755
+Owls: taxonKey: 1450
+Kingfishers: taxonKey: 1447
+Gulls, terns, and plovers: taxonKey: 7192402
+Parrots: taxonKey: 1445
+Storks: taxonKey: 839
+Reptiles:
+Snakes and lizards: taxonKey: 11592253
+Turtles: taxonKey: 11418114
+Crocodiles and alligators: taxonKey: 11493978
+Tuatara: taxonKey: 703
+Amphibians:
+Frogs and toads: taxonKey: 952
+Salamanders: taxonKey: 953
+Fish:
+Perch-like fish: taxonKey: 587
+Carps and minnows: taxonKey: 1153
+Catfish: taxonKey: 708
+Salmon and trout: taxonKey: 1313
+Pike: taxonKey: 548
+Sharks and rays: taxonKey: 121
+Eels: taxonKey: 495
+Cod and haddock: taxonKey: 549
+Invertebrates:
+Spiders: taxonKey: 1496
+Crayfish and crabs: taxonKey: 637
+Butterflies and moths: taxonKey: 797
+Bees, wasps, and ants: taxonKey: 1457
+Beetles: taxonKey: 1470
+Worms: taxonKey: 8166676
+Jellyfish: taxonKey: 352
+Grasshoppers and crickets: taxonKey: 1458
+Termites: taxonKey: 999
+Squid and octopus: taxonKey: 136
+Corals and other jellyfish: taxonKey: 43
+Clams and mussels: taxonKey: 137
+Segmented worms: taxonKey: 42
+Sea stars and sea urchins: taxonKey: 50
+Fungi:
+Mushrooms and Fungi:
+Agaricales: taxonKey: 1499
+Polyporales: taxonKey: 1145
+Lecanorales: taxonKey: 1048
+Lichenized Fungi:
+Peltigerales: taxonKey: 1055
+Pathogenic Fungi:
+Smut fungi: taxonKey: 1121
+Rust fungi: taxonKey: 1126
+Sac Fungi:
+Morels and truffles: taxonKey: 1057
+Hypocreales: taxonKey: 1290
             """
 
         # Handle image loading
