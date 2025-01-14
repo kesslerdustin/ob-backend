@@ -253,9 +253,6 @@ def analyze_weather(prompt, options=None):
         language = options.get('language', 'en')
         print(f"Gemini Service: Starting weather analysis with language: {language}", file=sys.stderr)
         
-        # Remove any language code prefix if present (e.g., 'de-DE' -> 'de')
-        language = language.split('-')[0].lower()
-        
         structured_prompt = f"""
         You will receive some information about a location, current weather and a forecast. 
         Give your expertise on whether or not dangerous weather or circumstances will appear. 
@@ -265,11 +262,13 @@ def analyze_weather(prompt, options=None):
         Weather Information:
         {prompt}
 
-        CRITICAL: You MUST respond in {language} language ONLY! Do not include any language codes or prefixes.
+        CRITICAL REQUIREMENTS:
+        - Respond in {language} language ONLY! DO NOT give any introduction, reply only with the answer.
+        - Keep response between 2-4 sentences
+        - Focus on safety and preparation
+        - Be direct and practical
         """
 
-        print(f"Using prompt with language: {language}", file=sys.stderr)
-        
         response = client.models.generate_content(
             model="gemini-2.0-flash-exp",
             contents=structured_prompt
@@ -280,8 +279,9 @@ def analyze_weather(prompt, options=None):
             "text": response.text.strip()
         }
         
-        print(json.dumps(result))  # Print only the final JSON result
-        return result
+        # Only output the final JSON result
+        print(json.dumps(result))
+        return result["text"]
         
     except Exception as e:
         error_result = {
@@ -289,7 +289,7 @@ def analyze_weather(prompt, options=None):
             "error": str(e)
         }
         print(json.dumps(error_result))
-        return error_result
+        return error_result["error"]
 
 if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "text"
