@@ -242,14 +242,16 @@ async function analyze_weather(prompt, options = {}) {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
             
-            // Convert options to string properly
-            const optionsStr = JSON.stringify(options);
+            console.log('aiService sending weather analysis request:', {
+                prompt: prompt.substring(0, 100) + '...',
+                options
+            });
             
             const pythonProcess = spawn('python', [
                 pythonScript,
                 'weather',
                 prompt,
-                optionsStr  // Pass options as a proper JSON string
+                JSON.stringify(options)
             ]);
 
             let dataString = '';
@@ -269,14 +271,18 @@ async function analyze_weather(prompt, options = {}) {
                 }
                 
                 try {
-                    // Add debug log
-                    console.log('Raw Python response:', dataString);
-                    
-                    const response = JSON.parse(dataString);
-                    if (response.success) {
-                        resolve(response.text);
+                    // Find the last JSON object in the output
+                    const jsonMatch = dataString.match(/\{[\s\S]*\}/g);
+                    if (jsonMatch) {
+                        const lastJson = jsonMatch[jsonMatch.length - 1];
+                        const response = JSON.parse(lastJson);
+                        if (response.success) {
+                            resolve(response.text);
+                        } else {
+                            reject(new Error(response.error));
+                        }
                     } else {
-                        reject(new Error(response.error));
+                        reject(new Error('No valid JSON found in Python response'));
                     }
                 } catch (error) {
                     console.error('Failed to parse Python response:', dataString);

@@ -251,7 +251,7 @@ def analyze_weather(prompt, options=None):
             options = {}
             
         language = options.get('language', 'en')
-        print(f"Gemini Service: Analyzing weather with language: {language}")
+        print(f"Gemini Service: Starting weather analysis with language: {language}", file=sys.stderr)
         
         structured_prompt = f"""
         You will receive some information about a location, current weather and a forecast. 
@@ -274,19 +274,22 @@ def analyze_weather(prompt, options=None):
             contents=structured_prompt
         )
         
-        # Add debug log
-        print(f"Gemini Service: Generated response: {response.text}")
-        
-        return json.dumps({
+        result = {
             "success": True,
             "text": response.text.strip()
-        })
+        }
+        
+        # Only output the final JSON result
+        print(json.dumps(result))
+        return result["text"]
+        
     except Exception as e:
-        print(f"Weather analysis error in Python: {str(e)}")
-        return json.dumps({
+        error_result = {
             "success": False,
             "error": str(e)
-        })
+        }
+        print(json.dumps(error_result))
+        return error_result["error"]
 
 if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "text"
