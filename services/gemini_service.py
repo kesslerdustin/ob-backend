@@ -303,7 +303,7 @@ def analyze_info(prompt, options=None):
         print(f"Python analyze_info extracted values: language={language}, description={description}, location={location}, date={date}", file=sys.stderr)
         
         structured_prompt = f"""
-        Analyze this query and provide detailed information following these rules:
+        Analyze this query and provide detailed information following these rules. You are an expert in the field of nature and survival:
         
         Search Term: {prompt}
         Language: {language} (eg: de = german response, en = english response)
@@ -318,13 +318,13 @@ def analyze_info(prompt, options=None):
             "title": "General Description",
             "content": "A brief description in HTML format"
           }},
-          "quickFacts": {{
-            "title": "Quick Facts",
-            "content": "<ul><li>Key fact 1</li><li>Key fact 2</li>...</ul>"
-          }},
           "stats": {{
             "title": "Stats",
             "content": "<ul><li>Relevant statistics...</li></ul>"
+          }},
+          "quickFacts": {{
+            "title": "Quick Facts",
+            "content": "<ul><li>Key fact 1</li><li>Key fact 2</li>...</ul>"
           }},
           "history": {{
             "title": "History",
@@ -351,15 +351,18 @@ def analyze_info(prompt, options=None):
         3. Include historical information when possible
         4. Add seasonal relevance to ratings
         5. Reference survival techniques in <b> tags
+        6. quickfacts should be different from stats and more like interesting facts or trivia
 
         Adapt content based on query type:
-        - For Species: Include population, lifespan, extinction rating, family/order
-        - For Locations: Include area, population, founding year, attractions
-        - For Survival Techniques: Include step-by-step instructions, use cases
+        - For Species: Include population, lifespan, extinction rating, family/order, closely related species, etc.
+        - For Locations: Include area, population, founding year, attractions, etc.
+        - For Survival Techniques: Include step-by-step instructions, use cases, etc.
         - For General Terms: Focus on description and quick facts
 
         Rating categories by type:
-        - Species: danger, food source, fire material, etc.
+        - Fauna: danger, food source, chance of sighting (realistically), etc.
+        - Flora: danger, food source, fire material, shelter material, etc.
+        - Fungi: danger, food source, fire material, medicine, etc.
         - Locations: accessibility, attractions, natural beauty, etc.
         - Survival Techniques: difficulty, effectiveness, time investment, etc.
 
