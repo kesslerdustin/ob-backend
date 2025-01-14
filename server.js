@@ -331,6 +331,31 @@ try {
     }
   });
 
+  app.post('/api/analyze/info', express.json(), async (req, res) => {
+    try {
+      const { prompt } = req.body;
+      
+      if (!prompt) {
+        return res.status(400).json({ error: 'Prompt is required' });
+      }
+
+      const response = await aiService.analyzeInfo(prompt);
+
+      res.json({
+        success: true,
+        analysis: response
+      });
+
+    } catch (error) {
+      console.error('Info analysis error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to analyze information',
+        details: error.message
+      });
+    }
+  });
+
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });

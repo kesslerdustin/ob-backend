@@ -286,13 +286,66 @@ def analyze_weather(prompt, options=None):
         print(json.dumps(error_result))
         return error_result["error"]
 
+def analyze_info(prompt, options=None):
+    """Information analysis using Gemini 2.0"""
+    try:
+        options = json.loads(options) if isinstance(options, str) else options or {}
+        
+        structured_prompt = f"""
+        You are an outdoor and nature information assistant. Analyze the following query and provide a detailed response in JSON format.
+
+        Query: {prompt}
+
+        CRITICAL REQUIREMENTS:
+        1. Return a valid JSON object with this exact structure:
+        {{
+            "title": "Brief title of the topic",
+            "description": "Detailed explanation",
+            "tips": ["Practical tip 1", "Practical tip 2", "Practical tip 3"],
+            "warnings": ["Warning 1", "Warning 2"] // Optional, include only if relevant
+        }}
+        2. Keep descriptions informative but concise
+        3. Include 2-4 practical tips
+        4. Include warnings only if there are safety concerns
+        5. Focus on outdoor/nature-related aspects
+        """
+
+        response = client.models.generate_content(
+            model="gemini-2.0-flash-exp",
+            contents=structured_prompt
+        )
+        
+        # Ensure response is valid JSON
+        try:
+            json.loads(response.text)
+            return json.dumps({
+                "success": True,
+                "text": response.text.strip()
+            })
+        except json.JSONDecodeError:
+            # If response isn't valid JSON, try to extract JSON from it
+            extracted = extract_json_from_text(response.text)
+            if extracted:
+                return json.dumps({
+                    "success": True,
+                    "text": json.dumps(extracted)
+                })
+            raise Exception("Failed to generate valid JSON response")
+            
+    except Exception as e:
+        print(f"Info analysis error: {str(e)}")
+        return json.dumps({
+            "success": False,
+            "error": str(e)
+        })
+
 if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "text"
     prompt = sys.argv[2] if len(sys.argv) > 2 else "Hello, Gemini!"
     image_url = sys.argv[3] if len(sys.argv) > 3 else None
     options = sys.argv[4] if len(sys.argv) > 4 else None
     
-    # First generate the response
+    # Update the response selection
     response = None
     if mode == "vision":
         response = analyze_image(prompt, image_url, options)
@@ -304,6 +357,8 @@ if __name__ == "__main__":
         response = analyze_biome(prompt, options)
     elif mode == "weather":
         response = analyze_weather(prompt, options)
+    elif mode == "info":
+        response = analyze_info(prompt, options)
     else:
         response = generate_content(prompt)
     
