@@ -691,6 +691,10 @@ def game_master(context, options=None):
         
         latest_turn = context.get('turns', [])[-1] if context.get('turns') else {}
         current_turn = context.get('currentTurn', {})
+        
+        # Ensure we're using the correct datetime from the latest turn
+        current_datetime = latest_turn.get('datetime') or context.get('datetime')
+        
         all_turns = context.get('turns', [])
 
         structured_prompt = f"""
@@ -709,7 +713,7 @@ def game_master(context, options=None):
         GPS: Lat {context.get('location', {}).get('coordinates', {}).get('latitude', 'Unknown')}, 
              Long {context.get('location', {}).get('coordinates', {}).get('longitude', 'Unknown')}
         Elevation: {context.get('location', {}).get('elevation', 'Unknown')}m
-        Local Time: {latest_turn.get('datetime')}
+        Local Time: {current_datetime}
         Weather: {latest_turn.get('weather', 'Unknown')}
 
         CURRENT STATUS:
