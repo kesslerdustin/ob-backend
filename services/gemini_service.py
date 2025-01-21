@@ -694,7 +694,7 @@ def game_master(context, options=None):
         all_turns = context.get('turns', [])
 
         structured_prompt = f"""
-        You are an expert game master for this survival adventure. First, analyze if the player's input is a QUESTION or an ACTION.
+        You are an expert game master and survival expert for this adventure. First, analyze if the player's input is a QUESTION or an ACTION.
 
         PLAYER INPUT:
         {current_turn.get('action', '')}
@@ -734,16 +734,29 @@ def game_master(context, options=None):
            - Return this exact JSON structure:
            {{
                "isQuestion": true,
-               "answer": "Detailed but realistic response based only on what the player could know"
+               "answer": "Detailed, immersive response (3-5 sentences) based on observable conditions, time of day, weather, and surroundings. Include relevant survival knowledge when appropriate."
            }}
-           - Answer ONLY based on what's observable in current conditions
-           - Consider time of day, weather, and visibility
-           - Don't reveal hidden information
-           - Keep responses atmospheric and immersive
+           - Consider visibility conditions, available light, weather impact
+           - Include sensory details (sounds, smells, temperature)
+           - Reference relevant survival expertise
+           - Keep responses realistic and grounded
         
         4. If input is an ACTION:
-           - Process it as a game turn with all standard game mechanics
-           - Update all stats and game state
+           - Process it as a game turn with detailed survival mechanics
+           - Calculate precise time requirements for actions:
+             * Walking/Hiking: 2-4 km/h depending on terrain
+             * Gathering resources: 15-45 minutes
+             * Building shelter: 1-3 hours
+             * Making fire: 15-60 minutes based on conditions
+             * Hunting/Fishing: 1-4 hours
+             * Water collection/purification: 30-60 minutes
+           - Update datetime based on realistic action duration
+           - Adjust hunger/thirst rates:
+             * -5 hunger per 4 hours
+             * -7 thirst per 3 hours
+             * Faster depletion during physical activity
+           - Track used/consumed inventory items
+           - Consider weather changes over time
            - Return this exact JSON structure:
            {{
                "isQuestion": false,
@@ -751,43 +764,54 @@ def game_master(context, options=None):
                "stamina": NUMBER between 0-100,
                "hunger": NUMBER between 0-100,
                "thirst": NUMBER between 0-100,
-               "injuries": ["injury1", "injury2"],
+               "injuries": ["detailed_injury1", "detailed_injury2"],
                "turnsRemaining": NUMBER between 0-20,
-               "weather": "Updated weather description",
-               "lastAction": "Atmospheric description of what happened (2-3 sentences)",
+               "weather": "Detailed weather description including changes over time",
+               "lastAction": "Rich, atmospheric narration (3-5 sentences) describing:
+                            - What the player did
+                            - How long it took
+                            - Environmental challenges
+                            - Use of tools/inventory
+                            - Impact on survival situation",
                "location": {{
-                   "name": "Current location description",
+                   "name": "Detailed location description",
                    "coordinates": {{
                        "latitude": DECIMAL_NUMBER,
                        "longitude": DECIMAL_NUMBER
                    }},
                    "elevation": NUMBER
                }},
-               "datetime": "Updated datetime string",
+               "datetime": "Updated datetime reflecting realistic action duration",
                "hasGameEnded": true/false,
-               "gameEndReason": "Reason for game end or null",
+               "gameEndReason": "Detailed explanation if game ended, or null",
                "options": [
                    {{
                        "id": "option1",
-                       "text": "Action description",
+                       "text": "Detailed action description with survival context",
                        "consequences": {{
                            "health": NUMBER between -100 and 0,
-                           "description": "What could happen"
+                           "description": "Realistic outcome based on survival expertise"
                        }}
                    }},
                    // 2-3 more options (omit for hard difficulty)
                ],
-               "backpack": ["item1", "item2", "item3"]
+               "backpack": ["Updated inventory reflecting used items"]
            }}
 
-        5. For ACTIONS, maintain all existing game rules:
-           - Update datetime based on action duration
-           - Progress weather realistically
-           - Consider environmental effects
-           - Apply realistic movement speeds
-           - Account for elevation and terrain
-           - Factor in weather impacts
-           - End game if health=0 or turns=0
+        5. For ACTIONS, apply realistic survival mechanics:
+           - Calculate precise energy expenditure
+           - Track tool degradation and resource consumption
+           - Consider terrain difficulty and elevation changes
+           - Factor in weather effects on activities
+           - Apply realistic injury risks
+           - Account for day/night cycle impact
+           - End game with detailed explanation if:
+             * Health reaches 0
+             * Critical injury occurs
+             * Extreme weather event
+             * Lost/disoriented
+             * Resource depletion
+             * Turns exhausted
         """
 
         response = client.models.generate_content(
