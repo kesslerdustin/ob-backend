@@ -502,26 +502,30 @@ async function gameMaster(context, options = {}) {
             let errorString = '';
 
             pythonProcess.stdout.on('data', (data) => {
-                dataString += data.toString('utf-8');
+                const chunk = data.toString('utf-8');
+                console.log('Python stdout:', chunk);
+                dataString += chunk;
             });
 
             pythonProcess.stderr.on('data', (data) => {
-                console.error('Python stderr:', data.toString('utf-8'));
-                errorString += data.toString('utf-8');
+                const chunk = data.toString('utf-8');
+                console.error('Python stderr:', chunk);
+                errorString += chunk;
             });
 
             pythonProcess.on('close', (code) => {
                 if (code !== 0) {
-                    console.error('Python process error:', errorString);
-                    reject(new Error(`Python process exited with code ${code}: ${errorString}`));
+                    console.error('Process exited with code', code);
+                    reject(new Error(errorString || 'Process failed'));
                     return;
                 }
 
                 try {
                     const jsonMatch = dataString.match(/\{[\s\S]*\}/);
                     if (!jsonMatch) {
-                        console.error('No JSON found in response. Full response:', dataString);
-                        throw new Error('No JSON found in response');
+                        console.error('No JSON found in response:', dataString);
+                        reject(new Error('Invalid response format'));
+                        return;
                     }
                     
                     const response = JSON.parse(jsonMatch[0]);
@@ -530,15 +534,11 @@ async function gameMaster(context, options = {}) {
                         return;
                     }
                     
-                    // Parse the text field if it's a string
-                    const gameState = typeof response.text === 'string' ? 
-                        JSON.parse(response.text) : response.text;
-                        
-                    resolve(gameState);
+                    resolve(response.text);
                 } catch (error) {
                     console.error('Parse error:', error);
                     console.error('Raw data:', dataString);
-                    reject(new Error('Failed to parse Python response'));
+                    reject(new Error('Failed to parse response'));
                 }
             });
         });

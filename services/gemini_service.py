@@ -690,66 +690,59 @@ def game_master(context, options=None):
         options = json.loads(options) if isinstance(options, str) else options or {}
         language = options.get('language', 'en')
         
-        # Format the context history for the AI
-        turns_history = "\n".join([
-            f"Turn {turn.get('turnNumber')}: {turn.get('situationDescription', '')} (Player: {turn.get('chosenOption', {}).get('type', 'none')} - {turn.get('chosenOption', {}).get('value', 'none')})"
-            for turn in context.get('turns', [])
-        ])
-
         # Get the latest turn
         latest_turn = context.get('turns', [])[-1] if context.get('turns') else {}
+        current_turn = context.get('currentTurn', {})
         
         structured_prompt = f"""
-        You are the game master for this survival adventure:
-        Game: {context.get('gameName', 'Unknown')}
-        Difficulty: {context.get('difficulty', 'normal')}
-        Initial Scenario: {context.get('scenarioDescription', '')}
+        You are the game master for this survival adventure. Generate the next game state based on the player's action.
+        Language: {language}
 
-        Game History:
-        {turns_history}
+        Current Game State:
+        - Game: {context.get('gameName', 'Unknown')}
+        - Difficulty: {context.get('difficulty', 'normal')}
+        - Scenario: {context.get('scenarioDescription', '')}
+        
+        Current Status:
+        - Health: {latest_turn.get('stats', {}).get('health', 100)}
+        - Stamina: {latest_turn.get('stats', {}).get('stamina', 100)}
+        - Hunger: {latest_turn.get('stats', {}).get('hunger', 100)}
+        - Thirst: {latest_turn.get('stats', {}).get('thirst', 100)}
+        - Weather: {latest_turn.get('weather', 'Unknown')}
+        - Location: {latest_turn.get('location', 'Unknown')}
+        
+        Player Action: {current_turn.get('action', 'None')}
 
-        Current Status (Last Turn):
-        Health: {latest_turn.get('stats', {}).get('health', 100)}
-        Stamina: {latest_turn.get('stats', {}).get('stamina', 100)}
-        Hunger: {latest_turn.get('stats', {}).get('hunger', 100)}
-        Thirst: {latest_turn.get('stats', {}).get('thirst', 100)}
-        Location: {latest_turn.get('location', 'Unknown')}
-        Weather: {latest_turn.get('weather', 'Unknown')}
-        Injuries: {', '.join(latest_turn.get('injuries', []))}
-        Remaining Turns: {latest_turn.get('remainingTurns', 20)}
-
-        Current Player Action: {context.get('currentTurn', {}).get('action', 'None')}
-
-        Generate the next game state as JSON:
-        {
-            "health": number,
-            "stamina": number,
-            "hunger": number,
-            "thirst": number,
+        Return a JSON object with EXACTLY this structure:
+        {{
+            "health": number (0-100),
+            "stamina": number (0-100),
+            "hunger": number (0-100),
+            "thirst": number (0-100),
             "injuries": ["injury1", "injury2"],
-            "turnsRemaining": number,
-            "weather": "current weather",
-            "lastAction": "Description of what happened",
-            "options": [  // Omit for hard difficulty
-                {
+            "turnsRemaining": number (0-20),
+            "weather": "current weather description",
+            "lastAction": "Description of what happened (2-3 sentences)",
+            "options": [
+                {{
                     "id": "option1",
                     "text": "Action description",
-                    "consequences": {
-                        "health": number,
+                    "consequences": {{
+                        "health": number (-100 to 0),
                         "description": "What happens"
-                    }
-                },
-                // 2-3 more options
-            ]
-        }
+                    }}
+                }},
+                // 2-3 more options (omit for hard difficulty)
+            ],
+            "backpack": ["item1", "item2", "item3"]
+        }}
 
         REQUIREMENTS:
-        1. Response in {language} language
-        2. Maintain game difficulty ({context.get('difficulty', 'normal')})
-        3. Consider weather changes
-        4. Update stats realistically
-        5. If difficulty is 'hard', omit options array
-        6. Keep lastAction description under 3 sentences
+        1. Response in {language} language only
+        2. Keep difficulty level {context.get('difficulty', 'normal')}
+        3. If difficulty is 'hard', omit options array
+        4. Keep lastAction under 3 sentences
+        5. Maintain realistic consequences
         """
 
         response = client.models.generate_content(
@@ -757,6 +750,7 @@ def game_master(context, options=None):
             contents=structured_prompt
         )
         
+        # Extract JSON from the response
         json_content = extract_json_from_text(response.text)
         
         if not json_content:
