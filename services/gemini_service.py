@@ -580,6 +580,19 @@ def game_setup(settings, options=None):
         language = settings_dict.get('language', 'en')
         print(f"game_setup extracted: language={language}, settings_data={settings_data}", file=sys.stderr)
         
+        # Modify the options generation based on difficulty
+        difficulty = settings_data.get('difficulty', {}).get('id', 'normal')
+        
+        if difficulty == 'hard':
+            # For hard difficulty, don't provide options
+            formatted_settings = f"""
+            SPECIAL REQUIREMENTS FOR HARD DIFFICULTY:
+            1. Do not provide any options array
+            2. Make the introduction more challenging
+            3. Provide minimal survival items in backpack (max 2)
+            4. Include at least one injury or condition in the introduction
+            """
+        
         # Format the settings into a more readable prompt
         formatted_settings = f"""
         Based on these game settings, generate an immersive survival scenario:
