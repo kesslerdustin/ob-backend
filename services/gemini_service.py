@@ -572,6 +572,7 @@ def game_setup(settings, options=None):
         
         # Extract settings from the correct structure
         settings_data = settings_dict.get('settings', {})
+        language = settings_dict.get('language', 'en')
         
         # Format the settings into a more readable prompt
         formatted_settings = f"""
@@ -582,10 +583,8 @@ def game_setup(settings, options=None):
         Elevation: {settings_data.get('location', {}).get('elevation', 0)}m
         Weather: {settings_data.get('weather', '')}
         Difficulty: {settings_data.get('difficulty', {}).get('label', 'Normal')}
-        Scenario: {settings_data.get('scenario', {}).get('details', {}).get('description', '')}
+        Scenario: {settings_data.get('scenario', '')}
         """
-        
-        language = settings_dict.get('language', 'en')
         
         structured_prompt = f"""
         Based on these game settings:
