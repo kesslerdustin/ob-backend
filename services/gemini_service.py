@@ -740,9 +740,9 @@ def game_master(context, options=None):
         Inventory: {', '.join(latest_turn.get('backpackInventory', []))}
         Turns Remaining: {latest_turn.get('remainingTurns', 20)}
 
-        TURN HISTORY (Last 3 turns):
+        COMPLETE TURN HISTORY:
         {' '.join([f"Turn {i+1}: {turn.get('chosenOption', 'None')} - {turn.get('aiNarration', '')}" 
-                  for i, turn in enumerate(all_turns[-3:]) if turn.get('chosenOption')])}
+                  for i, turn in enumerate(all_turns) if turn.get('chosenOption')])}
 
         CRITICAL REQUIREMENTS:
         1. Response MUST be in {language} language only
