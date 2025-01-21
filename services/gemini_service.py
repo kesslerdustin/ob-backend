@@ -825,40 +825,40 @@ def game_master(context, options=None):
             10. Stay within the established scenario context
             11. NO fantasy elements or unrealistic events
 
-            Return a JSON object with EXACTLY this structure:
-            {
-                "health": number (0-100),
-                "stamina": number (0-100),
-                "hunger": number (0-100),
-                "thirst": number (0-100),
+            Return a JSON object with EXACTLY this structure (replace NUMBER with actual numbers):
+            {{
+                "health": NUMBER between 0-100,
+                "stamina": NUMBER between 0-100,
+                "hunger": NUMBER between 0-100,
+                "thirst": NUMBER between 0-100,
                 "injuries": ["injury1", "injury2"],
-                "turnsRemaining": number (0-20),
+                "turnsRemaining": NUMBER between 0-20,
                 "weather": "Updated weather description based on time and conditions",
                 "lastAction": "Atmospheric description of what happened (2-3 sentences)",
-                "location": {
+                "location": {{
                     "name": "Current location description",
-                    "coordinates": {
-                        "latitude": number,
-                        "longitude": number
-                    },
-                    "elevation": number
-                },
+                    "coordinates": {{
+                        "latitude": DECIMAL_NUMBER,
+                        "longitude": DECIMAL_NUMBER
+                    }},
+                    "elevation": NUMBER
+                }},
                 "datetime": "Updated datetime string reflecting action duration",
-                "hasGameEnded": boolean,
+                "hasGameEnded": true/false,
                 "gameEndReason": "Reason for game end or null",
                 "options": [
-                    {
+                    {{
                         "id": "option1",
                         "text": "Realistic action description",
-                        "consequences": {
-                            "health": number (-100 to 0),
+                        "consequences": {{
+                            "health": NUMBER between -100 and 0,
                             "description": "What could happen"
-                        }
-                    },
+                        }}
+                    }},
                     // 2-3 more options (omit for hard difficulty)
                 ],
                 "backpack": ["item1", "item2", "item3"]
-            }
+            }}
             """
 
             response = client.models.generate_content(
