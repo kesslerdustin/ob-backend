@@ -688,193 +688,122 @@ def game_master(context, options=None):
         context = json.loads(context) if isinstance(context, str) else context
         options = json.loads(options) if isinstance(options, str) else options or {}
         language = options.get('language', 'en')
-        is_question = options.get('isQuestion', False)
         
         latest_turn = context.get('turns', [])[-1] if context.get('turns') else {}
         current_turn = context.get('currentTurn', {})
         all_turns = context.get('turns', [])
 
-        if is_question:
-            # Special prompt for contextual questions
-            structured_prompt = f"""
-            You are the game master responding to a player's question about their surroundings and situation.
-            Language: {language}
+        structured_prompt = f"""
+        You are an expert game master for this survival adventure. First, analyze if the player's input is a QUESTION or an ACTION.
 
-            GAME CONTEXT:
-            Title: {context.get('gameName', 'Unknown')}
-            Current Position: {latest_turn.get('location', 'Unknown')}
-            GPS: Lat {context.get('location', {}).get('coordinates', {}).get('latitude', 'Unknown')}, 
-                 Long {context.get('location', {}).get('coordinates', {}).get('longitude', 'Unknown')}
-            Elevation: {context.get('location', {}).get('elevation', 'Unknown')}m
-            Local Time: {latest_turn.get('datetime')}
-            Weather: {latest_turn.get('weather', 'Unknown')}
-            Current Inventory: {', '.join(latest_turn.get('backpackInventory', []))}
+        PLAYER INPUT:
+        {current_turn.get('action', '')}
 
-            PLAYER'S QUESTION:
-            {current_turn.get('action', '')}
+        GAME CONTEXT:
+        Title: {context.get('gameName', 'Unknown')}
+        Difficulty: {context.get('difficulty', 'normal')}
+        Scenario: {context.get('scenarioDescription', '')}
+        
+        LOCATION DETAILS:
+        Current Position: {latest_turn.get('location', 'Unknown')}
+        GPS: Lat {context.get('location', {}).get('coordinates', {}).get('latitude', 'Unknown')}, 
+             Long {context.get('location', {}).get('coordinates', {}).get('longitude', 'Unknown')}
+        Elevation: {context.get('location', {}).get('elevation', 'Unknown')}m
+        Local Time: {latest_turn.get('datetime')}
+        Weather: {latest_turn.get('weather', 'Unknown')}
 
-            CRITICAL REQUIREMENTS:
-            1. Response MUST be in {language} language
-            2. Answer ONLY based on what the player could realistically observe or know in their current situation
-            3. Consider:
-               - Time of day and visibility
-               - Weather conditions
-               - Surrounding terrain and vegetation
-               - Player's current physical state
-               - Realistic knowledge limitations
-            4. DO NOT:
-               - Reveal information the player couldn't know
-               - Break immersion with game mechanics
-               - Give unrealistic advantages
-            5. Keep the response atmospheric and immersive
+        CURRENT STATUS:
+        Health: {latest_turn.get('stats', {}).get('health', 100)}
+        Stamina: {latest_turn.get('stats', {}).get('stamina', 100)}
+        Hunger: {latest_turn.get('stats', {}).get('hunger', 100)}
+        Thirst: {latest_turn.get('stats', {}).get('thirst', 100)}
+        Inventory: {', '.join(latest_turn.get('backpackInventory', []))}
+        Turns Remaining: {latest_turn.get('remainingTurns', 20)}
 
-            Return a JSON object with EXACTLY this structure:
-            {{
-                "answer": "Detailed but realistic response to the player's question"
-            }}
-            """
+        TURN HISTORY (Last 3 turns):
+        {' '.join([f"Turn {i+1}: {turn.get('chosenOption', 'None')} - {turn.get('aiNarration', '')}" 
+                  for i, turn in enumerate(all_turns[-3:]) if turn.get('chosenOption')])}
 
-            response = client.models.generate_content(
-                model="gemini-2.0-flash-exp",
-                contents=structured_prompt
-            )
-            
-            json_content = extract_json_from_text(response.text)
-            
-            if not json_content:
-                raise Exception("Failed to generate valid response")
+        CRITICAL REQUIREMENTS:
+        1. Response MUST be in {language} language only
+        2. First determine if the input is a QUESTION or ACTION:
+           - Questions typically ask about surroundings, status, or seek information
+           - Actions are attempts to do something that changes the game state
+        
+        3. If input is a QUESTION:
+           - Return this exact JSON structure:
+           {{
+               "isQuestion": true,
+               "answer": "Detailed but realistic response based only on what the player could know"
+           }}
+           - Answer ONLY based on what's observable in current conditions
+           - Consider time of day, weather, and visibility
+           - Don't reveal hidden information
+           - Keep responses atmospheric and immersive
+        
+        4. If input is an ACTION:
+           - Process it as a game turn with all standard game mechanics
+           - Update all stats and game state
+           - Return this exact JSON structure:
+           {{
+               "isQuestion": false,
+               "health": NUMBER between 0-100,
+               "stamina": NUMBER between 0-100,
+               "hunger": NUMBER between 0-100,
+               "thirst": NUMBER between 0-100,
+               "injuries": ["injury1", "injury2"],
+               "turnsRemaining": NUMBER between 0-20,
+               "weather": "Updated weather description",
+               "lastAction": "Atmospheric description of what happened (2-3 sentences)",
+               "location": {{
+                   "name": "Current location description",
+                   "coordinates": {{
+                       "latitude": DECIMAL_NUMBER,
+                       "longitude": DECIMAL_NUMBER
+                   }},
+                   "elevation": NUMBER
+               }},
+               "datetime": "Updated datetime string",
+               "hasGameEnded": true/false,
+               "gameEndReason": "Reason for game end or null",
+               "options": [
+                   {{
+                       "id": "option1",
+                       "text": "Action description",
+                       "consequences": {{
+                           "health": NUMBER between -100 and 0,
+                           "description": "What could happen"
+                       }}
+                   }},
+                   // 2-3 more options (omit for hard difficulty)
+               ],
+               "backpack": ["item1", "item2", "item3"]
+           }}
 
-            return json.dumps({
-                "success": True,
-                "text": json_content
-            })
+        5. For ACTIONS, maintain all existing game rules:
+           - Update datetime based on action duration
+           - Progress weather realistically
+           - Consider environmental effects
+           - Apply realistic movement speeds
+           - Account for elevation and terrain
+           - Factor in weather impacts
+           - End game if health=0 or turns=0
+        """
 
-        else:
-            structured_prompt = f"""
-            You are an expert game master for this survival adventure. Generate the next game state based on the player's action.
-            Language: {language}
+        response = client.models.generate_content(
+            model="gemini-2.0-flash-exp",
+            contents=structured_prompt
+        )
+        
+        json_content = extract_json_from_text(response.text)
+        
+        if not json_content:
+            raise Exception("Failed to generate valid game state")
 
-            GAME CONTEXT:
-            Title: {context.get('gameName', 'Unknown')}
-            Difficulty: {context.get('difficulty', 'normal')}
-            Scenario: {context.get('scenarioDescription', '')}
-            
-            LOCATION DETAILS:
-            Current Position: {latest_turn.get('location', 'Unknown')}
-            GPS: Lat {context.get('location', {}).get('coordinates', {}).get('latitude', 'Unknown')}, 
-                 Long {context.get('location', {}).get('coordinates', {}).get('longitude', 'Unknown')}
-            Elevation: {context.get('location', {}).get('elevation', 'Unknown')}m
-            Local Time: {latest_turn.get('datetime')}
-            Weather: {latest_turn.get('weather', 'Unknown')}
-
-            CURRENT STATUS:
-            Health: {latest_turn.get('stats', {}).get('health', 100)}
-            Stamina: {latest_turn.get('stats', {}).get('stamina', 100)}
-            Hunger: {latest_turn.get('stats', {}).get('hunger', 100)}
-            Thirst: {latest_turn.get('stats', {}).get('thirst', 100)}
-            Inventory: {', '.join(latest_turn.get('backpackInventory', []))}
-            Turns Remaining: {latest_turn.get('remainingTurns', 20)}
-
-            TURN HISTORY (Last 3 turns):
-            {' '.join([f"Turn {i+1}: {turn.get('chosenOption', 'None')} - {turn.get('aiNarration', '')}" 
-                      for i, turn in enumerate(all_turns[-3:]) if turn.get('chosenOption')])}
-
-            CURRENT ACTION:
-            {current_turn.get('action', 'None')}
-
-            CRITICAL REQUIREMENTS:
-            1. Response MUST be in {language} language only
-            2. Maintain difficulty level {context.get('difficulty', 'normal')}
-            3. If difficulty is 'hard', omit options array
-            4. Keep lastAction under 3 sentences but make them descriptive and atmospheric
-
-            TIME AND WEATHER PROGRESSION:
-            5. Update datetime based on action duration:
-               - Quick actions: 5-15 minutes
-               - Medium actions: 15-45 minutes
-               - Long actions: 1-3 hours
-               - Consider day/night cycle effects
-            
-            6. Update weather based on:
-               - Time progression
-               - Previous weather conditions
-               - Realistic weather patterns
-               - Local terrain influence
-               - Seasonal changes
-            
-            7. All consequences must be realistic and plausible:
-               - Consider weather effects on health/stamina
-               - Account for elevation changes in stamina
-               - Factor in time of day for visibility and temperature
-               - Apply realistic movement speeds and distances
-               - Consider temperature changes with time of day
-               - Account for weather impact on movement and actions
-
-            8. Update GPS coordinates based on movement:
-               - Walking speed: ~3-5 km/h on flat terrain
-               - Slower on inclines or rough terrain
-               - Account for obstacles and terrain type
-               - Consider weather impact on travel speed
-
-            9. Game ends if:
-               - Health reaches 0 (death)
-               - Turns remaining reaches 0
-               - Player reaches civilization/help
-               - Player is rescued
-
-            10. Stay within the established scenario context
-            11. NO fantasy elements or unrealistic events
-
-            Return a JSON object with EXACTLY this structure (replace NUMBER with actual numbers):
-            {{
-                "health": NUMBER between 0-100,
-                "stamina": NUMBER between 0-100,
-                "hunger": NUMBER between 0-100,
-                "thirst": NUMBER between 0-100,
-                "injuries": ["injury1", "injury2"],
-                "turnsRemaining": NUMBER between 0-20,
-                "weather": "Updated weather description based on time and conditions",
-                "lastAction": "Atmospheric description of what happened (2-3 sentences)",
-                "location": {{
-                    "name": "Current location description",
-                    "coordinates": {{
-                        "latitude": DECIMAL_NUMBER,
-                        "longitude": DECIMAL_NUMBER
-                    }},
-                    "elevation": NUMBER
-                }},
-                "datetime": "Updated datetime string reflecting action duration",
-                "hasGameEnded": true/false,
-                "gameEndReason": "Reason for game end or null",
-                "options": [
-                    {{
-                        "id": "option1",
-                        "text": "Realistic action description",
-                        "consequences": {{
-                            "health": NUMBER between -100 and 0,
-                            "description": "What could happen"
-                        }}
-                    }},
-                    // 2-3 more options (omit for hard difficulty)
-                ],
-                "backpack": ["item1", "item2", "item3"]
-            }}
-            """
-
-            response = client.models.generate_content(
-                model="gemini-2.0-flash-exp",
-                contents=structured_prompt
-            )
-            
-            json_content = extract_json_from_text(response.text)
-            
-            if not json_content:
-                raise Exception("Failed to generate valid game state")
-
-            return json.dumps({
-                "success": True,
-                "text": json_content
-            })
+        return json.dumps({
+            "success": True,
+            "text": json_content
+        })
         
     except Exception as e:
         print(f"Game master error: {str(e)}", file=sys.stderr)
