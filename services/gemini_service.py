@@ -750,7 +750,6 @@ def game_master(context, options=None):
             })
 
         else:
-            # Original game master prompt for actions
             structured_prompt = f"""
             You are an expert game master for this survival adventure. Generate the next game state based on the player's action.
             Language: {language}
@@ -788,58 +787,78 @@ def game_master(context, options=None):
             2. Maintain difficulty level {context.get('difficulty', 'normal')}
             3. If difficulty is 'hard', omit options array
             4. Keep lastAction under 3 sentences but make them descriptive and atmospheric
-            5. All consequences must be realistic and plausible:
+
+            TIME AND WEATHER PROGRESSION:
+            5. Update datetime based on action duration:
+               - Quick actions: 5-15 minutes
+               - Medium actions: 15-45 minutes
+               - Long actions: 1-3 hours
+               - Consider day/night cycle effects
+            
+            6. Update weather based on:
+               - Time progression
+               - Previous weather conditions
+               - Realistic weather patterns
+               - Local terrain influence
+               - Seasonal changes
+            
+            7. All consequences must be realistic and plausible:
                - Consider weather effects on health/stamina
                - Account for elevation changes in stamina
                - Factor in time of day for visibility and temperature
                - Apply realistic movement speeds and distances
-            6. Update GPS coordinates based on movement:
+               - Consider temperature changes with time of day
+               - Account for weather impact on movement and actions
+
+            8. Update GPS coordinates based on movement:
                - Walking speed: ~3-5 km/h on flat terrain
                - Slower on inclines or rough terrain
                - Account for obstacles and terrain type
-            7. Time progression must be realistic for each action
-            8. Game ends if:
+               - Consider weather impact on travel speed
+
+            9. Game ends if:
                - Health reaches 0 (death)
                - Turns remaining reaches 0
                - Player reaches civilization/help
                - Player is rescued
-            9. Stay within the established scenario context
-            10. NO fantasy elements or unrealistic events
+
+            10. Stay within the established scenario context
+            11. NO fantasy elements or unrealistic events
 
             Return a JSON object with EXACTLY this structure:
-            {{
+            {
                 "health": number (0-100),
                 "stamina": number (0-100),
                 "hunger": number (0-100),
                 "thirst": number (0-100),
                 "injuries": ["injury1", "injury2"],
                 "turnsRemaining": number (0-20),
-                "weather": "current weather description",
+                "weather": "Updated weather description based on time and conditions",
                 "lastAction": "Atmospheric description of what happened (2-3 sentences)",
-                "location": {{
+                "location": {
                     "name": "Current location description",
-                    "coordinates": {{
+                    "coordinates": {
                         "latitude": number,
                         "longitude": number
-                    }},
+                    },
                     "elevation": number
-                }},
-                "datetime": "Updated datetime string",
+                },
+                "datetime": "Updated datetime string reflecting action duration",
                 "hasGameEnded": boolean,
                 "gameEndReason": "Reason for game end or null",
                 "options": [
-                    {{
+                    {
                         "id": "option1",
                         "text": "Realistic action description",
-                        "consequences": {{
+                        "consequences": {
                             "health": number (-100 to 0),
                             "description": "What could happen"
-                        }}
-                    }},
+                        }
+                    },
                     // 2-3 more options (omit for hard difficulty)
                 ],
                 "backpack": ["item1", "item2", "item3"]
-            }}
+            }
             """
 
             response = client.models.generate_content(
