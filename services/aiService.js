@@ -428,24 +428,37 @@ async function gameSetup(settings, options = {}) {
             ]);
 
             let dataString = '';
+            let errorString = '';
 
             pythonProcess.stdout.on('data', (data) => {
                 dataString += data.toString();
             });
 
             pythonProcess.stderr.on('data', (data) => {
+                errorString += data.toString();
                 console.error(`Python Error: ${data}`);
             });
 
             pythonProcess.on('close', (code) => {
                 if (code !== 0) {
+                    console.error('Python process error:', errorString);
                     reject(new Error(`Python process exited with code ${code}`));
                     return;
                 }
                 
                 try {
-                    const response = JSON.parse(dataString);
-                    resolve(response); // Return the entire response object
+                    // Try to find and parse only the JSON part of the response
+                    const jsonMatch = dataString.match(/\{[\s\S]*\}/);
+                    if (!jsonMatch) {
+                        throw new Error('No JSON found in response');
+                    }
+                    
+                    const response = JSON.parse(jsonMatch[0]);
+                    if (!response.success) {
+                        reject(new Error(response.error || 'Failed to generate game setup'));
+                        return;
+                    }
+                    resolve(response);
                 } catch (error) {
                     console.error('Parse error:', error, 'Raw data:', dataString);
                     reject(new Error('Failed to parse Python response'));
