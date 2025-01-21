@@ -384,6 +384,35 @@ try {
     }
   });
 
+  // Add this new endpoint for scenario generation
+  app.post('/api/scenarios/generate', express.json(), async (req, res) => {
+    try {
+      const { location, language } = req.body;
+      
+      if (!location) {
+        return res.status(400).json({ error: 'Location information is required' });
+      }
+
+      const response = await aiService.generateScenarios(
+        location,
+        { language }
+      );
+
+      res.json({
+        success: true,
+        scenarios: response
+      });
+
+    } catch (error) {
+      console.error('Scenario generation error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to generate scenarios',
+        details: error.message
+      });
+    }
+  });
+
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });

@@ -506,6 +506,64 @@ def analyze_info(prompt, options=None):
             "error": str(e)
         })
 
+def generate_scenarios(location_info, options=None):
+    """Generate location-specific scenarios using Gemini 2.0"""
+    try:
+        options = json.loads(options) if isinstance(options, str) else options or {}
+        language = options.get('language', 'en')
+        
+        structured_prompt = f"""
+        Based on this location information:
+        {location_info}
+
+        Generate 4 realistic survival scenarios that could occur in this specific environment.
+        Each scenario should be uniquely suited to the location's characteristics, weather, and terrain.
+
+        Return EXACTLY this JSON structure:
+        {{
+            "scenarios": [
+                {{
+                    "id": "scenario1",
+                    "title": "Brief title",
+                    "description": "One-line description",
+                    "icon": "Select one: tree-outline, triangle-outline, water-outline, sunny-outline, flash-outline, compass-outline"
+                }},
+                // 3 more scenarios following the same structure
+            ]
+        }}
+
+        REQUIREMENTS:
+        1. Each scenario must be realistic for the location
+        2. Include environmental challenges specific to the area
+        3. Consider seasonal weather patterns
+        4. Incorporate local terrain features
+        5. Response must be in {language} language
+        6. Icons should match the scenario theme
+        """
+
+        response = client.models.generate_content(
+            model="gemini-2.0-flash-exp",
+            contents=structured_prompt
+        )
+        
+        # Extract JSON from response
+        json_content = extract_json_from_text(response.text)
+        
+        if not json_content:
+            raise Exception("Failed to generate valid scenario data")
+
+        return json.dumps({
+            "success": True,
+            "text": json_content
+        })
+        
+    except Exception as e:
+        print(f"Scenario generation error: {str(e)}")
+        return json.dumps({
+            "success": False,
+            "error": str(e)
+        })
+
 if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "text"
     prompt = sys.argv[2] if len(sys.argv) > 2 else "Hello, Gemini!"
@@ -526,6 +584,8 @@ if __name__ == "__main__":
         response = analyze_weather(prompt, options)
     elif mode == "info":
         response = analyze_info(prompt, options)
+    elif mode == "scenarios":
+        response = generate_scenarios(prompt, options)
     else:
         response = generate_content(prompt)
     
