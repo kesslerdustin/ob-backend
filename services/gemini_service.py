@@ -974,9 +974,24 @@ def game_summary(context, options=None):
         options = json.loads(options) if isinstance(options, str) else options or {}
         language = options.get('language', 'en')
         
-        # Extract game data safely with get() method
         structured_prompt = f"""
-        You are a game master summarizing an adventure. Create an engaging summary of this game:
+        You are a game master summarizing an adventure. Create a JSON summary of this game with the following structure:
+
+        {{
+            "title": "Adventure Title",
+            "summary": "Main summary text (3-4 paragraphs)",
+            "stats": {{
+                "finalHealth": {context.get('stats', {}).get('health', 0)},
+                "finalStamina": {context.get('stats', {}).get('stamina', 0)},
+                "finalHunger": {context.get('stats', {}).get('hunger', 0)},
+                "finalThirst": {context.get('stats', {}).get('thirst', 0)},
+                "totalDistance": {context.get('totalDistance', 0)},
+                "turnsPlayed": {len(context.get('turns', []))}
+            }},
+            "positives": ["List of things the player did well"],
+            "negatives": ["List of things that led to failure"],
+            "endReason": "{context.get('gameEndReason', 'Unknown')}"
+        }}
 
         GAME DETAILS:
         Title: {context.get('gameName', 'Unknown Adventure')}
@@ -984,22 +999,12 @@ def game_summary(context, options=None):
         Scenario: {context.get('scenarioDescription', '')}
         Location: {context.get('location', {}).get('name', 'Unknown')}
         Weather: {context.get('weather', 'Unknown')}
-        Total Distance: {context.get('totalDistance', 0)}km
 
-        FINAL STATUS:
-        Health: {context.get('stats', {}).get('health', 0)}
-        Stamina: {context.get('stats', {}).get('stamina', 0)}
-        Hunger: {context.get('stats', {}).get('hunger', 0)}
-        Thirst: {context.get('stats', {}).get('thirst', 0)}
-        Game End Reason: {context.get('gameEndReason', 'Unknown')}
-
-        REQUIREMENTS:
-        1. Write in {language} language
-        2. Create a dramatic 3-4 paragraph summary
-        3. Focus on the key decisions and challenges
-        4. Include survival statistics and final outcome
-        5. Keep a serious tone appropriate for survival scenarios
-        6. Include specific details about weather and location challenges
+        Write the response in {language} language.
+        Focus on key decisions and challenges.
+        Keep a serious tone appropriate for survival scenarios.
+        Include specific details about weather and location challenges.
+        Return ONLY the JSON structure, no additional text.
         """
 
         print(f"Sending prompt to Gemini: {structured_prompt[:200]}...", file=sys.stderr)
@@ -1009,9 +1014,14 @@ def game_summary(context, options=None):
             contents=structured_prompt
         )
         
+        # Extract JSON from the response
+        json_content = extract_json_from_text(response.text)
+        if not json_content:
+            raise Exception("Failed to generate valid JSON summary")
+
         return json.dumps({
             "success": True,
-            "text": response.text.strip()
+            "text": json_content
         })
         
     except Exception as e:
