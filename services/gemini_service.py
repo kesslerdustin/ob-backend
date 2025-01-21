@@ -567,15 +567,20 @@ def generate_scenarios(location_info, options=None):
 def game_setup(settings, options=None):
     """Generate game setup using Gemini 2.0"""
     try:
+        print(f"game_setup received raw settings: {settings}", file=sys.stderr)
         # Parse settings if it's a string
         settings_dict = json.loads(settings) if isinstance(settings, str) else settings
+        print(f"game_setup parsed settings_dict: {settings_dict}", file=sys.stderr)
         
         # Extract settings from the correct structure
         settings_data = settings_dict.get('settings', {})
         language = settings_dict.get('language', 'en')
+        print(f"game_setup extracted: language={language}, settings_data={settings_data}", file=sys.stderr)
         
         # Format the settings into a more readable prompt
         formatted_settings = f"""
+        Based on these game settings, generate an immersive survival scenario:
+        
         Date and Time: {settings_data.get('datetime', '')}
         Location: {settings_data.get('location', {}).get('name', 'Unknown')}
         Coordinates: Lat {settings_data.get('location', {}).get('coordinates', {}).get('latitude', 0)}, 
@@ -584,7 +589,37 @@ def game_setup(settings, options=None):
         Weather: {settings_data.get('weather', '')}
         Difficulty: {settings_data.get('difficulty', {}).get('label', 'Normal')}
         Scenario: {settings_data.get('scenario', {}).get('details', {}).get('description', '')}
+        
+        Return EXACTLY this JSON structure:
+        {{
+            "title": "Scenario Title",
+            "introduction": "Brief scenario setup (2-3 sentences)",
+            "options": [
+                {{
+                    "id": "option1",
+                    "text": "Action description",
+                    "consequences": {{
+                        "health": -5,
+                        "description": "What happens"
+                    }}
+                }},
+                // 2-3 more options
+            ],
+            "backpack": [
+                "Essential item 1",
+                "Essential item 2",
+                // 3-5 items total
+            ]
+        }}
+
+        REQUIREMENTS:
+        1. Response must be in {language} language
+        2. Options should be realistic for the location and weather
+        3. Health impact should range from -20 to +10
+        4. Backpack items must be relevant to scenario
         """
+        
+        print(f"game_setup formatted prompt: {formatted_settings}", file=sys.stderr)
 
         # Generate response using the formatted settings
         response = client.models.generate_content(
@@ -592,8 +627,11 @@ def game_setup(settings, options=None):
             contents=formatted_settings
         )
         
+        print(f"game_setup raw response: {response.text}", file=sys.stderr)
+        
         # Extract JSON from response
         json_content = extract_json_from_text(response.text)
+        print(f"game_setup extracted JSON: {json_content}", file=sys.stderr)
         
         if not json_content:
             raise Exception("Failed to generate valid game setup data")
@@ -604,7 +642,8 @@ def game_setup(settings, options=None):
         })
         
     except Exception as e:
-        print(f"Game setup generation error: {str(e)}")
+        print(f"Game setup generation error: {str(e)}", file=sys.stderr)
+        print(f"Full error details: {e.__class__.__name__}: {str(e)}", file=sys.stderr)
         return json.dumps({
             "success": False,
             "error": str(e)

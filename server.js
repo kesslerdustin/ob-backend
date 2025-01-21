@@ -417,36 +417,82 @@ try {
   app.post('/api/game/setup', express.json(), async (req, res) => {
     try {
       const gameSettings = req.body;
+      console.log('=== Game Setup Request Started ===');
+      console.log('1. Received game settings:', JSON.stringify(gameSettings, null, 2));
       
       if (!gameSettings) {
+        console.log('Error: No game settings provided');
         return res.status(400).json({ error: 'Game settings are required' });
       }
+
+      console.log('2. Calling aiService.gameSetup with:', {
+        settingsPreview: {
+          datetime: gameSettings.settings?.datetime,
+          location: gameSettings.settings?.location?.name,
+          difficulty: gameSettings.settings?.difficulty,
+          scenarioType: gameSettings.settings?.scenario?.type,
+          language: gameSettings.language
+        }
+      });
 
       const response = await aiService.gameSetup(
         gameSettings,
         { language: gameSettings.language || 'en' }
       );
 
+      console.log('3. Received response from aiService:', {
+        success: response.success,
+        hasError: !!response.error,
+        hasText: !!response.text,
+        responsePreview: JSON.stringify(response).substring(0, 200) + '...'
+      });
+
       // The response is already parsed JSON
       if (!response.success) {
+        console.log('4. Error in response:', response.error);
         throw new Error(response.error || 'Failed to generate game setup');
       }
 
       // Parse the text field if it's a string
-      const gameData = typeof response.text === 'string' ? JSON.parse(response.text) : response.text;
+      let gameData;
+      try {
+        gameData = typeof response.text === 'string' ? JSON.parse(response.text) : response.text;
+        console.log('5. Successfully parsed game data:', {
+          hasTitle: !!gameData?.title,
+          hasIntroduction: !!gameData?.introduction,
+          hasOptions: Array.isArray(gameData?.options),
+          dataPreview: JSON.stringify(gameData).substring(0, 200) + '...'
+        });
+      } catch (parseError) {
+        console.error('5. Failed to parse response.text:', {
+          error: parseError.message,
+          textPreview: typeof response.text === 'string' ? 
+            response.text.substring(0, 200) + '...' : 
+            'response.text is not a string'
+        });
+        throw parseError;
+      }
       
+      console.log('6. Sending successful response to client');
       res.json({
         success: true,
         scenarios: gameData
       });
 
     } catch (error) {
-      console.error('Game setup error:', error);
+      console.error('=== Game Setup Error ===');
+      console.error('Error details:', {
+        message: error.message,
+        stack: error.stack,
+        type: error.constructor.name
+      });
       res.status(500).json({
         success: false,
         error: 'Failed to generate game setup',
         details: error.message
       });
+    } finally {
+      console.log('=== Game Setup Request Ended ===');
     }
   });
 

@@ -418,6 +418,7 @@ async function gameSetup(settings, options = {}) {
             };
 
             console.log('aiService sending game setup request:', JSON.stringify(cleanSettings));
+            console.log('aiService options:', JSON.stringify(options));
             
             const pythonProcess = spawn('python', [
                 pythonScript,
@@ -431,15 +432,22 @@ async function gameSetup(settings, options = {}) {
             let errorString = '';
 
             pythonProcess.stdout.on('data', (data) => {
-                dataString += data.toString();
+                const chunk = data.toString();
+                console.log('Python stdout chunk:', chunk);
+                dataString += chunk;
             });
 
             pythonProcess.stderr.on('data', (data) => {
-                errorString += data.toString();
-                console.error(`Python Error: ${data}`);
+                const chunk = data.toString();
+                console.log('Python stderr chunk:', chunk);
+                errorString += chunk;
             });
 
             pythonProcess.on('close', (code) => {
+                console.log('Python process closed with code:', code);
+                console.log('Final stdout:', dataString);
+                console.log('Final stderr:', errorString);
+                
                 if (code !== 0) {
                     console.error('Python process error:', errorString);
                     reject(new Error(`Python process exited with code ${code}`));
@@ -450,17 +458,21 @@ async function gameSetup(settings, options = {}) {
                     // Try to find and parse only the JSON part of the response
                     const jsonMatch = dataString.match(/\{[\s\S]*\}/);
                     if (!jsonMatch) {
+                        console.error('No JSON found in response. Full response:', dataString);
                         throw new Error('No JSON found in response');
                     }
                     
                     const response = JSON.parse(jsonMatch[0]);
+                    console.log('Parsed response:', response);
+                    
                     if (!response.success) {
                         reject(new Error(response.error || 'Failed to generate game setup'));
                         return;
                     }
                     resolve(response);
                 } catch (error) {
-                    console.error('Parse error:', error, 'Raw data:', dataString);
+                    console.error('Parse error:', error);
+                    console.error('Raw data:', dataString);
                     reject(new Error('Failed to parse Python response'));
                 }
             });
