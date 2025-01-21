@@ -8,6 +8,7 @@ from io import BytesIO
 from dotenv import load_dotenv
 from google.genai.types import Tool, GenerateContentConfig, GoogleSearch
 from datetime import datetime
+import re
 
 load_dotenv()
 
@@ -40,10 +41,10 @@ def extract_json_from_text(text):
             # Ensure proper encoding of special characters
             json_str = json_str.encode('utf-8').decode('utf-8')
             
-            # Remove any text that's not part of valid JSON structure
-            import re
+            # Updated regex to preserve basic punctuation
             cleaned = re.sub(r'(?<![\{\[,:\s])"(?![,:\}\]\s]).*?(?<![\{\[,:\s])"(?![,:\}\]\s])', '', json_str)
-            cleaned = re.sub(r'[^\{\}\[\]",:0-9a-zA-Z\s_\-äöüßÄÖÜ]', '', cleaned)  # Added German characters
+            # Allow periods, commas, exclamation marks, and question marks in text
+            cleaned = re.sub(r'[^\{\}\[\]",:0-9a-zA-Z\s_\-äöüßÄÖÜ\.!?]', '', cleaned)
             cleaned = re.sub(r'\s+', ' ', cleaned)
             
             # Try to parse the cleaned string
