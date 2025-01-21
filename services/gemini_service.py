@@ -685,14 +685,19 @@ def game_setup(settings, options=None):
 def game_master(context, options=None):
     """Process game turns using Gemini 2.0"""
     try:
+        # Parse context if it's a string
+        context = json.loads(context) if isinstance(context, str) else context
         options = json.loads(options) if isinstance(options, str) else options or {}
         language = options.get('language', 'en')
         
         # Format the context history for the AI
         turns_history = "\n".join([
-            f"Turn {turn['turnNumber']}: {turn['adventureText']} (Player: {turn['userDecision']['type']} - {turn['userDecision']['action']})"
+            f"Turn {turn.get('turnNumber')}: {turn.get('situationDescription', '')} (Player: {turn.get('chosenOption', {}).get('type', 'none')} - {turn.get('chosenOption', {}).get('value', 'none')})"
             for turn in context.get('turns', [])
         ])
+
+        # Get the latest turn
+        latest_turn = context.get('turns', [])[-1] if context.get('turns') else {}
         
         structured_prompt = f"""
         You are the game master for this survival adventure:
@@ -704,19 +709,19 @@ def game_master(context, options=None):
         {turns_history}
 
         Current Status (Last Turn):
-        Health: {context['turns'][-1]['health']}
-        Stamina: {context['turns'][-1]['stamina']}
-        Hunger: {context['turns'][-1]['hunger']}
-        Thirst: {context['turns'][-1]['thirst']}
-        Location: {context['turns'][-1]['location']}
-        Weather: {context['turns'][-1]['weather']}
-        Injuries: {', '.join(context['turns'][-1]['injuries'])}
-        Remaining Turns: {context['turns'][-1]['remainingTurns']}
+        Health: {latest_turn.get('stats', {}).get('health', 100)}
+        Stamina: {latest_turn.get('stats', {}).get('stamina', 100)}
+        Hunger: {latest_turn.get('stats', {}).get('hunger', 100)}
+        Thirst: {latest_turn.get('stats', {}).get('thirst', 100)}
+        Location: {latest_turn.get('location', 'Unknown')}
+        Weather: {latest_turn.get('weather', 'Unknown')}
+        Injuries: {', '.join(latest_turn.get('injuries', []))}
+        Remaining Turns: {latest_turn.get('remainingTurns', 20)}
 
-        Last Player Action: {context['turns'][-1]['userDecision']['action']}
+        Current Player Action: {context.get('currentTurn', {}).get('action', 'None')}
 
         Generate the next game state as JSON:
-        {{
+        {
             "health": number,
             "stamina": number,
             "hunger": number,
@@ -726,17 +731,17 @@ def game_master(context, options=None):
             "weather": "current weather",
             "lastAction": "Description of what happened",
             "options": [  // Omit for hard difficulty
-                {{
+                {
                     "id": "option1",
                     "text": "Action description",
-                    "consequences": {{
+                    "consequences": {
                         "health": number,
                         "description": "What happens"
-                    }}
-                }},
+                    }
+                },
                 // 2-3 more options
             ]
-        }}
+        }
 
         REQUIREMENTS:
         1. Response in {language} language
@@ -763,7 +768,9 @@ def game_master(context, options=None):
         })
         
     except Exception as e:
-        print(f"Game master error: {str(e)}")
+        print(f"Game master error: {str(e)}", file=sys.stderr)
+        print(f"Full error details: {e.__class__.__name__}: {str(e)}", file=sys.stderr)
+        print(f"Context received: {context}", file=sys.stderr)
         return json.dumps({
             "success": False,
             "error": str(e)

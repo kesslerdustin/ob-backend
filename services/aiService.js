@@ -506,18 +506,21 @@ async function gameMaster(context, options = {}) {
             });
 
             pythonProcess.stderr.on('data', (data) => {
+                console.error('Python stderr:', data.toString('utf-8'));
                 errorString += data.toString('utf-8');
             });
 
             pythonProcess.on('close', (code) => {
                 if (code !== 0) {
-                    reject(new Error(`Python process exited with code ${code}`));
+                    console.error('Python process error:', errorString);
+                    reject(new Error(`Python process exited with code ${code}: ${errorString}`));
                     return;
                 }
 
                 try {
                     const jsonMatch = dataString.match(/\{[\s\S]*\}/);
                     if (!jsonMatch) {
+                        console.error('No JSON found in response. Full response:', dataString);
                         throw new Error('No JSON found in response');
                     }
                     
@@ -526,8 +529,15 @@ async function gameMaster(context, options = {}) {
                         reject(new Error(response.error || 'Failed to process game turn'));
                         return;
                     }
-                    resolve(response.text);
+                    
+                    // Parse the text field if it's a string
+                    const gameState = typeof response.text === 'string' ? 
+                        JSON.parse(response.text) : response.text;
+                        
+                    resolve(gameState);
                 } catch (error) {
+                    console.error('Parse error:', error);
+                    console.error('Raw data:', dataString);
                     reject(new Error('Failed to parse Python response'));
                 }
             });
