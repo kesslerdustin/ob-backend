@@ -7,6 +7,7 @@ import requests
 from io import BytesIO
 from dotenv import load_dotenv
 from google.genai.types import Tool, GenerateContentConfig, GoogleSearch
+from datetime import datetime
 
 load_dotenv()
 
@@ -693,7 +694,13 @@ def game_master(context, options=None):
         current_turn = context.get('currentTurn', {})
         
         # Ensure we're using the correct datetime from the latest turn
-        current_datetime = latest_turn.get('datetime') or context.get('datetime')
+        current_datetime = latest_turn.get('datetime') or context.get('currentDateTime')
+        
+        # Parse the datetime string to ensure proper format
+        try:
+            parsed_datetime = datetime.fromisoformat(current_datetime.replace('Z', '+00:00'))
+        except (ValueError, AttributeError):
+            parsed_datetime = datetime.utcnow()
         
         all_turns = context.get('turns', [])
 
@@ -865,6 +872,9 @@ def game_master(context, options=None):
         
         if not json_content:
             raise Exception("Failed to generate valid game state")
+
+        # When returning the response, ensure datetime is in correct ISO format
+        json_content['datetime'] = parsed_datetime.isoformat().replace('+00:00', 'Z')
 
         return json.dumps({
             "success": True,
