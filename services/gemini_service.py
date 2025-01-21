@@ -564,6 +564,64 @@ def generate_scenarios(location_info, options=None):
             "error": str(e)
         })
 
+def game_setup(settings, options=None):
+    """Generate game setup using Gemini 2.0"""
+    try:
+        options = json.loads(options) if isinstance(options, str) else options or {}
+        language = options.get('language', 'en')
+        
+        structured_prompt = f"""
+        Based on these game settings:
+        {json.dumps(settings, indent=2)}
+
+        Generate a game setup that includes:
+        1. A title for this adventure
+        2. An introduction paragraph (2-3 sentences) describing the initial situation
+        3. Two specific options for what the player can do next
+        4. A list of starting items based on the difficulty level
+
+        Return EXACTLY this JSON structure:
+        {{
+            "title": "Adventure title",
+            "introduction": "Detailed situation description",
+            "options": [
+                {{ "text": "Option 1 description", "type": "action" }},
+                {{ "text": "Option 2 description", "type": "action" }}
+            ],
+            "backpack": ["item1", "item2", "etc"]
+        }}
+
+        REQUIREMENTS:
+        1. Response must be in {language} language
+        2. Options should be logical based on the scenario and location
+        3. Backpack items should match the difficulty setting
+        4. Consider weather conditions and time of day in the description
+        5. Make the situation tense but not hopeless
+        """
+
+        response = client.models.generate_content(
+            model="gemini-2.0-flash-exp",
+            contents=structured_prompt
+        )
+        
+        # Extract JSON from response
+        json_content = extract_json_from_text(response.text)
+        
+        if not json_content:
+            raise Exception("Failed to generate valid game setup data")
+
+        return json.dumps({
+            "success": True,
+            "text": json_content
+        })
+        
+    except Exception as e:
+        print(f"Game setup generation error: {str(e)}")
+        return json.dumps({
+            "success": False,
+            "error": str(e)
+        })
+
 if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "text"
     prompt = sys.argv[2] if len(sys.argv) > 2 else "Hello, Gemini!"
@@ -586,6 +644,8 @@ if __name__ == "__main__":
         response = analyze_info(prompt, options)
     elif mode == "scenarios":
         response = generate_scenarios(prompt, options)
+    elif mode == "game_setup":
+        response = game_setup(prompt, options)
     else:
         response = generate_content(prompt)
     

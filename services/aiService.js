@@ -393,6 +393,53 @@ async function generateScenarios(locationInfo, options = {}) {
     });
 }
 
+async function gameSetup(settings, options = {}) {
+    return rateLimiter.enqueue(() => {
+        return new Promise((resolve, reject) => {
+            const pythonScript = path.join(__dirname, 'gemini_service.py');
+            
+            const optionsStr = JSON.stringify(options);
+            console.log('aiService generating game setup with settings:', settings);
+            
+            const pythonProcess = spawn('python', [
+                pythonScript,
+                'gamesetup',
+                JSON.stringify(settings),
+                'null',  // no image
+                optionsStr
+            ]);
+
+            let dataString = '';
+
+            pythonProcess.stdout.on('data', (data) => {
+                dataString += data.toString();
+            });
+
+            pythonProcess.stderr.on('data', (data) => {
+                console.error(`Python Error: ${data}`);
+            });
+
+            pythonProcess.on('close', (code) => {
+                if (code !== 0) {
+                    reject(new Error(`Python process exited with code ${code}`));
+                    return;
+                }
+                
+                try {
+                    const response = JSON.parse(dataString);
+                    if (response.success) {
+                        resolve(response.text);
+                    } else {
+                        reject(new Error(response.error));
+                    }
+                } catch (error) {
+                    reject(new Error('Failed to parse Python response'));
+                }
+            });
+        });
+    });
+}
+
 module.exports = {
     generateContent,
     generateContentStream,
@@ -402,5 +449,6 @@ module.exports = {
     analyzeBiome,
     analyze_weather,
     analyzeInfo,
-    generateScenarios
+    generateScenarios,
+    gameSetup
 }; 

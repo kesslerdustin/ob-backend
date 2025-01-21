@@ -413,6 +413,35 @@ try {
     }
   });
 
+  // Add this new endpoint for game setup
+  app.post('/api/game/setup', express.json(), async (req, res) => {
+    try {
+      const gameSettings = req.body;
+      
+      if (!gameSettings) {
+        return res.status(400).json({ error: 'Game settings are required' });
+      }
+
+      const response = await aiService.gameSetup(
+        gameSettings,
+        { language: gameSettings.language || 'en' }
+      );
+
+      res.json({
+        success: true,
+        ...JSON.parse(response)
+      });
+
+    } catch (error) {
+      console.error('Game setup error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to generate game setup',
+        details: error.message
+      });
+    }
+  });
+
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
