@@ -570,15 +570,11 @@ def generate_scenarios(location_info, options=None):
 def game_setup(settings, options=None):
     """Generate game setup using Gemini 2.0"""
     try:
-        print(f"game_setup received raw settings: {settings}", file=sys.stderr)
-        # Parse settings if it's a string
         settings_dict = json.loads(settings) if isinstance(settings, str) else settings
-        print(f"game_setup parsed settings_dict: {settings_dict}", file=sys.stderr)
-        
-        # Extract settings from the correct structure
         settings_data = settings_dict.get('settings', {})
         language = settings_dict.get('language', 'en')
-        print(f"game_setup extracted: language={language}, settings_data={settings_data}", file=sys.stderr)
+        
+        print(f"Game setup generating content in language: {language}", file=sys.stderr)
         
         # Modify the options generation based on difficulty
         difficulty = settings_data.get('difficulty', {}).get('id', 'normal')
@@ -617,7 +613,8 @@ def game_setup(settings, options=None):
         else:
             # Normal difficulty format
             formatted_settings = f"""
-            Based on these game settings, generate an immersive survival scenario:
+            Based on these game settings, generate an immersive survival scenario.
+            IMPORTANT: ALL TEXT MUST BE IN {language.upper()} LANGUAGE.
             
             Date and Time: {settings_data.get('datetime', '')}
             Location: {settings_data.get('location', {}).get('name', 'Unknown')}

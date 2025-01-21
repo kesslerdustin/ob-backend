@@ -394,6 +394,8 @@ async function generateScenarios(locationInfo, options = {}) {
 }
 
 async function gameSetup(settings, options = {}) {
+    console.log('AI Service gameSetup - Language:', settings.language, 'Options:', options);
+    
     return rateLimiter.enqueue(() => {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
@@ -414,9 +416,10 @@ async function gameSetup(settings, options = {}) {
                     difficulty: settings.settings.difficulty,
                     scenario: settings.settings.scenario
                 },
-                language: settings.language || 'en'
+                language: settings.language || options.language || 'en'  // Ensure language is preserved
             };
 
+            console.log('Sending to Python with language:', cleanSettings.language);
             console.log('aiService sending game setup request:', JSON.stringify(cleanSettings));
             console.log('aiService options:', JSON.stringify(options));
             

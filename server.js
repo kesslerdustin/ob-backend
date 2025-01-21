@@ -425,6 +425,7 @@ try {
   app.post('/api/game/setup', express.json(), async (req, res) => {
     try {
       const gameSettings = req.body;
+      console.log('Game Setup Request - Language:', gameSettings.language);
       console.log('=== Game Setup Request Started ===');
       console.log('1. Received game settings:', JSON.stringify(gameSettings, null, 2));
       
