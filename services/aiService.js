@@ -398,22 +398,44 @@ async function gameSetup(settings, options = {}) {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
             
-            const optionsStr = JSON.stringify(options);
-            console.log('aiService generating game setup with settings:', settings);
+            // Clean and prepare the settings object
+            const cleanSettings = {
+                ...settings,
+                datetime: settings.datetime.toISOString(),
+                weather: {
+                    current: {
+                        main: settings.weather.current.main,
+                        weather: settings.weather.current.weather,
+                        wind: settings.weather.current.wind
+                    },
+                    isCustom: settings.weather.isCustom
+                },
+                location: {
+                    ...settings.location,
+                    coordinates: {
+                        latitude: Number(settings.location.coordinates.latitude),
+                        longitude: Number(settings.location.coordinates.longitude)
+                    }
+                }
+            };
+
+            console.log('aiService sending game setup request:', {
+                settings: cleanSettings,
+                options
+            });
             
             const pythonProcess = spawn('python', [
                 pythonScript,
                 'game_setup',
-                JSON.stringify(settings),
+                JSON.stringify(cleanSettings),
                 'null',  // no image
-                optionsStr
+                JSON.stringify(options)
             ]);
 
             let dataString = '';
 
             pythonProcess.stdout.on('data', (data) => {
                 dataString += data.toString();
-                console.log('Python output:', data.toString());
             });
 
             pythonProcess.stderr.on('data', (data) => {
@@ -422,21 +444,19 @@ async function gameSetup(settings, options = {}) {
 
             pythonProcess.on('close', (code) => {
                 if (code !== 0) {
-                    console.error(`Python process exited with code ${code}`);
                     reject(new Error(`Python process exited with code ${code}`));
                     return;
                 }
                 
                 try {
-                    console.log('Raw Python response:', dataString);
                     const response = JSON.parse(dataString);
                     if (response.success) {
                         resolve(response.text);
                     } else {
-                        reject(new Error(response.error || 'Unknown error'));
+                        reject(new Error(response.error || 'Unknown error in game setup'));
                     }
                 } catch (error) {
-                    console.error('Parse error:', error);
+                    console.error('Parse error:', error, 'Raw data:', dataString);
                     reject(new Error('Failed to parse Python response'));
                 }
             });
