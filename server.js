@@ -427,9 +427,18 @@ try {
         { language: gameSettings.language || 'en' }
       );
 
+      // Parse the response more carefully
+      const parsedResponse = JSON.parse(response);
+      if (!parsedResponse.success) {
+        throw new Error(parsedResponse.error || 'Failed to generate game setup');
+      }
+
+      // The text field contains our JSON string
+      const gameData = JSON.parse(parsedResponse.text);
+      
       res.json({
         success: true,
-        ...JSON.parse(response)
+        scenarios: gameData
       });
 
     } catch (error) {

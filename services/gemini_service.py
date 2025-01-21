@@ -572,7 +572,7 @@ def game_setup(settings, options=None):
         
         structured_prompt = f"""
         Based on these game settings:
-        {json.dumps(settings, indent=2)}
+        {settings}
 
         Generate a game setup that includes:
         1. A title for this adventure
