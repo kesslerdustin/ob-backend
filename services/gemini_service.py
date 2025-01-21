@@ -567,20 +567,25 @@ def generate_scenarios(location_info, options=None):
 def game_setup(settings, options=None):
     """Generate game setup using Gemini 2.0"""
     try:
+        # Parse settings if it's a string
         settings_dict = json.loads(settings) if isinstance(settings, str) else settings
-        options = json.loads(options) if isinstance(options, str) else options or {}
-        language = settings_dict.get('language', 'en')
+        
+        # Extract settings from the correct structure
+        settings_data = settings_dict.get('settings', {})
         
         # Format the settings into a more readable prompt
         formatted_settings = f"""
-        Date and Time: {settings_dict.get('datetime', '')}
-        Location: {settings_dict.get('location', {}).get('name', 'Unknown')}
-        Coordinates: {settings_dict.get('location', {}).get('coordinates', {})}
-        Elevation: {settings_dict.get('location', {}).get('elevation', 0)}m
-        Weather: {settings_dict.get('weather', '')}
-        Difficulty: {settings_dict.get('difficulty', {}).get('label', 'Normal')}
-        Scenario: {settings_dict.get('scenario', {}).get('details', {}).get('description', '')}
+        Date and Time: {settings_data.get('datetime', '')}
+        Location: {settings_data.get('location', {}).get('name', 'Unknown')}
+        Coordinates: Lat {settings_data.get('location', {}).get('coordinates', {}).get('latitude', 0)}, 
+                    Long {settings_data.get('location', {}).get('coordinates', {}).get('longitude', 0)}
+        Elevation: {settings_data.get('location', {}).get('elevation', 0)}m
+        Weather: {settings_data.get('weather', '')}
+        Difficulty: {settings_data.get('difficulty', {}).get('label', 'Normal')}
+        Scenario: {settings_data.get('scenario', {}).get('details', {}).get('description', '')}
         """
+        
+        language = settings_dict.get('language', 'en')
         
         structured_prompt = f"""
         Based on these game settings:
@@ -590,7 +595,7 @@ def game_setup(settings, options=None):
         1. A dramatic title for this adventure
         2. A detailed introduction paragraph (2-3 sentences) describing the initial situation
         3. Three specific options for what the player can do next
-        4. A list of starting items based on the difficulty level ({settings_dict.get('difficulty', {}).get('id', 'normal')})
+        4. A list of starting items based on the difficulty level ({settings_data.get('difficulty', {}).get('id', 'normal')})
 
         Return EXACTLY this JSON structure:
         {{
