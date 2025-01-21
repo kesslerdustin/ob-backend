@@ -403,7 +403,7 @@ async function gameSetup(settings, options = {}) {
             
             const pythonProcess = spawn('python', [
                 pythonScript,
-                'gamesetup',
+                'game_setup',
                 JSON.stringify(settings),
                 'null',  // no image
                 optionsStr
@@ -413,6 +413,7 @@ async function gameSetup(settings, options = {}) {
 
             pythonProcess.stdout.on('data', (data) => {
                 dataString += data.toString();
+                console.log('Python output:', data.toString());
             });
 
             pythonProcess.stderr.on('data', (data) => {
@@ -421,18 +422,21 @@ async function gameSetup(settings, options = {}) {
 
             pythonProcess.on('close', (code) => {
                 if (code !== 0) {
+                    console.error(`Python process exited with code ${code}`);
                     reject(new Error(`Python process exited with code ${code}`));
                     return;
                 }
                 
                 try {
+                    console.log('Raw Python response:', dataString);
                     const response = JSON.parse(dataString);
                     if (response.success) {
                         resolve(response.text);
                     } else {
-                        reject(new Error(response.error));
+                        reject(new Error(response.error || 'Unknown error'));
                     }
                 } catch (error) {
+                    console.error('Parse error:', error);
                     reject(new Error('Failed to parse Python response'));
                 }
             });
