@@ -590,7 +590,7 @@ async function gameSummary(context, options = {}) {
                         return;
                     }
                     
-                    resolve(response.text);
+                    resolve(response);
                 } catch (error) {
                     console.error('Parse error:', error);
                     reject(new Error('Failed to parse response'));

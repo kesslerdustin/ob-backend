@@ -522,28 +522,29 @@ try {
   // Add this new endpoint for game summary
   app.post('/api/game/summary', express.json(), async (req, res) => {
     try {
-      console.log('Received summary request:', req.body); // Add this debug log
-      const { context, language } = req.body;
-      
-      if (!context) {
-        return res.status(400).json({ error: 'Game context is required' });
-      }
+        console.log('Received summary request:', req.body);
+        const { context, language } = req.body;
+        
+        if (!context) {
+            return res.status(400).json({ error: 'Game context is required' });
+        }
 
-      console.log('Calling aiService.gameSummary with:', { context, language }); // Add this debug log
-      const response = await aiService.gameSummary(context, { language });
-      console.log('Got response from aiService:', response); // Add this debug log
+        console.log('Calling aiService.gameSummary with:', { context, language });
+        const response = await aiService.gameSummary(context, { language });
+        console.log('Got response from aiService:', response);
 
-      res.json({
-        success: true,
-        summary: response
-      });
+        // Pass through the response structure from gemini_service.py
+        res.json({
+            success: true,
+            summary: response.text  // Use response.text from the Python service
+        });
     } catch (error) {
-      console.error('Game summary error:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Failed to generate game summary',
-        details: error.message
-      });
+        console.error('Game summary error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to generate game summary',
+            details: error.message
+        });
     }
   });
 
