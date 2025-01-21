@@ -702,6 +702,8 @@ def game_master(context, options=None):
         
         latest_turn = context.get('turns', [])[-1] if context.get('turns') else {}
         current_turn = context.get('currentTurn', {})
+        difficulty = context.get('difficulty', 'normal')
+        total_distance = latest_turn.get('totalDistance', 0)  # Track total distance walked
         
         # Ensure we're using the correct datetime from the latest turn
         current_datetime = latest_turn.get('datetime') or context.get('currentDateTime')
@@ -724,6 +726,7 @@ def game_master(context, options=None):
         Title: {context.get('gameName', 'Unknown')}
         Difficulty: {context.get('difficulty', 'normal')}
         Scenario: {context.get('scenarioDescription', '')}
+        Total Distance Traveled: {total_distance}km
         
         LOCATION DETAILS:
         Current Position: {latest_turn.get('location', 'Unknown')}
@@ -792,16 +795,24 @@ def game_master(context, options=None):
              * Walking/Hiking: 2-4 km/h depending on terrain
              * Gathering resources: 15-45 minutes
              * Building shelter: 1-3 hours
-             * Making fire: 15-60 minutes based on conditions
+             * Making fire: 15-60 minutes
              * Hunting/Fishing: 1-4 hours
              * Water collection/purification: 30-60 minutes
            - Update datetime based on realistic action duration
-           - Adjust hunger/thirst rates:
-             * -5 hunger per 4 hours
-             * -7 thirst per 3 hours
-             * Faster depletion during physical activity
-           - Track used/consumed inventory items
-           - Consider weather changes over time
+           - Track total distance traveled when moving
+           - Adjust hunger/thirst rates based on activity level and time:
+             * Light activity: -5 hunger per 4 hours, -7 thirst per 3 hours
+             * Moderate activity: -7 hunger per 3 hours, -10 thirst per 2 hours
+             * Heavy activity: -10 hunger per 2 hours, -15 thirst per hour
+             * Extreme conditions accelerate these rates
+           - Track resource degradation and consumption:
+             * Tools wear down with use
+             * Limited-use items (lighters, matches) deplete realistically
+             * Food/water supplies diminish with consumption
+           - Consider weather changes over time:
+             * Update weather after significant time passage (2+ hours)
+             * Account for day/night cycle weather patterns
+             * Include sudden weather changes when appropriate
            - Return this exact JSON structure:
            {{
                "isQuestion": false,
@@ -827,6 +838,7 @@ def game_master(context, options=None):
                    "elevation": NUMBER
                }},
                "datetime": "Updated datetime reflecting realistic action duration",
+               "totalDistance": NUMBER (total km traveled),
                "hasGameEnded": true/false,
                "gameEndReason": "Detailed explanation if game ended, or null",
                "options": [
@@ -838,14 +850,17 @@ def game_master(context, options=None):
                            "description": "Realistic outcome based on survival expertise"
                        }}
                    }},
-                   // 2-3 more options (omit for hard difficulty)
+                   // 2-3 more options (ONLY for normal/easy difficulty)
                ],
-               "backpack": ["Updated inventory reflecting used items"]
+               "backpack": ["Updated inventory reflecting used/depleted items"]
            }}
 
         8. For ACTIONS, apply realistic survival mechanics:
            - Calculate precise energy expenditure
-           - Track tool degradation and resource consumption
+           - Track tool degradation and resource consumption realistically:
+             * Tools break or wear out with repeated use
+             * Limited-use items deplete permanently
+             * No infinite resources or "magic refills"
            - Consider terrain difficulty and elevation changes
            - Factor in weather effects on activities
            - Apply realistic injury risks
@@ -858,19 +873,30 @@ def game_master(context, options=None):
              * Resource depletion
              * Turns exhausted
 
-        9. Maintain Realism:
+        9. Maintain Realism and Progression:
            - Actions must follow real-world physics and survival logic
            - No "lucky" discoveries or convenient solutions
-           - Weather and environmental conditions remain consistent
+           - Weather and environmental conditions change naturally
            - Injuries persist and require proper treatment
-           - Resources deplete naturally
+           - Resources deplete permanently
            - Time passes realistically
+           - Failed attempts should have consequences:
+             * Tools/items can break or be lost
+             * Energy/resources are wasted
+             * Situation may worsen
+           - Success/failure should reflect player strategy:
+             * Better preparation increases success chance
+             * Poor choices lead to complications
+             * Repeated failures without new approach lead to worse outcomes
 
-        10. When asking for clarification:
-           - Don't consume a turn
-           - Provide specific options when relevant
-           - Explain why more detail is needed
-           - Focus on HOW rather than WHAT the player wants to do
+        10. Difficulty-Specific Rules:
+            For HARD difficulty:
+            - NO options array in response
+            - NO utilities/tools in starting inventory
+            - Higher resource consumption rates
+            - More frequent weather changes
+            - Stricter injury/health penalties
+            - Require more detailed player actions
 
         Current Goals:
         Main Goal: {context.get('goals', {}).get('main', '')}
@@ -903,15 +929,16 @@ def game_master(context, options=None):
         if not json_content:
             raise Exception("Failed to generate valid game state")
 
+        # Ensure no options array for hard difficulty
+        if difficulty == 'hard' and 'options' in json_content:
+            del json_content['options']
+
         # The AI will have calculated the new time based on the action
-        # No need to modify it here - just ensure it's in the correct format
         if 'datetime' in json_content:
             try:
-                # Validate the AI's datetime format
                 test_date = datetime.fromisoformat(json_content['datetime'].replace('Z', '+00:00'))
                 json_content['datetime'] = test_date.isoformat().replace('+00:00', 'Z')
             except (ValueError, AttributeError):
-                # If AI provided invalid datetime, use the current one
                 json_content['datetime'] = parsed_datetime.isoformat().replace('+00:00', 'Z')
 
         return json.dumps({
