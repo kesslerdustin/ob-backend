@@ -584,7 +584,7 @@ def game_setup(settings_data, options=None):
         scenario_desc = (settings_data.get('scenario', {}).get('description') if scenario_type == 'custom' 
                         else settings_data.get('scenario', {}).get('details', {}).get('description', ''))
 
-        # Define difficulty requirements as a separate string
+        # Define difficulty requirements first
         difficulty_requirements = {
             'easy': """
                 - health/hunger/thirst/stamina: Start at 100
@@ -607,7 +607,10 @@ def game_setup(settings_data, options=None):
                 - options: NO options array (player must type their own actions)
                 - introduction: Challenging, tense tone
             """
-        }.get(difficulty, difficulty_requirements['normal'])  # Default to normal if invalid difficulty
+        }
+        
+        # Get the requirements for the current difficulty, defaulting to normal
+        current_difficulty_reqs = difficulty_requirements.get(difficulty, difficulty_requirements['normal'])
         
         formatted_settings = f"""
         Generate a survival scenario based on these settings and requirements:
@@ -647,7 +650,7 @@ def game_setup(settings_data, options=None):
         
         DIFFICULTY REQUIREMENTS:
         For difficulty = '{difficulty}':
-        {difficulty_requirements}
+        {current_difficulty_reqs}
 
         CRITICAL REQUIREMENTS:
         1. Response must be in {language} language
