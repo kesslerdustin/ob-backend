@@ -644,8 +644,21 @@ def game_setup(settings_data, options=None):
                 "completedSubgoals": []
             }},
             "totalDistance": 0,
-            "options": [<options>],
-            "backpack": [<items>]
+            "options": [
+                {{
+                    "text": "Description of first choice (15-30 words)",
+                    "nextScene": "uniqueSceneId1"
+                }},
+                {{
+                    "text": "Description of second choice (15-30 words)",
+                    "nextScene": "uniqueSceneId2"
+                }},
+                {{
+                    "text": "Description of third choice (15-30 words)",
+                    "nextScene": "uniqueSceneId3"
+                }}
+            ],
+            "backpack": ["item1", "item2", "item3"]
         }}
         
         DIFFICULTY REQUIREMENTS:
@@ -659,6 +672,10 @@ def game_setup(settings_data, options=None):
         4. Goals should reflect scenario type and difficulty
         5. All text fields must use proper grammar and punctuation
         6. Weather and location should significantly influence the scenario
+        7. ALWAYS include exactly 3 options for 'easy' and 'normal' difficulty
+        8. Each option must have both 'text' and 'nextScene' properties
+        9. nextScene IDs should be unique, lowercase, no spaces (e.g., 'highGround', 'findWater', 'buildShelter')
+        10. Option text should be clear and actionable, describing the choice in detail
         """
 
         print(f"game_setup formatted prompt: {formatted_settings}", file=sys.stderr)
