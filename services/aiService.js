@@ -21,21 +21,31 @@ async function generateContent(prompt, context = '') {
 
             pythonProcess.on('close', (code) => {
                 if (code !== 0) {
-                    reject(new Error(`Python process exited with code ${code}`));
+                    reject(new Error(errorString || 'Process failed'));
                     return;
                 }
-                
+
                 try {
-                    const response = JSON.parse(dataString);
-                    if (response.success) {
-                        resolve(response.text);
-                    } else {
-                        reject(new Error(response.error));
+                    const jsonMatch = dataString.match(/\{[\s\S]*\}/);
+                    if (!jsonMatch) {
+                        reject(new Error('Invalid response format'));
+                        return;
                     }
+                    
+                    const response = JSON.parse(jsonMatch[0]);
+                    if (!response.success) {
+                        reject(new Error(response.error || 'Failed to generate summary'));
+                        return;
+                    }
+                    
+                    // Pass through the entire response object
+                    resolve(response);  // Changed from response.text
                 } catch (error) {
-                    reject(new Error('Failed to parse Python response'));
+                    console.error('Parse error:', error);
+                    reject(new Error('Failed to parse response'));
                 }
             });
+       
         });
     });
 }

@@ -533,11 +533,8 @@ try {
         const response = await aiService.gameSummary(context, { language });
         console.log('Got response from aiService:', response);
 
-        // Pass through the response structure from gemini_service.py
-        res.json({
-            success: true,
-            summary: response.text  // Use response.text from the Python service
-        });
+        // Pass through the entire response structure
+        res.json(response);  // Changed from constructing new object
     } catch (error) {
         console.error('Game summary error:', error);
         res.status(500).json({
