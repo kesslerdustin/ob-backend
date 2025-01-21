@@ -628,7 +628,7 @@ def game_setup(settings_data, options=None):
         Return EXACTLY this JSON structure:
         {{
             "title": "Scenario Title",
-            "introduction": "Brief scenario setup (2-3 sentences)",
+            "introduction": "Introduction to the scenario, description of the situation and surroundings (5-7 sentences)",
             "health": <health>,
             "hunger": <hunger>,
             "thirst": <thirst>,
@@ -790,18 +790,18 @@ def game_master(context, options=None):
         7. If input is an ACTION:
            - Process it as a game turn with detailed survival mechanics
            - Calculate precise time requirements for actions:
-             * Walking/Hiking: 2-4 km/h depending on terrain
-             * Gathering resources: 15-45 minutes
-             * Building shelter: 1-3 hours
-             * Making fire: 15-60 minutes
-             * Hunting/Fishing: 1-4 hours
-             * Water collection/purification: 30-60 minutes
+             * Walking/Hiking: 2-4 km/h depending on terrain and player's stamina
+             * Gathering resources: 15-45 minutes - but adjust according terrain, weather, and player's stamina
+             * Building shelter: 1-3 hours - but adjust according terrain, weather, and player's stamina
+             * Making fire: 15-60 minutes - but adjust according terrain, weather, and player's stamina
+             * Hunting/Fishing: 1-4 hours - but adjust according terrain, weather, and player's stamina
+             * Water collection/purification: 30-60 minutes - but adjust according terrain, weather, and player's stamina
            - Update datetime based on realistic action duration
            - Track total distance traveled when moving
            - Adjust hunger/thirst rates based on activity level and time:
-             * Light activity: -5 hunger per 4 hours, -7 thirst per 3 hours
-             * Moderate activity: -7 hunger per 3 hours, -10 thirst per 2 hours
-             * Heavy activity: -10 hunger per 2 hours, -15 thirst per hour
+             * Light activity: -5 hunger per 4 hours, -7 thirst per 3 hours - adjust according terrain, weather, and context history
+             * Moderate activity: -7 hunger per 3 hours, -10 thirst per 2 hours - adjust according terrain, weather, and context history
+             * Heavy activity: -10 hunger per 2 hours, -15 thirst per hour - adjust according terrain, weather, and context history 
              * Extreme conditions accelerate these rates
            - Track resource degradation and consumption:
              * Tools wear down with use
