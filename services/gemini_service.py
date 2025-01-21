@@ -976,7 +976,6 @@ def game_summary(context, options=None):
         
         structured_prompt = f"""
         You are a game master summarizing an adventure. Create a JSON summary of this game with the following structure:
-
         {{
             "title": "Adventure Title",
             "summary": "Main summary text (3-4 paragraphs)",
@@ -1019,9 +1018,10 @@ def game_summary(context, options=None):
         if not json_content:
             raise Exception("Failed to generate valid JSON summary")
 
+        # Return the summary directly in the success response
         return json.dumps({
             "success": True,
-            "text": json_content
+            "summary": json_content  # Changed from "text" to "summary"
         })
         
     except Exception as e:
