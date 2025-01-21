@@ -634,6 +634,15 @@ def game_setup(settings, options=None):
                 "hunger": 100,
                 "thirst": 100,
                 "stamina": 100,
+                "goals": {{
+                    "main": "Clear main objective for the adventure",
+                    "subgoals": [
+                        "Specific task 1",
+                        "Specific task 2",
+                        "Specific task 3"
+                    ],
+                    "completedSubgoals": []
+                }},
                 "options": [
                     {{
                         "id": "option1",
@@ -861,6 +870,26 @@ def game_master(context, options=None):
            - Provide specific options when relevant
            - Explain why more detail is needed
            - Focus on HOW rather than WHAT the player wants to do
+
+        Current Goals:
+        Main Goal: {context.get('goals', {}).get('main', '')}
+        Subgoals: {', '.join(context.get('goals', {}).get('subgoals', []))}
+        Completed Subgoals: {', '.join(context.get('goals', {}).get('completedSubgoals', []))}
+
+        CRITICAL TIME REQUIREMENTS:
+        - Calculate realistic time passage based on the action
+        - Walking/Hiking: 2-4 km/h depending on terrain
+        - Resource gathering: 15-45 minutes
+        - Building shelter: 1-3 hours
+        - Making fire: 15-60 minutes
+        - Hunting/Fishing: 1-4 hours
+        - Water collection: 30-60 minutes
+        - Return the new time in the response considering:
+          * Distance to destinations
+          * Terrain difficulty
+          * Weather conditions
+          * Player's current stamina
+          * Time needed for the specific action
         """
 
         response = client.models.generate_content(
@@ -873,8 +902,16 @@ def game_master(context, options=None):
         if not json_content:
             raise Exception("Failed to generate valid game state")
 
-        # When returning the response, ensure datetime is in correct ISO format
-        json_content['datetime'] = parsed_datetime.isoformat().replace('+00:00', 'Z')
+        # The AI will have calculated the new time based on the action
+        # No need to modify it here - just ensure it's in the correct format
+        if 'datetime' in json_content:
+            try:
+                # Validate the AI's datetime format
+                test_date = datetime.fromisoformat(json_content['datetime'].replace('Z', '+00:00'))
+                json_content['datetime'] = test_date.isoformat().replace('+00:00', 'Z')
+            except (ValueError, AttributeError):
+                # If AI provided invalid datetime, use the current one
+                json_content['datetime'] = parsed_datetime.isoformat().replace('+00:00', 'Z')
 
         return json.dumps({
             "success": True,
