@@ -685,6 +685,93 @@ def game_setup(settings, options=None):
             "error": str(e)
         })
 
+def game_master(context, options=None):
+    """Process game turns using Gemini 2.0"""
+    try:
+        options = json.loads(options) if isinstance(options, str) else options or {}
+        language = options.get('language', 'en')
+        
+        # Format the context history for the AI
+        turns_history = "\n".join([
+            f"Turn {turn['turnNumber']}: {turn['adventureText']} (Player: {turn['userDecision']['type']} - {turn['userDecision']['action']})"
+            for turn in context.get('turns', [])
+        ])
+        
+        structured_prompt = f"""
+        You are the game master for this survival adventure:
+        Game: {context.get('gameName', 'Unknown')}
+        Difficulty: {context.get('difficulty', 'normal')}
+        Initial Scenario: {context.get('scenarioDescription', '')}
+
+        Game History:
+        {turns_history}
+
+        Current Status (Last Turn):
+        Health: {context['turns'][-1]['health']}
+        Stamina: {context['turns'][-1]['stamina']}
+        Hunger: {context['turns'][-1]['hunger']}
+        Thirst: {context['turns'][-1]['thirst']}
+        Location: {context['turns'][-1]['location']}
+        Weather: {context['turns'][-1]['weather']}
+        Injuries: {', '.join(context['turns'][-1]['injuries'])}
+        Remaining Turns: {context['turns'][-1]['remainingTurns']}
+
+        Last Player Action: {context['turns'][-1]['userDecision']['action']}
+
+        Generate the next game state as JSON:
+        {{
+            "health": number,
+            "stamina": number,
+            "hunger": number,
+            "thirst": number,
+            "injuries": ["injury1", "injury2"],
+            "turnsRemaining": number,
+            "weather": "current weather",
+            "lastAction": "Description of what happened",
+            "options": [  // Omit for hard difficulty
+                {{
+                    "id": "option1",
+                    "text": "Action description",
+                    "consequences": {{
+                        "health": number,
+                        "description": "What happens"
+                    }}
+                }},
+                // 2-3 more options
+            ]
+        }}
+
+        REQUIREMENTS:
+        1. Response in {language} language
+        2. Maintain game difficulty ({context.get('difficulty', 'normal')})
+        3. Consider weather changes
+        4. Update stats realistically
+        5. If difficulty is 'hard', omit options array
+        6. Keep lastAction description under 3 sentences
+        """
+
+        response = client.models.generate_content(
+            model="gemini-2.0-flash-exp",
+            contents=structured_prompt
+        )
+        
+        json_content = extract_json_from_text(response.text)
+        
+        if not json_content:
+            raise Exception("Failed to generate valid game state")
+
+        return json.dumps({
+            "success": True,
+            "text": json_content
+        })
+        
+    except Exception as e:
+        print(f"Game master error: {str(e)}")
+        return json.dumps({
+            "success": False,
+            "error": str(e)
+        })
+
 if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "text"
     prompt = sys.argv[2] if len(sys.argv) > 2 else "Hello, Gemini!"
@@ -709,6 +796,8 @@ if __name__ == "__main__":
         response = generate_scenarios(prompt, options)
     elif mode == "game_setup":
         response = game_setup(prompt, options)
+    elif mode == "game_master":
+        response = game_master(prompt, options)
     else:
         response = generate_content(prompt)
     

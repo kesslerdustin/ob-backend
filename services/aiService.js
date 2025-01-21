@@ -480,6 +480,58 @@ async function gameSetup(settings, options = {}) {
     });
 }
 
+async function gameMaster(context, options = {}) {
+    return rateLimiter.enqueue(() => {
+        return new Promise((resolve, reject) => {
+            const pythonScript = path.join(__dirname, 'gemini_service.py');
+            
+            console.log('aiService sending game master request:', JSON.stringify(context));
+            
+            const pythonProcess = spawn('python', [
+                pythonScript,
+                'game_master',
+                JSON.stringify(context),
+                'null',  // no image
+                JSON.stringify(options)
+            ], { env: { ...process.env, PYTHONIOENCODING: 'utf-8' } });
+
+            let dataString = '';
+            let errorString = '';
+
+            pythonProcess.stdout.on('data', (data) => {
+                dataString += data.toString('utf-8');
+            });
+
+            pythonProcess.stderr.on('data', (data) => {
+                errorString += data.toString('utf-8');
+            });
+
+            pythonProcess.on('close', (code) => {
+                if (code !== 0) {
+                    reject(new Error(`Python process exited with code ${code}`));
+                    return;
+                }
+
+                try {
+                    const jsonMatch = dataString.match(/\{[\s\S]*\}/);
+                    if (!jsonMatch) {
+                        throw new Error('No JSON found in response');
+                    }
+                    
+                    const response = JSON.parse(jsonMatch[0]);
+                    if (!response.success) {
+                        reject(new Error(response.error || 'Failed to process game turn'));
+                        return;
+                    }
+                    resolve(response.text);
+                } catch (error) {
+                    reject(new Error('Failed to parse Python response'));
+                }
+            });
+        });
+    });
+}
+
 module.exports = {
     generateContent,
     generateContentStream,
@@ -490,5 +542,6 @@ module.exports = {
     analyze_weather,
     analyzeInfo,
     generateScenarios,
-    gameSetup
+    gameSetup,
+    gameMaster
 }; 

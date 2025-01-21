@@ -492,6 +492,32 @@ try {
     }
   });
 
+  // Add this new endpoint for game master
+  app.post('/api/game/master', express.json(), async (req, res) => {
+    try {
+      const { context, language } = req.body;
+      
+      if (!context) {
+        return res.status(400).json({ error: 'Game context is required' });
+      }
+
+      const response = await aiService.gameMaster(context, { language });
+
+      res.json({
+        success: true,
+        gameState: response
+      });
+
+    } catch (error) {
+      console.error('Game master error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to process game turn',
+        details: error.message
+      });
+    }
+  });
+
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
