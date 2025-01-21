@@ -426,19 +426,19 @@ async function gameSetup(settings, options = {}) {
                 JSON.stringify(cleanSettings),
                 'null',  // no image
                 JSON.stringify(options)
-            ]);
+            ], { env: { ...process.env, PYTHONIOENCODING: 'utf-8' } });
 
             let dataString = '';
             let errorString = '';
 
             pythonProcess.stdout.on('data', (data) => {
-                const chunk = data.toString();
+                const chunk = data.toString('utf-8');
                 console.log('Python stdout chunk:', chunk);
                 dataString += chunk;
             });
 
             pythonProcess.stderr.on('data', (data) => {
-                const chunk = data.toString();
+                const chunk = data.toString('utf-8');
                 console.log('Python stderr chunk:', chunk);
                 errorString += chunk;
             });

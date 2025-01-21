@@ -20,6 +20,14 @@ const PORT = process.env.PORT || 3000;
 const USER_AGENT = 'OutdoorBible/1.0 (https://outdoor-bible.com; contact@outdoor-bible.com)';
 
 app.use(cors());
+app.use(express.json({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
+
+// Add middleware to ensure proper character encoding
+app.use((req, res, next) => {
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    next();
+});
 
 try {
   console.log('Attempting to initialize Firebase Admin SDK...');
@@ -453,30 +461,11 @@ try {
         throw new Error(response.error || 'Failed to generate game setup');
       }
 
-      // Parse the text field if it's a string
-      let gameData;
-      try {
-        gameData = typeof response.text === 'string' ? JSON.parse(response.text) : response.text;
-        console.log('5. Successfully parsed game data:', {
-          hasTitle: !!gameData?.title,
-          hasIntroduction: !!gameData?.introduction,
-          hasOptions: Array.isArray(gameData?.options),
-          dataPreview: JSON.stringify(gameData).substring(0, 200) + '...'
-        });
-      } catch (parseError) {
-        console.error('5. Failed to parse response.text:', {
-          error: parseError.message,
-          textPreview: typeof response.text === 'string' ? 
-            response.text.substring(0, 200) + '...' : 
-            'response.text is not a string'
-        });
-        throw parseError;
-      }
-      
-      console.log('6. Sending successful response to client');
+      // Ensure proper encoding in the response
       res.json({
         success: true,
-        scenarios: gameData
+        scenarios: typeof response.text === 'string' ? 
+            JSON.parse(response.text) : response.text
       });
 
     } catch (error) {

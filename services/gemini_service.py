@@ -36,22 +36,25 @@ def extract_json_from_text(text):
             # Extract potential JSON string
             json_str = text[start_idx:end_idx + 1]
             
-            # Remove any non-JSON text that might be inside
-            # This regex pattern matches common natural language interruptions
-            import re
+            # Ensure proper encoding of special characters
+            json_str = json_str.encode('utf-8').decode('utf-8')
+            
             # Remove any text that's not part of valid JSON structure
+            import re
             cleaned = re.sub(r'(?<![\{\[,:\s])"(?![,:\}\]\s]).*?(?<![\{\[,:\s])"(?![,:\}\]\s])', '', json_str)
-            # Remove any remaining non-JSON characters
-            cleaned = re.sub(r'[^\{\}\[\]",:0-9a-zA-Z\s_-]', '', cleaned)
-            # Fix any double spaces
+            cleaned = re.sub(r'[^\{\}\[\]",:0-9a-zA-Z\s_\-äöüßÄÖÜ]', '', cleaned)  # Added German characters
             cleaned = re.sub(r'\s+', ' ', cleaned)
             
             # Try to parse the cleaned string
             return json.loads(cleaned)
     except Exception as e:
-        print(f"JSON extraction failed: {e}")
-        print(f"Original text: {text}")
+        print(f"JSON extraction failed: {e}", file=sys.stderr)
+        print(f"Original text: {text}", file=sys.stderr)
         return None
+
+def json_dumps_utf8(obj):
+    """Helper function to ensure proper UTF-8 encoding in JSON responses"""
+    return json.dumps(obj, ensure_ascii=False)
 
 def analyze_image(prompt, image_path, options=None):
     """Vision-based analysis with raw text output"""
