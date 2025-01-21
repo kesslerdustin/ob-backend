@@ -843,7 +843,8 @@ def game_master(context, options=None):
                             - How long it took
                             - Environmental challenges
                             - Use of tools/inventory
-                            - Impact on survival situation",
+                            - Impact on survival situation
+                            - progress the story",
                "location": {{
                    "name": "Detailed location description",
                    "coordinates": {{
