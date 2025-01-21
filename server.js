@@ -427,14 +427,13 @@ try {
         { language: gameSettings.language || 'en' }
       );
 
-      // Parse the response more carefully
-      const parsedResponse = JSON.parse(response);
-      if (!parsedResponse.success) {
-        throw new Error(parsedResponse.error || 'Failed to generate game setup');
+      // The response is already parsed JSON
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to generate game setup');
       }
 
-      // The text field contains our JSON string
-      const gameData = JSON.parse(parsedResponse.text);
+      // Parse the text field if it's a string
+      const gameData = typeof response.text === 'string' ? JSON.parse(response.text) : response.text;
       
       res.json({
         success: true,

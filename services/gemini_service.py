@@ -583,44 +583,13 @@ def game_setup(settings, options=None):
         Elevation: {settings_data.get('location', {}).get('elevation', 0)}m
         Weather: {settings_data.get('weather', '')}
         Difficulty: {settings_data.get('difficulty', {}).get('label', 'Normal')}
-        Scenario: {settings_data.get('scenario', '')}
-        """
-        
-        structured_prompt = f"""
-        Based on these game settings:
-        {formatted_settings}
-        
-        Generate an immersive survival game setup that includes:
-        1. A dramatic title for this adventure
-        2. A detailed introduction paragraph (2-3 sentences) describing the initial situation
-        3. Three specific options for what the player can do next
-        4. A list of starting items based on the difficulty level ({settings_data.get('difficulty', {}).get('id', 'normal')})
-
-        Return EXACTLY this JSON structure:
-        {{
-            "title": "Adventure title",
-            "introduction": "Detailed situation description",
-            "options": [
-                {{ "id": "option1", "text": "Option 1 description", "type": "action" }},
-                {{ "id": "option2", "text": "Option 2 description", "type": "action" }},
-                {{ "id": "option3", "text": "Option 3 description", "type": "action" }}
-            ],
-            "backpack": ["item1", "item2", "etc"]
-        }}
-
-        REQUIREMENTS:
-        1. Response must be in {language} language
-        2. Options should be logical based on the scenario and location
-        3. Backpack items should match the difficulty setting
-        4. Consider weather conditions and time of day in the description
-        5. Make the situation tense but not hopeless
-        6. Use realistic items for the backpack
-        7. Include environmental details from the location
+        Scenario: {settings_data.get('scenario', {}).get('details', {}).get('description', '')}
         """
 
+        # Generate response using the formatted settings
         response = client.models.generate_content(
             model="gemini-2.0-flash-exp",
-            contents=structured_prompt
+            contents=formatted_settings
         )
         
         # Extract JSON from response

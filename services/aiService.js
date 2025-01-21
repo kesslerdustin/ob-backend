@@ -398,33 +398,22 @@ async function gameSetup(settings, options = {}) {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
             
-            // Clean and prepare the settings object with minimal data
+            // Clean and prepare the settings object
             const cleanSettings = {
-                datetime: settings.datetime ? new Date(settings.datetime).toISOString() : new Date().toISOString(),
-                location: {
-                    name: settings.location?.name || 'Unknown',
-                    coordinates: {
-                        latitude: Number(settings.location?.coordinates?.latitude || 0),
-                        longitude: Number(settings.location?.coordinates?.longitude || 0)
-                    },
-                    elevation: Number(settings.elevation || 0)
-                },
-                weather: {
-                    current: {
-                        temp: settings.weather?.currentWeather?.main?.temp || 20,
-                        humidity: settings.weather?.currentWeather?.main?.humidity || 50,
-                        visibility: settings.weather?.currentWeather?.visibility || 10000,
-                        wind: {
-                            speed: settings.weather?.currentWeather?.wind?.speed || 0,
-                            deg: settings.weather?.currentWeather?.wind?.deg || 0
+                settings: {
+                    datetime: settings.settings.datetime,
+                    location: {
+                        name: settings.settings.location?.name || 'Unknown',
+                        coordinates: {
+                            latitude: Number(settings.settings.location?.coordinates?.latitude || 0),
+                            longitude: Number(settings.settings.location?.coordinates?.longitude || 0)
                         },
-                        condition: settings.weather?.currentWeather?.weather?.[0]?.main || 'Clear',
-                        description: settings.weather?.currentWeather?.weather?.[0]?.description || 'Clear sky'
-                    }
+                        elevation: Number(settings.settings.location?.elevation || 0)
+                    },
+                    weather: settings.settings.weather,
+                    difficulty: settings.settings.difficulty,
+                    scenario: settings.settings.scenario
                 },
-                // Simplify difficulty to just the level string
-                difficulty: settings.difficulty?.level || 'normal',
-                scenario: settings.scenario || 'forest',
                 language: settings.language || 'en'
             };
 
@@ -456,11 +445,7 @@ async function gameSetup(settings, options = {}) {
                 
                 try {
                     const response = JSON.parse(dataString);
-                    if (response.success) {
-                        resolve(response.text);
-                    } else {
-                        reject(new Error(response.error || 'Unknown error in game setup'));
-                    }
+                    resolve(response); // Return the entire response object
                 } catch (error) {
                     console.error('Parse error:', error, 'Raw data:', dataString);
                     reject(new Error('Failed to parse Python response'));
