@@ -685,12 +685,10 @@ def game_setup(settings, options=None):
 def game_master(context, options=None):
     """Process game turns using Gemini 2.0"""
     try:
-        # Parse context if it's a string
         context = json.loads(context) if isinstance(context, str) else context
         options = json.loads(options) if isinstance(options, str) else options or {}
         language = options.get('language', 'en')
         
-        # Get the latest turn
         latest_turn = context.get('turns', [])[-1] if context.get('turns') else {}
         current_turn = context.get('currentTurn', {})
         
@@ -710,6 +708,7 @@ def game_master(context, options=None):
         - Thirst: {latest_turn.get('stats', {}).get('thirst', 100)}
         - Weather: {latest_turn.get('weather', 'Unknown')}
         - Location: {latest_turn.get('location', 'Unknown')}
+        - Turns Remaining: {latest_turn.get('remainingTurns', 20)}
         
         Player Action: {current_turn.get('action', 'None')}
 
@@ -723,6 +722,8 @@ def game_master(context, options=None):
             "turnsRemaining": number (0-20),
             "weather": "current weather description",
             "lastAction": "Description of what happened (2-3 sentences)",
+            "hasGameEnded": boolean,
+            "gameEndReason": "Reason for game end (rescue/death/out of turns/etc) or null if game hasn't ended",
             "options": [
                 {{
                     "id": "option1",
@@ -743,6 +744,12 @@ def game_master(context, options=None):
         3. If difficulty is 'hard', omit options array
         4. Keep lastAction under 3 sentences
         5. Maintain realistic consequences
+        6. Set hasGameEnded to true if any of these conditions are met:
+           - Health reaches 0 (death)
+           - Turns remaining reaches 0
+           - Player has been rescued
+           - Player has found help/civilization
+        7. When hasGameEnded is true, provide appropriate gameEndReason
         """
 
         response = client.models.generate_content(
@@ -750,7 +757,6 @@ def game_master(context, options=None):
             contents=structured_prompt
         )
         
-        # Extract JSON from the response
         json_content = extract_json_from_text(response.text)
         
         if not json_content:
