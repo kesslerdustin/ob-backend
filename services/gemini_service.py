@@ -995,7 +995,7 @@ def game_summary(context, options=None):
         You are a game master summarizing an adventure. Create a JSON summary of this game with the following structure:
         {{
             "title": "Adventure Title",
-            "summary": "Main summary text (3-4 paragraphs)",
+            "summary": "Main summary text (up to 3 paragraphs, shorter if short adventure, more detailed if long adventure. analytical but with charme but also honest)",
             "stats": {{
                 "finalHealth": {context.get('stats', {}).get('health', 0)},
                 "finalStamina": {context.get('stats', {}).get('stamina', 0)},
