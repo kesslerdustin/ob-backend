@@ -569,10 +569,10 @@ def generate_scenarios(location_info, options=None):
             "error": str(e)
         })
 
-def game_setup(settings, options=None):
+def game_setup(settings_data, options=None):
     """Generate game setup using Gemini 2.0"""
     try:
-        settings_dict = json.loads(settings) if isinstance(settings, str) else settings
+        settings_dict = json.loads(settings_data) if isinstance(settings_data, str) else settings_data
         settings_data = settings_dict.get('settings', {})
         language = settings_dict.get('language', 'en')
         
@@ -644,6 +644,7 @@ def game_setup(settings, options=None):
                     ],
                     "completedSubgoals": []
                 }},
+                "totalDistance": 0,
                 "options": [
                     {{
                         "id": "option1",
@@ -838,7 +839,12 @@ def game_master(context, options=None):
                    "elevation": NUMBER
                }},
                "datetime": "Updated datetime reflecting realistic action duration",
-               "totalDistance": NUMBER (total km traveled),
+               "totalDistance": NUMBER (total km traveled, accumulated from previous distance),
+               "goals": {{
+                   "main": "Main objective text",
+                   "subgoals": ["Subgoal 1", "Subgoal 2", "Subgoal 3"],
+                   "completedSubgoals": ["Completed subgoal 1"]
+               }},
                "hasGameEnded": true/false,
                "gameEndReason": "Detailed explanation if game ended, or null",
                "options": [
