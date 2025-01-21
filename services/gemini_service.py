@@ -583,6 +583,31 @@ def game_setup(settings_data, options=None):
         scenario_type = settings_data.get('scenario', {}).get('type', 'predefined')
         scenario_desc = (settings_data.get('scenario', {}).get('description') if scenario_type == 'custom' 
                         else settings_data.get('scenario', {}).get('details', {}).get('description', ''))
+
+        # Define difficulty requirements as a separate string
+        difficulty_requirements = {
+            'easy': """
+                - health/hunger/thirst/stamina: Start at 100
+                - injuries: Empty array
+                - backpack: 5-7 useful items
+                - options: Provide 3-4 clear, helpful options
+                - introduction: Friendly, informative tone
+            """,
+            'normal': """
+                - health/hunger/thirst/stamina: Start at 90-100
+                - injuries: Empty array
+                - backpack: 3-4 basic items
+                - options: Provide 2-3 realistic options
+                - introduction: Neutral, realistic tone
+            """,
+            'hard': """
+                - health/hunger/thirst/stamina: Start at 70-90
+                - injuries: Include 1 minor injury
+                - backpack: 1-2 basic items
+                - options: NO options array (player must type their own actions)
+                - introduction: Challenging, tense tone
+            """
+        }.get(difficulty, difficulty_requirements['normal'])  # Default to normal if invalid difficulty
         
         formatted_settings = f"""
         Generate a survival scenario based on these settings and requirements:
@@ -621,31 +646,8 @@ def game_setup(settings_data, options=None):
         }}
         
         DIFFICULTY REQUIREMENTS:
-        For difficulty = '{difficulty}', follow these rules:
-
-        {
-            'easy': '''
-            - health/hunger/thirst/stamina: Start at 100
-            - injuries: Empty array
-            - backpack: 5-7 useful items
-            - options: Provide 3-4 clear, helpful options
-            - introduction: Friendly, informative tone
-            ''',
-            'normal': '''
-            - health/hunger/thirst/stamina: Start at 90-100
-            - injuries: Empty array
-            - backpack: 3-4 basic items
-            - options: Provide 2-3 realistic options
-            - introduction: Neutral, realistic tone
-            ''',
-            'hard': '''
-            - health/hunger/thirst/stamina: Start at 70-90
-            - injuries: Include 1 minor injury
-            - backpack: 1-2 basic items
-            - options: NO options array (player must type their own actions)
-            - introduction: Challenging, tense tone
-            '''
-        }[difficulty]
+        For difficulty = '{difficulty}':
+        {difficulty_requirements}
 
         CRITICAL REQUIREMENTS:
         1. Response must be in {language} language
