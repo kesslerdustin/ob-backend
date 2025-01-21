@@ -584,56 +584,76 @@ def game_setup(settings, options=None):
         difficulty = settings_data.get('difficulty', {}).get('id', 'normal')
         
         if difficulty == 'hard':
-            # For hard difficulty, don't provide options
             formatted_settings = f"""
-            SPECIAL REQUIREMENTS FOR HARD DIFFICULTY:
-            1. Do not provide any options array
-            2. Make the introduction more challenging
-            3. Provide minimal survival items in backpack (max 2)
-            4. Include at least one injury or condition in the introduction
+            Generate a challenging survival scenario with these requirements:
+            
+            Date and Time: {settings_data.get('datetime', '')}
+            Location: {settings_data.get('location', {}).get('name', 'Unknown')}
+            Weather: {settings_data.get('weather', '')}
+            
+            Return EXACTLY this JSON structure:
+            {{
+                "title": "Scenario Title",
+                "introduction": "Challenging scenario setup (2-3 sentences)",
+                "health": 80,
+                "hunger": 85,
+                "thirst": 90,
+                "stamina": 95,
+                "injuries": ["Initial injury or condition"],
+                "backpack": [
+                    "Essential item 1",
+                    "Essential item 2"
+                ]
+            }}
+            
+            CRITICAL REQUIREMENTS:
+            1. NO options array for hard difficulty
+            2. Make introduction more challenging
+            3. Maximum 2 backpack items
+            4. Must include at least one injury
+            5. Initial stats should be below 100% (health: 70-90, hunger: 75-95, thirst: 80-95, stamina: 85-100)
+            6. Response in {language} language
             """
-        
-        # Format the settings into a more readable prompt
-        formatted_settings = f"""
-        Based on these game settings, generate an immersive survival scenario:
-        
-        Date and Time: {settings_data.get('datetime', '')}
-        Location: {settings_data.get('location', {}).get('name', 'Unknown')}
-        Coordinates: Lat {settings_data.get('location', {}).get('coordinates', {}).get('latitude', 0)}, 
-                    Long {settings_data.get('location', {}).get('coordinates', {}).get('longitude', 0)}
-        Elevation: {settings_data.get('location', {}).get('elevation', 0)}m
-        Weather: {settings_data.get('weather', '')}
-        Difficulty: {settings_data.get('difficulty', {}).get('label', 'Normal')}
-        Scenario: {settings_data.get('scenario', {}).get('details', {}).get('description', '')}
-        
-        Return EXACTLY this JSON structure:
-        {{
-            "title": "Scenario Title",
-            "introduction": "Brief scenario setup (2-3 sentences)",
-            "options": [
-                {{
-                    "id": "option1",
-                    "text": "Action description",
-                    "consequences": {{
-                        "health": -5,
-                        "description": "What happens"
-                    }}
-                }},
-                // 2-3 more options
-            ],
-            "backpack": [
-                "Essential item 1",
-                "Essential item 2",
-                // 3-5 items total
-            ]
-        }}
-
-        REQUIREMENTS:
-        1. Response must be in {language} language
-        2. Options should be realistic for the location and weather
-        3. Health impact should range from -20 to +10
-        4. Backpack items must be relevant to scenario
-        """
+        else:
+            # Normal difficulty format
+            formatted_settings = f"""
+            Based on these game settings, generate an immersive survival scenario:
+            
+            Date and Time: {settings_data.get('datetime', '')}
+            Location: {settings_data.get('location', {}).get('name', 'Unknown')}
+            Coordinates: Lat {settings_data.get('location', {}).get('coordinates', {}).get('latitude', 0)}, 
+                        Long {settings_data.get('location', {}).get('coordinates', {}).get('longitude', 0)}
+            Elevation: {settings_data.get('location', {}).get('elevation', 0)}m
+            Weather: {settings_data.get('weather', '')}
+            Difficulty: {settings_data.get('difficulty', {}).get('label', 'Normal')}
+            Scenario: {settings_data.get('scenario', {}).get('details', {}).get('description', '')}
+            
+            Return EXACTLY this JSON structure:
+            {{
+                "title": "Scenario Title",
+                "introduction": "Brief scenario setup (2-3 sentences)",
+                "health": 100,
+                "hunger": 100,
+                "thirst": 100,
+                "stamina": 100,
+                "options": [
+                    {{
+                        "id": "option1",
+                        "text": "Action description",
+                        "consequences": {{
+                            "health": -5,
+                            "description": "What happens"
+                        }}
+                    }},
+                    // 2-3 more options
+                ],
+                "backpack": [
+                    "Essential item 1",
+                    "Essential item 2",
+                    // 3-5 items total
+                ]
+            }}
+            """
         
         print(f"game_setup formatted prompt: {formatted_settings}", file=sys.stderr)
 

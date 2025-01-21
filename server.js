@@ -461,11 +461,18 @@ try {
         throw new Error(response.error || 'Failed to generate game setup');
       }
 
-      // Ensure proper encoding in the response
+      // Ensure proper structure for hard difficulty
+      const gameData = typeof response.text === 'string' ? 
+          JSON.parse(response.text) : response.text;
+          
+      // Remove options array if difficulty is hard
+      if (gameSettings.settings?.difficulty?.id === 'hard' && gameData.options) {
+          delete gameData.options;
+      }
+      
       res.json({
         success: true,
-        scenarios: typeof response.text === 'string' ? 
-            JSON.parse(response.text) : response.text
+        scenarios: gameData
       });
 
     } catch (error) {
