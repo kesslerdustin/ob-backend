@@ -960,25 +960,31 @@ def game_master(context, options=None):
 
 
 def game_summary(context, options=None):
-    """Generate a game summary using Gemini 2.0"""
+    """Generate game summary using Gemini 2.0"""
     try:
-        context = json.loads(context) if isinstance(context, str) else context
+        # Make sure context is properly parsed as JSON if it's a string
+        if isinstance(context, str):
+            try:
+                context = json.loads(context)
+            except json.JSONDecodeError as e:
+                print(f"JSON decode error: {e}", file=sys.stderr)
+                print(f"Received context: {context}", file=sys.stderr)
+                raise Exception("Invalid JSON format in context")
+
+        options = json.loads(options) if isinstance(options, str) else options or {}
         language = options.get('language', 'en')
         
+        # Extract game data safely with get() method
         structured_prompt = f"""
-        You are an expert survival game analyst. Create a detailed summary of this completed survival adventure.
+        You are a game master summarizing an adventure. Create an engaging summary of this game:
 
-        GAME CONTEXT:
-        Title: {context.get('gameName', 'Unknown')}
+        GAME DETAILS:
+        Title: {context.get('gameName', 'Unknown Adventure')}
         Difficulty: {context.get('difficulty', 'normal')}
         Scenario: {context.get('scenarioDescription', '')}
         Location: {context.get('location', {}).get('name', 'Unknown')}
         Weather: {context.get('weather', 'Unknown')}
         Total Distance: {context.get('totalDistance', 0)}km
-
-        TURN HISTORY:
-        {' '.join([f"Turn {i+1}: {turn.get('chosenOption', 'None')} - {turn.get('aiNarration', '')}" 
-                  for i, turn in enumerate(context.get('turns', []))])}
 
         FINAL STATUS:
         Health: {context.get('stats', {}).get('health', 0)}
@@ -987,47 +993,31 @@ def game_summary(context, options=None):
         Thirst: {context.get('stats', {}).get('thirst', 0)}
         Game End Reason: {context.get('gameEndReason', 'Unknown')}
 
-        Return EXACTLY this JSON structure:
-        {{
-            "title": "Memorable title for this adventure",
-            "recap": "Detailed 3-4 paragraph narrative of the adventure, highlighting key moments, decisions, and their consequences",
-            "analysis": {{
-                "positives": ["List of 2-3 good decisions or strategies used"],
-                "improvements": ["List of 2-3 areas for improvement or alternative strategies"],
-                "survival_rating": NUMBER between 1-10
-            }},
-            "statistics": {{
-                "total_turns": NUMBER,
-                "distance_traveled": NUMBER in km,
-                "time_frame": "How long the adventure lasted (e.g., '6 hours 23 minutes')",
-                "completion_rate": NUMBER between 0-100 (based on goals achieved)
-            }}
-        }}
-
         REQUIREMENTS:
-        1. Response must be in {language} language
-        2. Recap should be engaging and dramatic but realistic
-        3. Analysis should be constructive and educational
-        4. Statistics should be calculated from the actual game data
+        1. Write in {language} language
+        2. Create a dramatic 3-4 paragraph summary
+        3. Focus on the key decisions and challenges
+        4. Include survival statistics and final outcome
+        5. Keep a serious tone appropriate for survival scenarios
+        6. Include specific details about weather and location challenges
         """
 
+        print(f"Sending prompt to Gemini: {structured_prompt[:200]}...", file=sys.stderr)
+        
         response = client.models.generate_content(
             model="gemini-2.0-flash-exp",
             contents=structured_prompt
         )
         
-        json_content = extract_json_from_text(response.text)
-        
-        if not json_content:
-            raise Exception("Failed to generate valid summary")
-
         return json.dumps({
             "success": True,
-            "text": json_content
+            "text": response.text.strip()
         })
         
     except Exception as e:
         print(f"Game summary error: {str(e)}", file=sys.stderr)
+        print(f"Full error details: {e.__class__.__name__}: {str(e)}", file=sys.stderr)
+        print(f"Context received: {context}", file=sys.stderr)
         return json.dumps({
             "success": False,
             "error": str(e)
