@@ -569,14 +569,16 @@ def game_setup(settings, options=None):
     try:
         settings_dict = json.loads(settings) if isinstance(settings, str) else settings
         options = json.loads(options) if isinstance(options, str) else options or {}
-        language = options.get('language', 'en')
+        language = settings_dict.get('language', 'en')
         
         # Format the settings into a more readable prompt
         formatted_settings = f"""
         Date and Time: {settings_dict.get('datetime', '')}
         Location: {settings_dict.get('location', {}).get('name', 'Unknown')}
-        Weather Conditions: {settings_dict.get('weather', '')}
-        Difficulty: {settings_dict.get('difficulty', 'normal')}
+        Coordinates: {settings_dict.get('location', {}).get('coordinates', {})}
+        Elevation: {settings_dict.get('location', {}).get('elevation', 0)}m
+        Weather: {settings_dict.get('weather', '')}
+        Difficulty: {settings_dict.get('difficulty', {}).get('label', 'Normal')}
         Scenario: {settings_dict.get('scenario', {}).get('details', {}).get('description', '')}
         """
         
@@ -584,19 +586,20 @@ def game_setup(settings, options=None):
         Based on these game settings:
         {formatted_settings}
         
-        Generate a game setup that includes:
-        1. A title for this adventure
-        2. An introduction paragraph (2-3 sentences) describing the initial situation
-        3. Two specific options for what the player can do next
-        4. A list of starting items based on the difficulty level
+        Generate an immersive survival game setup that includes:
+        1. A dramatic title for this adventure
+        2. A detailed introduction paragraph (2-3 sentences) describing the initial situation
+        3. Three specific options for what the player can do next
+        4. A list of starting items based on the difficulty level ({settings_dict.get('difficulty', {}).get('id', 'normal')})
 
         Return EXACTLY this JSON structure:
         {{
             "title": "Adventure title",
             "introduction": "Detailed situation description",
             "options": [
-                {{ "text": "Option 1 description", "type": "action" }},
-                {{ "text": "Option 2 description", "type": "action" }}
+                {{ "id": "option1", "text": "Option 1 description", "type": "action" }},
+                {{ "id": "option2", "text": "Option 2 description", "type": "action" }},
+                {{ "id": "option3", "text": "Option 3 description", "type": "action" }}
             ],
             "backpack": ["item1", "item2", "etc"]
         }}
@@ -607,6 +610,8 @@ def game_setup(settings, options=None):
         3. Backpack items should match the difficulty setting
         4. Consider weather conditions and time of day in the description
         5. Make the situation tense but not hopeless
+        6. Use realistic items for the backpack
+        7. Include environmental details from the location
         """
 
         response = client.models.generate_content(
