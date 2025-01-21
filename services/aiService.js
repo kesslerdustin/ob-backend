@@ -398,40 +398,37 @@ async function gameSetup(settings, options = {}) {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
             
-            // Clean and prepare the settings object with minimal weather data
+            // Clean and prepare the settings object with minimal data
             const cleanSettings = {
                 datetime: settings.datetime ? new Date(settings.datetime).toISOString() : new Date().toISOString(),
                 location: {
                     name: settings.location?.name || 'Unknown',
                     coordinates: {
-                        latitude: Number(settings.location?.coordinates?.latitude),
-                        longitude: Number(settings.location?.coordinates?.longitude)
+                        latitude: Number(settings.location?.coordinates?.latitude || 0),
+                        longitude: Number(settings.location?.coordinates?.longitude || 0)
                     },
                     elevation: Number(settings.elevation || 0)
                 },
                 weather: {
                     current: {
-                        temp: settings.weather?.currentWeather?.main?.temp,
-                        humidity: settings.weather?.currentWeather?.main?.humidity,
-                        visibility: settings.weather?.currentWeather?.visibility,
+                        temp: settings.weather?.currentWeather?.main?.temp || 20,
+                        humidity: settings.weather?.currentWeather?.main?.humidity || 50,
+                        visibility: settings.weather?.currentWeather?.visibility || 10000,
                         wind: {
-                            speed: settings.weather?.currentWeather?.wind?.speed,
-                            deg: settings.weather?.currentWeather?.wind?.deg
+                            speed: settings.weather?.currentWeather?.wind?.speed || 0,
+                            deg: settings.weather?.currentWeather?.wind?.deg || 0
                         },
-                        condition: settings.weather?.currentWeather?.weather?.[0]?.main,
-                        description: settings.weather?.currentWeather?.weather?.[0]?.description
-                    },
-                    daylight: {
-                        sunrise: settings.weather?.currentWeather?.sys?.sunrise,
-                        sunset: settings.weather?.currentWeather?.sys?.sunset
+                        condition: settings.weather?.currentWeather?.weather?.[0]?.main || 'Clear',
+                        description: settings.weather?.currentWeather?.weather?.[0]?.description || 'Clear sky'
                     }
                 },
-                difficulty: settings.difficulty || 'normal',
-                scenario: settings.selectedScenario || 'forest',
+                // Simplify difficulty to just the level string
+                difficulty: settings.difficulty?.level || 'normal',
+                scenario: settings.scenario || 'forest',
                 language: settings.language || 'en'
             };
 
-            console.log('aiService sending game setup request with cleaned settings:', cleanSettings);
+            console.log('aiService sending game setup request:', JSON.stringify(cleanSettings));
             
             const pythonProcess = spawn('python', [
                 pythonScript,
