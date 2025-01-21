@@ -908,6 +908,8 @@ def game_master(context, options=None):
              * Better preparation increases success chance
              * Poor choices lead to complications
              * Repeated failures without new approach lead to worse outcomes
+             * ALWAYS include options array in response for normal or easy difficult
+           - When user does vague actions that lead no where, progress and progress the story
 
         10. Difficulty-Specific Rules:
             For HARD difficulty:
@@ -917,7 +919,8 @@ def game_master(context, options=None):
             - More frequent weather changes
             - Stricter injury/health penalties
             - Require more detailed player actions
-
+            FOR NORMAL OR EASY DIFFICULTY:
+            - include options array in response with appropriate options for the difficulty
         Current Goals:
         Main Goal: {context.get('goals', {}).get('main', '')}
         Subgoals: {', '.join(context.get('goals', {}).get('subgoals', []))}
