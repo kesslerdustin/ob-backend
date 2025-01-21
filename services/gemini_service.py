@@ -567,13 +567,23 @@ def generate_scenarios(location_info, options=None):
 def game_setup(settings, options=None):
     """Generate game setup using Gemini 2.0"""
     try:
+        settings_dict = json.loads(settings) if isinstance(settings, str) else settings
         options = json.loads(options) if isinstance(options, str) else options or {}
         language = options.get('language', 'en')
         
+        # Format the settings into a more readable prompt
+        formatted_settings = f"""
+        Date and Time: {settings_dict.get('datetime', '')}
+        Location: {settings_dict.get('location', {}).get('name', 'Unknown')}
+        Weather Conditions: {settings_dict.get('weather', '')}
+        Difficulty: {settings_dict.get('difficulty', 'normal')}
+        Scenario: {settings_dict.get('scenario', {}).get('details', {}).get('description', '')}
+        """
+        
         structured_prompt = f"""
         Based on these game settings:
-        {settings}
-
+        {formatted_settings}
+        
         Generate a game setup that includes:
         1. A title for this adventure
         2. An introduction paragraph (2-3 sentences) describing the initial situation
