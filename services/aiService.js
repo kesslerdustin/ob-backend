@@ -398,31 +398,40 @@ async function gameSetup(settings, options = {}) {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
             
-            // Clean and prepare the settings object
+            // Clean and prepare the settings object with minimal weather data
             const cleanSettings = {
-                ...settings,
-                datetime: settings.datetime.toISOString(),
+                datetime: settings.datetime ? new Date(settings.datetime).toISOString() : new Date().toISOString(),
+                location: {
+                    name: settings.location?.name || 'Unknown',
+                    coordinates: {
+                        latitude: Number(settings.location?.coordinates?.latitude),
+                        longitude: Number(settings.location?.coordinates?.longitude)
+                    },
+                    elevation: Number(settings.elevation || 0)
+                },
                 weather: {
                     current: {
-                        main: settings.weather.current.main,
-                        weather: settings.weather.current.weather,
-                        wind: settings.weather.current.wind
+                        temp: settings.weather?.currentWeather?.main?.temp,
+                        humidity: settings.weather?.currentWeather?.main?.humidity,
+                        visibility: settings.weather?.currentWeather?.visibility,
+                        wind: {
+                            speed: settings.weather?.currentWeather?.wind?.speed,
+                            deg: settings.weather?.currentWeather?.wind?.deg
+                        },
+                        condition: settings.weather?.currentWeather?.weather?.[0]?.main,
+                        description: settings.weather?.currentWeather?.weather?.[0]?.description
                     },
-                    isCustom: settings.weather.isCustom
-                },
-                location: {
-                    ...settings.location,
-                    coordinates: {
-                        latitude: Number(settings.location.coordinates.latitude),
-                        longitude: Number(settings.location.coordinates.longitude)
+                    daylight: {
+                        sunrise: settings.weather?.currentWeather?.sys?.sunrise,
+                        sunset: settings.weather?.currentWeather?.sys?.sunset
                     }
-                }
+                },
+                difficulty: settings.difficulty || 'normal',
+                scenario: settings.selectedScenario || 'forest',
+                language: settings.language || 'en'
             };
 
-            console.log('aiService sending game setup request:', {
-                settings: cleanSettings,
-                options
-            });
+            console.log('aiService sending game setup request with cleaned settings:', cleanSettings);
             
             const pythonProcess = spawn('python', [
                 pythonScript,
