@@ -519,6 +519,32 @@ try {
     }
   });
 
+  // Add this new endpoint for game summary
+  app.post('/api/game/summary', express.json(), async (req, res) => {
+    try {
+        const { context, language } = req.body;
+        
+        if (!context) {
+            return res.status(400).json({ error: 'Game context is required' });
+        }
+
+        const response = await aiService.gameSummary(context, { language });
+
+        res.json({
+            success: true,
+            summary: response
+        });
+
+    } catch (error) {
+        console.error('Game summary error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to generate game summary',
+            details: error.message
+        });
+    }
+  });
+
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });

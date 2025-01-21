@@ -958,6 +958,82 @@ def game_master(context, options=None):
             "error": str(e)
         })
 
+
+def game_summary(context, options=None):
+    """Generate a game summary using Gemini 2.0"""
+    try:
+        context = json.loads(context) if isinstance(context, str) else context
+        language = options.get('language', 'en')
+        
+        structured_prompt = f"""
+        You are an expert survival game analyst. Create a detailed summary of this completed survival adventure.
+
+        GAME CONTEXT:
+        Title: {context.get('gameName', 'Unknown')}
+        Difficulty: {context.get('difficulty', 'normal')}
+        Scenario: {context.get('scenarioDescription', '')}
+        Location: {context.get('location', {}).get('name', 'Unknown')}
+        Weather: {context.get('weather', 'Unknown')}
+        Total Distance: {context.get('totalDistance', 0)}km
+
+        TURN HISTORY:
+        {' '.join([f"Turn {i+1}: {turn.get('chosenOption', 'None')} - {turn.get('aiNarration', '')}" 
+                  for i, turn in enumerate(context.get('turns', []))])}
+
+        FINAL STATUS:
+        Health: {context.get('stats', {}).get('health', 0)}
+        Stamina: {context.get('stats', {}).get('stamina', 0)}
+        Hunger: {context.get('stats', {}).get('hunger', 0)}
+        Thirst: {context.get('stats', {}).get('thirst', 0)}
+        Game End Reason: {context.get('gameEndReason', 'Unknown')}
+
+        Return EXACTLY this JSON structure:
+        {{
+            "title": "Memorable title for this adventure",
+            "recap": "Detailed 3-4 paragraph narrative of the adventure, highlighting key moments, decisions, and their consequences",
+            "analysis": {{
+                "positives": ["List of 2-3 good decisions or strategies used"],
+                "improvements": ["List of 2-3 areas for improvement or alternative strategies"],
+                "survival_rating": NUMBER between 1-10
+            }},
+            "statistics": {{
+                "total_turns": NUMBER,
+                "distance_traveled": NUMBER in km,
+                "time_frame": "How long the adventure lasted (e.g., '6 hours 23 minutes')",
+                "completion_rate": NUMBER between 0-100 (based on goals achieved)
+            }}
+        }}
+
+        REQUIREMENTS:
+        1. Response must be in {language} language
+        2. Recap should be engaging and dramatic but realistic
+        3. Analysis should be constructive and educational
+        4. Statistics should be calculated from the actual game data
+        """
+
+        response = client.models.generate_content(
+            model="gemini-2.0-flash-exp",
+            contents=structured_prompt
+        )
+        
+        json_content = extract_json_from_text(response.text)
+        
+        if not json_content:
+            raise Exception("Failed to generate valid summary")
+
+        return json.dumps({
+            "success": True,
+            "text": json_content
+        })
+        
+    except Exception as e:
+        print(f"Game summary error: {str(e)}", file=sys.stderr)
+        return json.dumps({
+            "success": False,
+            "error": str(e)
+        })
+
+
 if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "text"
     prompt = sys.argv[2] if len(sys.argv) > 2 else "Hello, Gemini!"
@@ -984,6 +1060,8 @@ if __name__ == "__main__":
         response = game_setup(prompt, options)
     elif mode == "game_master":
         response = game_master(prompt, options)
+    elif mode == "game_summary":
+        response = game_summary(prompt, options)
     else:
         response = generate_content(prompt)
     

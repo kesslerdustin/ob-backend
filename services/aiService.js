@@ -545,6 +545,61 @@ async function gameMaster(context, options = {}) {
     });
 }
 
+async function gameSummary(context, options = {}) {
+    return rateLimiter.enqueue(() => {
+        return new Promise((resolve, reject) => {
+            const pythonScript = path.join(__dirname, 'gemini_service.py');
+            
+            console.log('aiService sending game summary request:', JSON.stringify(context));
+            
+            const pythonProcess = spawn('python', [
+                pythonScript,
+                'game_summary',
+                JSON.stringify(context),
+                'null',  // no image
+                JSON.stringify(options)
+            ], { env: { ...process.env, PYTHONIOENCODING: 'utf-8' } });
+
+            let dataString = '';
+            let errorString = '';
+
+            pythonProcess.stdout.on('data', (data) => {
+                dataString += data.toString('utf-8');
+            });
+
+            pythonProcess.stderr.on('data', (data) => {
+                errorString += data.toString('utf-8');
+            });
+
+            pythonProcess.on('close', (code) => {
+                if (code !== 0) {
+                    reject(new Error(errorString || 'Process failed'));
+                    return;
+                }
+
+                try {
+                    const jsonMatch = dataString.match(/\{[\s\S]*\}/);
+                    if (!jsonMatch) {
+                        reject(new Error('Invalid response format'));
+                        return;
+                    }
+                    
+                    const response = JSON.parse(jsonMatch[0]);
+                    if (!response.success) {
+                        reject(new Error(response.error || 'Failed to generate summary'));
+                        return;
+                    }
+                    
+                    resolve(response.text);
+                } catch (error) {
+                    console.error('Parse error:', error);
+                    reject(new Error('Failed to parse response'));
+                }
+            });
+        });
+    });
+}
+
 module.exports = {
     generateContent,
     generateContentStream,
@@ -556,5 +611,6 @@ module.exports = {
     analyzeInfo,
     generateScenarios,
     gameSetup,
-    gameMaster
+    gameMaster,
+    gameSummary
 }; 
