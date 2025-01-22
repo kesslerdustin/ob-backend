@@ -1350,11 +1350,11 @@ Wirbellose:
                 {{
                     "category": "fauna",
                     "difficulty": "easy",
-                    "question": {
+                    "question": {{
                         "en": "english question text",
                         "de": "german question text"
-                    },
-                    "answers": {
+                    }},
+                    "answers": {{
                         "en": [
                             "Answer1",
                             "Answer2",
@@ -1367,15 +1367,15 @@ Wirbellose:
                             "Answer3",
                             "Answer4"
                         ]
-                    },
-                    "correct_answer": {
+                    }},
+                    "correct_answer": {{
                         "en": "correct answer",
-                        "de": "orrect answer"
-                    },
-                    "explanation": {
+                        "de": "correct answer"
+                    }},
+                    "explanation": {{
                         "en": "explanation",
                         "de": "explanation"
-                    },
+                    }},
                     "image": "https://example.com/images/ostrich_eggs.jpg"
                 }}
             ]
