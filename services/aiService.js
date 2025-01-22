@@ -611,6 +611,65 @@ async function gameSummary(context, options = {}) {
     });
 }
 
+async function generateQuiz(prompt, options = {}) {
+    return rateLimiter.enqueue(() => {
+        return new Promise((resolve, reject) => {
+            const pythonScript = path.join(__dirname, 'gemini_service.py');
+            
+            console.log('Sending quiz generation request:', { prompt, options });
+            
+            const pythonProcess = spawn('python', [
+                pythonScript,
+                'quiz',
+                prompt,
+                'null',  // no image
+                JSON.stringify(options)
+            ], { env: { ...process.env, PYTHONIOENCODING: 'utf-8' } });
+
+            let dataString = '';
+            let errorString = '';
+
+            pythonProcess.stdout.on('data', (data) => {
+                const chunk = data.toString('utf-8');
+                console.log('Python stdout:', chunk);
+                dataString += chunk;
+            });
+
+            pythonProcess.stderr.on('data', (data) => {
+                const chunk = data.toString('utf-8');
+                console.error('Python stderr:', chunk);
+                errorString += chunk;
+            });
+
+            pythonProcess.on('close', (code) => {
+                if (code !== 0) {
+                    reject(new Error(errorString || 'Process failed'));
+                    return;
+                }
+
+                try {
+                    const jsonMatch = dataString.match(/\{[\s\S]*\}/);
+                    if (!jsonMatch) {
+                        reject(new Error('Invalid response format'));
+                        return;
+                    }
+                    
+                    const response = JSON.parse(jsonMatch[0]);
+                    if (!response.success) {
+                        reject(new Error(response.error || 'Failed to generate quiz'));
+                        return;
+                    }
+                    
+                    resolve(response.text);
+                } catch (error) {
+                    console.error('Parse error:', error);
+                    reject(new Error('Failed to parse response'));
+                }
+            });
+        });
+    });
+}
+
 module.exports = {
     generateContent,
     generateContentStream,
@@ -623,5 +682,6 @@ module.exports = {
     generateScenarios,
     gameSetup,
     gameMaster,
-    gameSummary
+    gameSummary,
+    generateQuiz
 }; 

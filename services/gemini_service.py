@@ -587,13 +587,15 @@ def game_setup(settings_data, options=None):
         biome = environmental_context.get('biome', 'unknown')
         nearby_pois = environmental_context.get('nearbyPOIs', [])
         natural_features = environmental_context.get('nearbyNaturalFeatures', [])
+        local_wildlife = environmental_context.get('localWildlife', [])
         
         # Format environmental context for the prompt
         formatted_env_context = f"""
-        ENVIRONMENTAL CONTEXT (for starting position. may be embedded in the scenario, but not required. species occurances, pois, natural features):
+        ENVIRONMENTAL CONTEXT (for starting position. may be embedded in the scenario, but not required):
         Biome: {biome}
         Nearby Points of Interest: {', '.join([f"{poi['name']} (lat: {poi['coordinates']['latitude']}, long: {poi['coordinates']['longitude']})" for poi in nearby_pois])}
         Natural Features: {', '.join([f"{feature['name']} (lat: {feature['coordinates']['latitude']}, long: {feature['coordinates']['longitude']})" for feature in natural_features])}
+        Local Wildlife: {', '.join([f"{species['name']} ({species['category']}, {species['scientificName']})" for species in local_wildlife[:10]])}
         """
         
         # Get difficulty and scenario details
@@ -1134,6 +1136,75 @@ def game_summary(context, options=None):
             "error": str(e)
         })
 
+def generate_quiz(prompt, options=None):
+    """Generate quiz questions using Gemini 2.0 Flash Thinking"""
+    try:
+        options = json.loads(options) if isinstance(options, str) else options or {}
+        language = options.get('language', 'en')
+        
+        structured_prompt = f"""
+        You are a knowledgeable quiz master. Generate 3 quiz questions based on the following topic/context:
+        {prompt}
+
+        CRITICAL REQUIREMENTS:
+        1. Return EXACTLY this JSON structure:
+        {{
+            "questions": [
+                {{
+                    "question": "The question text",
+                    "options": ["Option A", "Option B", "Option C", "Option D"],
+                    "correctAnswer": "The correct option",
+                    "explanation": "Detailed explanation of the answer"
+                }},
+                // 2 more questions following the same structure
+            ]
+        }}
+
+        2. Questions should be challenging but fair
+        3. All content must be in {language} language
+        4. Each question must have exactly 4 options
+        5. Explanations should be educational and clear
+        """
+
+        config = {
+            'thinking_config': {
+                'include_thoughts': True
+            }
+        }
+
+        response = client.models.generate_content(
+            model='gemini-2.0-flash-thinking-exp',
+            contents=structured_prompt,
+            config=config
+        )
+
+        # Extract the final response (non-thought part)
+        final_response = None
+        for part in response.candidates[0].content.parts:
+            if not part.thought:
+                final_response = part.text
+                break
+
+        if not final_response:
+            raise Exception("No valid response generated")
+
+        # Extract JSON from the response
+        json_content = extract_json_from_text(final_response)
+        
+        if not json_content:
+            raise Exception("Failed to generate valid quiz data")
+
+        return json.dumps({
+            "success": True,
+            "text": json_content
+        })
+        
+    except Exception as e:
+        print(f"Quiz generation error: {str(e)}")
+        return json.dumps({
+            "success": False,
+            "error": str(e)
+        })
 
 if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "text"
@@ -1163,6 +1234,8 @@ if __name__ == "__main__":
         response = game_master(prompt, options)
     elif mode == "game_summary":
         response = game_summary(prompt, options)
+    elif mode == "quiz":
+        response = generate_quiz(prompt, options)
     else:
         response = generate_content(prompt)
     

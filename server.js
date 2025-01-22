@@ -545,6 +545,34 @@ try {
     }
   });
 
+  app.post('/api/quiz/generate', express.json(), async (req, res) => {
+    try {
+        const { prompt, language } = req.body;
+        
+        if (!prompt) {
+            return res.status(400).json({ error: 'Prompt is required' });
+        }
+
+        const response = await aiService.generateQuiz(
+            prompt,
+            { language }
+        );
+
+        res.json({
+            success: true,
+            quiz: response
+        });
+
+    } catch (error) {
+        console.error('Quiz generation error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to generate quiz',
+            details: error.message
+        });
+    }
+  });
+
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
