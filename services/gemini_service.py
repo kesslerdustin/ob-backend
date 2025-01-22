@@ -1142,6 +1142,12 @@ def generate_quiz(prompt, options=None):
         options = json.loads(options) if isinstance(options, str) else options or {}
         language = options.get('language', 'en')
         
+        # Initialize client with v1alpha API version
+        client = genai.Client(
+            api_key=os.getenv('GOOGLE_API_KEY'),
+            http_options={'api_version': 'v1alpha'}
+        )
+        
         structured_prompt = f"""
         You are a knowledgeable quiz master. Generate 3 quiz questions based on the following topic/context:
         {prompt}
@@ -1166,15 +1172,16 @@ def generate_quiz(prompt, options=None):
         5. Explanations should be educational and clear
         """
 
-        # Create a client with v1alpha API version
+        config = {
+            'thinking_config': {
+                'include_thoughts': True
+            }
+        }
+
         response = client.models.generate_content(
             model='gemini-2.0-flash-thinking-exp',
             contents=structured_prompt,
-            config={
-                'thinking_config': {
-                    'include_thoughts': True
-                }
-            }
+            config=config
         )
 
         # Extract the final response (non-thought part)
