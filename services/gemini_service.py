@@ -709,261 +709,200 @@ def game_setup(settings_data, options=None):
         })
 
 def game_master(context, options=None):
-    """Process game turns using Gemini 2.0"""
+    """Process game turns using Gemini 2.0 with improved prompt for clarity and balance."""
     try:
+        # Deserialize inputs if provided as JSON strings.
         context = json.loads(context) if isinstance(context, str) else context
         options = json.loads(options) if isinstance(options, str) else options or {}
         language = options.get('language', 'en')
-        
-        # Sanitize the player's action to handle quotes properly
+
+        # Sanitize the player's action: Replace double quotes to avoid formatting issues.
         if 'currentTurn' in context and 'action' in context['currentTurn']:
-            # Replace any remaining double quotes with single quotes
             context['currentTurn']['action'] = context['currentTurn']['action'].replace('"', "'")
         
-        latest_turn = context.get('turns', [])[-1] if context.get('turns') else {}
+        # Retrieve the latest and current turn data.
+        all_turns = context.get('turns', [])
+        latest_turn = all_turns[-1] if all_turns else {}
         current_turn = context.get('currentTurn', {})
         difficulty = context.get('difficulty', 'normal')
-        total_distance = latest_turn.get('totalDistance', 0)  # Track total distance walked
-        
-        # Ensure we're using the correct datetime from the latest turn
+        total_distance = latest_turn.get('totalDistance', 0)  # Accumulated distance
+
+        # Determine the datetime using the last turn's datetime or fallback.
         current_datetime = latest_turn.get('datetime') or context.get('currentDateTime')
-        
-        # Parse the datetime string to ensure proper format
         try:
             parsed_datetime = datetime.fromisoformat(current_datetime.replace('Z', '+00:00'))
         except (ValueError, AttributeError):
             parsed_datetime = datetime.utcnow()
-        
-        all_turns = context.get('turns', [])
 
+        # Build a concise version of the full context (including complete turn history) 
+        # using a list comprehension that respects readability.
+        full_turn_history = "\n".join(
+            f"Turn {turn.get('turnNumber', i+1)}:\n"
+            f"  Time: {turn.get('datetime', 'Unknown')}\n"
+            f"  Player Action: {turn.get('action', 'None')}\n"
+            f"  Location: {turn.get('location', 'Unknown')}\n"
+            f"  Weather: {turn.get('weather', 'Unknown')}\n"
+            f"  Inventory: {', '.join(turn.get('backpackInventory', []))}\n"
+            f"  AI Narration: {turn.get('aiNarration', '')}\n"
+            f"  Chosen Option: {turn.get('chosenOption', 'None')}\n"
+            for i, turn in enumerate(all_turns)
+        )
+
+        # Build a modular prompt string with clear sections.
         structured_prompt = f"""
-        You are an expert game master and survival expert for this adventure. First, analyze if the player's input is a QUESTION or an ACTION.
+You are a world-class game master and survival expert. You are responsible for evolving a text adventure in which every turn simulates realistic survival mechanics. Use the following game state and instructions to create a response that is immersive, realistic, and resistant to player manipulation.
 
-        PLAYER INPUT:
-        {current_turn.get('action', '')}
+---------------------------
+PLAYER INPUT & INTENT:
+---------------------------
+Player Input: {current_turn.get('action', '')}
+Analyze the input to determine if it is a QUESTION or an ACTION.
 
-        GAME CONTEXT:
-        Title: {context.get('gameName', 'Unknown')}
-        Difficulty: {context.get('difficulty', 'normal')}
-        Scenario: {context.get('scenarioDescription', '')}
-        Total Distance Traveled: {total_distance}km
-        
-        LOCATION DETAILS:
-        Current Position: {latest_turn.get('location', 'Unknown')}
-        GPS: Lat {context.get('location', {}).get('coordinates', {}).get('latitude', 'Unknown')}, 
-             Long {context.get('location', {}).get('coordinates', {}).get('longitude', 'Unknown')}
-        Elevation: {context.get('location', {}).get('elevation', 'Unknown')}m
-        Local Time: {current_datetime}
-        Weather: {latest_turn.get('weather', 'Unknown')}
+---------------------------
+GAME OVERVIEW:
+---------------------------
+Title: {context.get('gameName', 'Unknown')}
+Difficulty: {difficulty}
+Scenario: {context.get('scenarioDescription', '')}
+Total Distance Traveled: {total_distance} km
 
-        CURRENT STATUS:
-        Health: {latest_turn.get('stats', {}).get('health', 100)}
-        Stamina: {latest_turn.get('stats', {}).get('stamina', 100)}
-        Hunger: {latest_turn.get('stats', {}).get('hunger', 100)}
-        Thirst: {latest_turn.get('stats', {}).get('thirst', 100)}
-        Inventory: {', '.join(latest_turn.get('backpackInventory', []))}
-        Turns Remaining: {latest_turn.get('remainingTurns', 20)}
+---------------------------
+LOCATION & ENVIRONMENT:
+---------------------------
+Current Position: {latest_turn.get('location', 'Unknown')}
+GPS Coordinates: Latitude {context.get('location', {}).get('coordinates', {}).get('latitude', 'Unknown')}, Longitude {context.get('location', {}).get('coordinates', {}).get('longitude', 'Unknown')}
+Elevation: {context.get('location', {}).get('elevation', 'Unknown')} m
+Local Time: {current_datetime}
+Weather: {latest_turn.get('weather', 'Unknown')}
 
-        COMPLETE TURN HISTORY (for your knowledge and story progression):
-        {'\n'.join(f"""Turn {turn.get('turnNumber', i+1)}:
-            Time: {turn.get('datetime', 'Unknown')}
-            Player Action: {turn.get('action', 'None')}
-            Location: {turn.get('location', 'Unknown')}
-            Weather: {turn.get('weather', 'Unknown')}
-            Inventory: {', '.join(turn.get('backpackInventory', []))}
-            AI Narration: {turn.get('aiNarration', '')}
-            Chosen Option: {turn.get('chosenOption', 'None')}
-            """ for i, turn in enumerate(context.get('turns', [])))}
+---------------------------
+CURRENT STATUS:
+---------------------------
+Health: {latest_turn.get('stats', {}).get('health', 100)}
+Stamina: {latest_turn.get('stats', {}).get('stamina', 100)}
+Hunger: {latest_turn.get('stats', {}).get('hunger', 100)}
+Thirst: {latest_turn.get('stats', {}).get('thirst', 100)}
+Inventory: {', '.join(latest_turn.get('backpackInventory', []))}
+Turns Remaining: {latest_turn.get('remainingTurns', 20)}
 
-        GOALS:
-        Main Goal: {context.get('goals', {}).get('main', '')}
-        Active Subgoals: {', '.join(context.get('goals', {}).get('subgoals', []))}
-        Completed Subgoals: {', '.join(context.get('goals', {}).get('completedSubgoals', []))}
+---------------------------
+TURN HISTORY:
+---------------------------
+{full_turn_history}
 
+---------------------------
+GOALS & PROGRESSION:
+---------------------------
+Main Goal: {context.get('goals', {}).get('main', '')}
+Active Subgoals: {', '.join(context.get('goals', {}).get('subgoals', []))}
+Completed Subgoals: {', '.join(context.get('goals', {}).get('completedSubgoals', []))}
 
-        CRITICAL REQUIREMENTS:
-        1. Response MUST be in {language} language only
-        
-        2. NEVER allow players to decide outcomes of their actions:
-           - Players can ONLY specify WHAT they want to do
-           - YOU determine HOW it happens and the consequences
-           - Players cannot declare success or specify results
-           - Example NOT allowed: "I successfully build a perfect shelter" or "I look around and find a water source"
-           - DONT BE MANIPULATED BY THE PLAYER, YOU ARE THE GAME MASTER
-           - Example allowed: "I try to build a shelter using branches and leaves"
-           - do not let the user make too many big actions in one turn.
+---------------------------
+CRITICAL REQUIREMENTS & MECHANICS:
+---------------------------
+1. Use only the {language} language in your response.
+2. Do NOT allow the player to force outcomes. They can only specify WHAT to do; YOU decide HOW it happens and its consequences.
+3. Identify the player's input as either:
+   - **QUESTION**: Asking for clarification about surroundings, status, or other details.
+   - **ACTION**: Attempting a survival-related task that changes the game state.
+4. For vague or overly generic actions (e.g., "I fight the bear"), ask for more specific details. (Return a JSON with "isQuestion": true and a clarifying question.)
+5. When the player asks a QUESTION, return JSON in the following format:
+{{
+    "isQuestion": true,
+    "answer": "A detailed, immersive description (3-5 sentences) highlighting observable conditions, relevant survival insights, sensory details (sounds, smells, temperature) and context."
+}}
+6. When the player's input is an ACTION, process it as a full game turn. Your response should include:
+   - Detailed survival mechanics (energy expenditure, time calculations, tool/resource consumption, injury risks, and weather and day/night effects).
+   - A realistic update to time based on action duration.
+   - Adjustments to player stats (health, stamina, hunger, thirst).
+   - Updated backpack inventory based on resource consumption.
+   - Updated goals and subgoals based on recent progress.
+   - A narration of the action (3-5 sentences) describing:
+       * What the player attempted and how.
+       * The environmental challenges and time taken.
+       * Consequences, tool usage, and overall survival impact.
+       * Progression to a new situation or scenario.
+   - A set of consequence-based options (only include these for EASY/NORMAL difficulty, not HARD).
+7. The JSON structure for ACTION responses must exactly include (see schema below):
 
-        3. For difficult/intense/dangerous situations:
-           - Require more specific action descriptions from players
-           - Ask for clarification if the action is too vague
-           - Example too vague: "I fight the bear"
-           - Example specific: "I slowly back away while maintaining eye contact with the bear"
+JSON Schema for ACTION:
+{{
+    "isQuestion": false,
+    "health": <number between 0 and 100>,
+    "stamina": <number between 0 and 100>,
+    "hunger": <number between 0 and 100>,
+    "thirst": <number between 0 and 100>,
+    "injuries": [ "detailed_injury1", "detailed_injury2" ],
+    "turnsRemaining": <number between 0 and 20>,
+    "weather": "A detailed weather description with expected changes.",
+    "narration": "Rich, atmospheric text (3-5 sentences) combining action and consequences.",
+    "location": {{
+         "name": "A detailed description of the new location",
+         "coordinates": {{
+              "latitude": <decimal_number>,
+              "longitude": <decimal_number>
+         }},
+         "elevation": <number>
+    }},
+    "datetime": "New ISO formatted datetime reflecting realistic action duration",
+    "totalDistance": <updated total km traveled>,
+    "goals": {{
+         "main": "Updated main objective text",
+         "subgoals": [ "Subgoal 1", "Subgoal 2", "Subgoal 3" ],
+         "completedSubgoals": [ "Completed subgoal 1" ]
+    }},
+    "hasGameEnded": <true/false>,
+    "gameEndReason": <string or null>,
+    "options": [  // Only include options for NORMAL/EASY difficulties.
+         {{
+              "id": "option1",
+              "text": "Description of a possible next action and its survival context",
+              "consequences": {{
+                   "health": <number representing health change (negative value)>,
+                   "description": "Realistic outcome description based on survival decisions"
+              }}
+         }},
+         // 2-3 more options as applicable.
+    ],
+    "backpack": [ "Updated inventory reflecting used/depleted items" ]
+}}
 
-        4. When player input needs clarification:
-           - Return as a question (isQuestion: true)
-           - This will NOT consume a turn
-           - Ask specific questions about HOW they plan to perform the action
-           - Provide relevant options when appropriate
-           - Example: "How exactly do you plan to cross the river? Consider:
-             * Searching for a shallow crossing point
-             * Building a simple raft
-             * Finding a fallen tree bridge"
+8. Apply realistic survival mechanics:
+   - Calculate energy, time, and resource consumption based on terrain, weather, and player's stamina.
+   - Track tool degradation and consumable resources permanently.
+   - Adjust hunger and thirst rates based on activity intensity:
+         * Light Activity: minor adjustments over several hours.
+         * Moderate to Heavy Activity: greater resource loss.
+   - Naturally evolve environmental conditions (weather, day/night cycle).
 
-        5. First determine if the input is a QUESTION or ACTION:
-           - Questions typically ask about surroundings, status, or seek information
-           - Actions are attempts to do something that changes the game state
-        
-        6. If input is a QUESTION:
-           - Return this exact JSON structure:
-           {{
-               "isQuestion": true,
-               "answer": "Detailed, immersive response (3-5 sentences) based on observable conditions, time of day, weather, and surroundings. Include relevant survival knowledge when appropriate."
-           }}
-           - Consider visibility conditions, available light, weather impact
-           - Include sensory details (sounds, smells, temperature)
-           - Reference relevant survival expertise
-           - Keep responses realistic and grounded
-        
-        7. If input is an ACTION:
-           - Process it as a game turn with detailed survival mechanics
-           - Calculate precise time requirements for actions:
-             * Walking/Hiking: 2-4 km/h depending on terrain and player's stamina
-             * Gathering resources: 15-45 minutes - but adjust according terrain, weather, and player's stamina
-             * Building shelter: 1-3 hours - but adjust according terrain, weather, and player's stamina
-             * Making fire: 15-60 minutes - but adjust according terrain, weather, and player's stamina
-             * Hunting/Fishing: 1-4 hours - but adjust according terrain, weather, and player's stamina
-             * Water collection/purification: 30-60 minutes - but adjust according terrain, weather, and player's stamina
-           - Update datetime based on realistic action duration
-           - Track total distance traveled when moving
-           - Adjust hunger/thirst rates based on activity level and time:
-             * Light activity: -5 hunger per 4 hours, -7 thirst per 3 hours - adjust according terrain, weather, and context history
-             * Moderate activity: -7 hunger per 3 hours, -10 thirst per 2 hours - adjust according terrain, weather, and context history
-             * Heavy activity: -10 hunger per 2 hours, -15 thirst per hour - adjust according terrain, weather, and context history 
-             * Extreme conditions accelerate these rates
-           - Track resource degradation and consumption:
-             * Tools wear down with use
-             * Limited-use items (lighters, matches) deplete realistically
-             * Food/water supplies diminish with consumption
-           - Consider weather changes over time:
-             * Update weather after significant time passage (2+ hours)
-             * Account for day/night cycle weather patterns
-             * Include sudden weather changes when appropriate
-            - UPDATE GOALS  and SUBGOALSACCORDING TO CONTEXT AND LAST TURNS and RETURN THEM IN JSON
-           - Return this exact JSON structure:
-           {{
-               "isQuestion": false,
-               "health": NUMBER between 0-100,
-               "stamina": NUMBER between 0-100,
-               "hunger": NUMBER between 0-100,
-               "thirst": NUMBER between 0-100,
-               "injuries": ["detailed_injury1", "detailed_injury2"],
-               "turnsRemaining": NUMBER between 0-20,
-               "weather": "Detailed weather description including changes over time",
-               "narration": "Rich, atmospheric narration which is a combination of the player action and the consequences of the action and a new situation that requires the player to make a choice . Success of action determined by your knowledge, game settings and the consequences of the action(3-5 sentences) describing:
-                            - What the player did
-                            - How long it took
-                            - Environmental challenges
-                            - Use of tools/inventory
-                            - Impact on survival situation
-                            - progress the story, user actions and consequences result in new situations that require the player to make a choice",
-               "location": {{
-                   "name": "Detailed location description",
-                   "coordinates": {{
-                       "latitude": DECIMAL_NUMBER,
-                       "longitude": DECIMAL_NUMBER
-                   }},
-                   "elevation": NUMBER
-               }},
-               "datetime": "Updated datetime reflecting realistic action duration",
-               "totalDistance": NUMBER (total km traveled, accumulated from previous distance),
-               "goals": {{
-                   "main": "Main objective text",
-                   "subgoals": ["Subgoal 1", "Subgoal 2", "Subgoal 3"],
-                   "completedSubgoals": ["Completed subgoal 1"]
-               }},
-               "hasGameEnded": true/false,
-               "gameEndReason": "Detailed explanation if game ended, or null",
-               "options": [
-                   {{
-                       "id": "option1",
-                       "text": "Detailed action description with survival context",
-                       "consequences": {{
-                           "health": NUMBER between -100 and 0,
-                           "description": "Realistic outcome based on survival expertise"
-                       }}
-                   }},
-                   // 2-3 more options (ONLY for normal/easy difficulty)
-               ],
-               "backpack": ["Updated inventory reflecting used/depleted items"]
-           }}
+9. Enforce difficulty-specific rules:
+   - HARD: Do not return an 'options' array. Start with no utilities/tools if applicable and use stricter penalties.
+   - EASY/NORMAL: Include a carefully considered options array to guide further actions.
 
-        8. For ACTIONS, apply realistic survival mechanics:
-           - Calculate precise energy expenditure
-           - Track tool degradation and resource consumption realistically:
-             * Tools break or wear out with repeated use
-             * Limited-use items deplete permanently
-             * No infinite resources or "magic refills"
-           - Consider terrain difficulty and elevation changes
-           - Factor in weather effects on activities
-           - Apply realistic injury risks
-           - Account for day/night cycle impact
-           - End game (set game ended in JSON return true ) with detailed explanation if:
-             * Health , Stamina, Hunger, Thirst reaches 0
-             * Critical injury occurs
-             * Extreme weather event for which user isnt prepared
-             * Lost/disoriented
-             * Resource depletion
-             * Turns exhausted
-             * User found help
-             * User is rescued
+10. Allow for the game to end realistically (if health, stamina, hunger, or thirst deplete to 0, extreme injuries, resource depletion, or turns run out) with a clear explanation.
 
-        9. Maintain Realism and Progression:
-           - Actions must follow real-world physics and survival logic
-           - lucky discoveries or convenient solutions are allowed for easy and normal difficulty
-           - Weather and environmental conditions change naturally (for normal and hard they might get worse with further turns)
-           - Injuries persist and require proper treatment
-           - Resources deplete permanently
-           - Time passes realistically
-           - Failed attempts should have consequences:
-             * Tools/items can break or be lost
-             * Energy/resources are wasted
-             * Situation may worsen
-           - Success/failure should reflect player strategy:
-             * Better preparation increases success chance
-             * Poor choices lead to complications
-             * Repeated failures without new approach lead to worse outcomes
-             * ALWAYS include options array in response for normal or easy difficult
-           - let the user win / get help etc only if its realistic and the user has done everything right for it to happen
-
-        10. Difficulty-Specific Rules:
-            For HARD difficulty:
-            - NO options array in response
-            - NO utilities/tools in starting inventory
-            - Higher resource consumption rates
-            - More frequent weather changes
-            - Stricter injury/health penalties
-            - Require more detailed player actions
-            FOR NORMAL OR EASY DIFFICULTY:
-            - include options array in response with appropriate options for the difficulty
-
-        11. the narration can include detailed observations of the surroundings, dialog in case of a conversation, and other details that are relevant to the story and the situation. It should allow for progress of the story and the situation (good and bad)
-        """
-
+---------------------------
+RESPOND ACCORDINGLY:
+---------------------------
+Based on whether the player's input is a QUESTION or an ACTION, provide the response in the corresponding JSON structure as described above.
+"""
+  
+        # Generate content using the AI model with our fully constructed prompt.
         response = client.models.generate_content(
             model="gemini-2.0-flash-exp",
             contents=structured_prompt
         )
         
+        # Extract JSON content from the AI response text.
         json_content = extract_json_from_text(response.text)
-        
         if not json_content:
             raise Exception("Failed to generate valid game state")
 
-        # Ensure no options array for hard difficulty
+        # For HARD difficulty, remove the 'options' array from the JSON response.
         if difficulty == 'hard' and 'options' in json_content:
             del json_content['options']
 
-        # The AI will have calculated the new time based on the action
+        # Process and standardize the datetime in the JSON response.
         if 'datetime' in json_content:
             try:
                 test_date = datetime.fromisoformat(json_content['datetime'].replace('Z', '+00:00'))
@@ -975,7 +914,7 @@ def game_master(context, options=None):
             "success": True,
             "text": json_content
         })
-        
+
     except Exception as e:
         print(f"Game master error: {str(e)}", file=sys.stderr)
         print(f"Full error details: {e.__class__.__name__}: {str(e)}", file=sys.stderr)
@@ -984,7 +923,6 @@ def game_master(context, options=None):
             "success": False,
             "error": str(e)
         })
-
 
 def game_summary(context, options=None):
     """Generate game summary using Gemini 2.0"""
