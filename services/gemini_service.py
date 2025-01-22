@@ -731,12 +731,6 @@ def game_master(context, options=None):
         
         all_turns = context.get('turns', [])
 
-        # Get the latest turn's goals
-        latest_turn_goals = latest_turn.get('goals', {})
-
-        # Get existing goals from the latest turn
-        existing_goals = context.get('goals', {})
-
         structured_prompt = f"""
         You are an expert game master and survival expert for this adventure. First, analyze if the player's input is a QUESTION or an ACTION.
 
@@ -777,9 +771,9 @@ def game_master(context, options=None):
             """ for i, turn in enumerate(context.get('turns', [])))}
 
         GOALS:
-        Main Goal: {latest_turn_goals.get('main', '')}
-        Active Subgoals: {', '.join(latest_turn_goals.get('subgoals', []))}
-        Completed Subgoals: {', '.join(latest_turn_goals.get('completedSubgoals', []))}
+        Main Goal: {context.get('goals', {}).get('main', '')}
+        Active Subgoals: {', '.join(context.get('goals', {}).get('subgoals', []))}
+        Completed Subgoals: {', '.join(context.get('goals', {}).get('completedSubgoals', []))}
 
         PREVIOUS ACTIONS:
         {'\n'.join(f"Turn {turn['turnNumber']}: {turn['aiNarration']}" 
@@ -851,7 +845,7 @@ def game_master(context, options=None):
              * Update weather after significant time passage (2+ hours)
              * Account for day/night cycle weather patterns
              * Include sudden weather changes when appropriate
-           - CHECK IF GOALS OR SUBGOALS ARE COMPLETED, IF SO, Update them in following json.
+            - UPDATE GOALS  and SUBGOALSACCORDING TO CONTEXT AND LAST TURNS and RETURN THEM IN JSON
            - Return this exact JSON structure:
            {{
                "isQuestion": false,
@@ -868,7 +862,7 @@ def game_master(context, options=None):
                             - Environmental challenges
                             - Use of tools/inventory
                             - Impact on survival situation
-                            - progress the story, develope a situation that requires the player to make a choice, act, and progress the story,
+                            - progress the story, user actions and consequences result in new situations that require the player to make a choice",
                "location": {{
                    "name": "Detailed location description",
                    "coordinates": {{
@@ -955,9 +949,8 @@ def game_master(context, options=None):
         
         json_content = extract_json_from_text(response.text)
         
-        # Preserve existing goals if the response doesn't include valid ones
-        if not json_content.get('goals', {}).get('main'):
-            json_content['goals'] = existing_goals
+        if not json_content:
+            raise Exception("Failed to generate valid game state")
 
         # Ensure no options array for hard difficulty
         if difficulty == 'hard' and 'options' in json_content:
