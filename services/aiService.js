@@ -616,7 +616,7 @@ async function generateQuiz(prompt, options = {}) {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
             
-            console.log('Sending quiz generation request:', {
+            console.log('Starting quiz generation:', {
                 prompt,
                 options
             });
@@ -627,34 +627,53 @@ async function generateQuiz(prompt, options = {}) {
                 prompt,
                 'null',  // no image
                 JSON.stringify(options)
-            ]);
+            ], {
+                env: { ...process.env, PYTHONIOENCODING: 'utf-8' },
+                timeout: 55000 // 55 seconds timeout
+            });
 
             let dataString = '';
             let errorString = '';
 
             pythonProcess.stdout.on('data', (data) => {
-                dataString += data.toString();
+                const chunk = data.toString('utf-8');
+                console.log('Python stdout chunk:', chunk);
+                dataString += chunk;
             });
 
             pythonProcess.stderr.on('data', (data) => {
-                console.error(`Python Error: ${data}`);
-                errorString += data.toString();
+                const chunk = data.toString('utf-8');
+                console.error('Python stderr chunk:', chunk);
+                errorString += chunk;
             });
 
+            // Add timeout handler
+            const timeoutId = setTimeout(() => {
+                pythonProcess.kill();
+                reject(new Error('Quiz generation timed out'));
+            }, 55000);
+
             pythonProcess.on('close', (code) => {
+                clearTimeout(timeoutId);
+                console.log('Python process closed with code:', code);
+                
                 if (code !== 0) {
-                    reject(new Error(errorString || 'Process failed'));
+                    console.error('Process error:', errorString);
+                    reject(new Error(errorString || 'Quiz generation process failed'));
                     return;
                 }
 
                 try {
                     const jsonMatch = dataString.match(/\{[\s\S]*\}/);
                     if (!jsonMatch) {
+                        console.error('No JSON found in response:', dataString);
                         reject(new Error('Invalid response format'));
                         return;
                     }
                     
                     const response = JSON.parse(jsonMatch[0]);
+                    console.log('Quiz generation completed successfully');
+                    
                     if (!response.success) {
                         reject(new Error(response.error || 'Failed to generate quiz'));
                         return;
@@ -663,8 +682,15 @@ async function generateQuiz(prompt, options = {}) {
                     resolve(response.text);
                 } catch (error) {
                     console.error('Parse error:', error);
-                    reject(new Error('Failed to parse response'));
+                    console.error('Raw data:', dataString);
+                    reject(new Error('Failed to parse quiz response'));
                 }
+            });
+
+            pythonProcess.on('error', (error) => {
+                clearTimeout(timeoutId);
+                console.error('Python process error:', error);
+                reject(error);
             });
         });
     });

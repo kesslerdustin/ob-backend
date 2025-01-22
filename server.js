@@ -546,6 +546,10 @@ try {
   });
 
   app.post('/api/quiz/generate', express.json(), async (req, res) => {
+    // Set a longer timeout for this request
+    req.setTimeout(60000); // 60 seconds
+    res.setTimeout(60000); // 60 seconds
+    
     try {
         const { prompt, language } = req.body;
         
@@ -553,11 +557,13 @@ try {
             return res.status(400).json({ error: 'Prompt is required' });
         }
 
+        console.log('Processing quiz request:', { prompt, language });
         const response = await aiService.generateQuiz(
             prompt,
             { language }
         );
 
+        console.log('Quiz generation completed');
         res.json({
             success: true,
             quiz: response
