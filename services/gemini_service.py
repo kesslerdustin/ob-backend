@@ -761,7 +761,7 @@ You are a world-class game master and survival expert. Your task is to evolve an
 • If the player makes logical and careful decisions, the narrative should allow opportunities to slowly recover or progress—even under harsh conditions.
 • Conversely, if the player's decisions have been poor, the narrative must reflect mounting adversity with severe consequences.
 • Injuries must persist and become more severe over time (e.g., signs of hypothermia, frostbite, or cumulative physical damage) if the environment remains harsh or decisions worsen the condition.
-• The story’s overall difficulty should reflect both the environmental challenges (heavy rain, cold, wind) and the player’s actions, so that progress may be gradual if smart choices are made, but any poor decision accelerates the downfall.
+• The story's overall difficulty should reflect both the environmental challenges (heavy rain, cold, wind) and the player's actions, so that progress may be gradual if smart choices are made, but any poor decision accelerates the downfall.
 
 ---------------------------
 PLAYER INPUT & INTENT:
@@ -845,7 +845,7 @@ CRITICAL REQUIREMENTS & MECHANICS:
    - Revise goals and subgoals dynamically. For example, successful crafting of feathersticks might generate the new subgoal "Entzünde ein Feuer, um deine Körpertemperatur zu steigern", while repeated poor decisions should update the narrative toward a fatal outcome.
    - Very importantly, indicate the overall narrative direction (good vs. bad ending) based on cumulative turns. If the player's decisions have been careful, the narrative should hint at a possibility of rescue or safety; if not, the narrative should accelerate decline.
    - Provide rich, atmospheric narration (3-5 sentences) that details:
-       * The player’s attempted action and how it was carried out.
+       * The player's attempted action and how it was carried out.
        * The environmental challenges and specific consequences (including injuries, cold, and resource loss).
        * How these consequences move the narrative toward either a recovery/rescue scenario or a dangerous, possibly fatal end.
    - For EASY/NORMAL difficulties, provide a set of realistic consequence-based options to guide the next action. For HARD, omit the options.
@@ -905,7 +905,46 @@ JSON Schema for ACTION:
 11. Dynamic Consequences and Narrative Direction:
    - For repeated dangerous actions (like running in the dark with low stamina), enforce cumulative, severe consequences (such as hypothermia, frostbite, or worsening injuries).
    - When the player details logical, careful actions (like meticulous crafting of feathersticks), reward them with gradual progress toward a safe outcome.
-   - Adapt the narrative’s overall direction so that if the player’s decisions have been good, the story hints at rescue or recovery; if poor, the narrative accelerates decline.
+   - Adapt the narrative's overall direction so that if the player's decisions have been good, the story hints at rescue or recovery; if poor, the narrative accelerates decline.
+
+12. Time and Event Progression Rules:
+    - When a player waits for a specific event (e.g., someone's return), DO NOT just describe the waiting
+    - Instead, after 1-2 turns of waiting:
+        a) The expected event MUST happen (e.g., person returns) OR
+        b) A clear indication must be given why it won't happen (e.g., "After 30 minutes, it becomes clear the worker won't return")
+    - Progress the story with new developments, don't just describe the same situation
+    - Time passing should have meaningful impact on:
+        * Weather changes
+        * Physical condition (cold, fatigue, etc.)
+        * Resource consumption
+        * Story progression
+
+13. Situation-Specific Logic:
+    - Track how long specific events have been waiting to resolve
+    - Apply realistic timeframes (e.g., a person shouldn't be "checking with supervisor" for hours)
+    - If a situation becomes unrealistic (e.g., waiting too long), force a change:
+        * Introduce new NPCs
+        * Create environmental changes
+        * Trigger decision points
+        * Force situation resolution
+
+14. Dynamic Event Resolution:
+    - After maximum 2-3 turns of any waiting action:
+        * MUST resolve the waiting situation
+        * Provide clear narrative progression
+        * Introduce new challenges or opportunities
+    - Never allow the same "waiting" action to repeat more than twice without major story development
+
+15. Context-Aware Response Rules:
+    Current Situation: {context.get('currentTurn', {}).get('action', '')}
+    Previous Actions: {[turn.get('action', '') for turn in context.get('turns', [])[-3:] if turn.get('action')]}
+    Time Elapsed: {context.get('currentDateTime')}
+    
+    Based on these:
+    - If same action repeated: MUST progress story significantly
+    - If waiting for NPC: MUST resolve within 2-3 turns
+    - If situation stagnant: MUST introduce new elements
+    - If player stuck: MUST provide clear alternative options
 
 ---------------------------
 RESPOND ACCORDINGLY:
@@ -949,6 +988,7 @@ Based on whether the player's input is a QUESTION or an ACTION and considering t
             "success": False,
             "error": str(e)
         })
+
 
 def game_summary(context, options=None):
     """Generate game summary using Gemini 2.0"""
