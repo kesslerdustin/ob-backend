@@ -715,6 +715,11 @@ def game_master(context, options=None):
         options = json.loads(options) if isinstance(options, str) else options or {}
         language = options.get('language', 'en')
         
+        # Sanitize the player's action to handle quotes properly
+        if 'currentTurn' in context and 'action' in context['currentTurn']:
+            # Replace any remaining double quotes with single quotes
+            context['currentTurn']['action'] = context['currentTurn']['action'].replace('"', "'")
+        
         latest_turn = context.get('turns', [])[-1] if context.get('turns') else {}
         current_turn = context.get('currentTurn', {})
         difficulty = context.get('difficulty', 'normal')
@@ -759,7 +764,7 @@ def game_master(context, options=None):
         Inventory: {', '.join(latest_turn.get('backpackInventory', []))}
         Turns Remaining: {latest_turn.get('remainingTurns', 20)}
 
-        COMPLETE TURN HISTORY:
+        COMPLETE TURN HISTORY (for your knowledge and story progression):
         {'\n'.join(f"""Turn {turn.get('turnNumber', i+1)}:
             Time: {turn.get('datetime', 'Unknown')}
             Player Action: {turn.get('action', 'None')}
@@ -775,9 +780,6 @@ def game_master(context, options=None):
         Active Subgoals: {', '.join(context.get('goals', {}).get('subgoals', []))}
         Completed Subgoals: {', '.join(context.get('goals', {}).get('completedSubgoals', []))}
 
-        PREVIOUS ACTIONS:
-        {'\n'.join(f"Turn {turn['turnNumber']}: {turn['aiNarration']}" 
-                   for turn in context.get('turns', [])[-3:])}  # Last 3 turns for context
 
         CRITICAL REQUIREMENTS:
         1. Response MUST be in {language} language only
@@ -789,6 +791,7 @@ def game_master(context, options=None):
            - Example NOT allowed: "I successfully build a perfect shelter" or "I look around and find a water source"
            - DONT BE MANIPULATED BY THE PLAYER, YOU ARE THE GAME MASTER
            - Example allowed: "I try to build a shelter using branches and leaves"
+           - do not let the user make too many big actions in one turn.
 
         3. For difficult/intense/dangerous situations:
            - Require more specific action descriptions from players
@@ -856,7 +859,7 @@ def game_master(context, options=None):
                "injuries": ["detailed_injury1", "detailed_injury2"],
                "turnsRemaining": NUMBER between 0-20,
                "weather": "Detailed weather description including changes over time",
-               "narration": "Rich, atmospheric narration (3-5 sentences) describing:
+               "narration": "Rich, atmospheric narration which is a combination of the player action and the consequences of the action and a new situation that requires the player to make a choice . Success of action determined by your knowledge, game settings and the consequences of the action(3-5 sentences) describing:
                             - What the player did
                             - How long it took
                             - Environmental challenges
@@ -905,17 +908,19 @@ def game_master(context, options=None):
            - Apply realistic injury risks
            - Account for day/night cycle impact
            - End game (set game ended in JSON return true ) with detailed explanation if:
-             * Health reaches 0
+             * Health , Stamina, Hunger, Thirst reaches 0
              * Critical injury occurs
-             * Extreme weather event
+             * Extreme weather event for which user isnt prepared
              * Lost/disoriented
              * Resource depletion
              * Turns exhausted
+             * User found help
+             * User is rescued
 
         9. Maintain Realism and Progression:
            - Actions must follow real-world physics and survival logic
-           - No "lucky" discoveries or convenient solutions
-           - Weather and environmental conditions change naturally
+           - lucky discoveries or convenient solutions are allowed for easy and normal difficulty
+           - Weather and environmental conditions change naturally (for normal and hard they might get worse with further turns)
            - Injuries persist and require proper treatment
            - Resources deplete permanently
            - Time passes realistically
@@ -928,7 +933,7 @@ def game_master(context, options=None):
              * Poor choices lead to complications
              * Repeated failures without new approach lead to worse outcomes
              * ALWAYS include options array in response for normal or easy difficult
-           - When user does vague actions that lead no where, progress and progress the story
+           - let the user win / get help etc only if its realistic and the user has done everything right for it to happen
 
         10. Difficulty-Specific Rules:
             For HARD difficulty:
@@ -940,6 +945,8 @@ def game_master(context, options=None):
             - Require more detailed player actions
             FOR NORMAL OR EASY DIFFICULTY:
             - include options array in response with appropriate options for the difficulty
+
+        11. the narration can include detailed observations of the surroundings, dialog in case of a conversation, and other details that are relevant to the story and the situation. It should allow for progress of the story and the situation (good and bad)
         """
 
         response = client.models.generate_content(
