@@ -578,6 +578,24 @@ def game_setup(settings_data, options=None):
         
         print(f"Game setup generating content in language: {language}", file=sys.stderr)
         
+        # Get environmental context
+        environmental_context = settings_data.get('environmentalContext', {})
+        biome = environmental_context.get('biome', 'unknown')
+        nearby_pois = environmental_context.get('nearbyPOIs', [])
+        natural_features = environmental_context.get('nearbyNaturalFeatures', [])
+        local_wildlife = environmental_context.get('localWildlife', [])
+        water_bodies = environmental_context.get('waterBodies', [])
+        
+        # Format environmental context for the prompt
+        formatted_env_context = f"""
+        ENVIRONMENTAL CONTEXT (for starting position. may be embedded in the scenario, but not required. species occurances, pois, natural features):
+        Biome: {biome}
+        Nearby Points of Interest: {', '.join([f"{poi['name']} (lat: {poi['coordinates']['latitude']}, long: {poi['coordinates']['longitude']})" for poi in nearby_pois])}
+        Natural Features: {', '.join([f"{feature['name']} (lat: {feature['coordinates']['latitude']}, long: {feature['coordinates']['longitude']})" for feature in natural_features])}
+        Local Wildlife: {', '.join([f"{species['name']} (lat: {species['coordinates']['latitude']}, long: {species['coordinates']['longitude']})" for species in local_wildlife])}
+        Water Bodies: {', '.join(water_bodies)}
+        """
+        
         # Get difficulty and scenario details
         difficulty = settings_data.get('difficulty', {}).get('id', 'normal')
         scenario_type = settings_data.get('scenario', {}).get('type', 'predefined')
@@ -612,7 +630,7 @@ def game_setup(settings_data, options=None):
             """
         }
         
-        # Get the requirements for the current difficulty, defaulting to normal
+        # Get the requirements for the current difficulty
         current_difficulty_reqs = difficulty_requirements.get(difficulty, difficulty_requirements['normal'])
         
         formatted_settings = f"""
@@ -627,6 +645,8 @@ def game_setup(settings_data, options=None):
         Weather: {settings_data.get('weather', '')}
         Difficulty: {difficulty}
         Scenario: {scenario_desc}
+
+        {formatted_env_context}
         
         Return EXACTLY this JSON structure:
         {{
@@ -721,10 +741,27 @@ def game_master(context, options=None):
     """Process game turns using Gemini 2.0 with improved dynamic progression toward an ending,
        persistent and realistic injuries, and balanced challenge versus progress conditions."""
     try:
-        # Deserialize inputs if provided as JSON strings.
         context = json.loads(context) if isinstance(context, str) else context
         options = json.loads(options) if isinstance(options, str) else options or {}
         language = options.get('language', 'en')
+
+        # Access environmental data directly from context
+        environmental_context = context.get('environmentalContext', {})
+        biome = environmental_context.get('biome', 'unknown')
+        nearby_pois = environmental_context.get('nearbyPOIs', [])
+        natural_features = environmental_context.get('nearbyNaturalFeatures', [])
+        local_wildlife = environmental_context.get('localWildlife', [])
+        water_bodies = environmental_context.get('waterBodies', [])
+
+        # Format environmental context for the prompt
+        formatted_env_context = f"""
+        ENVIRONMENTAL CONTEXT (for starting position. may be embedded in the scenario, but not required. species occurances, pois, natural features):
+        Biome: {biome}
+        Nearby Points of Interest: {', '.join([f"{poi['name']} (lat: {poi['coordinates']['latitude']}, long: {poi['coordinates']['longitude']})" for poi in nearby_pois])}
+        Natural Features: {', '.join([f"{feature['name']} (lat: {feature['coordinates']['latitude']}, long: {feature['coordinates']['longitude']})" for feature in natural_features])}
+        Local Wildlife: {', '.join([f"{species['name']} (lat: {species['coordinates']['latitude']}, long: {species['coordinates']['longitude']})" for species in local_wildlife])}
+        Water Bodies: {', '.join(water_bodies)}
+        """
 
         # Sanitize the player's action: Replace double quotes to avoid formatting issues.
         if 'currentTurn' in context and 'action' in context['currentTurn']:

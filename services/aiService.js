@@ -424,7 +424,8 @@ async function gameSetup(settings, options = {}) {
                     },
                     weather: settings.settings.weather,
                     difficulty: settings.settings.difficulty,
-                    scenario: settings.settings.scenario
+                    scenario: settings.settings.scenario,
+                    environmentalContext: settings.settings.environmentalContext  // Preserve the context
                 },
                 language: settings.language || options.language || 'en'  // Ensure language is preserved
             };
