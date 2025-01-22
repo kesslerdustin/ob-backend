@@ -1170,16 +1170,22 @@ def generate_quiz(prompt, options=None):
         response = client.models.generate_content(
             model='gemini-2.0-flash-thinking-exp',
             contents=structured_prompt,
-            generation_config={
-                'temperature': 0.7,
-                'top_p': 0.8,
-                'top_k': 40,
-                'max_output_tokens': 2048,
+            config={
+                'thinking_config': {
+                    'include_thoughts': True
+                }
             }
         )
 
-        # Extract the final response
-        final_response = response.text
+        # Extract the final response (non-thought part)
+        final_response = None
+        for part in response.candidates[0].content.parts:
+            if not part.thought:
+                final_response = part.text
+                break
+
+        if not final_response:
+            raise Exception("No valid response generated")
 
         # Extract JSON from the response
         json_content = extract_json_from_text(final_response)
