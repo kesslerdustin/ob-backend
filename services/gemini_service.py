@@ -766,7 +766,7 @@ def game_master(context, options=None):
             Location: {turn.get('location', 'Unknown')}
             Weather: {turn.get('weather', 'Unknown')}
             Inventory: {', '.join(turn.get('backpackInventory', []))}
-            AI Response: {turn.get('aiNarration', '')}
+            AI Narration: {turn.get('aiNarration', '')}
             Chosen Option: {turn.get('chosenOption', 'None')}
             """ for i, turn in enumerate(context.get('turns', [])))}
 
@@ -856,7 +856,7 @@ def game_master(context, options=None):
                "injuries": ["detailed_injury1", "detailed_injury2"],
                "turnsRemaining": NUMBER between 0-20,
                "weather": "Detailed weather description including changes over time",
-               "lastAction": "Rich, atmospheric narration (3-5 sentences) describing:
+               "narration": "Rich, atmospheric narration (3-5 sentences) describing:
                             - What the player did
                             - How long it took
                             - Environmental challenges
@@ -1016,7 +1016,7 @@ def game_summary(context, options=None):
               - Hunger: {turn.get('stats', {}).get('hunger', 100)}
               - Thirst: {turn.get('stats', {}).get('thirst', 100)}
             Inventory: {', '.join(turn.get('backpackInventory', []))}
-            AI Response: {turn.get('aiNarration', '')}
+            AI Narration: {turn.get('aiNarration', '')}
             Chosen Option: {turn.get('chosenOption', 'None')}
             """ for i, turn in enumerate(context.get('turns', [])))}
 
