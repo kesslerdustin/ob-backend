@@ -734,6 +734,9 @@ def game_master(context, options=None):
         # Get the latest turn's goals
         latest_turn_goals = latest_turn.get('goals', {})
 
+        # Get existing goals from the latest turn
+        existing_goals = context.get('goals', {})
+
         structured_prompt = f"""
         You are an expert game master and survival expert for this adventure. First, analyze if the player's input is a QUESTION or an ACTION.
 
@@ -952,8 +955,9 @@ def game_master(context, options=None):
         
         json_content = extract_json_from_text(response.text)
         
-        if not json_content:
-            raise Exception("Failed to generate valid game state")
+        # Preserve existing goals if the response doesn't include valid ones
+        if not json_content.get('goals', {}).get('main'):
+            json_content['goals'] = existing_goals
 
         # Ensure no options array for hard difficulty
         if difficulty == 'hard' and 'options' in json_content:
