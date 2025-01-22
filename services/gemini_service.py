@@ -763,6 +763,15 @@ def game_master(context, options=None):
         {' '.join([f"Turn {i+1}: {turn.get('chosenOption', 'None')} - {turn.get('aiNarration', '')}" 
                   for i, turn in enumerate(all_turns) if turn.get('chosenOption')])}
 
+        GOALS:
+        Main Goal: {context.get('goals', {}).get('main', '')}
+        Active Subgoals: {', '.join(context.get('goals', {}).get('subgoals', []))}
+        Completed Subgoals: {', '.join(context.get('goals', {}).get('completedSubgoals', []))}
+
+        PREVIOUS ACTIONS:
+        {'\n'.join(f"Turn {turn['turnNumber']}: {turn['aiNarration']}" 
+                   for turn in context.get('turns', [])[-3:])}  # Last 3 turns for context
+
         CRITICAL REQUIREMENTS:
         1. Response MUST be in {language} language only
         
@@ -922,25 +931,6 @@ def game_master(context, options=None):
             - Require more detailed player actions
             FOR NORMAL OR EASY DIFFICULTY:
             - include options array in response with appropriate options for the difficulty
-        Current Goals:
-        Main Goal: {context.get('goals', {}).get('main', '')}
-        Subgoals: {', '.join(context.get('goals', {}).get('subgoals', []))}
-        Completed Subgoals: {', '.join(context.get('goals', {}).get('completedSubgoals', []))}
-
-        CRITICAL TIME REQUIREMENTS:
-        - Calculate realistic time passage based on the action
-        - Walking/Hiking: 2-4 km/h depending on terrain
-        - Resource gathering: 15-45 minutes
-        - Building shelter: 1-3 hours
-        - Making fire: 15-60 minutes
-        - Hunting/Fishing: 1-4 hours
-        - Water collection: 30-60 minutes
-        - Return the new time in the response considering:
-          * Distance to destinations
-          * Terrain difficulty
-          * Weather conditions
-          * Player's current stamina
-          * Time needed for the specific action
         """
 
         response = client.models.generate_content(
