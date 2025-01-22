@@ -1142,12 +1142,6 @@ def generate_quiz(prompt, options=None):
         options = json.loads(options) if isinstance(options, str) else options or {}
         language = options.get('language', 'en')
         
-        # Initialize client with v1alpha API version
-        client = genai.Client(
-            api_key=os.getenv('GOOGLE_API_KEY'),
-            http_options={'api_version': 'v1alpha'}
-        )
-        
         structured_prompt = f"""
         You are a knowledgeable quiz master. Generate 3 quiz questions based on the following topic/context:
         {prompt}
@@ -1172,27 +1166,14 @@ def generate_quiz(prompt, options=None):
         5. Explanations should be educational and clear
         """
 
-        config = {
-            'thinking_config': {
-                'include_thoughts': True
-            }
-        }
-
+        # Use the model without thinking config
         response = client.models.generate_content(
             model='gemini-2.0-flash-thinking-exp',
-            contents=structured_prompt,
-            config=config
+            contents=structured_prompt
         )
 
-        # Extract the final response (non-thought part)
-        final_response = None
-        for part in response.candidates[0].content.parts:
-            if not part.thought:
-                final_response = part.text
-                break
-
-        if not final_response:
-            raise Exception("No valid response generated")
+        # Get the response text
+        final_response = response.text
 
         # Extract JSON from the response
         json_content = extract_json_from_text(final_response)
@@ -1206,7 +1187,7 @@ def generate_quiz(prompt, options=None):
         })
         
     except Exception as e:
-        print(f"Quiz generation error: {str(e)}")
+        print(f"Quiz generation error: {str(e)}", file=sys.stderr)
         return json.dumps({
             "success": False,
             "error": str(e)

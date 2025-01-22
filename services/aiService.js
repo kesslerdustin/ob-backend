@@ -616,7 +616,10 @@ async function generateQuiz(prompt, options = {}) {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
             
-            console.log('Sending quiz generation request:', { prompt, options });
+            console.log('Sending quiz generation request:', {
+                prompt,
+                options
+            });
             
             const pythonProcess = spawn('python', [
                 pythonScript,
@@ -624,21 +627,18 @@ async function generateQuiz(prompt, options = {}) {
                 prompt,
                 'null',  // no image
                 JSON.stringify(options)
-            ], { env: { ...process.env, PYTHONIOENCODING: 'utf-8' } });
+            ]);
 
             let dataString = '';
             let errorString = '';
 
             pythonProcess.stdout.on('data', (data) => {
-                const chunk = data.toString('utf-8');
-                console.log('Python stdout:', chunk);
-                dataString += chunk;
+                dataString += data.toString();
             });
 
             pythonProcess.stderr.on('data', (data) => {
-                const chunk = data.toString('utf-8');
-                console.error('Python stderr:', chunk);
-                errorString += chunk;
+                console.error(`Python Error: ${data}`);
+                errorString += data.toString();
             });
 
             pythonProcess.on('close', (code) => {
