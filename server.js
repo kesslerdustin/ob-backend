@@ -546,9 +546,9 @@ try {
   });
 
   app.post('/api/quiz/generate', express.json(), async (req, res) => {
-    // Set a longer timeout for this request
-    req.setTimeout(60000); // 60 seconds
-    res.setTimeout(60000); // 60 seconds
+    // Increase timeout to 90 seconds
+    req.setTimeout(90000); // 90 seconds
+    res.setTimeout(90000); // 90 seconds
     
     try {
         const { prompt, language } = req.body;

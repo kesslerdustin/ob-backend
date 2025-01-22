@@ -629,7 +629,7 @@ async function generateQuiz(prompt, options = {}) {
                 JSON.stringify(options)
             ], {
                 env: { ...process.env, PYTHONIOENCODING: 'utf-8' },
-                timeout: 55000 // 55 seconds timeout
+                timeout: 85000 // 85 seconds timeout
             });
 
             let dataString = '';
@@ -651,7 +651,7 @@ async function generateQuiz(prompt, options = {}) {
             const timeoutId = setTimeout(() => {
                 pythonProcess.kill();
                 reject(new Error('Quiz generation timed out'));
-            }, 55000);
+            }, 85000);
 
             pythonProcess.on('close', (code) => {
                 clearTimeout(timeoutId);
