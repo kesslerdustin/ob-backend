@@ -995,22 +995,7 @@ def game_summary(context, options=None):
         
         structured_prompt = f"""
         You are a game master summarizing an adventure. Create a JSON summary of this game with the following structure:
-        {{
-            "title": "Adventure Title",
-            "summary": "Main summary text (up to 3 paragraphs, shorter if short adventure, more detailed if long adventure. analytical but with charme but also honest. try to reference the story chronologically)",
-            "stats": {{
-                "finalHealth": {context.get('stats', {}).get('health', 0)},
-                "finalStamina": {context.get('stats', {}).get('stamina', 0)},
-                "finalHunger": {context.get('stats', {}).get('hunger', 0)},
-                "finalThirst": {context.get('stats', {}).get('thirst', 0)},
-                "totalDistance": {context.get('totalDistance', 0)},
-                "turnsPlayed": {len(context.get('turns', []))}
-            }},
-            "positives": ["List of things the player did well"],
-            "negatives": ["List of things that led to failure"],
-            "endReason": "{context.get('gameEndReason', 'Unknown')}"
-        }}
-
+        
         GAME DETAILS:
         Title: {context.get('gameName', 'Unknown Adventure')}
         Difficulty: {context.get('difficulty', 'normal')}
@@ -1018,15 +1003,56 @@ def game_summary(context, options=None):
         Location: {context.get('location', {}).get('name', 'Unknown')}
         Weather: {context.get('weather', 'Unknown')}
 
+        COMPLETE TURN HISTORY:
+        {'\n'.join(f"""Turn {turn.get('turnNumber', i+1)}:
+            Time: {turn.get('datetime', 'Unknown')}
+            Player Action: {turn.get('action', 'None')}
+            Location: {turn.get('location', 'Unknown')}
+            Weather: {turn.get('weather', 'Unknown')}
+            Stats:
+              - Health: {turn.get('stats', {}).get('health', 100)}
+              - Stamina: {turn.get('stats', {}).get('stamina', 100)}
+              - Hunger: {turn.get('stats', {}).get('hunger', 100)}
+              - Thirst: {turn.get('stats', {}).get('thirst', 100)}
+            Inventory: {', '.join(turn.get('backpackInventory', []))}
+            AI Response: {turn.get('aiNarration', '')}
+            Chosen Option: {turn.get('chosenOption', 'None')}
+            """ for i, turn in enumerate(context.get('turns', [])))}
+
+        GOALS:
+        Main Goal: {context.get('goals', {}).get('main', '')}
+        Active Subgoals: {', '.join(context.get('goals', {}).get('subgoals', []))}
+        Completed Subgoals: {', '.join(context.get('goals', {}).get('completedSubgoals', []))}
+
+        FINAL STATUS:
+        Total Distance: {context.get('totalDistance', 0)}km
+        Turns Played: {len(context.get('turns', []))}
+        End Reason: {context.get('gameEndReason', 'Unknown')}
+
+        Return EXACTLY this JSON structure:
+        {{
+          "title": "Adventure Title",
+          "summary": "Main summary text (up to 3 paragraphs, shorter if short adventure, more detailed if long adventure. analytical but with charme but also honest. try to reference the story chronologically)",
+          "stats": {{
+            "finalHealth": {context.get('stats', {}).get('health', 0)},
+            "finalStamina": {context.get('stats', {}).get('stamina', 0)},
+            "finalHunger": {context.get('stats', {}).get('hunger', 0)},
+            "finalThirst": {context.get('stats', {}).get('thirst', 0)},
+            "totalDistance": {context.get('totalDistance', 0)},
+            "turnsPlayed": {len(context.get('turns', []))}
+          }},
+          "positives": ["List of things the player did well"],
+          "negatives": ["List of things that led to failure"],
+          "endReason": "{context.get('gameEndReason', 'Unknown')}"
+        }}
+
         Write the response in {language} language.
-        Focus on key decisions and challenges.
+        Focus on key decisions and their impact on the story.
         Keep a serious tone appropriate for survival scenarios.
         Include specific details about weather and location challenges.
         Return ONLY the JSON structure, no additional text.
         """
 
-        print(f"Sending prompt to Gemini: {structured_prompt[:200]}...", file=sys.stderr)
-        
         response = client.models.generate_content(
             model="gemini-2.0-flash-exp",
             contents=structured_prompt
@@ -1037,10 +1063,9 @@ def game_summary(context, options=None):
         if not json_content:
             raise Exception("Failed to generate valid JSON summary")
 
-        # Return the summary directly in the success response
         return json.dumps({
             "success": True,
-            "summary": json_content  # Changed from "text" to "summary"
+            "summary": json_content
         })
         
     except Exception as e:
