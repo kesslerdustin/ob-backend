@@ -770,10 +770,6 @@ def game_master(context, options=None):
             Chosen Option: {turn.get('chosenOption', 'None')}
             """ for i, turn in enumerate(context.get('turns', [])))}
 
-        GOALS:
-        Main Goal: {context.get('goals', {}).get('main', '')}
-        Active Subgoals: {', '.join(context.get('goals', {}).get('subgoals', []))}
-        Completed Subgoals: {', '.join(context.get('goals', {}).get('completedSubgoals', []))}
 
         PREVIOUS ACTIONS:
         {'\n'.join(f"Turn {turn['turnNumber']}: {turn['aiNarration']}" 
