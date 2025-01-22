@@ -1001,7 +1001,7 @@ Based on whether the player's input is a QUESTION or an ACTION and considering t
 
         # Generate content using the AI model with our fully constructed prompt.
         response = client.models.generate_content(
-            model="gemini-2.0-flash-exp",
+            model="gemini-2.0-flash-thinking-exp",
             contents=structured_prompt
         )
         
