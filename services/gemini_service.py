@@ -708,8 +708,14 @@ def game_setup(settings_data, options=None):
             "error": str(e)
         })
 
+import json
+import sys
+from datetime import datetime
+
+# Assume client and extract_json_from_text are imported or defined elsewhere
+
 def game_master(context, options=None):
-    """Process game turns using Gemini 2.0 with improved prompt for clarity and balance."""
+    """Process game turns using Gemini 2.0 with improved prompt for clarity, variety, and realistic, context-sensitive consequences."""
     try:
         # Deserialize inputs if provided as JSON strings.
         context = json.loads(context) if isinstance(context, str) else context
@@ -735,7 +741,6 @@ def game_master(context, options=None):
             parsed_datetime = datetime.utcnow()
 
         # Build a concise version of the full context (including complete turn history) 
-        # using a list comprehension that respects readability.
         full_turn_history = "\n".join(
             f"Turn {turn.get('turnNumber', i+1)}:\n"
             f"  Time: {turn.get('datetime', 'Unknown')}\n"
@@ -750,13 +755,13 @@ def game_master(context, options=None):
 
         # Build a modular prompt string with clear sections.
         structured_prompt = f"""
-You are a world-class game master and survival expert. You are responsible for evolving a text adventure in which every turn simulates realistic survival mechanics. Use the following game state and instructions to create a response that is immersive, realistic, and resistant to player manipulation.
+You are a world-class game master and survival expert. Your role is to evolve a text-based survival adventure with highly realistic mechanics and narrative depth. Use the game state below to produce a response that is immersive, context-sensitive, and resistant to player manipulation.
 
 ---------------------------
 PLAYER INPUT & INTENT:
 ---------------------------
 Player Input: {current_turn.get('action', '')}
-Analyze the input to determine if it is a QUESTION or an ACTION.
+First, analyze whether the player input is a QUESTION (seeking clarification) or an ACTION (attempting to do something).
 
 ---------------------------
 GAME OVERVIEW:
@@ -801,29 +806,29 @@ Completed Subgoals: {', '.join(context.get('goals', {}).get('completedSubgoals',
 CRITICAL REQUIREMENTS & MECHANICS:
 ---------------------------
 1. Use only the {language} language in your response.
-2. Do NOT allow the player to force outcomes. They can only specify WHAT to do; YOU decide HOW it happens and its consequences.
+2. DO NOT allow the player to force outcomes. They can only specify WHAT they want to do; YOU decide HOW it happens and its consequences.
 3. Identify the player's input as either:
-   - **QUESTION**: Asking for clarification about surroundings, status, or other details.
-   - **ACTION**: Attempting a survival-related task that changes the game state.
-4. For vague or overly generic actions (e.g., "I fight the bear"), ask for more specific details. (Return a JSON with "isQuestion": true and a clarifying question.)
+   - **QUESTION**: Asking for details about surroundings, status, or clarification.
+   - **ACTION**: Attempting a survival-related task that alters the game state.
+4. For vague or generic actions (e.g., "I fight the bear"), ask for more details by returning a JSON with "isQuestion": true along with a clarifying question.
 5. When the player asks a QUESTION, return JSON in the following format:
 {{
     "isQuestion": true,
-    "answer": "A detailed, immersive description (3-5 sentences) highlighting observable conditions, relevant survival insights, sensory details (sounds, smells, temperature) and context."
+    "answer": "Provide a detailed, immersive answer (3-5 sentences) that includes sensory details (sounds, smells, temperature, visible details) and context-specific survival insights."
 }}
-6. When the player's input is an ACTION, process it as a full game turn. Your response should include:
-   - Detailed survival mechanics (energy expenditure, time calculations, tool/resource consumption, injury risks, and weather and day/night effects).
-   - A realistic update to time based on action duration.
-   - Adjustments to player stats (health, stamina, hunger, thirst).
-   - Updated backpack inventory based on resource consumption.
-   - Updated goals and subgoals based on recent progress.
-   - A narration of the action (3-5 sentences) describing:
-       * What the player attempted and how.
-       * The environmental challenges and time taken.
-       * Consequences, tool usage, and overall survival impact.
-       * Progression to a new situation or scenario.
-   - A set of consequence-based options (only include these for EASY/NORMAL difficulty, not HARD).
-7. The JSON structure for ACTION responses must exactly include (see schema below):
+6. When the player's input is an ACTION, process it as a full game turn. Your response must:
+   - Apply realistic survival mechanics that depend on terrain, weather, and player's stamina. For instance, running in darkness with low stamina should potentially result in injuries (e.g., falls or cuts).
+   - Calculate and update the time passage based on the action's realistic duration.
+   - Adjust player stats (health, stamina, hunger, thirst) accordingly.
+   - Update the backpack inventory—if searching, sometimes yield useful items (e.g., an apple or basic first aid supplies) or nothing at all.
+   - Revise goals and subgoals based on recent progress.
+   - Provide a detailed narration (3-5 sentences) that explains:
+       * What action the player attempted and how.
+       * The environmental challenges (e.g., changing weather, dark versus daylight conditions) and time taken.
+       * Specific consequences (for example, if the player runs with low stamina in darkness, mention injuries such as cuts or bruises).
+       * The progression to a new scenario or situation.
+   - Offer a set of consequence-based options (only for EASY/NORMAL difficulty; omit for HARD).
+7. The JSON structure for ACTION responses must exactly follow this schema:
 
 JSON Schema for ACTION:
 {{
@@ -834,10 +839,10 @@ JSON Schema for ACTION:
     "thirst": <number between 0 and 100>,
     "injuries": [ "detailed_injury1", "detailed_injury2" ],
     "turnsRemaining": <number between 0 and 20>,
-    "weather": "A detailed weather description with expected changes.",
-    "narration": "Rich, atmospheric text (3-5 sentences) combining action and consequences.",
+    "weather": "Detailed weather description with forecasted changes.",
+    "narration": "Rich, atmospheric text (3-5 sentences) that combines the description of the action and its consequences, indicating both successes and setbacks.",
     "location": {{
-         "name": "A detailed description of the new location",
+         "name": "Detailed description of the new location",
          "coordinates": {{
               "latitude": <decimal_number>,
               "longitude": <decimal_number>
@@ -856,37 +861,42 @@ JSON Schema for ACTION:
     "options": [  // Only include options for NORMAL/EASY difficulties.
          {{
               "id": "option1",
-              "text": "Description of a possible next action and its survival context",
+              "text": "Description of a potential next action with context-specific survival details",
               "consequences": {{
                    "health": <number representing health change (negative value)>,
-                   "description": "Realistic outcome description based on survival decisions"
+                   "description": "Realistic outcome explanation based on the chosen survival decision"
               }}
          }},
          // 2-3 more options as applicable.
     ],
-    "backpack": [ "Updated inventory reflecting used/depleted items" ]
+    "backpack": [ "Updated inventory reflecting items used, consumed, or newly added" ]
 }}
 
 8. Apply realistic survival mechanics:
-   - Calculate energy, time, and resource consumption based on terrain, weather, and player's stamina.
-   - Track tool degradation and consumable resources permanently.
-   - Adjust hunger and thirst rates based on activity intensity:
-         * Light Activity: minor adjustments over several hours.
+   - Calculate energy, time, and resource consumption based on terrain, weather, and player stamina.
+   - Track tool degradation and consumable usage permanently.
+   - Adjust hunger and thirst rates based on the intensity of activity:
+         * Light Activity: minor changes over several hours.
          * Moderate to Heavy Activity: greater resource loss.
-   - Naturally evolve environmental conditions (weather, day/night cycle).
+   - Evolve environmental conditions naturally (adjusting weather, day/night cycles, ambient light, etc.).
 
 9. Enforce difficulty-specific rules:
-   - HARD: Do not return an 'options' array. Start with no utilities/tools if applicable and use stricter penalties.
-   - EASY/NORMAL: Include a carefully considered options array to guide further actions.
+   - HARD: Do not return an 'options' array. Use stricter resource depletion, no starting utilities/tools, and harsher penalties.
+   - EASY/NORMAL: Provide a carefully considered options array to help guide subsequent actions.
 
-10. Allow for the game to end realistically (if health, stamina, hunger, or thirst deplete to 0, extreme injuries, resource depletion, or turns run out) with a clear explanation.
+10. Allow the game to end realistically (if health, stamina, hunger, or thirst reach 0, if severe injuries occur, or if resources are fully depleted) and provide a clear explanation.
+
+11. Dynamic Consequences and Randomized Outcomes:
+   - If the player repeatedly performs risky actions (e.g., running in low-stamina dark conditions), include severe or cumulative consequences such as injuries.
+   - When searching storage or similar locations, randomly decide if the player finds something useful (like an apple or medical supplies) or nothing at all, with corresponding impacts on stamina or hunger.
+   - Instruct the narration to vary based on context (day versus night, good weather versus harsh conditions).
 
 ---------------------------
 RESPOND ACCORDINGLY:
 ---------------------------
-Based on whether the player's input is a QUESTION or an ACTION, provide the response in the corresponding JSON structure as described above.
+Based on whether the player's input is a QUESTION or an ACTION, provide the response in the corresponding JSON structure described above.
 """
-  
+
         # Generate content using the AI model with our fully constructed prompt.
         response = client.models.generate_content(
             model="gemini-2.0-flash-exp",
@@ -923,6 +933,7 @@ Based on whether the player's input is a QUESTION or an ACTION, provide the resp
             "success": False,
             "error": str(e)
         })
+
 
 def game_summary(context, options=None):
     """Generate game summary using Gemini 2.0"""
