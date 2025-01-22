@@ -947,7 +947,8 @@ JSON Schema for ACTION:
    - Evolve environmental conditions naturally (weather changes, day/night cycles, ambient light, etc.).
 9. Enforce difficulty-specific rules:
    - HARD: Do NOT include an 'options' array; use stricter penalties, no starting utilities, and harsher resource depletion.
-   - EASY/NORMAL: Provide a thoughtfully considered options array to guide subsequent actions.
+   - NORMAL: Provide 2 options which do give the player options but are not laying out the optimal solutions immediately. more focused on discovery, trial and error, etc.
+   - EASY: Provide a thoughtfully considered options array to guide subsequent actions.
 10. Ensure that the adventure leads to either a good ending (rescue, safe shelter, goal attainment) or a bad ending (critical failure, death) based on cumulative decisions. If any stat reaches 0 or if critical injuries occur, mark the game as ended with a clear explanation in gameEndReason.
 11. Dynamic Consequences and Narrative Direction:
    - For repeated dangerous actions (like running in the dark with low stamina), enforce cumulative, severe consequences (such as hypothermia, frostbite, or worsening injuries).
