@@ -760,8 +760,15 @@ def game_master(context, options=None):
         Turns Remaining: {latest_turn.get('remainingTurns', 20)}
 
         COMPLETE TURN HISTORY:
-        {' '.join([f"Turn {i+1}: {turn.get('chosenOption', 'None')} - {turn.get('aiNarration', '')}" 
-                  for i, turn in enumerate(all_turns) if turn.get('chosenOption')])}
+        {'\n'.join(f"""Turn {turn.get('turnNumber', i+1)}:
+            Time: {turn.get('datetime', 'Unknown')}
+            Player Action: {turn.get('action', 'None')}
+            Location: {turn.get('location', 'Unknown')}
+            Weather: {turn.get('weather', 'Unknown')}
+            Inventory: {', '.join(turn.get('backpackInventory', []))}
+            AI Response: {turn.get('aiNarration', '')}
+            Chosen Option: {turn.get('chosenOption', 'None')}
+            """ for i, turn in enumerate(context.get('turns', [])))}
 
         GOALS:
         Main Goal: {context.get('goals', {}).get('main', '')}
