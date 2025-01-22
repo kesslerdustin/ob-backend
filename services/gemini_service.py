@@ -715,9 +715,8 @@ from datetime import datetime
 # Assume client and extract_json_from_text are imported or defined elsewhere
 
 def game_master(context, options=None):
-    """Process game turns using Gemini 2.0 with improved prompt for clarity, dynamic progression,
-       persistent injuries, context-sensitive responses to detailed vs. unrealistic inputs,
-       and narrative direction tracking toward a good or bad ending."""
+    """Process game turns using Gemini 2.0 with improved dynamic progression toward an ending,
+       persistent and realistic injuries, and balanced challenge versus progress conditions."""
     try:
         # Deserialize inputs if provided as JSON strings.
         context = json.loads(context) if isinstance(context, str) else context
@@ -757,16 +756,21 @@ def game_master(context, options=None):
 
         # Build a comprehensive prompt for the AI.
         structured_prompt = f"""
-You are a world-class game master and survival expert. Your role is to evolve an immersive text-based survival adventure with realistic mechanics, dynamic environmental conditions, persistent status effects (such as injuries), adaptive goals, and narrative progression toward either a successful (good) or a catastrophic (bad) ending. Use the game state below and all previous turns to determine the overall narrative direction. Your response must always state if the game has ended (e.g., if any stat is 0, if a critical failure occurs, if the player gets rescued or dies) and update goals accordingly.
+You are a world-class game master and survival expert. Your task is to evolve an immersive text-based survival adventure with realistic mechanics, adaptive narrative progression toward a good or bad ending, persistent and cumulative injuries, and a balanced level of environmental challenge. Use the entire game state and history below to decide how the story develops. In particular:
+
+• If the player makes logical and careful decisions, the narrative should allow opportunities to slowly recover or progress—even under harsh conditions.
+• Conversely, if the player's decisions have been poor, the narrative must reflect mounting adversity with severe consequences.
+• Injuries must persist and become more severe over time (e.g., signs of hypothermia, frostbite, or cumulative physical damage) if the environment remains harsh or decisions worsen the condition.
+• The story’s overall difficulty should reflect both the environmental challenges (heavy rain, cold, wind) and the player’s actions, so that progress may be gradual if smart choices are made, but any poor decision accelerates the downfall.
 
 ---------------------------
 PLAYER INPUT & INTENT:
 ---------------------------
 Player Input: {current_turn.get('action', '')}
-First, analyze whether the input is a QUESTION (for clarifications) or an ACTION (attempting to affect the game state).  
-• If the input is vague (e.g. "I improve the stick and try to burn it"), return a JSON with "isQuestion": true and ask for clarification.
-• If the input is detailed (e.g. "I carefully carve feathersticks using my knife and then arrange them optimally for catching sparks"), process it fully.
-• If the input is extremely unrealistic (e.g., "I find a helicopter" or "I jump off a 1000m cliff"), acknowledge the improbability and either ask for clarification or simulate a realistic, severe consequence.
+Analyze whether the input is a QUESTION (requesting clarification) or an ACTION (attempting to change the game state).  
+• If the input is vague (e.g., "I improve the stick and try to burn it"), return a JSON with "isQuestion": true and ask for clarification details.
+• If the input is detailed (e.g., "I carefully carve feathersticks using my knife and arrange them optimally for catching sparks"), process it fully.
+• If the input is extremely unrealistic (e.g., "I find a helicopter" or "I jump off a 1000m cliff"), either request clarification or simulate severe, realistic consequences.
 
 ---------------------------
 GAME OVERVIEW:
@@ -784,6 +788,7 @@ GPS Coordinates: Latitude {context.get('location', {}).get('coordinates', {}).ge
 Elevation: {context.get('location', {}).get('elevation', 'Unknown')} m
 Local Time: {current_datetime}
 Weather: {latest_turn.get('weather', 'Unknown')}
+Note: Ensure that the environmental conditions are applied realistically and opportunities for partial recovery (or further decline) are clearly reflected.
 
 ---------------------------
 CURRENT STATUS:
@@ -794,7 +799,7 @@ Hunger: {latest_turn.get('stats', {}).get('hunger', 100)}
 Thirst: {latest_turn.get('stats', {}).get('thirst', 100)}
 Inventory: {', '.join(latest_turn.get('backpackInventory', []))}
 Turns Remaining: {latest_turn.get('remainingTurns', 20)}
-Note: All previously incurred injuries must persist and affect future actions.
+Important: All previously incurred injuries must persist. In these harsh conditions, realistic injuries (e.g., hypothermia, Frostbite, Schnitte, Erschöpfung) should be included and may worsen if conditions remain unchanged.
 
 ---------------------------
 TURN HISTORY:
@@ -807,32 +812,33 @@ GOALS & PROGRESSION:
 Main Goal: {context.get('goals', {}).get('main', '')}
 Active Subgoals: {', '.join(context.get('goals', {}).get('subgoals', []))}
 Completed Subgoals: {', '.join(context.get('goals', {}).get('completedSubgoals', []))}
-Important: Based on the progress so far, your response must indicate the overall narrative direction (i.e., whether the player's decisions have been good, bringing him closer to achieving a safe rescue or reaching his goal, or poor, leading to a downward spiral toward a bad ending). For example, if the player has repeatedly taken dangerous or resource-wasting actions, state that it is becoming very hard to save them; if the player has made logical and careful decisions, indicate they are nearing a successful rescue or safe outcome.
+Critical: Based on previous turns and user decisions, indicate the overall narrative direction:
+ - If the decisions have been wise, show a slow progression toward rescue or safety.
+ - If the decisions have been poor, the situation should deteriorate toward a very hard, possibly fatal ending.
 
 ---------------------------
 CRITICAL REQUIREMENTS & MECHANICS:
 ---------------------------
 1. Response MUST be in {language} only.
-2. DO NOT allow players to force outcomes – they only specify WHAT to do; YOU decide HOW it happens and the consequences.
-3. Identify the player's input as either:
-   - **QUESTION:** Seeking clarifications about surroundings, status, or details.
-   - **ACTION:** Attempting a survival-related task that changes the state.
-4. If the player's action is vague, return a JSON with "isQuestion": true and ask for further details.
-5. If the player's action is extremely unrealistic (e.g., "I find a helicopter" or "I jump off a 1000m cliff"), explain that such actions are virtually impossible in the current setting and either ask for confirmation or simulate their extreme, realistic consequences (e.g., immediate death).
+2. Do NOT allow players to force outcomes – they only specify WHAT to do; YOU decide HOW the action is resolved and its consequences.
+3. Identify the player's input as:
+   - **QUESTION:** For clarifications about the surroundings or status.
+   - **ACTION:** For tasks that alter the game state.
+4. If the action is vague, return JSON with "isQuestion": true and ask for further details.
+5. If the action is extremely unrealistic (e.g., "I find a helicopter" or "I jump off a 1000m cliff"), explain that such actions are nearly impossible under these conditions and either ask for clarification or simulate realistic, extreme consequences (e.g., immediate death).
 6. When processing an ACTION:
-   - Apply realistic survival mechanics. For instance, running in the dark with low stamina should risk falls, injuries (cuts, bruises), or even worsen existing injuries.
-   - Update time based on the action's realistic duration.
-   - Adjust player stats (health, stamina, hunger, thirst) accordingly and ensure injuries persist across turns.
-   - Update the inventory: if searching a location, randomly decide if useful items (e.g., a healing apple, first aid supplies) are found or if nothing is found.
-   - Revise goals and subgoals based on progress. For example, if the player crafts feathersticks successfully, a new subgoal might be "Entzünde ein Feuer, um dich aufzuwärmen."
-   - Critically, based on all previous turns and current conditions, indicate whether the overall trajectory is moving toward a good ending (e.g., rescue, safe shelter, improved condition) or a bad ending (e.g., further decline, death), and include this in the narrative.
-   - Provide a detailed narration (3-5 sentences) that explains:
-       * What action the player attempted and how.
-       * The environmental challenges (e.g., weather changes, darkness) and how they affect the outcome.
-       * Specific consequences (mention injuries, resource loss, and any cumulative effects).
-       * How this turn moves the overall narrative toward a positive outcome or a near-certain failure.
-   - Provide a set of consequence-based options (only for EASY/NORMAL difficulties). Options should reflect realistic next steps and possible short-term outcomes.
-7. The JSON response for an ACTION must exactly follow this schema:
+   - Apply realistic survival mechanics. For example, running in the dark with low stamina should risk severe falls, cumulative injuries (including signs of hypothermia or frostbite), and additional stat penalties.
+   - Update the time based on realistic action duration.
+   - Adjust player stats (health, stamina, hunger, thirst) accordingly and ensure injuries (and potentially other status effects like hypothermia) persist and worsen if not treated.
+   - Update inventory accordingly: For example, when searching, randomly determine if useful items (e.g., an apple, first aid supplies) are found or if nothing is added.
+   - Revise goals and subgoals dynamically. For example, successful crafting of feathersticks might generate the new subgoal "Entzünde ein Feuer, um deine Körpertemperatur zu steigern", while repeated poor decisions should update the narrative toward a fatal outcome.
+   - Very importantly, indicate the overall narrative direction (good vs. bad ending) based on cumulative turns. If the player's decisions have been careful, the narrative should hint at a possibility of rescue or safety; if not, the narrative should accelerate decline.
+   - Provide rich, atmospheric narration (3-5 sentences) that details:
+       * The player’s attempted action and how it was carried out.
+       * The environmental challenges and specific consequences (including injuries, cold, and resource loss).
+       * How these consequences move the narrative toward either a recovery/rescue scenario or a dangerous, possibly fatal end.
+   - For EASY/NORMAL difficulties, provide a set of realistic consequence-based options to guide the next action. For HARD, omit the options.
+7. The JSON response for ACTION must exactly follow this schema:
 
 JSON Schema for ACTION:
 {{
@@ -844,7 +850,7 @@ JSON Schema for ACTION:
     "injuries": [ "detailed_injury1", "detailed_injury2" ],
     "turnsRemaining": <number between 0 and 20>,
     "weather": "Detailed weather description with forecasted changes.",
-    "narration": "Rich, atmospheric text (3-5 sentences) describing the action, its consequences, any injuries, and the overall narrative direction (toward a good or bad ending).",
+    "narration": "Rich, atmospheric text (3-5 sentences) that describes the action, its consequences (including any injuries or status changes), and the overall narrative direction (i.e., progressing toward a rescue/safe ending or worsening conditions).",
     "location": {{
          "name": "Detailed description of the new location",
          "coordinates": {{
@@ -860,15 +866,15 @@ JSON Schema for ACTION:
          "subgoals": [ "Subgoal 1", "Subgoal 2", "Subgoal 3" ],
          "completedSubgoals": [ "Completed subgoal 1" ]
     }},
-    "hasGameEnded": <true/false>,   // True if any stat is 0 or a critical event occurs (e.g., rescue, death).
+    "hasGameEnded": <true/false>,   // True if any stat is 0 or a critical event (rescue, death) occurs.
     "gameEndReason": <string or null>,  // Provide a detailed explanation if the game has ended.
-    "options": [  // Only for EASY/NORMAL difficulties.
+    "options": [  // Only include for EASY/NORMAL difficulties.
          {{
               "id": "option1",
               "text": "Description of a potential next action within the survival context",
               "consequences": {{
                    "health": <number representing health change (negative value)>,
-                   "description": "Realistic outcome explanation based on that choice"
+                   "description": "Realistic outcome explanation based on that decision"
               }}
          }},
          // 2-3 additional options as appropriate.
@@ -877,23 +883,23 @@ JSON Schema for ACTION:
 }}
 
 8. Apply realistic survival mechanics:
-   - Calculate energy, time, and resource consumption based on terrain, weather, and player stamina.
+   - Calculate energy, time, and resource consumption according to the terrain, weather, and player's stamina.
    - Track tool degradation and consumable usage permanently.
-   - Adjust hunger and thirst rates proportional to the activity intensity (e.g., heavy activity drains more).
-   - Evolve environmental conditions naturally (adjusting weather, day/night cycle, ambient light, etc.).
+   - Adjust hunger and thirst rates in proportion to the intensity of activity (heavy activity drains more).
+   - Evolve environmental conditions naturally (weather changes, day/night cycles, ambient light, etc.).
 9. Enforce difficulty-specific rules:
-   - HARD: Do NOT include an 'options' array. Use stricter resource depletion, no starting utilities, and harsher penalties.
-   - EASY/NORMAL: Provide a thoughtfully considered options array to help guide subsequent actions.
-10. The adventure must eventually lead to either a good ending (rescue, achieving a safe shelter, the main goal) or a bad ending (critical failure, death) based on the player’s decisions. If any stat reaches 0, if critical injuries occur, or if the player makes fatal decisions, mark the game as ended and provide a clear explanation.
+   - HARD: Do NOT include an 'options' array; use stricter penalties, no starting utilities, and harsher resource depletion.
+   - EASY/NORMAL: Provide a thoughtfully considered options array to guide subsequent actions.
+10. Ensure that the adventure leads to either a good ending (rescue, safe shelter, goal attainment) or a bad ending (critical failure, death) based on cumulative decisions. If any stat reaches 0 or if critical injuries occur, mark the game as ended with a clear explanation in gameEndReason.
 11. Dynamic Consequences and Narrative Direction:
-   - For repeated or dangerous actions (e.g., running in the dark with low stamina), include cumulative consequences such as lasting injuries.
-   - When the player performs detailed, logical actions (like carefully crafting feathersticks), reward those with a higher likelihood of progression toward rescue.
-   - Adapt the narrative direction so that if the player’s past decisions have been good, the story moves closer to achieving the main goal; if not, the narrative accelerates toward a negative outcome.
+   - For repeated dangerous actions (like running in the dark with low stamina), enforce cumulative, severe consequences (such as hypothermia, frostbite, or worsening injuries).
+   - When the player details logical, careful actions (like meticulous crafting of feathersticks), reward them with gradual progress toward a safe outcome.
+   - Adapt the narrative’s overall direction so that if the player’s decisions have been good, the story hints at rescue or recovery; if poor, the narrative accelerates decline.
 
 ---------------------------
 RESPOND ACCORDINGLY:
 ---------------------------
-Based on the analysis of the player's input (QUESTION or ACTION) and the state of the adventure so far, provide your response in the corresponding JSON structure as described above. Ensure that extreme or unrealistic inputs are properly challenged with clarifying questions or, if accepted, with realistic and severe consequences, and that your narration reflects the overall end direction (good vs. bad outcome) given previous decisions.
+Based on whether the player's input is a QUESTION or an ACTION and considering the overall progress in the adventure so far, provide your response in the JSON format described above. Extreme or unrealistic inputs must be clarified or severely penalized, and your narration should reflect the overall trajectory (improving vs. deteriorating) based on past decisions.
 """
 
         # Generate content using the AI model with our fully constructed prompt.
