@@ -592,6 +592,7 @@ def game_setup(settings_data, options=None):
                 - backpack: 5-7 useful items
                 - options: Provide 3-4 clear, helpful options
                 - introduction: Friendly, informative tone
+                - progression: Slow, gradual improvement depending on player actions. easy to win. 
             """,
             'normal': """
                 - health/hunger/thirst/stamina: Start at 90-100
@@ -599,6 +600,7 @@ def game_setup(settings_data, options=None):
                 - backpack: 3-4 basic items
                 - options: Provide 2-3 realistic options
                 - introduction: Neutral, realistic tone
+                - progression: Slow, gradual improvement depending on player actions. medium to win. 
             """,
             'hard': """
                 - health/hunger/thirst/stamina: Start at 70-90
@@ -606,6 +608,7 @@ def game_setup(settings_data, options=None):
                 - backpack: 1-2 basic items
                 - options: NO options array (player must type their own actions)
                 - introduction: Challenging, tense tone
+                - progression: Slow, gradual improvement depending on player actions. hard to win, requires careful actions. 
             """
         }
         
@@ -850,6 +853,13 @@ CRITICAL REQUIREMENTS & MECHANICS:
        * How these consequences move the narrative toward either a recovery/rescue scenario or a dangerous, possibly fatal end.
    - For EASY/NORMAL difficulties, provide a set of realistic consequence-based options to guide the next action. For HARD, omit the options.
 7. The JSON response for ACTION must exactly follow this schema:
+
+PROGRESSION AND ENDING:
+- depending on the difficulty, the progression and ending should be different. 
+- easy: slow, gradual improvement depending on player actions. easy to win. 
+- normal: slow, gradual improvement depending on player actions. medium to win. 
+- hard: slow, gradual improvement depending on player actions. hard to win, requires careful actions.
+- WIN / END possible before the 20th turn.  
 
 JSON Schema for ACTION:
 {{
