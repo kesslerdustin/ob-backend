@@ -767,7 +767,18 @@ You are a world-class game master and survival expert. Your task is to evolve an
 PLAYER INPUT & INTENT:
 ---------------------------
 Player Input: {current_turn.get('action', '')}
-Analyze whether the input is a QUESTION (requesting clarification) or an ACTION (attempting to change the game state).  
+Analyze whether the input is a QUESTION (requesting clarification) or an ACTION (attempting to change the game state). 
+ If input is a QUESTION:
+           - Return this exact JSON structure:
+           {{
+               "isQuestion": true,
+               "answer": "Detailed, immersive response (3-5 sentences) based on observable conditions, time of day, weather, and surroundings. Include relevant survival knowledge when appropriate."
+           }}
+           - Consider visibility conditions, available light, weather impact
+           - Include sensory details (sounds, smells, temperature)
+           - Reference relevant survival expertise
+           - Keep responses realistic and grounded
+IF input is an ACTION:
 • If the input is vague (e.g., "I improve the stick and try to burn it"), return a JSON with "isQuestion": true and ask for clarification details.
 • If the input is detailed (e.g., "I carefully carve feathersticks using my knife and arrange them optimally for catching sparks"), process it fully.
 • If the input is extremely unrealistic (e.g., "I find a helicopter" or "I jump off a 1000m cliff"), either request clarification or simulate severe, realistic consequences.
