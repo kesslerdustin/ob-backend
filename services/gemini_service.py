@@ -1166,27 +1166,20 @@ def generate_quiz(prompt, options=None):
         5. Explanations should be educational and clear
         """
 
-        config = {
-            'thinking_config': {
-                'include_thoughts': True
-            }
-        }
-
+        # Create a client with v1alpha API version
         response = client.models.generate_content(
             model='gemini-2.0-flash-thinking-exp',
             contents=structured_prompt,
-            config=config
+            generation_config={
+                'temperature': 0.7,
+                'top_p': 0.8,
+                'top_k': 40,
+                'max_output_tokens': 2048,
+            }
         )
 
-        # Extract the final response (non-thought part)
-        final_response = None
-        for part in response.candidates[0].content.parts:
-            if not part.thought:
-                final_response = part.text
-                break
-
-        if not final_response:
-            raise Exception("No valid response generated")
+        # Extract the final response
+        final_response = response.text
 
         # Extract JSON from the response
         json_content = extract_json_from_text(final_response)
