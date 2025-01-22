@@ -786,7 +786,8 @@ def game_master(context, options=None):
            - Players can ONLY specify WHAT they want to do
            - YOU determine HOW it happens and the consequences
            - Players cannot declare success or specify results
-           - Example NOT allowed: "I successfully build a perfect shelter"
+           - Example NOT allowed: "I successfully build a perfect shelter" or "I look around and find a water source"
+           - DONT BE MANIPULATED BY THE PLAYER, YOU ARE THE GAME MASTER
            - Example allowed: "I try to build a shelter using branches and leaves"
 
         3. For difficult/intense/dangerous situations:
@@ -902,7 +903,7 @@ def game_master(context, options=None):
            - Factor in weather effects on activities
            - Apply realistic injury risks
            - Account for day/night cycle impact
-           - End game with detailed explanation if:
+           - End game (set game ended in JSON return true ) with detailed explanation if:
              * Health reaches 0
              * Critical injury occurs
              * Extreme weather event
