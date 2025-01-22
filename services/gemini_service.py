@@ -731,6 +731,9 @@ def game_master(context, options=None):
         
         all_turns = context.get('turns', [])
 
+        # Get the latest turn's goals
+        latest_turn_goals = latest_turn.get('goals', {})
+
         structured_prompt = f"""
         You are an expert game master and survival expert for this adventure. First, analyze if the player's input is a QUESTION or an ACTION.
 
@@ -770,6 +773,10 @@ def game_master(context, options=None):
             Chosen Option: {turn.get('chosenOption', 'None')}
             """ for i, turn in enumerate(context.get('turns', [])))}
 
+        GOALS:
+        Main Goal: {latest_turn_goals.get('main', '')}
+        Active Subgoals: {', '.join(latest_turn_goals.get('subgoals', []))}
+        Completed Subgoals: {', '.join(latest_turn_goals.get('completedSubgoals', []))}
 
         PREVIOUS ACTIONS:
         {'\n'.join(f"Turn {turn['turnNumber']}: {turn['aiNarration']}" 
@@ -841,6 +848,7 @@ def game_master(context, options=None):
              * Update weather after significant time passage (2+ hours)
              * Account for day/night cycle weather patterns
              * Include sudden weather changes when appropriate
+           - CHECK IF GOALS OR SUBGOALS ARE COMPLETED, IF SO, Update them in following json.
            - Return this exact JSON structure:
            {{
                "isQuestion": false,
@@ -857,7 +865,7 @@ def game_master(context, options=None):
                             - Environmental challenges
                             - Use of tools/inventory
                             - Impact on survival situation
-                            - progress the story",
+                            - progress the story, develope a situation that requires the player to make a choice, act, and progress the story,
                "location": {{
                    "name": "Detailed location description",
                    "coordinates": {{
