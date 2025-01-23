@@ -547,20 +547,28 @@ try {
 
   app.post('/api/quiz/generate', express.json(), async (req, res) => {
     // Increase timeout to 90 seconds
-    req.setTimeout(90000); // 90 seconds
-    res.setTimeout(90000); // 90 seconds
+    req.setTimeout(90000);
+    res.setTimeout(90000);
     
     try {
-        const { prompt, language } = req.body;
+        const { prompt, language, locationAnalysis } = req.body;
         
         if (!prompt) {
             return res.status(400).json({ error: 'Prompt is required' });
         }
 
-        console.log('Processing quiz request:', { prompt, language });
+        console.log('Processing quiz request:', { 
+            prompt, 
+            language,
+            hasLocationAnalysis: !!locationAnalysis 
+        });
+        
         const response = await aiService.generateQuiz(
             prompt,
-            { language }
+            { 
+                language,
+                locationAnalysis // Pass location analysis to AI service
+            }
         );
 
         console.log('Quiz generation completed');

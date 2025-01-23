@@ -1142,6 +1142,7 @@ def generate_quiz(prompt, options=None):
     try:
         options = json.loads(options) if isinstance(options, str) else options or {}
         language = options.get('language', 'en')
+        location_analysis = options.get('locationAnalysis', '')
         
         structured_prompt = f"""
         Du bist ein Quizmaster für ein Survival- und Naturquiz, das sich auf meinen aktuellen Standort und die umgebenden Bedingungen bezieht. Hier sind die Regeln und Anforderungen:
@@ -1170,178 +1171,13 @@ Ton und Stil:
 
 Sei motivierend und freundlich.
 Mache das Quiz interaktiv, spannend und lehrreich.
-Dynamik:
+
+
+LOCATION ANALYSIS:
+{location_analysis}
 
 Nutze meine Standortdaten kreativ, um über das Offensichtliche hinauszugehen.
-Schaffe einen Mix aus realitätsnahen und kniffligen Fragen.:  📅 22.01.2025, 22:35
-Standort: Oberhausen, Nordrhein-Westfalen, Deutschland
-Koordinaten: 51.4537°, 6.8269°
-
-Temperatur: 5°C (gefühlt wie 1°C)
-Bedingungen: Mäßiger Regen
-Luftfeuchtigkeit: 94%
-Wind: 18.5 km/h
-Sichtweite: 10.0km
-Luftdruck: 999hPa
-
-Wettervorhersage:
-23.01.2025, 01:00:
- 5°C, Mäßiger Regen
- 9.4km/h, 95%
-
-23.01.2025, 04:00:
- 4°C, Mäßiger Regen
- 10.5km/h, 96%
-
-23.01.2025, 07:00:
- 4°C, Leichter Regen
- 15.3km/h, 90%
-
- Sonne & Mond:
-Sonnenaufgang: 22.01.2025, 08:24
-Sonnenuntergang: 22.01.2025, 17:03
-
- Höhenlage: 31.8m über dem Meeresspiegel
-
- Aktiver Wegpunkt:
-- Tenderingssee (17.25km) [51.5952, 6.7251]
-
- Biom (Radius: 3 km): Gemäßigte Laub- und Mischwälder (Hügel, Flussniederungen, städtisch)
-
- Bevölkerung (Radius: 3 km): Ungefähr 93.019 Menschen in der Umgebung
-
- Natürliche Merkmale (Radius: 3 km):
-
- Geologie (Radius: 3 km):
-- Kaiserberg (78m) (2.49km) [51.4379, 6.8015]
-
- Wasseraufbereitung (Radius: 3 km):
-- Ruhr (0.58km) [51.4485, 6.8265]
-- Becken (0.86km) [51.4466, 6.8317]
-- Teich (0.99km) [51.4455, 6.8214]
-- Teich (1.06km) [51.4452, 6.8200]
-- Fluss (1.11km) [51.4441, 6.8316]
-
- Vegetation (Radius: 3 km):
-- Busch (0.32km) [51.4510, 6.8256]
-- Busch (0.42km) [51.4522, 6.8214]
-- Busch (0.42km) [51.4521, 6.8215]
-- Baumgruppe (0.43km) [51.4504, 6.8302]
-- Busch (0.49km) [51.4550, 6.8336]
-
- Points of Interest (Radius: 3 km):
-- Elefantenpark (0.34km) [51.4567, 6.8278]
-- Ruhrpark (0.34km) [51.4512, 6.8295]
-- Solbadhalde (0.63km) [51.4511, 6.8349]
-- Große Ruhrinsel (0.84km) [51.4485, 6.8181]
-- AngelSpot für Angler (0.98km) [51.4449, 6.8268]
-
- Flora (Radius: 3 km):
-Bäume:
-- Götterbaum (85 Sichtungen)
-- Gemeine Hasel (19 Sichtungen)
-- Rotbuche (19 Sichtungen)
-- Bergahorn (12 Sichtungen)
-- Petty Spurge (10 Sichtungen)
-- Euphorbia lathyris (9 Sichtungen)
-- Spitzahorn (7 Sichtungen)
-- Einjähriges Bingelkraut (7 Sichtungen)
-- Purple Loosestrife (5 Sichtungen)
-- Hainbuche (5 Sichtungen)
-
-Blütenpflanzen & Sträucher:
-- False-acacia (94 Sichtungen)
-- Narrow-leaved Ragwort (60 Sichtungen)
-- Japanese Knotweed (21 Sichtungen)
-- Hemp-agrimony (17 Sichtungen)
-- Kleines Springkraut (17 Sichtungen)
-- Echter Hopfen (16 Sichtungen)
-- Große Brennnessel (15 Sichtungen)
-- Mugwort (14 Sichtungen)
-- Gewöhnliches Seifenkraut (14 Sichtungen)
-- Prunus padus (14 Sichtungen)
-
-Farne & Verwandte:
-- Mauerraute (11 Sichtungen)
-- Braunstieliger Streifenfarn (6 Sichtungen)
-- Hirschzungenfarn (5 Sichtungen)
-- Rustyback (1 Sichtungen)
-- Straußenfarn (1 Sichtungen)
-- Adlerfarn (1 Sichtungen)
-
-Wasser- & Meerespflanzen:
-- Schwanenblume (5 Sichtungen)
-- Gefleckter Aronstab (5 Sichtungen)
-- Vielwurzelige Teichlinse (4 Sichtungen)
-- Kleine Wasserlinse (2 Sichtungen)
-- Gewöhnlicher Froschlöffel (1 Sichtungen)
-
- Fauna (Radius: 3 km):
-Säugetiere:
-- Eurasisches Eichhörnchen (20 Sichtungen)
-- Rotfuchs (4 Sichtungen)
-- Zwergfledermaus (4 Sichtungen)
-- Nutria (4 Sichtungen)
-- Wildkaninchen (3 Sichtungen)
-- Steinmarder (2 Sichtungen)
-- Rauhautfledermaus (2 Sichtungen)
--  (2 Sichtungen)
-- Europäischer Maulwurf (2 Sichtungen)
-- Reh (1 Sichtungen)
-
-Vögel:
-- Mäusebussard (111 Sichtungen)
-- Turmfalke (82 Sichtungen)
-- Flussregenpfeifer (81 Sichtungen)
-- Lachmöwe (68 Sichtungen)
-- Graugans (66 Sichtungen)
-- Nilgans (64 Sichtungen)
-- Kanadagans (53 Sichtungen)
-- Stockente (43 Sichtungen)
-- Aaskrähe (38 Sichtungen)
-- Kiebitz (38 Sichtungen)
-
-Reptilien:
-- Yellow-bellied Slider (4 Sichtungen)
-- Sand Lizard (4 Sichtungen)
--  (2 Sichtungen)
-
-Amphibien:
-- Epidalea calamita (54 Sichtungen)
-- Erdkröte (19 Sichtungen)
-- Green Frog spec. (19 Sichtungen)
-- Teichmolch (10 Sichtungen)
-- Grasfrosch (8 Sichtungen)
-- Bergmolch (6 Sichtungen)
-- Seefrosch (5 Sichtungen)
-- Kleiner Wasserfrosch (2 Sichtungen)
-- Fadenmolch (1 Sichtungen)
-
-Fische:
-- Europäischer Aal (3 Sichtungen)
-- Round Goby (3 Sichtungen)
-- Karpfen (2 Sichtungen)
-- Aland (2 Sichtungen)
-- Hecht (1 Sichtungen)
-- Zander (1 Sichtungen)
-- Ponticola kessleri (1 Sichtungen)
-- Kaulbarsch (1 Sichtungen)
-- Flussbarsch (1 Sichtungen)
-- Güster (1 Sichtungen)
-
-Wirbellose:
-- Harlequin ladybird (38 Sichtungen)
-- Nosferatu-Spinne (37 Sichtungen)
-- Buff-tailed Bumblebee/White-tailed Bumblebee s.l. (Europe) (30 Sichtungen)
-- Grünes Heupferd (28 Sichtungen)
-- Honey Bee (27 Sichtungen)
--  (24 Sichtungen)
-- Common Carder Bumblebee (23 Sichtungen)
-- European Tree cricket (23 Sichtungen)
-- Hornet (18 Sichtungen)
-- Seven-spot Ladybird (18 Sichtungen)", "timestamp": 2025-01-22T21:35:53.397Z
-        {prompt}
-
+Schaffe einen Mix aus realitätsnahen und kniffligen Fragen.: 
         CRITICAL REQUIREMENTS:
         category: fauna, flora or survival
         1. Return EXACTLY this JSON structure:

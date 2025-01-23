@@ -618,7 +618,8 @@ async function generateQuiz(prompt, options = {}) {
             
             console.log('Starting quiz generation:', {
                 prompt,
-                options
+                options,
+                hasLocationAnalysis: !!options.locationAnalysis
             });
             
             const pythonProcess = spawn('python', [
@@ -626,10 +627,13 @@ async function generateQuiz(prompt, options = {}) {
                 'quiz',
                 prompt,
                 'null',  // no image
-                JSON.stringify(options)
+                JSON.stringify({
+                    ...options,
+                    locationAnalysis: options.locationAnalysis || ''
+                })
             ], {
                 env: { ...process.env, PYTHONIOENCODING: 'utf-8' },
-                timeout: 85000 // 85 seconds timeout
+                timeout: 85000
             });
 
             let dataString = '';
