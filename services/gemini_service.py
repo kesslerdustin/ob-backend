@@ -587,15 +587,18 @@ def game_setup(settings_data, options=None):
         biome = environmental_context.get('biome', 'unknown')
         nearby_pois = environmental_context.get('nearbyPOIs', [])
         natural_features = environmental_context.get('nearbyNaturalFeatures', [])
-        local_wildlife = environmental_context.get('localWildlife', [])
+        localWildlife = environmental_context.get('localWildlife', [])
         
-        # Format environmental context for the prompt
+        # Format environmental context more clearly
         formatted_env_context = f"""
-        ENVIRONMENTAL CONTEXT (for starting position. may be embedded in the scenario, but not required):
-        Biome: {biome}
-        Nearby Points of Interest: {', '.join([f"{poi['name']} (lat: {poi['coordinates']['latitude']}, long: {poi['coordinates']['longitude']})" for poi in nearby_pois])}
-        Natural Features: {', '.join([f"{feature['name']} (lat: {feature['coordinates']['latitude']}, long: {feature['coordinates']['longitude']})" for feature in natural_features])}
-        Local Wildlife: {', '.join([f"{species['name']} ({species['category']}, {species['scientificName']})" for species in local_wildlife[:10]])}
+        Environmental Context:
+        - Biome: {biome}
+        - Nearby Points of Interest:
+          {chr(10).join([f"  • {poi['name']} ({poi['coordinates']['latitude']}, {poi['coordinates']['longitude']})" for poi in nearby_pois[:5]])}
+        - Natural Features:
+          {chr(10).join([f"  • {feature['name']} ({feature['coordinates']['latitude']}, {feature['coordinates']['longitude']})" for feature in natural_features[:10]])}
+        - Local Wildlife:
+          {chr(10).join([f"  • {species['name']} ({species['scientificName']})" for species in localWildlife[:10]])}
         """
         
         # Get difficulty and scenario details
@@ -759,16 +762,19 @@ def game_master(context, options=None):
         biome = environmental_context.get('biome', 'unknown')
         nearby_pois = environmental_context.get('nearbyPOIs', [])
         natural_features = environmental_context.get('nearbyNaturalFeatures', [])
-        localWildlie = environmental_context.get('localWildlife', [])
+        localWildlife = environmental_context.get('localWildlife', [])
 
-        # Format environmental context for the prompt
+        # Format environmental context more clearly
         formatted_env_context = f"""
-        ENVIRONMENTAL CONTEXT (for starting position. may be embedded in the scenario, but not required. species occurances, pois, natural features):
-        Biome: {biome}
-        Nearby Points of Interest: {', '.join([f"{poi['name']} (lat: {poi['coordinates']['latitude']}, long: {poi['coordinates']['longitude']})" for poi in nearby_pois])}
-        Natural Features: {', '.join([f"{feature['name']} (lat: {feature['coordinates']['latitude']}, long: {feature['coordinates']['longitude']})" for feature in natural_features])}
-        Local Wildlife: {', '.join([f"{species['name']} ({species['category']}, {species['scientificName']})" for species in localWildlie[:10]])}
-       """
+        Environmental Context:
+        - Biome: {biome}
+        - Nearby Points of Interest:
+          {chr(10).join([f"  • {poi['name']} ({poi['coordinates']['latitude']}, {poi['coordinates']['longitude']})" for poi in nearby_pois[:5]])}
+        - Natural Features:
+          {chr(10).join([f"  • {feature['name']} ({feature['coordinates']['latitude']}, {feature['coordinates']['longitude']})" for feature in natural_features[:10]])}
+        - Local Wildlife:
+          {chr(10).join([f"  • {species['name']} ({species['scientificName']})" for species in localWildlife[:10]])}
+        """
 
         # Sanitize the player's action: Replace double quotes to avoid formatting issues.
         if 'currentTurn' in context and 'action' in context['currentTurn']:
@@ -806,6 +812,9 @@ def game_master(context, options=None):
         # Build a comprehensive prompt for the AI.
         structured_prompt = f"""
         You are a world-class game master and survival expert. Your task is to evolve an immersive text-based survival adventure with realistic mechanics, adaptive narrative progression toward a good or bad ending, persistent and cumulative injuries, and a balanced level of environmental challenge.
+
+        ENVIRONMENTAL CONTEXT:
+        {formatted_env_context}
 
         CRITICAL - CUSTOM RULES TO FOLLOW:
         {custom_rules}
@@ -1031,7 +1040,15 @@ def game_master(context, options=None):
         The response format must remain unchanged, but the content should reflect these preferences.
         """
 
-        # Generate content using the AI model with our fully constructed prompt.
+        # Add debug logging to print the full prompt
+        print("=== GAME MASTER PROMPT START ===", file=sys.stderr)
+        print(structured_prompt, file=sys.stderr)
+        print("=== GAME MASTER PROMPT END ===", file=sys.stderr)
+        print("\n=== ENVIRONMENTAL CONTEXT ===", file=sys.stderr)
+        print(formatted_env_context, file=sys.stderr)
+        print("=== END ENVIRONMENTAL CONTEXT ===\n", file=sys.stderr)
+
+        # Generate content using the AI model with our fully constructed prompt
         response = client.models.generate_content(
             model="gemini-2.0-flash-thinking-exp",
             contents=structured_prompt
