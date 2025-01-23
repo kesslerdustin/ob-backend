@@ -655,6 +655,8 @@ def game_setup(settings_data, options=None):
         Difficulty: {difficulty}
         Scenario: {scenario_desc}
 
+        ENVIRONMENTAL CONTEXT (you can use this to get more information about the location and embed them in the scenario):
+
         {formatted_env_context}
         
         Return EXACTLY this JSON structure:
@@ -813,7 +815,7 @@ def game_master(context, options=None):
         structured_prompt = f"""
         You are a world-class game master and survival expert. Your task is to evolve an immersive text-based survival adventure with realistic mechanics, adaptive narrative progression toward a good or bad ending, persistent and cumulative injuries, and a balanced level of environmental challenge.
 
-        ENVIRONMENTAL CONTEXT:
+        ENVIRONMENTAL CONTEXT (you can use this to get more information about the location and embed them in the scenario, help construct the world etc. only if it makes sense):
         {formatted_env_context}
 
         CRITICAL - CUSTOM RULES TO FOLLOW:
