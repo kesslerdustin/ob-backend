@@ -924,7 +924,7 @@ JSON Schema for ACTION:
          "subgoals": [ "Subgoal 1", "Subgoal 2", "Subgoal 3" ],
          "completedSubgoals": [ "Completed subgoal 1" ]
     }},
-    "hasGameEnded": <true/false>,   // True if any stat is 0 or a critical event (rescue, death) occurs.
+    "hasGameEnded": <true/false>,   // True if any stat is 0 or a critical event (rescue, death) occurs OR if 0 remaining turns.
     "gameEndReason": <string or null>,  // Provide a detailed explanation if the game has ended.
     "options": [  // Only include for EASY/NORMAL difficulties.
          {{
