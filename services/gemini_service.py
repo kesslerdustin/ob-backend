@@ -896,7 +896,7 @@ PROGRESSION AND ENDING:
 - hard: slow, gradual improvement depending on player actions. hard to win, requires careful actions.
 - WIN / END possible before the 20th turn.  
 - Game Ends (send json with hasGameEnded: true) if any stat is 0 or a critical event (rescue, death) occurs OR the main goal is achieved and all subgoals are completed..
-- if after 20 turns (0 remaining turns) the game is not ended, the game should end with an ending that sums up the story and final stats.
+- if after 20 turns (0 remaining turns) the game is not ended, the game should end with an ending that sums up the story and final stats (send json with hasGameEnded: true).
 
 JSON Schema for ACTION:
 {{
