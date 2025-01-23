@@ -547,86 +547,62 @@ try {
   });
 
   app.post('/api/quiz/generate', express.json(), async (req, res) => {
-    const requestId = Date.now().toString();
-    
     try {
         const { prompt, language, locationAnalysis } = req.body;
+        const requestId = Date.now().toString();
         
-        if (!prompt) {
-            return res.status(400).json({ error: 'Prompt is required' });
-        }
-
-        // Create the quiz generation promise
-        const quizPromise = aiService.generateQuiz(
-            prompt,
-            { 
-                language,
-                locationAnalysis
-            }
-        );
-
-        // Store the promise with its cancel function
-        activeQuizRequests.set(requestId, quizPromise);
-
-        // Handle client disconnection
-        req.on('close', () => {
-            try {
-                const quizPromise = activeQuizRequests.get(requestId);
-                if (quizPromise && quizPromise.cancel) {
-                    console.log(`Client disconnected, cancelling quiz generation ${requestId}`);
-                    quizPromise.cancel();
-                }
-            } catch (error) {
-                console.error('Error during request cleanup:', error);
-            } finally {
-                activeQuizRequests.delete(requestId);
-            }
-        });
-
-        const response = await quizPromise;
-        activeQuizRequests.delete(requestId);
-
+        // Immediately respond with a job ID
         res.json({
             success: true,
-            quiz: response
+            status: 'processing',
+            requestId: requestId
         });
 
+        // Process the quiz generation in the background
+        setTimeout(async () => {
+            try {
+                const response = await aiService.generateQuiz(prompt, {
+                    language,
+                    locationAnalysis
+                });
+                
+                // Store the result in memory or database
+                activeQuizRequests.set(requestId, {
+                    status: 'completed',
+                    data: response
+                });
+            } catch (error) {
+                activeQuizRequests.set(requestId, {
+                    status: 'error',
+                    error: error.message
+                });
+            }
+        }, 0);
+
     } catch (error) {
-        console.error('Quiz generation error:', error);
-        activeQuizRequests.delete(requestId);
-        
-        // Send appropriate error response
-        res.status(error.status || 500).json({
+        res.status(500).json({
             success: false,
-            error: 'Failed to generate quiz',
+            error: 'Failed to start quiz generation',
             details: error.message
         });
     }
   });
 
-  // Update the cancellation endpoint
-  app.post('/api/quiz/cancel', express.json(), async (req, res) => {
-    const { requestId } = req.body;
+  // Add a new endpoint to check quiz status
+  app.get('/api/quiz/status/:requestId', (req, res) => {
+    const { requestId } = req.params;
+    const result = activeQuizRequests.get(requestId);
     
-    try {
-        if (activeQuizRequests.has(requestId)) {
-            const quizPromise = activeQuizRequests.get(requestId);
-            if (quizPromise && quizPromise.cancel) {
-                await quizPromise.cancel();
-            }
-            activeQuizRequests.delete(requestId);
-            res.json({ success: true, message: 'Quiz generation cancelled' });
-        } else {
-            res.json({ success: false, message: 'Quiz generation not found' });
-        }
-    } catch (error) {
-        console.error('Error during quiz cancellation:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Failed to cancel quiz generation',
-            details: error.message
-        });
+    if (!result) {
+        return res.json({ status: 'processing' });
     }
+    
+    if (result.status === 'completed') {
+        // Clean up after sending
+        activeQuizRequests.delete(requestId);
+    }
+    
+    res.json(result);
   });
 
   app.listen(PORT, () => {
