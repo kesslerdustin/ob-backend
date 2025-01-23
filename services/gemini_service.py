@@ -535,7 +535,7 @@ def generate_scenarios(location_info, options=None):
                     "id": "scenario1",
                     "title": "Brief title",
                     "description": "One-line description",
-                    "icon": "Select one: tree-outline, triangle-outline, water-outline, sunny-outline, flash-outline, compass-outline"
+                    "icon": "Select one: leaf-outline, triangle-outline, water-outline, sunny-outline, flash-outline, compass-outline"
                 }},
                 // 3 more scenarios following the same structure
             ]
@@ -625,7 +625,7 @@ def game_setup(settings_data, options=None):
             'hard': """
                 - health/hunger/thirst/stamina: Start at 70-90
                 - injuries: Include 1 minor injury
-                - backpack: 1-2 basic items
+                - backpack: 0-2 useless items
                 - options: NO options array (player must type their own actions)
                 - introduction: Challenging, tense tone
                 - progression: Slow, gradual improvement depending on player actions. hard to win, requires careful actions. 
@@ -636,7 +636,7 @@ def game_setup(settings_data, options=None):
         current_difficulty_reqs = difficulty_requirements.get(difficulty, difficulty_requirements['normal'])
         
         formatted_settings = f"""
-        Generate a survival scenario based on these settings and requirements:
+        Generate a survival scenario based on these settings and requirements. if custom scenario, adjust everything according to the scenario description:
         
         GAME SETTINGS:
         Date and Time: {settings_data.get('datetime', '')} or if {scenario_desc} includes a date, use that date.
@@ -653,7 +653,7 @@ def game_setup(settings_data, options=None):
         Return EXACTLY this JSON structure:
         {{
             "title": "Scenario Title",
-            "introduction": "Introduction to the scenario, description of the situation and surroundings (5-7 sentences)",
+            "introduction": "Introduction to the scenario like a story. what happened before, description of the situation and surroundings (5-7 sentences)",
             "health": <health>,
             "hunger": <hunger>,
             "thirst": <thirst>,
@@ -752,6 +752,7 @@ def game_master(context, options=None):
         biome = environmental_context.get('biome', 'unknown')
         nearby_pois = environmental_context.get('nearbyPOIs', [])
         natural_features = environmental_context.get('nearbyNaturalFeatures', [])
+        localWildlie = environmental_context.get('localWildlife', [])
 
         # Format environmental context for the prompt
         formatted_env_context = f"""
@@ -759,6 +760,7 @@ def game_master(context, options=None):
         Biome: {biome}
         Nearby Points of Interest: {', '.join([f"{poi['name']} (lat: {poi['coordinates']['latitude']}, long: {poi['coordinates']['longitude']})" for poi in nearby_pois])}
         Natural Features: {', '.join([f"{feature['name']} (lat: {feature['coordinates']['latitude']}, long: {feature['coordinates']['longitude']})" for feature in natural_features])}
+        Local Wildlife: {', '.join([f"{species['name']} ({species['category']}, {species['scientificName']})" for species in localWildlie[:10]])}
        """
 
         # Sanitize the player's action: Replace double quotes to avoid formatting issues.
@@ -838,7 +840,7 @@ Elevation: {context.get('location', {}).get('elevation', 'Unknown')} m
 Local Time: {current_datetime}
 Weather: {latest_turn.get('weather', 'Unknown')}
 Note: Ensure that the environmental conditions are applied realistically and opportunities for partial recovery (or further decline) are clearly reflected.
-
+knowledge about starting position: {formatted_env_context}
 ---------------------------
 CURRENT STATUS:
 ---------------------------
