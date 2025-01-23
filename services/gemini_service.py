@@ -603,7 +603,7 @@ def game_setup(settings_data, options=None):
         scenario_type = settings_data.get('scenario', {}).get('type', 'predefined')
         scenario_desc = (settings_data.get('scenario', {}).get('description') if scenario_type == 'custom' 
                         else settings_data.get('scenario', {}).get('details', {}).get('description', ''))
-
+        custom_rules = settings_data.get('customRules', '')
         # Define difficulty requirements first
         difficulty_requirements = {
             'easy': """
@@ -637,6 +637,10 @@ def game_setup(settings_data, options=None):
         
         formatted_settings = f"""
         Generate a survival scenario based on these settings and requirements. if custom scenario, adjust everything according to the scenario description:
+        
+        CRITICAL - CUSTOM RULES TO FOLLOW:
+        {custom_rules}
+        These custom rules MUST be followed in ALL responses. This is the highest priority instruction.
         
         GAME SETTINGS:
         Date and Time: {settings_data.get('datetime', '')} or if {scenario_desc} includes a date, use that date.
