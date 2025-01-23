@@ -570,10 +570,15 @@ try {
 
         // Handle client disconnection
         req.on('close', () => {
-            const quizPromise = activeQuizRequests.get(requestId);
-            if (quizPromise && quizPromise.cancel) {
-                console.log(`Client disconnected, cancelling quiz generation ${requestId}`);
-                quizPromise.cancel();
+            try {
+                const quizPromise = activeQuizRequests.get(requestId);
+                if (quizPromise && quizPromise.cancel) {
+                    console.log(`Client disconnected, cancelling quiz generation ${requestId}`);
+                    quizPromise.cancel();
+                }
+            } catch (error) {
+                console.error('Error during request cleanup:', error);
+            } finally {
                 activeQuizRequests.delete(requestId);
             }
         });
@@ -587,9 +592,11 @@ try {
         });
 
     } catch (error) {
-        activeQuizRequests.delete(requestId);
         console.error('Quiz generation error:', error);
-        res.status(500).json({
+        activeQuizRequests.delete(requestId);
+        
+        // Send appropriate error response
+        res.status(error.status || 500).json({
             success: false,
             error: 'Failed to generate quiz',
             details: error.message
@@ -597,19 +604,28 @@ try {
     }
   });
 
-  // Add a cancellation endpoint
+  // Update the cancellation endpoint
   app.post('/api/quiz/cancel', express.json(), async (req, res) => {
     const { requestId } = req.body;
     
-    if (activeQuizRequests.has(requestId)) {
-        const quizPromise = activeQuizRequests.get(requestId);
-        if (quizPromise.cancel) {
-            quizPromise.cancel();
+    try {
+        if (activeQuizRequests.has(requestId)) {
+            const quizPromise = activeQuizRequests.get(requestId);
+            if (quizPromise && quizPromise.cancel) {
+                await quizPromise.cancel();
+            }
+            activeQuizRequests.delete(requestId);
+            res.json({ success: true, message: 'Quiz generation cancelled' });
+        } else {
+            res.json({ success: false, message: 'Quiz generation not found' });
         }
-        activeQuizRequests.delete(requestId);
-        res.json({ success: true, message: 'Quiz generation cancelled' });
-    } else {
-        res.json({ success: false, message: 'Quiz generation not found' });
+    } catch (error) {
+        console.error('Error during quiz cancellation:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to cancel quiz generation',
+            details: error.message
+        });
     }
   });
 

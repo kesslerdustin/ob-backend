@@ -635,8 +635,13 @@ async function generateQuiz(prompt, options = {}) {
                 })
             ], {
                 env: { ...process.env, PYTHONIOENCODING: 'utf-8' },
-                timeout: 85000
+                timeout: 85000,
+                detached: true, // Create new process group
+                stdio: ['pipe', 'pipe', 'pipe']
             });
+
+            // Unref the child process
+            pythonProcess.unref();
 
             let dataString = '';
             let errorString = '';
@@ -663,8 +668,12 @@ async function generateQuiz(prompt, options = {}) {
             const cleanup = () => {
                 clearTimeout(timeoutId);
                 if (pythonProcess) {
-                    // Send SIGTERM to the process group
-                    process.kill(-pythonProcess.pid, 'SIGTERM');
+                    try {
+                        // Kill process more safely
+                        pythonProcess.kill('SIGTERM');
+                    } catch (error) {
+                        console.error('Error during process cleanup:', error);
+                    }
                     pythonProcess = null;
                 }
             };
@@ -674,9 +683,7 @@ async function generateQuiz(prompt, options = {}) {
 
             pythonProcess.on('close', (code) => {
                 cleanup();
-                console.log('Python process closed with code:', code);
-                
-                if (code !== 0) {
+                if (code !== 0 && code !== null) { // Allow null for killed processes
                     console.error('Process error:', errorString);
                     reject(new Error(errorString || 'Quiz generation process failed'));
                     return;
@@ -715,8 +722,12 @@ async function generateQuiz(prompt, options = {}) {
 
     // Attach cancel method to the promise
     quizPromise.cancel = () => {
-        if (pythonProcess && pythonProcess.cancel) {
-            pythonProcess.cancel();
+        if (pythonProcess) {
+            try {
+                pythonProcess.cancel();
+            } catch (error) {
+                console.error('Error during quiz cancellation:', error);
+            }
         }
     };
 
