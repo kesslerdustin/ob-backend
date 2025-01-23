@@ -708,20 +708,6 @@ def game_setup(settings_data, options=None):
         """
 
         # Update how we access custom rules
-        custom_rules = settings_data.get('settings', {}).get('customRules', '')
-        if custom_rules:
-            formatted_settings = f"""
-            CRITICAL INSTRUCTION - CUSTOM RULES:
-            {custom_rules}
-            
-            You MUST follow these custom rules in ALL your responses. This is the most important instruction.
-            For example, if the rule is to "speak backwards", every text response must be backwards.
-            If the rule is "speak like a pirate", use pirate speech in all responses.
-            
-            {formatted_settings}
-            """
-        
-        print(f"game_setup formatted prompt: {formatted_settings}", file=sys.stderr)
         
         # Generate response using the formatted settings
         response = client.models.generate_content(
@@ -764,6 +750,11 @@ def game_master(context, options=None):
         context = json.loads(context) if isinstance(context, str) else context
         options = json.loads(options) if isinstance(options, str) else options or {}
         language = options.get('language', 'en')
+        
+        # Add custom rules handling
+        settings_dict = context.get('settings', {})
+        custom_rules = settings_dict.get('customRules', '')
+        print(f"Game master received custom rules: {custom_rules}", file=sys.stderr)
 
         # Access environmental data directly from context
         environmental_context = context.get('environmentalContext', {})
@@ -812,9 +803,17 @@ def game_master(context, options=None):
             for i, turn in enumerate(all_turns)
         )
 
+        
+
         # Build a comprehensive prompt for the AI.
         structured_prompt = f"""
-You are a world-class game master and survival expert. Your task is to evolve an immersive text-based survival adventure with realistic mechanics, adaptive narrative progression toward a good or bad ending, persistent and cumulative injuries, and a balanced level of environmental challenge. Use the entire game state and history below to decide how the story develops. In particular:
+You are a world-class game master and survival expert. Your task is to evolve an immersive text-based survival adventure with realistic mechanics, adaptive narrative progression toward a good or bad ending, persistent and cumulative injuries, and a balanced level of environmental challenge.
+
+CRITICAL - CUSTOM RULES TO FOLLOW:
+{custom_rules}
+These custom rules MUST be followed in ALL responses. This is the highest priority instruction.
+
+Use the entire game state and history below to decide how the story develops. In particular:
 
 • If the player makes logical and careful decisions, the narrative should allow opportunities to slowly recover or progress—even under harsh conditions.
 • Conversely, if the player's decisions have been poor, the narrative must reflect mounting adversity with severe consequences.
@@ -1035,19 +1034,7 @@ The response format must remain unchanged, but the content should reflect these 
 """
 
         # Make custom rules more prominent
-        custom_rules = context.get('customRules', '')
-        if custom_rules:
-            structured_prompt = f"""
-            CRITICAL INSTRUCTION - CUSTOM RULES:
-            {custom_rules}
-            
-            You MUST follow these custom rules in ALL your responses. This is the most important instruction.
-            For example, if the rule is to "speak backwards", every text response must be backwards.
-            If the rule is "speak like a pirate", use pirate speech in all responses.
-            
-            {structured_prompt}
-            """
-        
+       
         # Generate content using the AI model with our fully constructed prompt.
         response = client.models.generate_content(
             model="gemini-2.0-flash-thinking-exp",
