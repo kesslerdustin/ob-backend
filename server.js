@@ -9,16 +9,68 @@ const aiService = require('./services/aiService');
 const multer = require('multer');
 const path = require('path');
 const uploadsDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadsDir)){
-    fs.mkdirSync(uploadsDir);
-}
-const upload = multer({ dest: uploadsDir });
+const { v4: uuidv4 } = require('uuid');
 const rateLimiter = require('./services/rateLimiter');
-const activeQuizRequests = new Map();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const USER_AGENT = 'OutdoorBible/1.0 (https://outdoor-bible.com; contact@outdoor-bible.com)';
+
+// Add request cleanup mechanism
+const CLEANUP_INTERVAL = 15 * 60 * 1000; // 15 minutes
+const REQUEST_TIMEOUT = 10 * 60 * 1000;  // 10 minutes
+
+class QuizRequestManager {
+    constructor() {
+        this.requests = new Map();
+        this.startCleanupInterval();
+    }
+
+    startCleanupInterval() {
+        setInterval(() => {
+            const now = Date.now();
+            for (const [requestId, request] of this.requests.entries()) {
+                if (now - request.timestamp > REQUEST_TIMEOUT) {
+                    // Clean up timed out requests
+                    if (request.status === 'processing') {
+                        request.cancel?.();
+                    }
+                    this.requests.delete(requestId);
+                }
+            }
+        }, CLEANUP_INTERVAL);
+    }
+
+    createRequest() {
+        const requestId = uuidv4();
+        this.requests.set(requestId, {
+            status: 'processing',
+            timestamp: Date.now()
+        });
+        return requestId;
+    }
+
+    updateRequest(requestId, data, cancel = null) {
+        const request = this.requests.get(requestId);
+        if (request) {
+            this.requests.set(requestId, {
+                ...data,
+                timestamp: Date.now(),
+                cancel
+            });
+        }
+    }
+
+    getRequest(requestId) {
+        return this.requests.get(requestId);
+    }
+
+    deleteRequest(requestId) {
+        this.requests.delete(requestId);
+    }
+}
+
+const quizManager = new QuizRequestManager();
 
 app.use(cors());
 app.use(express.json({ extended: true }));
@@ -182,7 +234,7 @@ try {
   });
 
   // Add this endpoint after your existing endpoints
-  app.post('/api/analyze/image', upload.single('image'), async (req, res) => {
+  app.post('/api/analyze/image', multer({ dest: uploadsDir }).single('image'), async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ success: false, error: 'No image provided' });
@@ -232,7 +284,7 @@ try {
     });
   });
 
-  app.post('/api/chat/flash', upload.single('image'), async (req, res) => {
+  app.post('/api/chat/flash', multer({ dest: uploadsDir }).single('image'), async (req, res) => {
     try {
         const { prompt, language, context } = req.body;
         console.log('Server - Flash Chat Request:', {
@@ -549,16 +601,14 @@ try {
   app.post('/api/quiz/generate', express.json(), async (req, res) => {
     try {
         const { prompt, language, locationAnalysis } = req.body;
-        const requestId = Date.now().toString();
+        const requestId = quizManager.createRequest();
         
-        // Immediately respond with a job ID
         res.json({
             success: true,
             status: 'processing',
             requestId: requestId
         });
 
-        // Process the quiz generation in the background
         setTimeout(async () => {
             try {
                 const response = await aiService.generateQuiz(prompt, {
@@ -566,13 +616,12 @@ try {
                     locationAnalysis
                 });
                 
-                // Store the result in memory or database
-                activeQuizRequests.set(requestId, {
+                quizManager.updateRequest(requestId, {
                     status: 'completed',
                     data: response
                 });
             } catch (error) {
-                activeQuizRequests.set(requestId, {
+                quizManager.updateRequest(requestId, {
                     status: 'error',
                     error: error.message
                 });
@@ -588,18 +637,20 @@ try {
     }
   });
 
-  // Add a new endpoint to check quiz status
   app.get('/api/quiz/status/:requestId', (req, res) => {
     const { requestId } = req.params;
-    const result = activeQuizRequests.get(requestId);
+    const result = quizManager.getRequest(requestId);
     
     if (!result) {
-        return res.json({ status: 'processing' });
+        return res.status(404).json({ 
+            status: 'error',
+            error: 'Quiz request not found'
+        });
     }
     
     if (result.status === 'completed') {
         // Clean up after sending
-        activeQuizRequests.delete(requestId);
+        quizManager.deleteRequest(requestId);
     }
     
     res.json(result);
