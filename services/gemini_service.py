@@ -703,6 +703,16 @@ def game_setup(settings_data, options=None):
         10. Option text should be clear and actionable, describing the choice in detail
         """
 
+        # Add custom rules to the prompt
+        custom_rules = settings_data.get('customRules', '')
+        if custom_rules:
+            formatted_settings += f"""
+            CUSTOM RULES & PREFERENCES:
+            {custom_rules}
+            
+            Important: Incorporate these custom rules and preferences into the game mechanics and narrative while maintaining the core JSON structure. Adjust difficulty, descriptions, and mechanics according to these rules, but always return the standard JSON format.
+            """
+        
         print(f"game_setup formatted prompt: {formatted_settings}", file=sys.stderr)
         
         # Generate response using the formatted settings
@@ -1000,8 +1010,39 @@ JSON Schema for ACTION:
 RESPOND ACCORDINGLY:
 ---------------------------
 Based on whether the player's input is a QUESTION or an ACTION and considering the overall progress in the adventure so far, provide your response in the JSON format described above. Extreme or unrealistic inputs must be clarified or severely penalized, and your narration should reflect the overall trajectory (improving vs. deteriorating) based on past decisions.
+
+---------------------------
+CUSTOM RULES & PREFERENCES:
+---------------------------
+{context.get('customRules', '')}
+
+Important: While maintaining the required JSON structure, incorporate these custom rules into:
+1. Narrative style and detail level
+2. Stat tracking and mechanics
+3. Environmental descriptions
+4. Challenge difficulty
+5. Any specified custom mechanics
+
+The response format must remain unchanged, but the content should reflect these preferences.
 """
 
+        # Add custom rules to the prompt
+        custom_rules = context.get('customRules', '')
+        if custom_rules:
+            structured_prompt += f"""
+            CUSTOM RULES & PREFERENCES:
+            {custom_rules}
+            
+            Important: While maintaining the required JSON structure, incorporate these custom rules into:
+            1. Narrative style and detail level
+            2. Stat tracking and mechanics
+            3. Environmental descriptions
+            4. Challenge difficulty
+            5. Any specified custom mechanics
+            
+            The response format must remain unchanged, but the content should reflect these preferences.
+            """
+        
         # Generate content using the AI model with our fully constructed prompt.
         response = client.models.generate_content(
             model="gemini-2.0-flash-thinking-exp",
