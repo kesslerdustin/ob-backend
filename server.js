@@ -14,6 +14,7 @@ if (!fs.existsSync(uploadsDir)){
 }
 const upload = multer({ dest: uploadsDir });
 const rateLimiter = require('./services/rateLimiter');
+const activeQuizRequests = new Map();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -546,9 +547,7 @@ try {
   });
 
   app.post('/api/quiz/generate', express.json(), async (req, res) => {
-    // Increase timeout to 90 seconds
-    req.setTimeout(90000);
-    res.setTimeout(90000);
+    const requestId = Date.now().toString();
     
     try {
         const { prompt, language, locationAnalysis } = req.body;
@@ -557,33 +556,60 @@ try {
             return res.status(400).json({ error: 'Prompt is required' });
         }
 
-        console.log('Processing quiz request:', { 
-            prompt, 
-            language,
-            hasLocationAnalysis: !!locationAnalysis 
-        });
-        
-        const response = await aiService.generateQuiz(
+        // Create the quiz generation promise
+        const quizPromise = aiService.generateQuiz(
             prompt,
             { 
                 language,
-                locationAnalysis // Pass location analysis to AI service
+                locationAnalysis
             }
         );
 
-        console.log('Quiz generation completed');
+        // Store the promise with its cancel function
+        activeQuizRequests.set(requestId, quizPromise);
+
+        // Handle client disconnection
+        req.on('close', () => {
+            const quizPromise = activeQuizRequests.get(requestId);
+            if (quizPromise && quizPromise.cancel) {
+                console.log(`Client disconnected, cancelling quiz generation ${requestId}`);
+                quizPromise.cancel();
+                activeQuizRequests.delete(requestId);
+            }
+        });
+
+        const response = await quizPromise;
+        activeQuizRequests.delete(requestId);
+
         res.json({
             success: true,
             quiz: response
         });
 
     } catch (error) {
+        activeQuizRequests.delete(requestId);
         console.error('Quiz generation error:', error);
         res.status(500).json({
             success: false,
             error: 'Failed to generate quiz',
             details: error.message
         });
+    }
+  });
+
+  // Add a cancellation endpoint
+  app.post('/api/quiz/cancel', express.json(), async (req, res) => {
+    const { requestId } = req.body;
+    
+    if (activeQuizRequests.has(requestId)) {
+        const quizPromise = activeQuizRequests.get(requestId);
+        if (quizPromise.cancel) {
+            quizPromise.cancel();
+        }
+        activeQuizRequests.delete(requestId);
+        res.json({ success: true, message: 'Quiz generation cancelled' });
+    } else {
+        res.json({ success: false, message: 'Quiz generation not found' });
     }
   });
 

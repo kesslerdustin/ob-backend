@@ -1138,10 +1138,18 @@ def game_summary(context, options=None):
         })
 
 def generate_quiz(prompt, options=None):
-    """Generate quiz questions using Gemini 2.0 Flash Thinking"""
+    """Generate quiz questions using Gemini 2.0"""
     try:
         options = json.loads(options) if isinstance(options, str) else options or {}
         language = options.get('language', 'en')
+        
+        # Check for cancellation signal via stdin
+        if sys.stdin.isatty():  # Only if running in terminal mode
+            import select
+            if select.select([sys.stdin], [], [], 0)[0]:  # Check if input available
+                if sys.stdin.readline().strip() == 'CANCEL':
+                    raise Exception("Quiz generation cancelled by user")
+
         location_analysis = options.get('locationAnalysis', '')
         
         structured_prompt = f"""
@@ -1149,10 +1157,10 @@ def generate_quiz(prompt, options=None):
 
 Fragenstruktur:
 
-10 Fragen mit steigendem Schwierigkeitsgrad. leicht mittel schwer bis extrem
-Die Fragen sollen Natur, Flora, Fauna, Umgebung und Survival-Taktiken umfassen.
+10 Fragen mit steigendem Schwierigkeitsgrad - easy | medium | hard | expert
+Die Fragen können Natur, Flora, Fauna, Umgebung, POIs, Historie und Survival-Taktiken umfassen.
 Beziehe dich auf meine Standortdaten, Umweltbedingungen und historische/natürliche Merkmale. 
-Nutze lokale Gegebenheiten (z. B. Flüsse, Berge, Pflanzen, Tiere) und entwickle praktische Survival-Szenarien. beziehe dich nicht auf die anzahl von sichtungen.
+Nutze lokale Gegebenheiten (z. B. Flüsse, Berge, Pflanzen, Tiere) und entwickle praktische Survival-Szenarien, oder Nagurbezogene Fragen. beziehe dich nicht auf die anzahl von sichtungen.
 Antwortmöglichkeiten:
 
 Jede Frage hat 4 Antwortmöglichkeiten.
@@ -1180,6 +1188,7 @@ Nutze meine Standortdaten kreativ, um über das Offensichtliche hinauszugehen.
 Schaffe einen Mix aus realitätsnahen und kniffligen Fragen.: 
         CRITICAL REQUIREMENTS:
         category: fauna, flora or survival
+        questions starting with easy and ending with expert
         1. Return EXACTLY this JSON structure:
         {{
             "quiz": [

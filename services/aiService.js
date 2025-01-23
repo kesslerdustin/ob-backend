@@ -612,7 +612,9 @@ async function gameSummary(context, options = {}) {
 }
 
 async function generateQuiz(prompt, options = {}) {
-    return rateLimiter.enqueue(() => {
+    let pythonProcess = null;
+    
+    const quizPromise = rateLimiter.enqueue(() => {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
             
@@ -622,7 +624,7 @@ async function generateQuiz(prompt, options = {}) {
                 hasLocationAnalysis: !!options.locationAnalysis
             });
             
-            const pythonProcess = spawn('python', [
+            pythonProcess = spawn('python', [
                 pythonScript,
                 'quiz',
                 prompt,
@@ -657,8 +659,21 @@ async function generateQuiz(prompt, options = {}) {
                 reject(new Error('Quiz generation timed out'));
             }, 85000);
 
-            pythonProcess.on('close', (code) => {
+            // Store cleanup function
+            const cleanup = () => {
                 clearTimeout(timeoutId);
+                if (pythonProcess) {
+                    // Send SIGTERM to the process group
+                    process.kill(-pythonProcess.pid, 'SIGTERM');
+                    pythonProcess = null;
+                }
+            };
+
+            // Add cancellation handler
+            pythonProcess.cancel = cleanup;
+
+            pythonProcess.on('close', (code) => {
+                cleanup();
                 console.log('Python process closed with code:', code);
                 
                 if (code !== 0) {
@@ -692,12 +707,20 @@ async function generateQuiz(prompt, options = {}) {
             });
 
             pythonProcess.on('error', (error) => {
-                clearTimeout(timeoutId);
-                console.error('Python process error:', error);
+                cleanup();
                 reject(error);
             });
         });
     });
+
+    // Attach cancel method to the promise
+    quizPromise.cancel = () => {
+        if (pythonProcess && pythonProcess.cancel) {
+            pythonProcess.cancel();
+        }
+    };
+
+    return quizPromise;
 }
 
 module.exports = {
