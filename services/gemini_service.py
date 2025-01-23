@@ -703,7 +703,7 @@ def game_setup(settings_data, options=None):
         10. Option text should be clear and actionable, describing the choice in detail
         """
 
-        # Add custom rules to the prompt
+        # Update how we access custom rules
         custom_rules = settings_data.get('customRules', '')
         if custom_rules:
             formatted_settings += f"""
@@ -1026,7 +1026,7 @@ Important: While maintaining the required JSON structure, incorporate these cust
 The response format must remain unchanged, but the content should reflect these preferences.
 """
 
-        # Add custom rules to the prompt
+        # Make sure custom rules are preserved in context
         custom_rules = context.get('customRules', '')
         if custom_rules:
             structured_prompt += f"""

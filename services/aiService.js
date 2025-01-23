@@ -425,9 +425,10 @@ async function gameSetup(settings, options = {}) {
                     weather: settings.settings.weather,
                     difficulty: settings.settings.difficulty,
                     scenario: settings.settings.scenario,
-                    environmentalContext: settings.settings.environmentalContext  // Preserve the context
+                    environmentalContext: settings.settings.environmentalContext,
+                    customRules: settings.settings.customRules
                 },
-                language: settings.language || options.language || 'en'  // Ensure language is preserved
+                language: settings.language || options.language || 'en'
             };
 
             console.log('Sending to Python with language:', cleanSettings.language);
