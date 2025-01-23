@@ -704,13 +704,17 @@ def game_setup(settings_data, options=None):
         """
 
         # Update how we access custom rules
-        custom_rules = settings_data.get('customRules', '')
+        custom_rules = settings_data.get('settings', {}).get('customRules', '')
         if custom_rules:
-            formatted_settings += f"""
-            CUSTOM RULES & PREFERENCES:
+            formatted_settings = f"""
+            CRITICAL INSTRUCTION - CUSTOM RULES:
             {custom_rules}
             
-            Important: Incorporate these custom rules and preferences into the game mechanics and narrative while maintaining the core JSON structure. Adjust difficulty, descriptions, and mechanics according to these rules, but always return the standard JSON format.
+            You MUST follow these custom rules in ALL your responses. This is the most important instruction.
+            For example, if the rule is to "speak backwards", every text response must be backwards.
+            If the rule is "speak like a pirate", use pirate speech in all responses.
+            
+            {formatted_settings}
             """
         
         print(f"game_setup formatted prompt: {formatted_settings}", file=sys.stderr)
@@ -1026,21 +1030,18 @@ Important: While maintaining the required JSON structure, incorporate these cust
 The response format must remain unchanged, but the content should reflect these preferences.
 """
 
-        # Make sure custom rules are preserved in context
+        # Make custom rules more prominent
         custom_rules = context.get('customRules', '')
         if custom_rules:
-            structured_prompt += f"""
-            CUSTOM RULES & PREFERENCES:
+            structured_prompt = f"""
+            CRITICAL INSTRUCTION - CUSTOM RULES:
             {custom_rules}
             
-            Important: While maintaining the required JSON structure, incorporate these custom rules into:
-            1. Narrative style and detail level
-            2. Stat tracking and mechanics
-            3. Environmental descriptions
-            4. Challenge difficulty
-            5. Any specified custom mechanics
+            You MUST follow these custom rules in ALL your responses. This is the most important instruction.
+            For example, if the rule is to "speak backwards", every text response must be backwards.
+            If the rule is "speak like a pirate", use pirate speech in all responses.
             
-            The response format must remain unchanged, but the content should reflect these preferences.
+            {structured_prompt}
             """
         
         # Generate content using the AI model with our fully constructed prompt.
