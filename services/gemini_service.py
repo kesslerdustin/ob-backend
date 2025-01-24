@@ -1329,6 +1329,48 @@ Schaffe einen Mix aus realitätsnahen und kniffligen Fragen.:
             "error": str(e)
         })
 
+def check_image_appropriate(prompt, image_path, options=None):
+    """Check if an image is appropriate for public sharing using Gemini 2.0"""
+    try:
+        # Load the image
+        if image_path.startswith(('http://', 'https://')):
+            response = requests.get(image_path)
+            image_data = BytesIO(response.content)
+            img = Image.open(image_data).convert('RGB')
+        else:
+            img = Image.open(image_path).convert('RGB')
+
+        structured_prompt = """
+        Analyze this image and determine if it's appropriate for public sharing on a nature and outdoor activities platform.
+        Consider the following criteria:
+        - No explicit adult content
+        - No graphic violence or gore
+        - No hate symbols or offensive content
+        - No private/sensitive information
+        - Must be related to nature, outdoor activities, or relevant subjects
+        
+        Respond with ONLY 'true' if appropriate or 'false' if inappropriate.
+        """
+
+        response = client.models.generate_content(
+            model="gemini-2.0-flash-exp",
+            contents=[structured_prompt, img]
+        )
+        
+        # Convert response to boolean
+        is_appropriate = response.text.strip().lower() == 'true'
+        
+        return json.dumps({
+            "success": True,
+            "isAppropriate": is_appropriate
+        })
+    except Exception as e:
+        print(f"Error in check_image_appropriate: {str(e)}")
+        return json.dumps({
+            "success": False,
+            "error": str(e)
+        })
+
 if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "text"
     prompt = sys.argv[2] if len(sys.argv) > 2 else "Hello, Gemini!"
@@ -1359,6 +1401,8 @@ if __name__ == "__main__":
         response = game_summary(prompt, options)
     elif mode == "quiz":
         response = generate_quiz(prompt, options)
+    elif mode == "check_appropriate":
+        response = check_image_appropriate(prompt, image_url, options)
     else:
         response = generate_content(prompt)
     

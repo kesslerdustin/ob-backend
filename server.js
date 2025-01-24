@@ -664,6 +664,36 @@ try {
     res.json(result);
   });
 
+  app.post('/api/check-image-appropriate', multer({ dest: uploadsDir }).single('image'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ success: false, error: 'No image provided' });
+        }
+
+        const isAppropriate = await aiService.checkImageAppropriateness(req.file.path);
+
+        // Clean up the uploaded file
+        try {
+            fs.unlinkSync(req.file.path);
+        } catch (cleanupError) {
+            console.error('Error cleaning up file:', cleanupError);
+        }
+
+        res.json({
+            success: true,
+            isAppropriate
+        });
+
+    } catch (error) {
+        console.error('Image appropriateness check error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to check image appropriateness',
+            details: error.message
+        });
+    }
+  });
+
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
