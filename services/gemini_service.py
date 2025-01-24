@@ -486,7 +486,7 @@ def analyze_info(prompt, options=None):
         """
 
         response = client.models.generate_content(
-            model="gemini-2.0-flash-exp",
+            model="gemini-2.0-flash-thinking-exp",
             contents=structured_prompt
         )
         
@@ -834,12 +834,12 @@ def game_master(context, options=None):
         structured_prompt = f"""
         You are a world-class game master and survival expert. Your task is to evolve an immersive text-based survival adventure with realistic mechanics, adaptive narrative progression toward a good or bad ending, persistent and cumulative injuries, and a balanced level of environmental challenge.
 
-        ENVIRONMENTAL CONTEXT (you can use this to get more information about the location and embed them in the scenario, help construct the world etc. only if it makes sense):
+        ENVIRONMENTAL CONTEXT (you can use this to get more information about the location and embed them in the scenario, help construct the world etc. only if it makes sense. Include species names into the scenario if it makes sense. When refereing species, pois, natural landmarks do not mention their gps coordinates but use them for spacial context):
         {formatted_env_context}
 
         CRITICAL - CUSTOM RULES TO FOLLOW:
         {custom_rules}
-        These custom rules MUST be followed in ALL responses. This is the highest priority instruction.
+        These custom rules MUST be followed in ALL responses. This is the highest priority instruction. the only things custom rules cannot overwrite are JSON structure and the rules when to set hasgameended to true.
 
         Use the entire game state and history below to decide how the story develops. In particular:
 
@@ -1040,6 +1040,7 @@ def game_master(context, options=None):
             - If waiting for NPC: MUST resolve within 2-3 turns
             - If situation stagnant: MUST introduce new elements
             - If player stuck: MUST provide clear alternative options
+        16. Always check if the hasgameended is true OR Should be set to true according to your rules. (Reminder: hasgameended is true if any stat is 0 or a critical event (rescue, death, all goals / main goal completed) occurs OR if 0 remaining turns. )
 
         ---------------------------
         RESPOND ACCORDINGLY:
