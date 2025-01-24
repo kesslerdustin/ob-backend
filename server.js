@@ -480,6 +480,14 @@ try {
       const gameSettings = req.body;
       console.log('Game Setup Request - Language:', gameSettings.language);
       console.log('=== Game Setup Request Started ===');
+      
+      // Add detailed environmental context logging
+      console.log('Environmental Context Debug:');
+      console.log('Wildlife Data:', {
+          count: gameSettings.settings?.environmentalContext?.localWildlife?.length || 0,
+          sample: gameSettings.settings?.environmentalContext?.localWildlife?.slice(0, 3) || []
+      });
+      
       console.log('1. Received game settings:', JSON.stringify(gameSettings, null, 2));
       
       if (!gameSettings) {

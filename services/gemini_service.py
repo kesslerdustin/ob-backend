@@ -589,7 +589,23 @@ def game_setup(settings_data, options=None):
         natural_features = environmental_context.get('nearbyNaturalFeatures', [])
         localWildlife = environmental_context.get('localWildlife', [])
         
-        # Format environmental context more clearly
+        # Enhanced wildlife logging
+        print(f"Processing wildlife data...", file=sys.stderr)
+        local_wildlife = environmental_context.get('localWildlife', [])
+        print(f"Found {len(local_wildlife)} wildlife entries", file=sys.stderr)
+        
+        # More detailed wildlife formatting
+        wildlife_entries = []
+        for species in local_wildlife[:10]:  # Limit to 10 species
+            try:
+                entry = f"  • {species['name']} ({species['scientificName']}) - {species['category']}"
+                if 'distance' in species:
+                    entry += f" - {species['distance']:.2f}km away"
+                wildlife_entries.append(entry)
+            except KeyError as e:
+                print(f"Warning: Missing key in species data: {e}", file=sys.stderr)
+                continue
+        
         formatted_env_context = f"""
         Environmental Context:
         - Biome: {biome}
@@ -598,8 +614,11 @@ def game_setup(settings_data, options=None):
         - Natural Features:
           {chr(10).join([f"  • {feature['name']} ({feature['coordinates']['latitude']}, {feature['coordinates']['longitude']})" for feature in natural_features[:10]])}
         - Local Wildlife:
-          {chr(10).join([f"  • {species['name']} ({species['scientificName']})" for species in localWildlife[:10]])}
+          {chr(10).join(wildlife_entries)}
         """
+        
+        print(f"Formatted environmental context:", file=sys.stderr)
+        print(formatted_env_context, file=sys.stderr)
         
         # Get difficulty and scenario details
         difficulty = settings_data.get('difficulty', {}).get('id', 'normal')
