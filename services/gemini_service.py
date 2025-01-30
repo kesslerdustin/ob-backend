@@ -81,128 +81,48 @@ def analyze_image(prompt, image_path, options=None):
         else:
             # Original photo analysis prompt
             structured_prompt = f"""
-            Analyze this image and respond ONLY in {language} language with a valid JSON object.
+            Analyze this image and classify it according to these categories:
             
+            Main Categories:
+            - POI (Points of Interest)
+            - Flora (Plants)
+            - Fauna (Animals)
+            - Fungi
+            - Custom (if none of the above fit)
+
+            For Flora, use ONLY these subcategories:
+            - trees
+            - flowering_and_shrubs
+            - ferns_and_allies
+            - aquatic_and_marine_plants
+            - palms_and_cycads
+
+            For Fauna, use ONLY these subcategories:
+            - mammals
+            - birds
+            - reptiles
+            - amphibians
+            - fish
+            - invertebrates
+
+            For Fungi, always use:
+            - fungi (no subcategories needed)
+
+            Return EXACTLY this JSON structure:
+            {{
+                "data": {{
+                    "category": "one of: POI, Flora, Fauna, Fungi, Custom",
+                    "subcategory": "one of the main subcategories listed above, or empty for POI/Custom",
+                    "name": "common name or brief description",
+                    "description": "brief description of what's in the image"
+                }}
+            }}
+
             CRITICAL REQUIREMENTS:
-            1. Use ONLY the {language} language for ALL text fields
-            2. Return EXACTLY this JSON structure:
-            {{
-                "response_mime_type": "application/json",
-                "data": {{
-                    "category": "POI|Flora|Fauna|Fungi|Custom",
-                    "name": "{language} name/title",
-                    "description": "detailed {language} description"
-                }}
-            }}
-
-            special conditions: IF the category you chose is either flora fauna or fungi, then you MUST return the following JSON structure:
-            {{
-                "response_mime_type": "application/json",
-                "data": {{
-                    "category": "Flora|Fauna|Fungi",
-                    "subcategory": "taxonkey NUMBER (closest matching order)",
-                    "name": "{language} name/title (preferably the common name with latin name in paranthesis)",
-                    "description": "detailed {language} description"
-                }}
-            }}
-
-            with taxonkey being the CLOSEST MATCH of the proper ORDER according this list (use the number): Taxonomy:
-Flora (Plants):
-Fagales: Fagaceae (e.g., beech, oak) taxonKey: 1354
-Pinales: Pinaceae (e.g., pine, spruce) taxonKey: 640
-Sapindales: Sapindaceae (e.g., maple, horse chestnut) taxonKey: 933
-Myrtales: Myrtaceae (e.g., eucalyptus, myrtle) taxonKey: 690
-Malpighiales: Salicaceae (e.g., willow, poplar) taxonKey: 1414
-Araucariales: Araucariaceae (e.g., monkey puzzle tree) taxonKey: 3924
-Laurales: Lauraceae (e.g., laurel, avocado) taxonKey: 407
-Asterales: Asteraceae (e.g., daisies, sunflowers) taxonKey: 414
-Liliales: Liliaceae (e.g., lilies, tulips) taxonKey: 1172
-Rosales: Rosaceae (e.g., roses, apples) taxonKey: 691
-Poales: Poaceae (e.g., grasses, sedges) taxonKey: 1369
-Caryophyllales: Cactaceae (e.g., cacti, succulents) taxonKey: 422
-Fabales: Fabaceae (e.g., legume trees) taxonKey: 1370
-Ericales: Ericaceae (e.g., ericas) taxonKey: 1353
-Polypodiales: Polypodiaceae (e.g., true ferns) taxonKey: 392
-Bryopsida: Bryophyta (e.g., mosses) taxonKey: 327
-Marchantiopsida: Marchantiaceae (e.g., liverworts) taxonKey: 125
-Aquatic and Marine Plants:
-Alismatales: Alismataceae (e.g., water plants) taxonKey: 551
-Ulvophyceae: Ulvaceae (e.g., green algae) taxonKey: 195
-Phaeophyceae: Phaeophyta (e.g., brown algae) taxonKey: 7073593
-Charophyceae: Characeae (e.g., stoneworts) taxonKey: 328
-Palms and Cycads:
-Arecales: Arecaceae (e.g., palms) taxonKey: 552
-Cycadophyta: Cycadaceae (e.g., cycads) taxonKey: 834
-Fauna (Animals):
-Mammals:
-Artiodactyla: Bovidae (e.g., deer, antelope) taxonKey: 731
-Carnivora: Felidae (e.g., lions, tigers) taxonKey: 732
-Lagomorpha: Leporidae (e.g., rabbits, hares) taxonKey: 785
-Rodentia: Muridae (e.g., rats, mice) taxonKey: 1459
-Chiroptera: Vespertilionidae (e.g., bats) taxonKey: 734
-Talpidae: Talpidae (e.g., moles, shrews) taxonKey: 9469
-Cetacea: Delphinidae (e.g., dolphins, whales) taxonKey: 733
-Didelphimorphia: Didelphidae (e.g., opossums) taxonKey: 1452
-Primates: Hominidae (e.g., chimpanzees, humans) taxonKey: 798
-Monotremata: Ornithorhynchidae (e.g., platypus) taxonKey: 791
-Perissodactyla: Equidae (e.g., horses, rhinos) taxonKey: 795
-Birds:
-Passeriformes: Passeridae (e.g., sparrows) taxonKey: 729
-Accipitriformes: Accipitridae (e.g., hawks, eagles) taxonKey: 7191147
-Anseriformes: Anatidae (e.g., ducks, geese) taxonKey: 1108
-Galliformes: Phasianidae (e.g., chickens, pheasants) taxonKey: 723
-Falconiformes: Falconidae (e.g., falcons) taxonKey: 5240
-Procellariiformes: Procellariidae (e.g., petrels, albatrosses) taxonKey: 7192755
-Strigiformes: Strigidae (e.g., owls) taxonKey: 1450
-Coraciiformes: Alcedinidae (e.g., kingfishers) taxonKey: 1447
-Charadriiformes: Laridae (e.g., gulls, terns) taxonKey: 7192402
-Psittaciformes: Psittacidae (e.g., parrots) taxonKey: 1445
-Ciconiiformes: Ciconiidae (e.g., storks) taxonKey: 839
-Reptiles:
-Squamata: Colubridae (e.g., snakes, lizards) taxonKey: 11592253
-Testudines: Cheloniidae (e.g., turtles) taxonKey: 11418114
-Crocodylia: Crocodylidae (e.g., crocodiles, alligators) taxonKey: 11493978
-Rhynchocephalia: Sphenodontidae (e.g., tuatara) taxonKey: 703
-Amphibians:
-Anura: Ranidae (e.g., frogs, toads) taxonKey: 952
-Caudata: Salamandridae (e.g., salamanders) taxonKey: 953
-Fish:
-Perciformes: Percidae (e.g., perches) taxonKey: 587
-Cypriniformes: Cyprinidae (e.g., carps, minnows) taxonKey: 1153
-Siluriformes: Siluridae (e.g., catfish) taxonKey: 708
-Salmoniformes: Salmonidae (e.g., salmon, trout) taxonKey: 1313
-Esociformes: Esocidae (e.g., pike) taxonKey: 548
-Elasmobranchii: Carcharhinidae (e.g., sharks) taxonKey: 121
-Anguilliformes: Anguillidae (e.g., eels) taxonKey: 495
-Gadiformes: Gadidae (e.g., cod, haddock) taxonKey: 549
-Invertebrates:
-Araneae: Araneidae (e.g., spiders) taxonKey: 1496
-Decapoda: Portunidae (e.g., crabs, crayfish) taxonKey: 637
-Lepidoptera: Nymphalidae (e.g., butterflies, moths) taxonKey: 797
-Hymenoptera: Apidae (e.g., bees, ants) taxonKey: 1457
-Coleoptera: Carabidae (e.g., beetles) taxonKey: 1470
-Oligochaeta: Lumbricidae (e.g., earthworms) taxonKey: 8166676
-Scyphozoa: Cyaneidae (e.g., jellyfish) taxonKey: 352
-Orthoptera: Acrididae (e.g., grasshoppers) taxonKey: 1458
-Isoptera: Termitidae (e.g., termites) taxonKey: 999
-Cephalopoda: Octopodidae (e.g., octopus, squid) taxonKey: 136
-Cnidaria: Cnidaria (e.g., corals) taxonKey: 43
-Bivalvia: Veneridae (e.g., clams, mussels) taxonKey: 137
-Annelida: Polychaeta (e.g., segmented worms) taxonKey: 42
-Echinodermata: Asteriidae (e.g., sea stars, urchins) taxonKey: 50
-Fungi:
-Mushrooms and Fungi:
-Agaricales: Agaricaceae (e.g., gilled mushrooms) taxonKey: 1499
-Polyporales: Polyporaceae (e.g., bracket fungi) taxonKey: 1145
-Lecanorales: Parmeliaceae (e.g., lichens) taxonKey: 1048
-Lichenized Fungi:
-Peltigerales: Peltigeraceae (e.g., leafy lichens) taxonKey: 1055
-Pathogenic Fungi:
-Ustilaginales: Ustilaginaceae (e.g., smut fungi) taxonKey: 1121
-Pucciniales: Pucciniaceae (e.g., rust fungi) taxonKey: 1126
-Sac Fungi:
-Pezizales: Morchellaceae (e.g., morels, truffles) taxonKey: 1057
-Hypocreales: Hypocreaceae (e.g., molds) taxonKey: 1290
+            1. Response must be in {language} language
+            2. Use ONLY the specified main subcategories, no detailed classifications
+            3. For Fungi, always use 'fungi' as subcategory
+            4. Keep descriptions concise and factual
             """
 
         # Handle image loading
