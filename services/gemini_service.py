@@ -94,20 +94,24 @@ def analyze_image(prompt, image_path, options=None):
             img = Image.open(image_path).convert('RGB')
 
         structured_prompt = f"""
-        Analyze this image and provide detailed information about what you see.
+        Analyze this image and provide the SINGLE most important or prominent subject.
         Focus on identifying any flora, fauna, fungi, or points of interest.
         
-        Return a JSON response with this exact structure:
+        You MUST return only ONE object in this exact JSON structure:
         {{
             "data": {{
                 "category": "One of: POI, Flora, Fauna, Fungi, Custom",
                 "subcategory": "Specific subcategory based on category",
-                "name": "Common name or title",
-                "description": "Detailed description"
+                "name": "Common name or title in {language} (de = german, en = english)",
+                "description": "Detailed description in {language} (de = german, en = english)"
             }}
         }}
         
-        CRITICAL: Respond in {language} language. When referring to measurements, use appropriate units (miles for English, km for German, etc).
+        CRITICAL: 
+        1. Return ONLY ONE object, focusing on the main subject
+        2. Respond in {language} language
+        3. When referring to measurements, use appropriate units (miles for English, km for German, etc)
+        4. Do not include any markdown formatting or code blocks
         """
 
         response = client.models.generate_content(
@@ -115,14 +119,21 @@ def analyze_image(prompt, image_path, options=None):
             contents=[structured_prompt, img]
         )
 
-        # Extract JSON from the response
-        json_content = extract_json_from_text(response.text)
+        # Clean the response text to remove any markdown formatting
+        clean_text = response.text.replace('```json', '').replace('```', '').strip()
+        
+        # Extract JSON from the cleaned text
+        json_content = extract_json_from_text(clean_text)
         if not json_content:
             raise Exception("Failed to get valid response format")
 
+        # Ensure we have the correct structure
+        if not isinstance(json_content, dict) or 'data' not in json_content:
+            raise Exception("Invalid response structure")
+
         return json.dumps({
             "success": True,
-            "text": json.dumps(json_content)  # Double encode to ensure proper string formatting
+            "text": json.dumps(json_content)
         })
         
     except Exception as e:
