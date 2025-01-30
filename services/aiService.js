@@ -130,13 +130,23 @@ async function analyzeImage(prompt, imageUrl, options = {}) {
                 
                 try {
                     const response = JSON.parse(dataString);
-                    if (response.success) {
-                        resolve(response.text);
-                    } else {
-                        reject(new Error(response.error));
+                    if (!response.success) {
+                        reject(new Error(response.error || 'Analysis failed'));
+                        return;
                     }
+
+                    // Parse the nested JSON string
+                    const analysisData = JSON.parse(response.text);
+                    if (!analysisData.data) {
+                        reject(new Error('Invalid analysis data structure'));
+                        return;
+                    }
+
+                    resolve(analysisData);
                 } catch (error) {
-                    resolve(dataString);
+                    console.error('Parse error:', error);
+                    console.error('Raw data:', dataString);
+                    reject(new Error('Failed to parse analysis response'));
                 }
             });
         });

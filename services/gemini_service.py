@@ -105,24 +105,18 @@ def analyze_image(prompt, image_path, options=None):
             - fish
             - invertebrates
 
-            For Fungi, always use:
-            - fungi (no subcategories needed)
+            For Fungi, use ONLY:
+            - fungi
 
-            Return EXACTLY this JSON structure:
+            Return EXACTLY this JSON structure with no additional text:
             {{
                 "data": {{
-                    "category": "one of: POI, Flora, Fauna, Fungi, Custom",
-                    "subcategory": "one of the main subcategories listed above, or empty for POI/Custom",
+                    "category": "POI|Flora|Fauna|Fungi|Custom",
+                    "subcategory": "exact_subcategory_from_list_above",
                     "name": "common name or brief description",
                     "description": "brief description of what's in the image"
                 }}
             }}
-
-            CRITICAL REQUIREMENTS:
-            1. Response must be in {language} language
-            2. Use ONLY the specified main subcategories, no detailed classifications
-            3. For Fungi, always use 'fungi' as subcategory
-            4. Keep descriptions concise and factual
             """
 
         # Handle image loading
@@ -138,12 +132,47 @@ def analyze_image(prompt, image_path, options=None):
             contents=[structured_prompt, img]
         )
 
+        # Extract JSON from response text
+        json_content = extract_json_from_text(response.text)
+        if not json_content:
+            raise Exception("Failed to parse AI response into valid JSON")
+
+        # Validate the response structure
+        if not isinstance(json_content, dict) or 'data' not in json_content:
+            raise Exception("Invalid response structure")
+
+        data = json_content['data']
+        required_fields = ['category', 'subcategory', 'name', 'description']
+        if not all(field in data for field in required_fields):
+            raise Exception("Missing required fields in response")
+
+        # Ensure category is valid
+        valid_categories = ['POI', 'Flora', 'Fauna', 'Fungi', 'Custom']
+        if data['category'] not in valid_categories:
+            data['category'] = 'Custom'
+
+        # Ensure subcategory is valid based on category
+        if data['category'] == 'Flora':
+            valid_subcategories = ['trees', 'flowering_and_shrubs', 'ferns_and_allies', 
+                                 'aquatic_and_marine_plants', 'palms_and_cycads']
+            if data['subcategory'] not in valid_subcategories:
+                data['subcategory'] = ''
+        elif data['category'] == 'Fauna':
+            valid_subcategories = ['mammals', 'birds', 'reptiles', 'amphibians', 'fish', 'invertebrates']
+            if data['subcategory'] not in valid_subcategories:
+                data['subcategory'] = ''
+        elif data['category'] == 'Fungi':
+            data['subcategory'] = 'fungi'
+        else:
+            data['subcategory'] = ''
+
         return json.dumps({
             "success": True,
-            "text": response.text
+            "text": json.dumps(json_content)  # Double encode to ensure proper string formatting
         })
+
     except Exception as e:
-        print(f"Error in analyze_image: {str(e)}")
+        print(f"Error in analyze_image: {str(e)}", file=sys.stderr)
         return json.dumps({
             "success": False,
             "error": str(e)
