@@ -132,45 +132,21 @@ def analyze_image(prompt, image_path, options=None):
             contents=[structured_prompt, img]
         )
 
-        # Extract JSON from response text
-        json_content = extract_json_from_text(response.text)
-        if not json_content:
-            raise Exception("Failed to parse AI response into valid JSON")
-
-        # Validate the response structure
-        if not isinstance(json_content, dict) or 'data' not in json_content:
-            raise Exception("Invalid response structure")
-
-        data = json_content['data']
-        required_fields = ['category', 'subcategory', 'name', 'description']
-        if not all(field in data for field in required_fields):
-            raise Exception("Missing required fields in response")
-
-        # Ensure category is valid
-        valid_categories = ['POI', 'Flora', 'Fauna', 'Fungi', 'Custom']
-        if data['category'] not in valid_categories:
-            data['category'] = 'Custom'
-
-        # Ensure subcategory is valid based on category
-        if data['category'] == 'Flora':
-            valid_subcategories = ['trees', 'flowering_and_shrubs', 'ferns_and_allies', 
-                                 'aquatic_and_marine_plants', 'palms_and_cycads']
-            if data['subcategory'] not in valid_subcategories:
-                data['subcategory'] = ''
-        elif data['category'] == 'Fauna':
-            valid_subcategories = ['mammals', 'birds', 'reptiles', 'amphibians', 'fish', 'invertebrates']
-            if data['subcategory'] not in valid_subcategories:
-                data['subcategory'] = ''
-        elif data['category'] == 'Fungi':
-            data['subcategory'] = 'fungi'
-        else:
-            data['subcategory'] = ''
-
-        return json.dumps({
+        # Convert response to proper JSON string
+        result = {
             "success": True,
-            "text": json.dumps(json_content)  # Double encode to ensure proper string formatting
-        })
-
+            "text": json.dumps({
+                "data": {
+                    "category": response.text.get("category", "Custom"),
+                    "subcategory": response.text.get("subcategory", ""),
+                    "name": response.text.get("name", ""),
+                    "description": response.text.get("description", "")
+                }
+            })
+        }
+        
+        return json.dumps(result)
+        
     except Exception as e:
         print(f"Error in analyze_image: {str(e)}", file=sys.stderr)
         return json.dumps({
