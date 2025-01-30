@@ -17,6 +17,7 @@ load_dotenv()
 client = genai.Client(api_key=os.getenv('GOOGLE_API_KEY'))
 FLASH_THINKING_MODEL = "gemini-2.0-flash-thinking-exp"
 FLASH_MODEL = "gemini-2.0-flash-exp"
+MODEL_ID = "gemini-2.0-flash-thinking-exp"  # Default model
 
 def with_model_fallback(func):
     @wraps(func)
@@ -79,50 +80,11 @@ def json_dumps_utf8(obj):
     return json.dumps(obj, ensure_ascii=False)
 
 def analyze_image(prompt, image_path, options=None):
-    """Vision-based analysis with raw text output"""
+    """Vision-based analysis with structured output"""
     try:
         options = json.loads(options) if options else {}
         language = options.get('language', 'en')
         
-        structured_prompt = f"""
-        Analyze this image and classify it according to these categories:
-        
-        Main Categories:
-        - POI (Points of Interest)
-        - Flora (Plants)
-        - Fauna (Animals)
-        - Fungi
-        - Custom (if none of the above fit)
-
-        For Flora, use ONLY these subcategories:
-        - trees
-        - flowering_and_shrubs
-        - ferns_and_allies
-        - aquatic_and_marine_plants
-        - palms_and_cycads
-
-        For Fauna, use ONLY these subcategories:
-        - mammals
-        - birds
-        - reptiles
-        - amphibians
-        - fish
-        - invertebrates
-
-        For Fungi, use ONLY:
-        - fungi
-
-        Return EXACTLY this JSON structure with no additional text. Return in {language} (de = german, en = english etc):
-        {{
-            "data": {{
-                "category": "POI|Flora|Fauna|Fungi|Custom",
-                "subcategory": "exact_subcategory_from_list_above",
-                "name": "common name or brief description  in {language} (de = german, en = english etc)",
-                "description": "brief description of what's in the image  in {language} (de = german, en = english etc)"
-            }}
-        }}
-        """
-
         # Handle image loading
         if image_path.startswith(('http://', 'https://')):
             response = requests.get(image_path)
@@ -130,35 +92,34 @@ def analyze_image(prompt, image_path, options=None):
             img = Image.open(image_data).convert('RGB')
         else:
             img = Image.open(image_path).convert('RGB')
+
+        structured_prompt = f"""
+        Analyze this image and provide detailed information about what you see.
+        Focus on identifying any flora, fauna, fungi, or points of interest.
         
+        Return a JSON response with this exact structure:
+        {{
+            "data": {{
+                "category": "One of: POI, Flora, Fauna, Fungi, Custom",
+                "subcategory": "Specific subcategory based on category",
+                "name": "Common name or title",
+                "description": "Detailed description"
+            }}
+        }}
+        
+        CRITICAL: Respond in {language} language. When referring to measurements, use appropriate units (miles for English, km for German, etc).
+        """
+
         response = client.models.generate_content(
-            model=MODEL_ID,
+            model="gemini-2.0-flash-exp",
             contents=[structured_prompt, img]
         )
 
-        # Extract JSON from the response text
+        # Extract JSON from the response
         json_content = extract_json_from_text(response.text)
         if not json_content:
-            raise Exception("Failed to parse AI response into valid JSON")
+            raise Exception("Failed to get valid response format")
 
-        # Validate and normalize the response
-        if not isinstance(json_content, dict) or 'data' not in json_content:
-            # Try to create a structured response from unstructured text
-            category = "Custom"
-            subcategory = ""
-            name = ""
-            description = response.text[:200]  # Limit description length
-            
-            json_content = {
-                "data": {
-                    "category": category,
-                    "subcategory": subcategory,
-                    "name": name,
-                    "description": description
-                }
-            }
-
-        # Return the properly formatted response
         return json.dumps({
             "success": True,
             "text": json.dumps(json_content)  # Double encode to ensure proper string formatting
