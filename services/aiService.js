@@ -219,7 +219,7 @@ async function flashChat(prompt, language = 'en', context = '', imagePath = null
 }
 
 async function analyzeBiome(location, coordinates, language = 'en') {
-    return rateLimiter.enqueue(() => {
+    return rateLimiter.enqueue('analysis', () => {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
             const options = JSON.stringify({
