@@ -3,7 +3,7 @@ const path = require('path');
 const rateLimiter = require('./rateLimiter');
 
 async function generateContent(prompt, context = '') {
-    return rateLimiter.enqueue(() => {
+    return rateLimiter.enqueue('chat', () => {
         return new Promise((resolve, reject) => {
             const fullPrompt = context ? `Context: ${context}\n\nPrompt: ${prompt}` : prompt;
             const pythonScript = path.join(__dirname, 'gemini_service.py');
@@ -61,7 +61,7 @@ async function generateContentStream(prompt, context = '') {
 }
 
 async function searchAndGenerate(prompt) {
-    return rateLimiter.enqueue(() => {
+    return rateLimiter.enqueue('chat', () => {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
             const pythonProcess = spawn('python', [pythonScript, 'search', prompt]);
@@ -261,7 +261,7 @@ async function analyzeBiome(location, coordinates, language = 'en') {
 }
 
 async function analyze_weather(prompt, options = {}) {
-    return rateLimiter.enqueue(() => {
+    return rateLimiter.enqueue('analysis', () => {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
             
@@ -323,7 +323,7 @@ async function analyzeInfo(prompt, options = {}) {
         options
     });
     
-    return rateLimiter.enqueue(() => {
+    return rateLimiter.enqueue('analysis', () => {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
             
@@ -419,7 +419,7 @@ async function generateScenarios(locationInfo, options = {}) {
 async function gameSetup(settings, options = {}) {
     console.log('AI Service gameSetup - Language:', settings.language, 'Options:', options);
     
-    return rateLimiter.enqueue(() => {
+    return rateLimiter.enqueue('game', () => {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
             
@@ -509,7 +509,7 @@ async function gameSetup(settings, options = {}) {
 }
 
 async function gameMaster(context, options = {}) {
-    return rateLimiter.enqueue(() => {
+    return rateLimiter.enqueue('game', () => {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
             
@@ -571,7 +571,7 @@ async function gameMaster(context, options = {}) {
 }
 
 async function gameSummary(context, options = {}) {
-    return rateLimiter.enqueue(() => {
+    return rateLimiter.enqueue('game', () => {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
             
