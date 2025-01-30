@@ -735,17 +735,22 @@ async function generateQuiz(prompt, options = {}) {
     return quizPromise;
 }
 
-async function checkImageAppropriateness(imageUri) {
+async function checkImageAppropriate(imagePath, options = {}) {
     return rateLimiter.enqueue(() => {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
             
+            console.log('aiService checking image appropriateness:', {
+                imagePath,
+                options
+            });
+            
             const pythonProcess = spawn('python', [
                 pythonScript,
                 'check_appropriate',
-                'Is this image appropriate for public sharing?',
-                imageUri,
-                'null'  // no additional options needed
+                'null', // no prompt needed
+                imagePath,
+                JSON.stringify(options)
             ]);
 
             let dataString = '';
@@ -766,13 +771,21 @@ async function checkImageAppropriateness(imageUri) {
                 
                 try {
                     const response = JSON.parse(dataString);
-                    if (response.success) {
-                        resolve(response.isAppropriate);
-                    } else {
+                    console.log('Image appropriateness response:', response);
+                    
+                    if (!response.success) {
                         reject(new Error(response.error));
+                        return;
                     }
+                    
+                    resolve({
+                        success: true,
+                        isAppropriate: response.isAppropriate,
+                        reason: response.reason
+                    });
                 } catch (error) {
-                    reject(new Error('Failed to parse Python response'));
+                    console.error('Parse error:', error);
+                    reject(new Error('Failed to parse response'));
                 }
             });
         });
@@ -793,5 +806,5 @@ module.exports = {
     gameMaster,
     gameSummary,
     generateQuiz,
-    checkImageAppropriateness
+    checkImageAppropriate
 }; 

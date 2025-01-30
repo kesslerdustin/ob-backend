@@ -1,4 +1,3 @@
-const express = require('express');
 const axios = require('axios');
 const admin = require('firebase-admin');
 const cors = require('cors');
@@ -664,33 +663,38 @@ try {
     res.json(result);
   });
 
+  // Add this new endpoint for checking image appropriateness
   app.post('/api/check-image-appropriate', multer({ dest: uploadsDir }).single('image'), async (req, res) => {
     try {
-        if (!req.file) {
-            return res.status(400).json({ success: false, error: 'No image provided' });
-        }
+      if (!req.file) {
+        return res.status(400).json({ error: 'Image is required' });
+      }
 
-        const isAppropriate = await aiService.checkImageAppropriateness(req.file.path);
+      const response = await aiService.checkImageAppropriate(req.file.path);
+      
+      // Log the appropriateness check result
+      console.log('Image appropriateness check:', {
+        path: req.file.path,
+        isAppropriate: response.isAppropriate,
+        reason: response.reason
+      });
 
-        // Clean up the uploaded file
-        try {
-            fs.unlinkSync(req.file.path);
-        } catch (cleanupError) {
-            console.error('Error cleaning up file:', cleanupError);
-        }
+      // Clean up the uploaded file
+      try {
+        fs.unlinkSync(req.file.path);
+      } catch (cleanupError) {
+        console.error('Error cleaning up file:', cleanupError);
+      }
 
-        res.json({
-            success: true,
-            isAppropriate
-        });
+      res.json(response);
 
     } catch (error) {
-        console.error('Image appropriateness check error:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Failed to check image appropriateness',
-            details: error.message
-        });
+      console.error('Image appropriateness check error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to check image appropriateness',
+        details: error.message
+      });
     }
   });
 

@@ -9,7 +9,6 @@ from dotenv import load_dotenv
 from google.genai.types import Tool, GenerateContentConfig, GoogleSearch
 from datetime import datetime
 import re
-import base64
 
 load_dotenv()
 
@@ -1341,44 +1340,47 @@ def check_image_appropriate(prompt, image_path, options=None):
         else:
             img = Image.open(image_path).convert('RGB')
 
-        # Convert to base64
-        buffered = BytesIO()
-        img.save(buffered, format="JPEG")
-        img_str = base64.b64encode(buffered.getvalue()).decode()
-
-        # Create Gemini client
-        model = genai.GenerativeModel('gemini-pro-vision')
+        structured_prompt = """
+        Analyze this image and determine if it's appropriate for public sharing on a nature and outdoor activities platform.
+        Consider the following criteria:
+        - No explicit adult content
+        - No graphic violence or gore
+        - No hate symbols or offensive content
+        - No private/sensitive information
+        - Must be related to nature, outdoor activities, or relevant subjects
         
-        # Create the image part
-        image_part = {
-            "mime_type": "image/jpeg",
-            "data": img_str
+        Return a JSON response with this exact structure:
+        {
+            "isAppropriate": true/false,
+            "reason": "Brief explanation of why the image is appropriate or inappropriate"
         }
+        """
 
-        # Generate response
-        response = model.generate_content([
-            "Is this image appropriate for public sharing? Consider: " +
-            "1. No explicit adult content " +
-            "2. No graphic violence or gore " +
-            "3. No hate symbols or extremist content " +
-            "4. No personal identification documents " +
-            "5. No copyrighted or trademarked content without permission " +
-            "Respond with only 'appropriate' or 'inappropriate' and a brief reason.",
-            image_part
-        ])
+        # Add debug logging
+        print("=== IMAGE APPROPRIATENESS CHECK START ===", file=sys.stderr)
+        print(f"Checking image: {image_path}", file=sys.stderr)
 
-        # Parse response
-        response_text = response.text.lower()
-        is_appropriate = 'appropriate' in response_text and 'inappropriate' not in response_text
-
+        response = client.models.generate_content(
+            model="gemini-2.0-flash-exp",
+            contents=[structured_prompt, img]
+        )
+        
+        # Extract JSON from the response
+        json_content = extract_json_from_text(response.text)
+        if not json_content:
+            raise Exception("Failed to get valid response format")
+        
+        # Log the result
+        print(f"Appropriateness check result: {json_content}", file=sys.stderr)
+        print("=== IMAGE APPROPRIATENESS CHECK END ===\n", file=sys.stderr)
+        
         return json.dumps({
             "success": True,
-            "isAppropriate": is_appropriate,
-            "reason": response_text
+            "isAppropriate": json_content.get("isAppropriate", False),
+            "reason": json_content.get("reason", "Unknown reason")
         })
-
     except Exception as e:
-        print(f"Image appropriateness check error: {str(e)}", file=sys.stderr)
+        print(f"Error in check_image_appropriate: {str(e)}", file=sys.stderr)
         return json.dumps({
             "success": False,
             "error": str(e)
