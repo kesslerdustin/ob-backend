@@ -221,7 +221,7 @@ def flash_chat(prompt, image_path=None, options=None):
                 print(f"Error loading image: {str(e)}", file=sys.stderr)
 
         response = client.models.generate_content(
-            model="gemini-2.0-flash-exp",
+            model="gemini-2.0-flash-thinking-exp",
             contents=contents
         )
         
