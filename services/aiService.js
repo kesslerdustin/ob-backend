@@ -97,7 +97,7 @@ async function searchAndGenerate(prompt) {
 }
 
 async function analyzeImage(prompt, imageUrl, options = {}) {
-    return rateLimiter.enqueue('vision', () => {
+    return rateLimiter.enqueue('vision', async () => {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
             
@@ -136,7 +136,6 @@ async function analyzeImage(prompt, imageUrl, options = {}) {
                 }
                 
                 try {
-                    // First, try to parse the outer JSON response
                     const response = JSON.parse(dataString);
                     
                     if (!response.success) {
@@ -144,26 +143,17 @@ async function analyzeImage(prompt, imageUrl, options = {}) {
                         return;
                     }
 
-                    try {
-                        // Then parse the nested JSON text
-                        const analysisData = JSON.parse(response.text);
-                        if (!analysisData.data) {
-                            reject(new Error('Invalid analysis data structure'));
-                            return;
+                    // Parse the inner text as JSON if it's a string
+                    let parsedText = response.text;
+                    if (typeof response.text === 'string') {
+                        try {
+                            parsedText = JSON.parse(response.text);
+                        } catch (e) {
+                            console.warn('Could not parse inner text as JSON:', e);
                         }
-                        resolve(analysisData);
-                    } catch (innerError) {
-                        // If nested JSON parsing fails, try to use the text directly
-                        console.warn('Failed to parse nested JSON, using raw text:', response.text);
-                        resolve({
-                            data: {
-                                category: 'Custom',
-                                subcategory: '',
-                                name: '',
-                                description: response.text
-                            }
-                        });
                     }
+
+                    resolve(parsedText);
                 } catch (error) {
                     console.error('Parse error:', error);
                     console.error('Raw data:', dataString);
