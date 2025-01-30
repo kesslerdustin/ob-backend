@@ -455,8 +455,8 @@ def generate_scenarios(location_info, options=None):
             "scenarios": [
                 {{
                     "id": "scenario1",
-                    "title": "Brief title",
-                    "description": "One-line description",
+                    "title": "Brief title in {language} (de = german, en = english )",
+                    "description": "One-line description in {language} (de = german, en = english)",
                     "icon": "Select one: leaf-outline, triangle-outline, water-outline, sunny-outline, flash-outline, compass-outline"
                 }},
                 // 3 more scenarios following the same structure
