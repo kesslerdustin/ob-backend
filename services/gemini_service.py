@@ -92,7 +92,7 @@ def analyze_image(prompt, image_path, options=None):
         For Fungi, use ONLY:
         - fungi
 
-        Return EXACTLY this JSON structure with no additional text:
+        Return EXACTLY this JSON structure with no additional text. Return in {language} (de = german, en = english etc):
         {{
             "data": {{
                 "category": "POI|Flora|Fauna|Fungi|Custom",
