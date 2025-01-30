@@ -9,12 +9,33 @@ from dotenv import load_dotenv
 from google.genai.types import Tool, GenerateContentConfig, GoogleSearch
 from datetime import datetime
 import re
+from functools import wraps
 
 load_dotenv()
 
 # Configure the Gemini API
 client = genai.Client(api_key=os.getenv('GOOGLE_API_KEY'))
 MODEL_ID = "gemini-2.0-flash-exp"
+
+def with_model_fallback(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            # Check if error is related to rate limit or quota
+            if any(term in str(e).lower() for term in ['rate limit', 'quota', 'capacity']):
+                print(f"Flash-thinking API limit reached, falling back to standard model for {func.__name__}", file=sys.stderr)
+                # Replace the model in the function's context
+                global MODEL_ID
+                original_model = MODEL_ID
+                try:
+                    MODEL_ID = "gemini-2.0-flash-exp"
+                    return func(*args, **kwargs)
+                finally:
+                    MODEL_ID = original_model
+            raise  # Re-raise other exceptions
+    return wrapper
 
 def generate_content(prompt):
     """Standard text generation"""
@@ -322,6 +343,7 @@ def analyze_weather(prompt, options=None):
         print(json.dumps(error_result))
         return error_result["error"]
 
+@with_model_fallback
 def analyze_info(prompt, options=None):
     """Information analysis using Gemini 2.0 with enhanced prompt structure"""
     try:
@@ -683,12 +705,7 @@ def game_setup(settings_data, options=None):
             "error": str(e)
         })
 
-import json
-import sys
-from datetime import datetime
-
-# Assume client and extract_json_from_text are imported or defined elsewhere
-
+@with_model_fallback
 def game_master(context, options=None):
     """Process game turns using Gemini 2.0 with improved dynamic progression toward an ending,
        persistent and realistic injuries, and balanced challenge versus progress conditions."""
@@ -1129,6 +1146,7 @@ def game_summary(context, options=None):
             "error": str(e)
         })
 
+@with_model_fallback
 def generate_quiz(prompt, options=None):
     """Generate quiz questions using Gemini 2.0"""
     try:

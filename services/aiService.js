@@ -97,7 +97,7 @@ async function searchAndGenerate(prompt) {
 }
 
 async function analyzeImage(prompt, imageUrl, options = {}) {
-    return rateLimiter.enqueue(() => {
+    return rateLimiter.enqueue('vision', () => {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
             
