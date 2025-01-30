@@ -97,8 +97,8 @@ def analyze_image(prompt, image_path, options=None):
             "data": {{
                 "category": "POI|Flora|Fauna|Fungi|Custom",
                 "subcategory": "exact_subcategory_from_list_above",
-                "name": "common name or brief description",
-                "description": "brief description of what's in the image"
+                "name": "common name or brief description  in {language} (de = german, en = english etc)",
+                "description": "brief description of what's in the image  in {language} (de = german, en = english etc)"
             }}
         }}
         """
