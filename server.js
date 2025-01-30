@@ -240,21 +240,26 @@ try {
         return res.status(400).json({ success: false, error: 'No image provided' });
       }
 
-      // Parse options once and use the parsed object
       const options = req.body.options ? JSON.parse(req.body.options) : {};
-      console.log('Server parsed options:', options); // Debug log
+      console.log('Server parsed options:', options);
 
-      const rawResponse = await aiService.analyzeImage(
+      const response = await aiService.analyzeImage(
         "Analyze this image", 
         req.file.path,
-        options  // Pass the parsed options object directly
+        options
       );
 
-      console.log('AI service raw response:', rawResponse); // New log
+      // Parse the response to ensure it's valid JSON
+      let parsedResponse;
+      try {
+        parsedResponse = typeof response === 'string' ? JSON.parse(response) : response;
+      } catch (e) {
+        throw new Error('Invalid response format from AI service');
+      }
 
       res.json({
         success: true,
-        text: rawResponse
+        text: parsedResponse.text || response
       });
 
       // Clean up the uploaded file
