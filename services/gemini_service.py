@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from google.genai.types import Tool, GenerateContentConfig, GoogleSearch
 from datetime import datetime
 import re
+import base64
 
 load_dotenv()
 
@@ -1340,32 +1341,44 @@ def check_image_appropriate(prompt, image_path, options=None):
         else:
             img = Image.open(image_path).convert('RGB')
 
-        structured_prompt = """
-        Analyze this image and determine if it's appropriate for public sharing on a nature and outdoor activities platform.
-        Consider the following criteria:
-        - No explicit adult content
-        - No graphic violence or gore
-        - No hate symbols or offensive content
-        - No private/sensitive information
-        - Must be related to nature, outdoor activities, or relevant subjects
-        
-        Respond with ONLY 'true' if appropriate or 'false' if inappropriate.
-        """
+        # Convert to base64
+        buffered = BytesIO()
+        img.save(buffered, format="JPEG")
+        img_str = base64.b64encode(buffered.getvalue()).decode()
 
-        response = client.models.generate_content(
-            model="gemini-2.0-flash-exp",
-            contents=[structured_prompt, img]
-        )
+        # Create Gemini client
+        model = genai.GenerativeModel('gemini-pro-vision')
         
-        # Convert response to boolean
-        is_appropriate = response.text.strip().lower() == 'true'
-        
+        # Create the image part
+        image_part = {
+            "mime_type": "image/jpeg",
+            "data": img_str
+        }
+
+        # Generate response
+        response = model.generate_content([
+            "Is this image appropriate for public sharing? Consider: " +
+            "1. No explicit adult content " +
+            "2. No graphic violence or gore " +
+            "3. No hate symbols or extremist content " +
+            "4. No personal identification documents " +
+            "5. No copyrighted or trademarked content without permission " +
+            "Respond with only 'appropriate' or 'inappropriate' and a brief reason.",
+            image_part
+        ])
+
+        # Parse response
+        response_text = response.text.lower()
+        is_appropriate = 'appropriate' in response_text and 'inappropriate' not in response_text
+
         return json.dumps({
             "success": True,
-            "isAppropriate": is_appropriate
+            "isAppropriate": is_appropriate,
+            "reason": response_text
         })
+
     except Exception as e:
-        print(f"Error in check_image_appropriate: {str(e)}")
+        print(f"Image appropriateness check error: {str(e)}", file=sys.stderr)
         return json.dumps({
             "success": False,
             "error": str(e)
