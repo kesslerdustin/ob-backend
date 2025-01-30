@@ -15,7 +15,8 @@ load_dotenv()
 
 # Configure the Gemini API
 client = genai.Client(api_key=os.getenv('GOOGLE_API_KEY'))
-MODEL_ID = "gemini-2.0-flash-exp"
+FLASH_THINKING_MODEL = "gemini-2.0-flash-thinking-exp"
+FLASH_MODEL = "gemini-2.0-flash-exp"
 
 def with_model_fallback(func):
     @wraps(func)
@@ -23,18 +24,16 @@ def with_model_fallback(func):
         try:
             return func(*args, **kwargs)
         except Exception as e:
-            # Check if error is related to rate limit or quota
             if any(term in str(e).lower() for term in ['rate limit', 'quota', 'capacity']):
                 print(f"Flash-thinking API limit reached, falling back to standard model for {func.__name__}", file=sys.stderr)
-                # Replace the model in the function's context
                 global MODEL_ID
                 original_model = MODEL_ID
                 try:
-                    MODEL_ID = "gemini-2.0-flash-exp"
+                    MODEL_ID = FLASH_MODEL
                     return func(*args, **kwargs)
                 finally:
                     MODEL_ID = original_model
-            raise  # Re-raise other exceptions
+            raise
     return wrapper
 
 def generate_content(prompt):

@@ -156,28 +156,29 @@ async function analyzeImage(prompt, imageUrl, options = {}) {
     });
 }
 
-async function flashChat(prompt, language = 'en', context = '', imageUri = null) {
-    console.log('aiService - Flash Chat:', {
-        prompt,
-        language,
-        contextLength: context?.length || 0,
-        contextPreview: context?.substring(0, 200) + '...',
-        hasImage: !!imageUri
-    });
-
-    return rateLimiter.enqueue(() => {
+async function flashChat(prompt, language = 'en', context = '', imagePath = null) {
+    return rateLimiter.enqueue('chat', () => {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
             const options = JSON.stringify({ language, context });
             
+            console.log('Executing flash chat with:', {
+                prompt,
+                language,
+                contextLength: context?.length || 0,
+                hasImage: !!imagePath
+            });
+
             const pythonProcess = spawn('python', [
                 pythonScript,
                 'flash',
                 prompt,
-                imageUri, // Pass the image URI
+                imagePath || 'null',
                 options
             ]);
+
             let dataString = '';
+            let errorString = '';
 
             pythonProcess.stdout.on('data', (data) => {
                 dataString += data.toString();
@@ -185,24 +186,24 @@ async function flashChat(prompt, language = 'en', context = '', imageUri = null)
 
             pythonProcess.stderr.on('data', (data) => {
                 console.error(`Python Error: ${data}`);
+                errorString += data.toString();
             });
 
             pythonProcess.on('close', (code) => {
                 if (code !== 0) {
-                    reject(new Error(`Python process exited with code ${code}`));
+                    reject(new Error(`Process failed: ${errorString}`));
                     return;
                 }
-                
+
                 try {
                     const response = JSON.parse(dataString);
-                    if (response.success) {
-                        resolve(response.text);
-                    } else {
-                        reject(new Error(response.error));
+                    if (!response.success) {
+                        reject(new Error(response.error || 'Failed to generate response'));
+                        return;
                     }
+                    resolve(response.text);
                 } catch (error) {
-                    console.error('Parse error:', error, 'Raw data:', dataString);
-                    reject(new Error('Failed to parse Python response'));
+                    reject(new Error('Failed to parse response'));
                 }
             });
         });
@@ -369,23 +370,26 @@ async function analyzeInfo(prompt, options = {}) {
     });
 }
 
-async function generateScenarios(locationInfo, options = {}) {
-    return rateLimiter.enqueue(() => {
+async function generateScenarios(location, options = {}) {
+    return rateLimiter.enqueue('game', () => {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
             
-            const optionsStr = JSON.stringify(options);
-            console.log('aiService generating scenarios for location:', locationInfo);
-            
+            console.log('Generating scenarios:', {
+                location,
+                options
+            });
+
             const pythonProcess = spawn('python', [
                 pythonScript,
                 'scenarios',
-                locationInfo,
-                'null',  // no image
-                optionsStr
+                JSON.stringify(location),
+                'null',
+                JSON.stringify(options)
             ]);
 
             let dataString = '';
+            let errorString = '';
 
             pythonProcess.stdout.on('data', (data) => {
                 dataString += data.toString();
@@ -393,23 +397,24 @@ async function generateScenarios(locationInfo, options = {}) {
 
             pythonProcess.stderr.on('data', (data) => {
                 console.error(`Python Error: ${data}`);
+                errorString += data.toString();
             });
 
             pythonProcess.on('close', (code) => {
                 if (code !== 0) {
-                    reject(new Error(`Python process exited with code ${code}`));
+                    reject(new Error(`Process failed: ${errorString}`));
                     return;
                 }
-                
+
                 try {
                     const response = JSON.parse(dataString);
-                    if (response.success) {
-                        resolve(response.text);
-                    } else {
-                        reject(new Error(response.error));
+                    if (!response.success) {
+                        reject(new Error(response.error || 'Failed to generate scenarios'));
+                        return;
                     }
+                    resolve(response.text);
                 } catch (error) {
-                    reject(new Error('Failed to parse Python response'));
+                    reject(new Error('Failed to parse response'));
                 }
             });
         });
@@ -626,147 +631,25 @@ async function gameSummary(context, options = {}) {
 }
 
 async function generateQuiz(prompt, options = {}) {
-    let pythonProcess = null;
-    
-    const quizPromise = rateLimiter.enqueue(() => {
+    return rateLimiter.enqueue('quiz', () => {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
             
-            console.log('Starting quiz generation:', {
+            console.log('Generating quiz:', {
                 prompt,
-                options,
-                hasLocationAnalysis: !!options.locationAnalysis
+                options
             });
-            
-            pythonProcess = spawn('python', [
+
+            const pythonProcess = spawn('python', [
                 pythonScript,
                 'quiz',
                 prompt,
-                'null',  // no image
-                JSON.stringify({
-                    ...options,
-                    locationAnalysis: options.locationAnalysis || ''
-                })
-            ], {
-                env: { ...process.env, PYTHONIOENCODING: 'utf-8' },
-                timeout: 85000,
-                detached: true, // Create new process group
-                stdio: ['pipe', 'pipe', 'pipe']
-            });
-
-            // Unref the child process
-            pythonProcess.unref();
-
-            let dataString = '';
-            let errorString = '';
-
-            pythonProcess.stdout.on('data', (data) => {
-                const chunk = data.toString('utf-8');
-                console.log('Python stdout chunk:', chunk);
-                dataString += chunk;
-            });
-
-            pythonProcess.stderr.on('data', (data) => {
-                const chunk = data.toString('utf-8');
-                console.error('Python stderr chunk:', chunk);
-                errorString += chunk;
-            });
-
-            // Add timeout handler
-            const timeoutId = setTimeout(() => {
-                pythonProcess.kill();
-                reject(new Error('Quiz generation timed out'));
-            }, 85000);
-
-            // Store cleanup function
-            const cleanup = () => {
-                clearTimeout(timeoutId);
-                if (pythonProcess) {
-                    try {
-                        // Kill process more safely
-                        pythonProcess.kill('SIGTERM');
-                    } catch (error) {
-                        console.error('Error during process cleanup:', error);
-                    }
-                    pythonProcess = null;
-                }
-            };
-
-            // Add cancellation handler
-            pythonProcess.cancel = cleanup;
-
-            pythonProcess.on('close', (code) => {
-                cleanup();
-                if (code !== 0 && code !== null) { // Allow null for killed processes
-                    console.error('Process error:', errorString);
-                    reject(new Error(errorString || 'Quiz generation process failed'));
-                    return;
-                }
-
-                try {
-                    const jsonMatch = dataString.match(/\{[\s\S]*\}/);
-                    if (!jsonMatch) {
-                        console.error('No JSON found in response:', dataString);
-                        reject(new Error('Invalid response format'));
-                        return;
-                    }
-                    
-                    const response = JSON.parse(jsonMatch[0]);
-                    console.log('Quiz generation completed successfully');
-                    
-                    if (!response.success) {
-                        reject(new Error(response.error || 'Failed to generate quiz'));
-                        return;
-                    }
-                    
-                    resolve(response.text);
-                } catch (error) {
-                    console.error('Parse error:', error);
-                    console.error('Raw data:', dataString);
-                    reject(new Error('Failed to parse quiz response'));
-                }
-            });
-
-            pythonProcess.on('error', (error) => {
-                cleanup();
-                reject(error);
-            });
-        });
-    });
-
-    // Attach cancel method to the promise
-    quizPromise.cancel = () => {
-        if (pythonProcess) {
-            try {
-                pythonProcess.cancel();
-            } catch (error) {
-                console.error('Error during quiz cancellation:', error);
-            }
-        }
-    };
-
-    return quizPromise;
-}
-
-async function checkImageAppropriate(imagePath, options = {}) {
-    return rateLimiter.enqueue(() => {
-        return new Promise((resolve, reject) => {
-            const pythonScript = path.join(__dirname, 'gemini_service.py');
-            
-            console.log('aiService checking image appropriateness:', {
-                imagePath,
-                options
-            });
-            
-            const pythonProcess = spawn('python', [
-                pythonScript,
-                'check_appropriate',
-                'null', // no prompt needed
-                imagePath,
+                'null',
                 JSON.stringify(options)
             ]);
 
             let dataString = '';
+            let errorString = '';
 
             pythonProcess.stdout.on('data', (data) => {
                 dataString += data.toString();
@@ -774,30 +657,74 @@ async function checkImageAppropriate(imagePath, options = {}) {
 
             pythonProcess.stderr.on('data', (data) => {
                 console.error(`Python Error: ${data}`);
+                errorString += data.toString();
             });
 
             pythonProcess.on('close', (code) => {
                 if (code !== 0) {
-                    reject(new Error(`Python process exited with code ${code}`));
+                    reject(new Error(`Process failed: ${errorString}`));
                     return;
                 }
-                
+
                 try {
                     const response = JSON.parse(dataString);
-                    console.log('Image appropriateness response:', response);
-                    
                     if (!response.success) {
-                        reject(new Error(response.error));
+                        reject(new Error(response.error || 'Failed to generate quiz'));
                         return;
                     }
-                    
-                    resolve({
-                        success: true,
-                        isAppropriate: response.isAppropriate,
-                        reason: response.reason
-                    });
+                    resolve(response.text);
                 } catch (error) {
-                    console.error('Parse error:', error);
+                    reject(new Error('Failed to parse response'));
+                }
+            });
+        });
+    });
+}
+
+async function checkImageAppropriate(imagePath, options = {}) {
+    return rateLimiter.enqueue('vision', () => {
+        return new Promise((resolve, reject) => {
+            const pythonScript = path.join(__dirname, 'gemini_service.py');
+            
+            console.log('Checking image appropriateness:', {
+                imagePath,
+                options
+            });
+
+            const pythonProcess = spawn('python', [
+                pythonScript,
+                'check_appropriate',
+                'null',
+                imagePath,
+                JSON.stringify(options)
+            ]);
+
+            let dataString = '';
+            let errorString = '';
+
+            pythonProcess.stdout.on('data', (data) => {
+                dataString += data.toString();
+            });
+
+            pythonProcess.stderr.on('data', (data) => {
+                console.error(`Python Error: ${data}`);
+                errorString += data.toString();
+            });
+
+            pythonProcess.on('close', (code) => {
+                if (code !== 0) {
+                    reject(new Error(`Process failed: ${errorString}`));
+                    return;
+                }
+
+                try {
+                    const response = JSON.parse(dataString);
+                    if (!response.success) {
+                        reject(new Error(response.error || 'Failed to check image'));
+                        return;
+                    }
+                    resolve(response);
+                } catch (error) {
                     reject(new Error('Failed to parse response'));
                 }
             });
