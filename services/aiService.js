@@ -102,7 +102,11 @@ async function analyzeImage(prompt, imageUrl, options = {}) {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
             
             const optionsStr = typeof options === 'string' ? options : JSON.stringify(options);
-            console.log('aiService sending options:', optionsStr);
+            console.log('Analyzing image:', {
+                prompt,
+                imageUrl,
+                options: optionsStr
+            });
             
             const pythonProcess = spawn('python', [
                 pythonScript, 
@@ -120,32 +124,46 @@ async function analyzeImage(prompt, imageUrl, options = {}) {
             });
 
             pythonProcess.stderr.on('data', (data) => {
-                errorString += data.toString();
                 console.error(`Python Error: ${data}`);
+                errorString += data.toString();
             });
 
             pythonProcess.on('close', (code) => {
                 if (code !== 0) {
                     console.error('Process error:', errorString);
-                    reject(new Error('Failed to analyze image'));
+                    reject(new Error(`Failed to analyze image: ${errorString}`));
                     return;
                 }
                 
                 try {
+                    // First, try to parse the outer JSON response
                     const response = JSON.parse(dataString);
+                    
                     if (!response.success) {
                         reject(new Error(response.error || 'Analysis failed'));
                         return;
                     }
 
-                    // Parse the nested JSON string
-                    const analysisData = JSON.parse(response.text);
-                    if (!analysisData.data) {
-                        reject(new Error('Invalid analysis data structure'));
-                        return;
+                    try {
+                        // Then parse the nested JSON text
+                        const analysisData = JSON.parse(response.text);
+                        if (!analysisData.data) {
+                            reject(new Error('Invalid analysis data structure'));
+                            return;
+                        }
+                        resolve(analysisData);
+                    } catch (innerError) {
+                        // If nested JSON parsing fails, try to use the text directly
+                        console.warn('Failed to parse nested JSON, using raw text:', response.text);
+                        resolve({
+                            data: {
+                                category: 'Custom',
+                                subcategory: '',
+                                name: '',
+                                description: response.text
+                            }
+                        });
                     }
-
-                    resolve(analysisData);
                 } catch (error) {
                     console.error('Parse error:', error);
                     console.error('Raw data:', dataString);
