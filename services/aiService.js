@@ -113,18 +113,21 @@ async function analyzeImage(prompt, imageUrl, options = {}) {
             ]);
 
             let dataString = '';
+            let errorString = '';
 
             pythonProcess.stdout.on('data', (data) => {
                 dataString += data.toString();
             });
 
             pythonProcess.stderr.on('data', (data) => {
+                errorString += data.toString();
                 console.error(`Python Error: ${data}`);
             });
 
             pythonProcess.on('close', (code) => {
                 if (code !== 0) {
-                    reject(new Error(`Python process exited with code ${code}`));
+                    console.error('Process error:', errorString);
+                    reject(new Error('Failed to analyze image'));
                     return;
                 }
                 

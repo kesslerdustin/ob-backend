@@ -63,61 +63,45 @@ def analyze_image(prompt, image_path, options=None):
     try:
         options = json.loads(options) if options else {}
         language = options.get('language', 'en')
-        analysis_type = options.get('type', 'photo_analysis')
-        context = options.get('context', '')
+        
+        structured_prompt = f"""
+        Analyze this image and classify it according to these categories:
+        
+        Main Categories:
+        - POI (Points of Interest)
+        - Flora (Plants)
+        - Fauna (Animals)
+        - Fungi
+        - Custom (if none of the above fit)
 
-        # Different prompts based on analysis type
-        if analysis_type == 'chat_analysis':
-            structured_prompt = f"""
-            You are a helpful outdoor guide. Analyze this image and respond in the language of this classifier:{language} (eg: en - english, de - german, fr - french, etc).
-            
-            Context from the conversation:
-            {context}
-            
-            Provide a natural, conversational response about what you see in the image.
-            Focus on relevant outdoor, nature, or location-related details.
-            Keep the response friendly and informative, as if chatting with a hiking companion.
-            """
-        else:
-            # Original photo analysis prompt
-            structured_prompt = f"""
-            Analyze this image and classify it according to these categories:
-            
-            Main Categories:
-            - POI (Points of Interest)
-            - Flora (Plants)
-            - Fauna (Animals)
-            - Fungi
-            - Custom (if none of the above fit)
+        For Flora, use ONLY these subcategories:
+        - trees
+        - flowering_and_shrubs
+        - ferns_and_allies
+        - aquatic_and_marine_plants
+        - palms_and_cycads
 
-            For Flora, use ONLY these subcategories:
-            - trees
-            - flowering_and_shrubs
-            - ferns_and_allies
-            - aquatic_and_marine_plants
-            - palms_and_cycads
+        For Fauna, use ONLY these subcategories:
+        - mammals
+        - birds
+        - reptiles
+        - amphibians
+        - fish
+        - invertebrates
 
-            For Fauna, use ONLY these subcategories:
-            - mammals
-            - birds
-            - reptiles
-            - amphibians
-            - fish
-            - invertebrates
+        For Fungi, use ONLY:
+        - fungi
 
-            For Fungi, use ONLY:
-            - fungi
-
-            Return EXACTLY this JSON structure with no additional text:
-            {{
-                "data": {{
-                    "category": "POI|Flora|Fauna|Fungi|Custom",
-                    "subcategory": "exact_subcategory_from_list_above",
-                    "name": "common name or brief description",
-                    "description": "brief description of what's in the image"
-                }}
+        Return EXACTLY this JSON structure with no additional text:
+        {{
+            "data": {{
+                "category": "POI|Flora|Fauna|Fungi|Custom",
+                "subcategory": "exact_subcategory_from_list_above",
+                "name": "common name or brief description",
+                "description": "brief description of what's in the image"
             }}
-            """
+        }}
+        """
 
         # Handle image loading
         if image_path.startswith(('http://', 'https://')):
@@ -132,20 +116,33 @@ def analyze_image(prompt, image_path, options=None):
             contents=[structured_prompt, img]
         )
 
-        # Convert response to proper JSON string
-        result = {
-            "success": True,
-            "text": json.dumps({
+        # Extract JSON from the response text
+        json_content = extract_json_from_text(response.text)
+        if not json_content:
+            raise Exception("Failed to parse AI response into valid JSON")
+
+        # Validate and normalize the response
+        if not isinstance(json_content, dict) or 'data' not in json_content:
+            # Try to create a structured response from unstructured text
+            category = "Custom"
+            subcategory = ""
+            name = ""
+            description = response.text[:200]  # Limit description length
+            
+            json_content = {
                 "data": {
-                    "category": response.text.get("category", "Custom"),
-                    "subcategory": response.text.get("subcategory", ""),
-                    "name": response.text.get("name", ""),
-                    "description": response.text.get("description", "")
+                    "category": category,
+                    "subcategory": subcategory,
+                    "name": name,
+                    "description": description
                 }
-            })
-        }
-        
-        return json.dumps(result)
+            }
+
+        # Return the properly formatted response
+        return json.dumps({
+            "success": True,
+            "text": json.dumps(json_content)  # Double encode to ensure proper string formatting
+        })
         
     except Exception as e:
         print(f"Error in analyze_image: {str(e)}", file=sys.stderr)
