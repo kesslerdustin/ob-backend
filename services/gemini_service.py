@@ -294,7 +294,16 @@ def analyze_weather(prompt, options=None):
         - Keep response between 2-4 sentences
         - Focus on safety and preparation
         - Be direct and practical
-        - You will receive weather information with certain metric settings (feet vs meter, etc), time formmating (12h/24h), and date formatting (DD.MM.YYYY). while using {language} language, pls use the metric and date time formatting as specified in the prompt.
+        - IMPORTANT: When referring to measurements:
+          * If input uses imperial units (°F, mph, ft), respond using imperial units
+          * If input uses metric units (°C, km/h, m), respond using metric units
+        - IMPORTANT: When referring to time:
+          * If input uses 12-hour format (e.g., 4:03 PM), respond using 12-hour format
+          * If input uses 24-hour format (e.g., 16:03), respond using 24-hour format
+        - IMPORTANT: When referring to dates:
+          * If input uses MM/DD/YYYY format, respond using that format
+          * If input uses DD.MM.YYYY format, respond using that format
+        - Maintain the same unit system, time format, and date format as provided in the input prompt
         """
 
         response = client.models.generate_content(
