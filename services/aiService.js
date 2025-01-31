@@ -273,55 +273,80 @@ async function analyze_weather(prompt, options = {}) {
     return rateLimiter.enqueue('analysis', () => {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
+            let retryCount = 0;
+            const maxRetries = 3;
             
-            console.log('aiService sending weather analysis request:', {
-                prompt: prompt.substring(0, 100) + '...',
-                options
-            });
-            
-            const pythonProcess = spawn('python', [
-                pythonScript,
-                'weather',
-                prompt,
-                'null',  // Add this placeholder for image parameter
-                JSON.stringify(options)  // Pass options as the last parameter
-            ]);
-
-            let dataString = '';
-
-            pythonProcess.stdout.on('data', (data) => {
-                dataString += data.toString();
-            });
-
-            pythonProcess.stderr.on('data', (data) => {
-                console.error(`Python Error: ${data}`);
-            });
-
-            pythonProcess.on('close', (code) => {
-                if (code !== 0) {
-                    reject(new Error(`Python process exited with code ${code}`));
-                    return;
-                }
+            const tryGenerate = () => {
+                console.log(`Weather analysis attempt ${retryCount + 1}/${maxRetries}`);
                 
-                try {
-                    // Find the last JSON object in the output
-                    const jsonMatch = dataString.match(/\{[\s\S]*\}/g);
-                    if (jsonMatch) {
-                        const lastJson = jsonMatch[jsonMatch.length - 1];
-                        const response = JSON.parse(lastJson);
-                        if (response.success) {
-                            resolve(response.text);
-                        } else {
-                            reject(new Error(response.error));
-                        }
-                    } else {
-                        reject(new Error('No valid JSON found in Python response'));
+                const pythonProcess = spawn('python', [
+                    pythonScript,
+                    'weather',
+                    prompt,
+                    'null',
+                    JSON.stringify(options)
+                ]);
+
+                let dataString = '';
+                let errorString = '';
+
+                pythonProcess.stdout.on('data', (data) => {
+                    dataString += data.toString();
+                });
+
+                pythonProcess.stderr.on('data', (data) => {
+                    console.error(`Python Error: ${data}`);
+                    errorString += data.toString();
+                });
+
+                pythonProcess.on('close', (code) => {
+                    if (code !== 0) {
+                        const error = new Error(`Process failed: ${errorString}`);
+                        handleError(error);
+                        return;
                     }
-                } catch (error) {
-                    console.error('Failed to parse Python response:', dataString);
-                    reject(new Error('Failed to parse Python response'));
+
+                    try {
+                        // Check if response contains overload error
+                        if (dataString.includes('503 UNAVAILABLE') || 
+                            dataString.includes('overloaded')) {
+                            throw new Error('Model overloaded');
+                        }
+
+                        // Try to parse JSON response
+                        const jsonMatch = dataString.match(/\{[\s\S]*\}/);
+                        if (!jsonMatch) {
+                            throw new Error('Invalid response format');
+                        }
+                        
+                        const response = JSON.parse(jsonMatch[0]);
+                        if (!response.success) {
+                            throw new Error(response.error || 'Failed to analyze weather');
+                        }
+                        
+                        resolve(response.text);
+                    } catch (error) {
+                        handleError(error);
+                    }
+                });
+            };
+
+            const handleError = (error) => {
+                console.error(`Attempt ${retryCount + 1} failed:`, error.message);
+                
+                if (error.message.includes('overloaded') && retryCount < maxRetries) {
+                    retryCount++;
+                    // Exponential backoff: 2s, 4s, 8s
+                    const delay = Math.pow(2, retryCount) * 1000;
+                    console.log(`Retrying in ${delay/1000} seconds...`);
+                    setTimeout(tryGenerate, delay);
+                } else {
+                    reject(new Error('Weather analysis failed after retries'));
                 }
-            });
+            };
+
+            // Start first attempt
+            tryGenerate();
         });
     });
 }
