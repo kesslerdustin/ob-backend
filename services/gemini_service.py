@@ -238,9 +238,9 @@ def analyze_biome(prompt, options=None):
         structured_prompt = f"""
         You are a biome classification expert. For this location:
         {prompt}
-        
+        If location includes a location, let that influence your biome description. if its just coordinates, try to estimate the biome based on the coordinates as good as possible.
         Return ONLY:
-        1. The primary biome name (e.g., Temperate broadleaf and mixed forests, Tropical rainforest, etc.)
+        1. The primary biome name (e.g., Temperate broadleaf and mixed forests, Tropical rainforest, desert etc.)
         2. Followed by 2-3 major geographic features in parentheses, separated by commas
         
         Example format:
