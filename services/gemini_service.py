@@ -1272,7 +1272,7 @@ def check_image_appropriate(prompt, image_path, options=None):
         - No hate symbols or offensive content
         - No private/sensitive information
         - Must be related to nature, outdoor activities, or relevant subjects. It may be taken indoors, may only slightly depict an animal, plant, POI etc. Surivival / bushcraft is fine as well. its mainly to determine whether or not the content is inappropriate and might harm others
-        
+        - Inform user that he can still save the image privately
         Return a JSON response with this exact structure:
         {
             "isAppropriate": true/false,
