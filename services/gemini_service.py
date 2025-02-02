@@ -588,7 +588,7 @@ def game_setup(settings_data, options=None):
         CRITICAL - CUSTOM RULES TO FOLLOW:
         {custom_rules}
         These custom rules MUST be followed in ALL responses. This is the highest priority instruction.
-        
+        CRITICAL DATE, TIME AND METRIC SYSTEM FORMATTING: IF YOU CONTEXT INFO CONATINS ANY WEATHER DATA FORMATTED IN FAHRENHEIT OR MILES, USE ONLY THOSE METRICS IN ALL YOUR RESPONSES. CONVERSELY, IF YOU CONTEXT INFO CONATINS ANY WEATHER DATA FORMATTED IN CELSIUS OR KILOMETERS, USE ONLY THOSE METRICS IN ALL YOUR RESPONSES. INLCUDING WALKED DISTANCES, DISTANCES BETWEEN POINTS OF INTEREST, ETC.
         GAME SETTINGS:
         Date and Time: {settings_data.get('datetime', '')} or if {scenario_desc} includes a date, use that date.
         Location: {settings_data.get('location', {}).get('name', 'Unknown')}
@@ -654,6 +654,8 @@ def game_setup(settings_data, options=None):
         8. Each option must have both 'text' and 'nextScene' properties
         9. nextScene IDs should be unique, lowercase, no spaces (e.g., 'highGround', 'findWater', 'buildShelter')
         10. Option text should be clear and actionable, describing the choice in detail
+        CRITICAL DATE, TIME AND METRIC SYSTEM FORMATTING: IF YOU CONTEXT INFO CONATINS ANY WEATHER DATA FORMATTED IN FAHRENHEIT OR MILES, USE ONLY THOSE METRICS IN ALL YOUR RESPONSES. CONVERSELY, IF YOU CONTEXT INFO CONATINS ANY WEATHER DATA FORMATTED IN CELSIUS OR KILOMETERS, USE ONLY THOSE METRICS IN ALL YOUR RESPONSES. INLCUDING WALKED DISTANCES, DISTANCES BETWEEN POINTS OF INTEREST, ETC.
+        
         """
 
         # Update how we access custom rules
@@ -760,7 +762,8 @@ def game_master(context, options=None):
         CRITICAL - CUSTOM RULES TO FOLLOW:
         {custom_rules}
         These custom rules MUST be followed in ALL responses. This is the highest priority instruction. the only things custom rules cannot overwrite are JSON structure and the rules when to set hasgameended to true.
-
+CRITICAL DATE, TIME AND METRIC SYSTEM FORMATTING: IF YOU CONTEXT INFO CONATINS ANY WEATHER DATA FORMATTED IN FAHRENHEIT OR MILES, USE ONLY THOSE METRICS IN ALL YOUR RESPONSES. CONVERSELY, IF YOU CONTEXT INFO CONATINS ANY WEATHER DATA FORMATTED IN CELSIUS OR KILOMETERS, USE ONLY THOSE METRICS IN ALL YOUR RESPONSES. INLCUDING WALKED DISTANCES, DISTANCES BETWEEN POINTS OF INTEREST, ETC.
+        
         Use the entire game state and history below to decide how the story develops. In particular:
 
         • If the player makes logical and careful decisions, the narrative should allow opportunities to slowly recover or progress—even under harsh conditions.
@@ -961,7 +964,8 @@ def game_master(context, options=None):
             - If situation stagnant: MUST introduce new elements
             - If player stuck: MUST provide clear alternative options
         16. Always check if the hasgameended is true OR Should be set to true according to your rules. (Reminder: hasgameended is true if any stat is 0 or a critical event (rescue, death, all goals / main goal completed) occurs OR if 0 remaining turns. )
-
+        CRITICAL DATE, TIME AND METRIC SYSTEM FORMATTING: IF YOU CONTEXT INFO CONATINS ANY WEATHER DATA FORMATTED IN FAHRENHEIT OR MILES, USE ONLY THOSE METRICS IN ALL YOUR RESPONSES. CONVERSELY, IF YOU CONTEXT INFO CONATINS ANY WEATHER DATA FORMATTED IN CELSIUS OR KILOMETERS, USE ONLY THOSE METRICS IN ALL YOUR RESPONSES. INLCUDING WALKED DISTANCES, DISTANCES BETWEEN POINTS OF INTEREST, ETC.
+        
         ---------------------------
         RESPOND ACCORDINGLY:
         ---------------------------
