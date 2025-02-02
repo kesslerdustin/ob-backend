@@ -62,10 +62,9 @@ def extract_json_from_text(text):
             # Ensure proper encoding of special characters
             json_str = json_str.encode('utf-8').decode('utf-8')
             
-            # Updated regex to preserve basic punctuation
-            cleaned = re.sub(r'(?<![\{\[,:\s])"(?![,:\}\]\s]).*?(?<![\{\[,:\s])"(?![,:\}\]\s])', '', json_str)
-            # Allow periods, commas, exclamation marks, and question marks in text
-            cleaned = re.sub(r'[^\{\}\[\]",:0-9a-zA-Z\s_\-äöüßÄÖÜ\.!?]', '', cleaned)
+            # Only clean characters outside of quoted strings
+            # This regex preserves all characters within quotes, including parentheses
+            cleaned = re.sub(r'[^\{\}\[\]",:0-9a-zA-Z\s_\-äöüßÄÖÜ\.!?\(\)](?=(?:[^"]*"[^"]*")*[^"]*$)', '', json_str)
             cleaned = re.sub(r'\s+', ' ', cleaned)
             
             # Try to parse the cleaned string
