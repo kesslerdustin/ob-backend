@@ -581,19 +581,6 @@ def game_setup(settings_data, options=None):
         # Get the requirements for the current difficulty
         current_difficulty_reqs = difficulty_requirements.get(difficulty, difficulty_requirements['normal'])
         
-        # Add datetime handling before formatting settings
-        datetime_str = settings_data.get('datetime')
-        if datetime_str:
-            try:
-                # Parse the ISO string while preserving timezone
-                parsed_date = datetime.fromisoformat(datetime_str.replace('Z', '+00:00'))
-                # Keep the original timezone information
-                formatted_datetime = parsed_date.isoformat()
-            except (ValueError, AttributeError):
-                formatted_datetime = datetime_str
-        else:
-            formatted_datetime = datetime.now().isoformat()
-
         formatted_settings = f"""
         Generate a survival scenario based on these settings and requirements. if custom scenario, adjust everything according to the scenario description:
         
@@ -602,7 +589,7 @@ def game_setup(settings_data, options=None):
         These custom rules MUST be followed in ALL responses. This is the highest priority instruction.
         CRITICAL DATE, TIME AND METRIC SYSTEM FORMATTING: IF YOU CONTEXT INFO CONATINS ANY WEATHER DATA FORMATTED IN FAHRENHEIT OR MILES, USE ONLY THOSE METRICS IN ALL YOUR RESPONSES. CONVERSELY, IF YOU CONTEXT INFO CONATINS ANY WEATHER DATA FORMATTED IN CELSIUS OR KILOMETERS, USE ONLY THOSE METRICS IN ALL YOUR RESPONSES. INLCUDING WALKED DISTANCES, DISTANCES BETWEEN POINTS OF INTEREST, ETC.
         GAME SETTINGS:
-        Date and Time: {formatted_datetime}
+        Date and Time: {settings_data.get('datetime', '')} or if {scenario_desc} includes a date, use that date.
         Location: {settings_data.get('location', {}).get('name', 'Unknown')}
         Coordinates: Lat {settings_data.get('location', {}).get('coordinates', {}).get('latitude', 0)}, 
                     Long {settings_data.get('location', {}).get('coordinates', {}).get('longitude', 0)}
@@ -687,15 +674,6 @@ def game_setup(settings_data, options=None):
         if not json_content:
             raise Exception("Failed to generate valid game setup data")
 
-        # When processing the response
-        if json_content and 'datetime' in json_content:
-            # Preserve the original datetime format without forcing UTC
-            try:
-                test_date = datetime.fromisoformat(json_content['datetime'].replace('Z', '+00:00'))
-                json_content['datetime'] = test_date.isoformat()  # Keep original offset
-            except (ValueError, AttributeError):
-                pass  # Keep the datetime as is if parsing fails
-
         return json.dumps({
             "success": True,
             "text": json_content
@@ -751,17 +729,12 @@ def game_master(context, options=None):
         difficulty = context.get('difficulty', 'normal')
         total_distance = latest_turn.get('totalDistance', 0)  # Accumulated distance
 
-        # Determine the datetime using the last turn's datetime or fallback
+        # Determine the datetime using the last turn's datetime or fallback.
         current_datetime = latest_turn.get('datetime') or context.get('currentDateTime')
-        if current_datetime:
-            try:
-                # Parse while preserving timezone
-                parsed_datetime = datetime.fromisoformat(current_datetime.replace('Z', '+00:00'))
-                formatted_datetime = parsed_datetime.isoformat()  # Keep original offset
-            except (ValueError, AttributeError):
-                formatted_datetime = current_datetime
-        else:
-            formatted_datetime = datetime.now().isoformat()
+        try:
+            parsed_datetime = datetime.fromisoformat(current_datetime.replace('Z', '+00:00'))
+        except (ValueError, AttributeError):
+            parsed_datetime = datetime.utcnow()
 
         # Build a concise version of the full turn history for context.
         full_turn_history = "\n".join(
@@ -831,7 +804,7 @@ CRITICAL DATE, TIME AND METRIC SYSTEM FORMATTING: IF YOU CONTEXT INFO CONATINS A
         Current Position: {latest_turn.get('location', 'Unknown')}
         GPS Coordinates: Latitude {context.get('location', {}).get('coordinates', {}).get('latitude', 'Unknown')}, Longitude {context.get('location', {}).get('coordinates', {}).get('longitude', 'Unknown')}
         Elevation: {context.get('location', {}).get('elevation', 'Unknown')} m
-        Local Time: {formatted_datetime}
+        Local Time: {current_datetime}
         Weather: {latest_turn.get('weather', 'Unknown')}
         Note: Ensure that the environmental conditions are applied realistically and opportunities for partial recovery (or further decline) are clearly reflected.
         knowledge about starting position: {formatted_env_context}
@@ -1035,14 +1008,13 @@ CRITICAL DATE, TIME AND METRIC SYSTEM FORMATTING: IF YOU CONTEXT INFO CONATINS A
         if difficulty == 'hard' and 'options' in json_content:
             del json_content['options']
 
-        # When processing the response
-        if json_content:
-            if 'datetime' in json_content:
-                try:
-                    test_date = datetime.fromisoformat(json_content['datetime'].replace('Z', '+00:00'))
-                    json_content['datetime'] = test_date.isoformat()  # Keep original offset
-                except (ValueError, AttributeError):
-                    pass  # Keep the datetime as is if parsing fails
+        # Standardize the datetime format in the JSON response.
+        if 'datetime' in json_content:
+            try:
+                test_date = datetime.fromisoformat(json_content['datetime'].replace('Z', '+00:00'))
+                json_content['datetime'] = test_date.isoformat().replace('+00:00', 'Z')
+            except (ValueError, AttributeError):
+                json_content['datetime'] = parsed_datetime.isoformat().replace('+00:00', 'Z')
 
         return json.dumps({
             "success": True,
