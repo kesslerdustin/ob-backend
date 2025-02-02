@@ -49,22 +49,31 @@ def generate_content(prompt):
         return json.dumps({"success": False, "error": str(e)})
 
 def extract_json_from_text(text):
-    """
-    Extracts the first complete JSON object from a string.
-    This approach makes sure that the full JSON content—including all punctuation like parentheses—is captured.
-    """
-    start = text.find('{')
-    if start == -1:
+    """Extract JSON from text by finding the first valid JSON object"""
+    try:
+        # Find the first '{' and last '}'
+        start_idx = text.find('{')
+        end_idx = text.rfind('}')
+        
+        if start_idx != -1 and end_idx != -1:
+            # Extract potential JSON string
+            json_str = text[start_idx:end_idx + 1]
+            
+            # Ensure proper encoding of special characters
+            json_str = json_str.encode('utf-8').decode('utf-8')
+            
+            # Updated regex to preserve basic punctuation
+            cleaned = re.sub(r'(?<![\{\[,:\s])"(?![,:\}\]\s]).*?(?<![\{\[,:\s])"(?![,:\}\]\s])', '', json_str)
+            # Allow periods, commas, exclamation marks, and question marks in text
+            cleaned = re.sub(r'[^\{\}\[\]",:0-9a-zA-Z\s_\-äöüßÄÖÜ\.!?]', '', cleaned)
+            cleaned = re.sub(r'\s+', ' ', cleaned)
+            
+            # Try to parse the cleaned string
+            return json.loads(cleaned)
+    except Exception as e:
+        print(f"JSON extraction failed: {e}", file=sys.stderr)
+        print(f"Original text: {text}", file=sys.stderr)
         return None
-    open_braces = 0
-    for i, char in enumerate(text[start:], start=start):
-        if char == '{':
-            open_braces += 1
-        elif char == '}':
-            open_braces -= 1
-            if open_braces == 0:
-                return text[start:i+1]
-    return None
 
 def json_dumps_utf8(obj):
     """Helper function to ensure proper UTF-8 encoding in JSON responses"""
