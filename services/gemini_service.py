@@ -533,6 +533,7 @@ def game_setup(settings_data, options=None):
         formatted_env_context = f"""
         Environmental Context:
         - Biome: {biome}
+        - Closest City: {environmental_context.get('closestCity', {}).get('name', 'Unknown')} ({environmental_context.get('closestCity', {}).get('distance', 'Unknown')} away)
         - Nearby Points of Interest:
           {chr(10).join([f"  • {poi['name']} ({poi['coordinates']['latitude']}, {poi['coordinates']['longitude']})" for poi in nearby_pois[:5]])}
         - Natural Features:
@@ -710,6 +711,7 @@ def game_master(context, options=None):
         formatted_env_context = f"""
         Environmental Context:
         - Biome: {biome}
+        - Closest City: {environmental_context.get('closestCity', {}).get('name', 'Unknown')} ({environmental_context.get('closestCity', {}).get('distance', 'Unknown')} away)
         - Nearby Points of Interest:
           {chr(10).join([f"  • {poi['name']} ({poi['coordinates']['latitude']}, {poi['coordinates']['longitude']})" for poi in nearby_pois[:5]])}
         - Natural Features:
@@ -757,6 +759,7 @@ def game_master(context, options=None):
 
         ENVIRONMENTAL CONTEXT (you can use this to get more information about the location and embed them in the scenario, help construct the world etc. only if it makes sense. Include species names into the scenario if it makes sense. When refereing species, pois, natural landmarks do not mention their gps coordinates but use them for spacial context):
         {formatted_env_context}
+        The closest city is {environmental_context.get('closestCity', {}).get('name', 'Unknown')} ({environmental_context.get('closestCity', {}).get('distance', 'Unknown')} away). distances are from starting point.
 
         CRITICAL - CUSTOM RULES TO FOLLOW:
         {custom_rules}
