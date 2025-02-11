@@ -102,7 +102,7 @@ def analyze_image(prompt, image_path, options=None):
                 "category": "One of: POI, Flora, Fauna, Fungi, Custom",
                 "subcategory": "Specific subcategory based on category",
                 "name": "Common name or title in {language} only (example: de = german, en = english. etc), scientific name if applicable in parentheses after the common name",
-                "description": "Detailed description in {language} only (example: de = german, en = english. etc)"
+                "description": "Detailed description in {language} only (example: de = german, en = english. etc do not include the language code in the response)"
             }}
         }}
         
