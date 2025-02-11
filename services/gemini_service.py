@@ -108,9 +108,10 @@ def analyze_image(prompt, image_path, options=None):
         
         CRITICAL: 
         1. Return ONLY ONE object, focusing on the main subject
-        2. Respond in {language} language
+        2. Respond in {language} language, do not include the language code in the response
         3. When referring to measurements, use appropriate units (miles for English, km for German, etc)
         4. Do not include any markdown formatting or code blocks
+        5. when  returning a name, only return parenthesized scientific name if applicable, if no specific name is available, return the common name only and leave out the scientific name
         """
 
         response = client.models.generate_content(
