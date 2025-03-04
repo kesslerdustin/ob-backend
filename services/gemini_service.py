@@ -10,6 +10,7 @@ from google.genai.types import Tool, GenerateContentConfig, GoogleSearch
 from datetime import datetime
 import re
 from functools import wraps
+import openai  # Add OpenAI import
 
 load_dotenv()
 
@@ -19,9 +20,60 @@ FLASH_THINKING_MODEL = "gemini-2.0-flash-thinking-exp"
 FLASH_MODEL = "gemini-2.0-flash-exp"
 MODEL_ID = "gemini-2.0-flash-thinking-exp"  # Default model
 
+# Configure OpenAI API
+openai.api_key = os.getenv('OPENAI_API_KEY')
+
+# Add this near the top with other config
+FORCE_OPENAI = os.getenv('FORCE_OPENAI', 'false').lower() == 'true'
+
+# Create an OpenAI client class that mimics the Gemini API
+class OpenAIClient:
+    def generate_content(self, model, contents, config=None):
+        try:
+            # Process contents - convert to string if it's a list or contains images
+            if isinstance(contents, list):
+                # Extract text content, ignore images
+                prompt = "\n".join([c.text if hasattr(c, 'text') else c if isinstance(c, str) else "[Image data]" for c in contents])
+            else:
+                prompt = contents if isinstance(contents, str) else contents.text if hasattr(contents, 'text') else "[Content not supported]"
+            
+            # Map Gemini models to OpenAI models
+            openai_model = "gpt-4o-latest" if "thinking" in model.lower() else "gpt-4o-mini"
+            
+            # Call OpenAI API
+            response = openai.chat.completions.create(
+                model=openai_model,
+                messages=[{"role": "system", "content": "You are a helpful AI assistant."}, 
+                          {"role": "user", "content": prompt}],
+                temperature=0.7,
+            )
+            
+            # Create a Gemini-like response object
+            class Response:
+                def __init__(self, text):
+                    self.text = text
+            
+            return Response(response.choices[0].message.content)
+        except Exception as e:
+            print(f"OpenAI fallback error: {str(e)}", file=sys.stderr)
+            raise
+
+# Instantiate the OpenAI client
+openai_client = OpenAIClient()
+
 def with_model_fallback(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
+        if FORCE_OPENAI:
+            print(f"TESTING MODE: Using OpenAI directly for {func.__name__}", file=sys.stderr)
+            original_generate = client.models.generate_content
+            try:
+                client.models.generate_content = openai_client.generate_content
+                return func(*args, **kwargs)
+            finally:
+                client.models.generate_content = original_generate
+        
+        # Normal fallback logic
         try:
             return func(*args, **kwargs)
         except Exception as e:
@@ -32,6 +84,17 @@ def with_model_fallback(func):
                 try:
                     MODEL_ID = FLASH_MODEL
                     return func(*args, **kwargs)
+                except Exception as e2:
+                    if any(term in str(e2).lower() for term in ['rate limit', 'quota', 'capacity']):
+                        print(f"Standard model API limit reached too, falling back to OpenAI for {func.__name__}", file=sys.stderr)
+                        # Monkey-patch the generate_content method temporarily
+                        original_generate = client.models.generate_content
+                        try:
+                            client.models.generate_content = openai_client.generate_content
+                            return func(*args, **kwargs)
+                        finally:
+                            client.models.generate_content = original_generate
+                    raise e2
                 finally:
                     MODEL_ID = original_model
             raise
