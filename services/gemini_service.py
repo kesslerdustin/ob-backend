@@ -31,8 +31,15 @@ FORCE_OPENAI = os.getenv('FORCE_OPENAI', 'false').lower() == 'true'
 class OpenAIClient:
     def generate_content(self, model, contents, config=None):
         try:
-            # Initialize OpenAI messages
-            messages = [{"role": "system", "content": "You are a helpful AI assistant."}]
+            # Initialize better OpenAI system message for multimodal content
+            has_image = False
+            if isinstance(contents, list):
+                has_image = any(isinstance(item, Image.Image) for item in contents)
+            
+            # Choose appropriate system message based on content type
+            system_message = "You are a helpful AI assistant that can analyze images in detail. When presented with an image, describe what you see clearly and thoroughly."
+            
+            messages = [{"role": "system", "content": system_message}]
             
             # Process contents - for multimodal support
             if isinstance(contents, list):
@@ -71,11 +78,8 @@ class OpenAIClient:
                 else:
                     messages.append({"role": "user", "content": "[Content not supported]"})
             
-            # Map Gemini models to OpenAI models - always use full gpt-4o when processing images
-            if isinstance(contents, list) and any(isinstance(item, Image.Image) for item in contents):
-                openai_model = "gpt-4o"  # Use full GPT-4o for image analysis
-            else:
-                openai_model = "gpt-4o-mini" if "flash" in model.lower() else "gpt-4o-mini"
+            # Use the same model for all requests since gpt-4o-mini can handle images
+            openai_model = "gpt-4o-mini"
             
             # Call OpenAI API
             response = openai.chat.completions.create(
