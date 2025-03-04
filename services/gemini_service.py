@@ -64,17 +64,18 @@ openai_client = OpenAIClient()
 def with_model_fallback(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        # Check if we should force using OpenAI
-        if FORCE_OPENAI:
-            print(f"TESTING MODE: Using OpenAI directly for {func.__name__}", file=sys.stderr)
-            original_generate = client.models.generate_content
-            try:
-                client.models.generate_content = openai_client.generate_content
-                return func(*args, **kwargs)
-            finally:
-                client.models.generate_content = original_generate
+        # TESTING MODE: Always use OpenAI
+        # Comment out this block after testing is complete
+        print(f"TESTING MODE: Using OpenAI directly for {func.__name__}", file=sys.stderr)
+        original_generate = client.models.generate_content
+        try:
+            client.models.generate_content = openai_client.generate_content
+            return func(*args, **kwargs)
+        finally:
+            client.models.generate_content = original_generate
         
-        # Normal fallback logic
+        # Normal fallback logic (uncomment after testing)
+        """
         try:
             return func(*args, **kwargs)
         except Exception as e:
@@ -99,6 +100,7 @@ def with_model_fallback(func):
                 finally:
                     MODEL_ID = original_model
             raise
+        """
     return wrapper
 
 @with_model_fallback
