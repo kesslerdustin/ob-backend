@@ -33,27 +33,23 @@ class OpenAIClient:
         try:
             # Initialize better OpenAI system message for multimodal content
             has_image = False
-            if isinstance(contents, list):
-                has_image = any(isinstance(item, Image.Image) for item in contents)
-            
-            # Choose appropriate system message based on content type
-            system_message = "You are a helpful AI assistant that can analyze images in detail. When presented with an image, describe what you see clearly and thoroughly."
-            
-            messages = [{"role": "system", "content": system_message}]
+            text_content = ""
+            content_parts = []
             
             # Process contents - for multimodal support
             if isinstance(contents, list):
-                # Handle list of content items (may include images)
-                content_parts = []
                 for item in contents:
                     if isinstance(item, str):
                         # Plain text
+                        text_content = item
                         content_parts.append({"type": "text", "text": item})
                     elif hasattr(item, 'text'):
                         # Text object
+                        text_content = item.text
                         content_parts.append({"type": "text", "text": item.text})
                     elif isinstance(item, Image.Image):
-                        # Handle PIL Image
+                        # Handle PIL Image - this is critical for vision APIs
+                        has_image = True
                         buffer = BytesIO()
                         item.save(buffer, format="JPEG")
                         base64_image = base64.b64encode(buffer.getvalue()).decode('utf-8')
@@ -63,23 +59,30 @@ class OpenAIClient:
                                 "url": f"data:image/jpeg;base64,{base64_image}"
                             }
                         })
-                    else:
-                        # Unknown type
-                        content_parts.append({"type": "text", "text": "[Content not supported]"})
-                
-                # Add content parts to user message
-                messages.append({"role": "user", "content": content_parts})
             else:
                 # Single content item
                 if isinstance(contents, str):
-                    messages.append({"role": "user", "content": contents})
+                    text_content = contents
+                    content_parts = [{"type": "text", "text": contents}]
                 elif hasattr(contents, 'text'):
-                    messages.append({"role": "user", "content": contents.text})
-                else:
-                    messages.append({"role": "user", "content": "[Content not supported]"})
+                    text_content = contents.text
+                    content_parts = [{"type": "text", "text": contents.text}]
             
-            # Use the same model for all requests since gpt-4o-mini can handle images
-            openai_model = "gpt-4o-mini"
+            # Choose appropriate system message based on content type
+            system_message = "You are a helpful AI assistant that can analyze images in detail. When presented with an image, describe what you see clearly and thoroughly."
+            
+            messages = [
+                {"role": "system", "content": system_message}
+            ]
+            
+            # For image analysis, we need to include content parts in the user message
+            if has_image:
+                messages.append({"role": "user", "content": content_parts})
+            else:
+                messages.append({"role": "user", "content": text_content})
+            
+            # Use gpt-4o model which can handle images well
+            openai_model = "gpt-4o"
             
             # Call OpenAI API
             response = openai.chat.completions.create(
@@ -219,11 +222,12 @@ def analyze_image(prompt, image_path, options=None):
         2. Respond in {language} language, do not include the language code in the response
         3. When referring to measurements, use appropriate units (miles for English, km for German, etc)
         4. Do not include any markdown formatting or code blocks
-        5. when  returning a name, only return parenthesized scientific name if applicable, if no specific name is available, return the common name only and leave out the scientific name
+        5. when returning a name, only return parenthesized scientific name if applicable, if no specific name is available, return the common name only and leave out the scientific name
         """
 
+        # Use MODEL_ID instead of hardcoded model name to enable fallback
         response = client.models.generate_content(
-            model="gemini-2.0-flash-exp",
+            model=MODEL_ID,  # Change from "gemini-2.0-flash-exp" to MODEL_ID
             contents=[structured_prompt, img]
         )
 
