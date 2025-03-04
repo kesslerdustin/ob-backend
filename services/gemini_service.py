@@ -71,8 +71,11 @@ class OpenAIClient:
                 else:
                     messages.append({"role": "user", "content": "[Content not supported]"})
             
-            # Map Gemini models to OpenAI models - GPT-4o supports vision
-            openai_model = "gpt-4o-mini" if "flash" in model.lower() else "gpt-4o-mini"
+            # Map Gemini models to OpenAI models - always use full gpt-4o when processing images
+            if isinstance(contents, list) and any(isinstance(item, Image.Image) for item in contents):
+                openai_model = "gpt-4o"  # Use full GPT-4o for image analysis
+            else:
+                openai_model = "gpt-4o-mini" if "flash" in model.lower() else "gpt-4o-mini"
             
             # Call OpenAI API
             response = openai.chat.completions.create(
