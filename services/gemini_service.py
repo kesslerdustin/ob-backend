@@ -64,18 +64,17 @@ openai_client = OpenAIClient()
 def with_model_fallback(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        # TESTING MODE: Always use OpenAI
-        # Comment out this block after testing is complete
-        print(f"TESTING MODE: Using OpenAI directly for {func.__name__}", file=sys.stderr)
-        original_generate = client.models.generate_content
-        try:
-            client.models.generate_content = openai_client.generate_content
-            return func(*args, **kwargs)
-        finally:
-            client.models.generate_content = original_generate
+        # Check if we should force using OpenAI
+        if FORCE_OPENAI:
+            print(f"TESTING MODE: Using OpenAI directly for {func.__name__}", file=sys.stderr)
+            original_generate = client.models.generate_content
+            try:
+                client.models.generate_content = openai_client.generate_content
+                return func(*args, **kwargs)
+            finally:
+                client.models.generate_content = original_generate
         
-        # Normal fallback logic (uncomment after testing)
-        """
+        # Normal fallback logic
         try:
             return func(*args, **kwargs)
         except Exception as e:
@@ -100,9 +99,9 @@ def with_model_fallback(func):
                 finally:
                     MODEL_ID = original_model
             raise
-        """
     return wrapper
 
+@with_model_fallback
 def generate_content(prompt):
     """Standard text generation"""
     try:
@@ -144,6 +143,7 @@ def json_dumps_utf8(obj):
     """Helper function to ensure proper UTF-8 encoding in JSON responses"""
     return json.dumps(obj, ensure_ascii=False)
 
+@with_model_fallback
 def analyze_image(prompt, image_path, options=None):
     """Vision-based analysis with structured output"""
     try:
@@ -209,6 +209,7 @@ def analyze_image(prompt, image_path, options=None):
             "error": str(e)
         })
 
+@with_model_fallback
 def search_and_generate(prompt):
     """Generation with Google Search grounding"""
     try:
@@ -243,6 +244,7 @@ def search_and_generate(prompt):
     except Exception as e:
         return json.dumps({"success": False, "error": str(e)})
 
+@with_model_fallback
 def flash_chat(prompt, image_path=None, options=None):
     """Flash chat generation using Gemini 2.0 with optional image support"""
     try:
@@ -294,6 +296,7 @@ def flash_chat(prompt, image_path=None, options=None):
             "error": str(e)
         })
 
+@with_model_fallback
 def analyze_biome(prompt, options=None):
     """Specialized biome analysis using Gemini 2.0"""
     try:
@@ -338,6 +341,7 @@ def analyze_biome(prompt, options=None):
             "error": str(e)
         })
 
+@with_model_fallback
 def analyze_weather(prompt, options=None):
     """Weather analysis using Gemini 2.0"""
     try:
@@ -502,6 +506,7 @@ def analyze_info(prompt, options=None):
             "error": str(e)
         })
 
+@with_model_fallback
 def generate_scenarios(location_info, options=None):
     """Generate location-specific scenarios using Gemini 2.0"""
     try:
@@ -564,6 +569,7 @@ def generate_scenarios(location_info, options=None):
             "error": str(e)
         })
 
+@with_model_fallback
 def game_setup(settings_data, options=None):
     """Generate game setup using Gemini 2.0"""
     try:
@@ -1101,6 +1107,7 @@ CRITICAL DATE, TIME AND METRIC SYSTEM FORMATTING: IF YOU CONTEXT INFO CONATINS A
         })
 
 
+@with_model_fallback
 def game_summary(context, options=None):
     """Generate game summary using Gemini 2.0"""
     try:
@@ -1323,6 +1330,7 @@ Schaffe einen Mix aus realitätsnahen und kniffligen Fragen.:
             "error": str(e)
         })
 
+@with_model_fallback
 def check_image_appropriate(prompt, image_path, options=None):
     """Check if an image is appropriate for public sharing using Gemini 2.0"""
     try:
