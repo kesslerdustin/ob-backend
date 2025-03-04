@@ -38,7 +38,7 @@ class OpenAIClient:
                 prompt = contents if isinstance(contents, str) else contents.text if hasattr(contents, 'text') else "[Content not supported]"
             
             # Map Gemini models to OpenAI models
-            openai_model = "gpt-4o-latest" if "thinking" in model.lower() else "gpt-4o-mini"
+            openai_model = "gpt-4o" if "thinking" in model.lower() else "gpt-4o-mini"
             
             # Call OpenAI API
             response = openai.chat.completions.create(
