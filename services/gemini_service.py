@@ -11,6 +11,7 @@ from datetime import datetime
 import re
 from functools import wraps
 import openai  # Add OpenAI import
+import base64
 
 load_dotenv()
 
@@ -30,21 +31,53 @@ FORCE_OPENAI = os.getenv('FORCE_OPENAI', 'false').lower() == 'true'
 class OpenAIClient:
     def generate_content(self, model, contents, config=None):
         try:
-            # Process contents - convert to string if it's a list or contains images
-            if isinstance(contents, list):
-                # Extract text content, ignore images
-                prompt = "\n".join([c.text if hasattr(c, 'text') else c if isinstance(c, str) else "[Image data]" for c in contents])
-            else:
-                prompt = contents if isinstance(contents, str) else contents.text if hasattr(contents, 'text') else "[Content not supported]"
+            # Initialize OpenAI messages
+            messages = [{"role": "system", "content": "You are a helpful AI assistant."}]
             
-            # Map Gemini models to OpenAI models
-            openai_model = "gpt-4o-mini" if "thinking" in model.lower() else "gpt-4o-mini"
+            # Process contents - for multimodal support
+            if isinstance(contents, list):
+                # Handle list of content items (may include images)
+                content_parts = []
+                for item in contents:
+                    if isinstance(item, str):
+                        # Plain text
+                        content_parts.append({"type": "text", "text": item})
+                    elif hasattr(item, 'text'):
+                        # Text object
+                        content_parts.append({"type": "text", "text": item.text})
+                    elif isinstance(item, Image.Image):
+                        # Handle PIL Image
+                        buffer = BytesIO()
+                        item.save(buffer, format="JPEG")
+                        base64_image = base64.b64encode(buffer.getvalue()).decode('utf-8')
+                        content_parts.append({
+                            "type": "image_url",
+                            "image_url": {
+                                "url": f"data:image/jpeg;base64,{base64_image}"
+                            }
+                        })
+                    else:
+                        # Unknown type
+                        content_parts.append({"type": "text", "text": "[Content not supported]"})
+                
+                # Add content parts to user message
+                messages.append({"role": "user", "content": content_parts})
+            else:
+                # Single content item
+                if isinstance(contents, str):
+                    messages.append({"role": "user", "content": contents})
+                elif hasattr(contents, 'text'):
+                    messages.append({"role": "user", "content": contents.text})
+                else:
+                    messages.append({"role": "user", "content": "[Content not supported]"})
+            
+            # Map Gemini models to OpenAI models - GPT-4o supports vision
+            openai_model = "gpt-4o-mini" if "flash" in model.lower() else "gpt-4o-mini"
             
             # Call OpenAI API
             response = openai.chat.completions.create(
                 model=openai_model,
-                messages=[{"role": "system", "content": "You are a helpful AI assistant."}, 
-                          {"role": "user", "content": prompt}],
+                messages=messages,
                 temperature=0.7,
             )
             
