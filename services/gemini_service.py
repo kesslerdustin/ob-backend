@@ -31,6 +31,18 @@ FORCE_OPENAI = os.getenv('FORCE_OPENAI', 'false').lower() == 'true'
 class OpenAIClient:
     def generate_content(self, model, contents, config=None):
         try:
+            # Determine which OpenAI model to use based on the passed 'model' argument
+            if model == "gpt-4o":
+                openai_model = "gpt-4o"
+                print("OpenAIClient: Using gpt-4o model.", file=sys.stderr)
+            elif model == "gpt-4o-mini":
+                openai_model = "gpt-4o-mini"
+                print("OpenAIClient: Using gpt-4o-mini model.", file=sys.stderr)
+            else:
+                # Default fallback if model name is unexpected (e.g., a flash model name somehow got through)
+                openai_model = "gpt-4o-mini"
+                print(f"OpenAIClient: Unexpected model '{model}' received, defaulting to gpt-4o-mini.", file=sys.stderr)
+
             # Initialize better OpenAI system message for multimodal content
             has_image = False
             text_content = ""
@@ -75,18 +87,16 @@ class OpenAIClient:
                 {"role": "system", "content": system_message}
             ]
             
-            # For image analysis, we need to include content parts in the user message
+            # Add user message based on content type
             if has_image:
                 messages.append({"role": "user", "content": content_parts})
             else:
                 messages.append({"role": "user", "content": text_content})
             
-            # Use gpt-4o model which can handle images well
-            openai_model = "gpt-4o"
-            
-            # Call OpenAI API
+            # Use the determined openai_model
+            print(f"OpenAIClient: Calling OpenAI API with model: {openai_model}", file=sys.stderr)
             response = openai.chat.completions.create(
-                model=openai_model,
+                model=openai_model, # Use the selected model
                 messages=messages,
                 temperature=0.7,
             )
@@ -104,44 +114,61 @@ class OpenAIClient:
 # Instantiate the OpenAI client
 openai_client = OpenAIClient()
 
-def with_model_fallback(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        # Normal fallback logic
-        try:
-            # Try primary model first (Flash-Thinking)
+def with_model_fallback(primary_model):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
             global MODEL_ID
-            MODEL_ID = FLASH_THINKING_MODEL # Ensure primary model is set
-            return func(*args, **kwargs)
-        except Exception as e:
-            # ANY exception from primary model triggers fallback to standard model
-            print(f"Primary model ({FLASH_THINKING_MODEL}) failed ({type(e).__name__}: {e}), falling back to standard model ({FLASH_MODEL}) for {func.__name__}", file=sys.stderr)
+            original_global_model_id = MODEL_ID 
+            secondary_flash_model = FLASH_MODEL if primary_model == FLASH_THINKING_MODEL else FLASH_THINKING_MODEL
+            
             try:
-                MODEL_ID = FLASH_MODEL # Set to standard model
+                # Try with the function's specific primary model
+                MODEL_ID = primary_model
+                print(f"Attempting {func.__name__} with primary model: {MODEL_ID}", file=sys.stderr)
                 return func(*args, **kwargs)
-            except Exception as e2:
-                # ANY exception from standard model triggers fallback to OpenAI
-                print(f"Standard model ({FLASH_MODEL}) failed ({type(e2).__name__}: {e2}), falling back to OpenAI for {func.__name__}", file=sys.stderr)
-                # Monkey-patch the generate_content method temporarily
-                original_generate = client.models.generate_content
+            except Exception as e:
+                # ANY exception from primary model triggers fallback to the *other* flash model
+                print(f"Primary model ({primary_model}) failed for {func.__name__} ({type(e).__name__}: {e}), falling back to secondary flash model ({secondary_flash_model})", file=sys.stderr)
                 try:
-                    # Temporarily use OpenAI client's method
-                    client.models.generate_content = openai_client.generate_content
-                    # Retry the function call using OpenAI
+                    MODEL_ID = secondary_flash_model 
+                    print(f"Retrying {func.__name__} with secondary model: {MODEL_ID}", file=sys.stderr)
                     return func(*args, **kwargs)
-                except Exception as e3:
-                    # If OpenAI also fails, log and raise the OpenAI error
-                    print(f"OpenAI fallback failed for {func.__name__}: {type(e3).__name__}: {e3}", file=sys.stderr)
-                    raise e3 # Raise the OpenAI error
+                except Exception as e2:
+                    # Determine target OpenAI model based on which flash model failed *this time* (secondary_flash_model)
+                    target_openai_model = "gpt-4o" if secondary_flash_model == FLASH_THINKING_MODEL else "gpt-4o-mini"
+                    print(f"Secondary model ({secondary_flash_model}) failed for {func.__name__} ({type(e2).__name__}: {e2}), falling back to OpenAI model: {target_openai_model}", file=sys.stderr)
+                    
+                    # Monkey-patch the generate_content method temporarily
+                    original_generate = client.models.generate_content
+                    try:
+                        # Temporarily use OpenAI client's method
+                        client.models.generate_content = openai_client.generate_content
+                        
+                        # Set MODEL_ID to the target OpenAI model name for the retry
+                        MODEL_ID = target_openai_model 
+                        print(f"Retrying {func.__name__} with OpenAI client (passing model hint: {MODEL_ID})", file=sys.stderr)
+                        # Retry the function call. The OpenAIClient will use the MODEL_ID hint.
+                        return func(*args, **kwargs)
+                    except Exception as e3:
+                        # If OpenAI also fails, log and raise the OpenAI error
+                        print(f"OpenAI fallback failed for {func.__name__}: {type(e3).__name__}: {e3}", file=sys.stderr)
+                        raise e3 # Raise the OpenAI error
+                    finally:
+                        # Always restore the original generate_content method
+                        client.models.generate_content = original_generate
                 finally:
-                    # Always restore the original generate_content method
-                    client.models.generate_content = original_generate
+                    # Reset MODEL_ID after secondary flash model/OpenAI attempt
+                    # Important: Reset to primary model *before* restoring global, 
+                    # in case outer finally block needs it (though current logic doesn't).
+                    MODEL_ID = primary_model 
             finally:
-                # Reset MODEL_ID after standard model attempt (whether success or fail before OpenAI)
-                MODEL_ID = FLASH_THINKING_MODEL # Reset to default/primary
-    return wrapper
+                # Restore the original global MODEL_ID after all attempts
+                MODEL_ID = original_global_model_id
+        return wrapper
+    return decorator
 
-@with_model_fallback
+@with_model_fallback(primary_model=FLASH_THINKING_MODEL)
 def generate_content(prompt):
     """Standard text generation"""
     try:
@@ -183,7 +210,7 @@ def json_dumps_utf8(obj):
     """Helper function to ensure proper UTF-8 encoding in JSON responses"""
     return json.dumps(obj, ensure_ascii=False)
 
-@with_model_fallback
+@with_model_fallback(primary_model=FLASH_THINKING_MODEL)
 def analyze_image(prompt, image_path, options=None):
     """Vision-based analysis with structured output"""
     try:
@@ -250,7 +277,7 @@ def analyze_image(prompt, image_path, options=None):
             "error": str(e)
         })
 
-@with_model_fallback
+@with_model_fallback(primary_model=FLASH_THINKING_MODEL)
 def search_and_generate(prompt):
     """Generation with Google Search grounding"""
     try:
@@ -285,7 +312,7 @@ def search_and_generate(prompt):
     except Exception as e:
         return json.dumps({"success": False, "error": str(e)})
 
-@with_model_fallback
+@with_model_fallback(primary_model=FLASH_MODEL)
 def flash_chat(prompt, image_path=None, options=None):
     """Flash chat generation using Gemini 2.0 with optional image support"""
     try:
@@ -324,8 +351,9 @@ def flash_chat(prompt, image_path=None, options=None):
                 # Optionally, we could raise here if image processing is critical
                 # raise Exception(f"Failed to process image: {e}")
 
+        # Use MODEL_ID for the API call
         response = client.models.generate_content(
-            model="gemini-2.0-flash-exp",
+            model=MODEL_ID, # Changed from hardcoded "gemini-2.0-flash-exp"
             contents=contents
         )
         
@@ -334,13 +362,11 @@ def flash_chat(prompt, image_path=None, options=None):
             "text": response.text
         })
     except Exception as e:
-        print(f"Flash chat error: {str(e)}")
-        return json.dumps({
-            "success": False,
-            "error": str(e)
-        })
+        print(f"Flash chat error: {str(e)}", file=sys.stderr) # Keep logging
+        # Re-raise the exception for the decorator
+        raise e
 
-@with_model_fallback
+@with_model_fallback(primary_model=FLASH_MODEL)
 def analyze_biome(prompt, options=None):
     """Specialized biome analysis using Gemini 2.0"""
     try:
@@ -369,8 +395,9 @@ def analyze_biome(prompt, options=None):
         Remember: The ENTIRE response must be in {language} language!
         """
 
+        # Use MODEL_ID for the API call
         response = client.models.generate_content(
-            model="gemini-2.0-flash-exp",
+            model=MODEL_ID, # Changed from hardcoded "gemini-2.0-flash-exp"
             contents=structured_prompt
         )
         
@@ -379,13 +406,11 @@ def analyze_biome(prompt, options=None):
             "text": response.text.strip()
         })
     except Exception as e:
-        print(f"Biome analysis error: {str(e)}")
-        return json.dumps({
-            "success": False,
-            "error": str(e)
-        })
+        print(f"Biome analysis error: {str(e)}", file=sys.stderr) # Keep logging
+        # Re-raise the exception for the decorator
+        raise e
 
-@with_model_fallback
+@with_model_fallback(primary_model=FLASH_MODEL)
 def analyze_weather(prompt, options=None):
     """Weather analysis using Gemini 2.0"""
     try:
@@ -420,8 +445,9 @@ def analyze_weather(prompt, options=None):
         - Maintain the same unit system, time format, and date format as provided in the input prompt
         """
 
+        # Use MODEL_ID for the API call
         response = client.models.generate_content(
-            model="gemini-2.0-flash-exp",
+            model=MODEL_ID, # Changed from hardcoded "gemini-2.0-flash-exp"
             contents=structured_prompt
         )
         
@@ -431,14 +457,12 @@ def analyze_weather(prompt, options=None):
         })
         
     except Exception as e:
-        error_result = {
-            "success": False,
-            "error": str(e)
-        }
-        print(json.dumps(error_result))
-        return error_result["error"]
+        # Log the error (optional, as decorator logs too)
+        print(f"Weather analysis error: {str(e)}", file=sys.stderr)
+        # Re-raise the exception for the decorator
+        raise e
 
-@with_model_fallback
+@with_model_fallback(primary_model=FLASH_THINKING_MODEL)
 def analyze_info(prompt, options=None):
     """Information analysis using Gemini 2.0 with enhanced prompt structure"""
     try:
@@ -525,7 +549,7 @@ def analyze_info(prompt, options=None):
         """
 
         response = client.models.generate_content(
-            model="gemini-2.0-flash-thinking-exp",
+            model=MODEL_ID,
             contents=structured_prompt
         )
         
@@ -541,16 +565,21 @@ def analyze_info(prompt, options=None):
                 "text": json_content
             })
         else:
-            raise Exception("No JSON content found in response")
+            # Raise specific error that bypasses fallback
+            raise Exception("No JSON content found in analyze_info response")
             
     except Exception as e:
-        print(f"Info analysis error: {str(e)}")
-        return json.dumps({
-            "success": False,
-            "error": str(e)
-        })
+        # Check if it's the specific JSON extraction error
+        if "No JSON content found in analyze_info response" in str(e):
+            print(f"Info analysis JSON format error: {str(e)}", file=sys.stderr)
+            # Return failure JSON directly
+            return json.dumps({"success": False, "error": str(e)})
+        else:
+            print(f"Info analysis error: {str(e)}", file=sys.stderr)
+            # Re-raise other exceptions for the decorator
+            raise e
 
-@with_model_fallback
+@with_model_fallback(primary_model=FLASH_MODEL)
 def generate_scenarios(location_info, options=None):
     """Generate location-specific scenarios using Gemini 2.0"""
     try:
@@ -590,8 +619,9 @@ def generate_scenarios(location_info, options=None):
         6. Icons should match the scenario theme
         """
 
+        # Use MODEL_ID for the API call
         response = client.models.generate_content(
-            model="gemini-2.0-flash-exp",
+            model=MODEL_ID, # Changed from hardcoded "gemini-2.0-flash-exp"
             contents=structured_prompt
         )
         
@@ -599,6 +629,9 @@ def generate_scenarios(location_info, options=None):
         json_content = extract_json_from_text(response.text)
         
         if not json_content:
+            # This specific error should probably still be raised directly
+            # as it's a formatting issue, not an API availability issue.
+            # Fallback won't help here.
             raise Exception("Failed to generate valid scenario data")
 
         return json.dumps({
@@ -607,13 +640,18 @@ def generate_scenarios(location_info, options=None):
         })
         
     except Exception as e:
-        print(f"Scenario generation error: {str(e)}")
-        return json.dumps({
-            "success": False,
-            "error": str(e)
-        })
+        # Check if it's the specific JSON extraction error we raised
+        if "Failed to generate valid scenario data" in str(e):
+             print(f"Scenario generation JSON format error: {str(e)}", file=sys.stderr)
+             # Return failure JSON directly for this specific error
+             return json.dumps({"success": False, "error": str(e)})
+        else:
+            # Log other errors (like the 503)
+            print(f"Scenario generation error: {str(e)}", file=sys.stderr)
+             # Re-raise other exceptions for the decorator
+            raise e
 
-@with_model_fallback
+@with_model_fallback(primary_model=FLASH_MODEL)
 def game_setup(settings_data, options=None):
     """Generate game setup using Gemini 2.0"""
     try:
@@ -779,7 +817,7 @@ def game_setup(settings_data, options=None):
         
         # Generate response using the formatted settings
         response = client.models.generate_content(
-            model="gemini-2.0-flash-exp",
+            model=MODEL_ID, # Changed from hardcoded "gemini-2.0-flash-exp"
             contents=formatted_settings
         )
         
@@ -790,6 +828,7 @@ def game_setup(settings_data, options=None):
         print(f"game_setup extracted JSON: {json_content}", file=sys.stderr)
         
         if not json_content:
+            # Raise specific error that bypasses fallback
             raise Exception("Failed to generate valid game setup data")
 
         return json.dumps({
@@ -798,14 +837,18 @@ def game_setup(settings_data, options=None):
         })
         
     except Exception as e:
-        print(f"Game setup generation error: {str(e)}", file=sys.stderr)
-        print(f"Full error details: {e.__class__.__name__}: {str(e)}", file=sys.stderr)
-        return json.dumps({
-            "success": False,
-            "error": str(e)
-        })
+        # Check if it's the specific JSON extraction error
+        if "Failed to generate valid game setup data" in str(e):
+             print(f"Game setup JSON format error: {str(e)}", file=sys.stderr)
+             # Return failure JSON directly
+             return json.dumps({"success": False, "error": str(e)})
+        else:
+            print(f"Game setup generation error: {str(e)}", file=sys.stderr)
+            print(f"Full error details: {e.__class__.__name__}: {str(e)}", file=sys.stderr)
+            # Re-raise other exceptions for the decorator
+            raise e
 
-@with_model_fallback
+@with_model_fallback(primary_model=FLASH_THINKING_MODEL)
 def game_master(context, options=None):
     """Process game turns using Gemini 2.0 with improved dynamic progression toward an ending,
        persistent and realistic injuries, and balanced challenge versus progress conditions."""
@@ -1115,13 +1158,14 @@ CRITICAL DATE, TIME AND METRIC SYSTEM FORMATTING: IF YOU CONTEXT INFO CONATINS A
 
         # Generate content using the AI model with our fully constructed prompt
         response = client.models.generate_content(
-            model="gemini-2.0-flash-thinking-exp",
+            model=MODEL_ID,
             contents=structured_prompt
         )
         
         # Extract JSON content from the AI response text.
         json_content = extract_json_from_text(response.text)
         if not json_content:
+            # Raise specific error that bypasses fallback
             raise Exception("Failed to generate valid game state")
 
         # For HARD difficulty, remove the 'options' array from the JSON response.
@@ -1142,16 +1186,19 @@ CRITICAL DATE, TIME AND METRIC SYSTEM FORMATTING: IF YOU CONTEXT INFO CONATINS A
         })
 
     except Exception as e:
-        print(f"Game master error: {str(e)}", file=sys.stderr)
-        print(f"Full error details: {e.__class__.__name__}: {str(e)}", file=sys.stderr)
-        print(f"Context received: {context}", file=sys.stderr)
-        return json.dumps({
-            "success": False,
-            "error": str(e)
-        })
+        # Check if it's the specific JSON extraction error
+        if "Failed to generate valid game state" in str(e):
+            print(f"Game master JSON format error: {str(e)}", file=sys.stderr)
+            # Return failure JSON directly
+            return json.dumps({"success": False, "error": str(e)})
+        else:
+            print(f"Game master error: {str(e)}", file=sys.stderr)
+            print(f"Full error details: {e.__class__.__name__}: {str(e)}", file=sys.stderr)
+            print(f"Context received: {context}", file=sys.stderr)
+             # Re-raise other exceptions for the decorator
+            raise e
 
-
-@with_model_fallback
+@with_model_fallback(primary_model=FLASH_MODEL)
 def game_summary(context, options=None):
     """Generate game summary using Gemini 2.0"""
     try:
@@ -1228,13 +1275,14 @@ def game_summary(context, options=None):
         """
 
         response = client.models.generate_content(
-            model="gemini-2.0-flash-exp",
+            model=MODEL_ID, # Changed from hardcoded "gemini-2.0-flash-exp"
             contents=structured_prompt
         )
         
         # Extract JSON from the response
         json_content = extract_json_from_text(response.text)
         if not json_content:
+            # Raise specific error that bypasses fallback
             raise Exception("Failed to generate valid JSON summary")
 
         return json.dumps({
@@ -1243,15 +1291,19 @@ def game_summary(context, options=None):
         })
         
     except Exception as e:
-        print(f"Game summary error: {str(e)}", file=sys.stderr)
-        print(f"Full error details: {e.__class__.__name__}: {str(e)}", file=sys.stderr)
-        print(f"Context received: {context}", file=sys.stderr)
-        return json.dumps({
-            "success": False,
-            "error": str(e)
-        })
+        # Check if it's the specific JSON extraction error
+        if "Failed to generate valid JSON summary" in str(e):
+             print(f"Game summary JSON format error: {str(e)}", file=sys.stderr)
+             # Return failure JSON directly
+             return json.dumps({"success": False, "error": str(e)})
+        else:
+            print(f"Game summary error: {str(e)}", file=sys.stderr)
+            print(f"Full error details: {e.__class__.__name__}: {str(e)}", file=sys.stderr)
+            print(f"Context received: {context}", file=sys.stderr)
+            # Re-raise other exceptions for the decorator
+            raise e
 
-@with_model_fallback
+@with_model_fallback(primary_model=FLASH_THINKING_MODEL)
 def generate_quiz(prompt, options=None):
     """Generate quiz questions using Gemini 2.0"""
     try:
@@ -1347,9 +1399,9 @@ Schaffe einen Mix aus realitätsnahen und kniffligen Fragen.:
         5. Explanations should be educational and clear
         """
 
-        # Use the model without thinking config
+        # Use MODEL_ID for the API call
         response = client.models.generate_content(
-            model='gemini-2.0-flash-thinking-exp',
+            model=MODEL_ID, # Changed from hardcoded 'gemini-2.0-flash-thinking-exp'
             contents=structured_prompt
         )
 
@@ -1360,6 +1412,7 @@ Schaffe einen Mix aus realitätsnahen und kniffligen Fragen.:
         json_content = extract_json_from_text(final_response)
         
         if not json_content:
+            # Raise specific error that bypasses fallback
             raise Exception("Failed to generate valid quiz data")
 
         return json.dumps({
@@ -1368,13 +1421,17 @@ Schaffe einen Mix aus realitätsnahen und kniffligen Fragen.:
         })
         
     except Exception as e:
-        print(f"Quiz generation error: {str(e)}", file=sys.stderr)
-        return json.dumps({
-            "success": False,
-            "error": str(e)
-        })
+        # Check if it's the specific JSON extraction error
+        if "Failed to generate valid quiz data" in str(e):
+             print(f"Quiz generation JSON format error: {str(e)}", file=sys.stderr)
+             # Return failure JSON directly
+             return json.dumps({"success": False, "error": str(e)})
+        else:
+            print(f"Quiz generation error: {str(e)}", file=sys.stderr)
+             # Re-raise other exceptions for the decorator
+            raise e
 
-@with_model_fallback
+@with_model_fallback(primary_model=FLASH_MODEL)
 def check_image_appropriate(prompt, image_path, options=None):
     """Check if an image is appropriate for public sharing using Gemini 2.0"""
     try:
@@ -1407,14 +1464,15 @@ def check_image_appropriate(prompt, image_path, options=None):
         print(f"Checking image: {image_path}", file=sys.stderr)
 
         response = client.models.generate_content(
-            model="gemini-2.0-flash-exp",
+            model=MODEL_ID, # Changed from hardcoded "gemini-2.0-flash-exp"
             contents=[structured_prompt, img]
         )
         
         # Extract JSON from the response
         json_content = extract_json_from_text(response.text)
         if not json_content:
-            raise Exception("Failed to get valid response format")
+            # Raise specific error that bypasses fallback
+            raise Exception("Failed to get valid response format in check_image_appropriate")
         
         # Log the result
         print(f"Appropriateness check result: {json_content}", file=sys.stderr)
@@ -1426,11 +1484,15 @@ def check_image_appropriate(prompt, image_path, options=None):
             "reason": json_content.get("reason", "Unknown reason")
         })
     except Exception as e:
-        print(f"Error in check_image_appropriate: {str(e)}", file=sys.stderr)
-        return json.dumps({
-            "success": False,
-            "error": str(e)
-        })
+        # Check if it's the specific JSON extraction error
+        if "Failed to get valid response format in check_image_appropriate" in str(e):
+            print(f"Image check JSON format error: {str(e)}", file=sys.stderr)
+             # Return failure JSON directly
+            return json.dumps({"success": False, "error": str(e)})
+        else:
+            print(f"Error in check_image_appropriate: {str(e)}", file=sys.stderr)
+            # Re-raise other exceptions for the decorator
+            raise e
 
 if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "text"
