@@ -135,8 +135,8 @@ def with_model_fallback(primary_model):
                     print(f"Retrying {func.__name__} with secondary model: {MODEL_ID}", file=sys.stderr)
                     return func(*args, **kwargs)
                 except Exception as e2:
-                    # Determine target OpenAI model based on which flash model failed *this time* (secondary_flash_model)
-                    target_openai_model = "gpt-4o" if secondary_flash_model == FLASH_THINKING_MODEL else "gpt-4o-mini"
+                    # Determine target OpenAI model based on the ORIGINAL primary model for this function
+                    target_openai_model = "gpt-4o" if primary_model == FLASH_THINKING_MODEL else "gpt-4o-mini"
                     print(f"Secondary model ({secondary_flash_model}) failed for {func.__name__} ({type(e2).__name__}: {e2}), falling back to OpenAI model: {target_openai_model}", file=sys.stderr)
                     
                     # Monkey-patch the generate_content method temporarily
