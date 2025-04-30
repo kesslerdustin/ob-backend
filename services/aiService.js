@@ -198,6 +198,8 @@ async function flashChat(prompt, language = 'en', context = '', imagePath = null
             });
 
             pythonProcess.on('close', (code) => {
+                // Log the raw response BEFORE trying to parse it
+                console.log('Raw flashChat response from Python:\n--START--\n', dataString, '\n--END--');
                 if (code !== 0) {
                     reject(new Error(`Process failed: ${errorString}`));
                     return;
@@ -211,6 +213,9 @@ async function flashChat(prompt, language = 'en', context = '', imagePath = null
                     }
                     resolve(response.text);
                 } catch (error) {
+                    // Log the parsing error along with the raw data
+                    console.error('Flash chat parse error:', error);
+                    console.error('Raw data causing parse error:', dataString);
                     reject(new Error('Failed to parse response'));
                 }
             });
@@ -434,6 +439,8 @@ async function generateScenarios(location, options = {}) {
             });
 
             pythonProcess.on('close', (code) => {
+                // Log the raw response BEFORE trying to parse it
+                console.log('Raw generateScenarios response from Python:\n--START--\n', dataString, '\n--END--');
                 if (code !== 0) {
                     reject(new Error(`Process failed: ${errorString}`));
                     return;
@@ -447,6 +454,9 @@ async function generateScenarios(location, options = {}) {
                     }
                     resolve(response.text);
                 } catch (error) {
+                    // Log the parsing error along with the raw data
+                    console.error('Scenario generation parse error:', error);
+                    console.error('Raw data causing parse error:', dataString);
                     reject(new Error('Failed to parse response'));
                 }
             });
