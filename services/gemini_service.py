@@ -109,29 +109,36 @@ def with_model_fallback(func):
     def wrapper(*args, **kwargs):
         # Normal fallback logic
         try:
+            # Try primary model first (Flash-Thinking)
+            global MODEL_ID
+            MODEL_ID = FLASH_THINKING_MODEL # Ensure primary model is set
             return func(*args, **kwargs)
         except Exception as e:
-            if any(term in str(e).lower() for term in ['rate limit', 'quota', 'capacity']):
-                print(f"Flash-thinking API limit reached, falling back to standard model for {func.__name__}", file=sys.stderr)
-                global MODEL_ID
-                original_model = MODEL_ID
+            # ANY exception from primary model triggers fallback to standard model
+            print(f"Primary model ({FLASH_THINKING_MODEL}) failed ({type(e).__name__}: {e}), falling back to standard model ({FLASH_MODEL}) for {func.__name__}", file=sys.stderr)
+            try:
+                MODEL_ID = FLASH_MODEL # Set to standard model
+                return func(*args, **kwargs)
+            except Exception as e2:
+                # ANY exception from standard model triggers fallback to OpenAI
+                print(f"Standard model ({FLASH_MODEL}) failed ({type(e2).__name__}: {e2}), falling back to OpenAI for {func.__name__}", file=sys.stderr)
+                # Monkey-patch the generate_content method temporarily
+                original_generate = client.models.generate_content
                 try:
-                    MODEL_ID = FLASH_MODEL
+                    # Temporarily use OpenAI client's method
+                    client.models.generate_content = openai_client.generate_content
+                    # Retry the function call using OpenAI
                     return func(*args, **kwargs)
-                except Exception as e2:
-                    if any(term in str(e2).lower() for term in ['rate limit', 'quota', 'capacity']):
-                        print(f"Standard model API limit reached too, falling back to OpenAI for {func.__name__}", file=sys.stderr)
-                        # Monkey-patch the generate_content method temporarily
-                        original_generate = client.models.generate_content
-                        try:
-                            client.models.generate_content = openai_client.generate_content
-                            return func(*args, **kwargs)
-                        finally:
-                            client.models.generate_content = original_generate
-                    raise e2
+                except Exception as e3:
+                    # If OpenAI also fails, log and raise the OpenAI error
+                    print(f"OpenAI fallback failed for {func.__name__}: {type(e3).__name__}: {e3}", file=sys.stderr)
+                    raise e3 # Raise the OpenAI error
                 finally:
-                    MODEL_ID = original_model
-            raise
+                    # Always restore the original generate_content method
+                    client.models.generate_content = original_generate
+            finally:
+                # Reset MODEL_ID after standard model attempt (whether success or fail before OpenAI)
+                MODEL_ID = FLASH_THINKING_MODEL # Reset to default/primary
     return wrapper
 
 @with_model_fallback
