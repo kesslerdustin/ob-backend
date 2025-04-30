@@ -308,8 +308,8 @@ def flash_chat(prompt, image_path=None, options=None):
         # Prepare content list
         contents = [localized_prompt]
 
-        # Add image if provided
-        if image_path:
+        # Add image if provided and valid
+        if image_path and image_path != 'NONE': # Check for None and the 'NONE' string
             try:
                 if image_path.startswith(('http://', 'https://')):
                     response = requests.get(image_path)
@@ -319,7 +319,10 @@ def flash_chat(prompt, image_path=None, options=None):
                     img = Image.open(image_path).convert('RGB')
                 contents.append(img)
             except Exception as e:
-                print(f"Error loading image: {str(e)}", file=sys.stderr)
+                # Log the error but continue without the image
+                print(f"Error loading image '{image_path}': {str(e)}", file=sys.stderr)
+                # Optionally, we could raise here if image processing is critical
+                # raise Exception(f"Failed to process image: {e}")
 
         response = client.models.generate_content(
             model="gemini-2.0-flash-exp",
@@ -1432,7 +1435,9 @@ def check_image_appropriate(prompt, image_path, options=None):
 if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "text"
     prompt = sys.argv[2] if len(sys.argv) > 2 else "Hello, Gemini!"
-    image_url = sys.argv[3] if len(sys.argv) > 3 else None
+    # Handle image_url: Set to None if it's 'NONE' or not provided
+    image_url_arg = sys.argv[3] if len(sys.argv) > 3 else None
+    image_url = None if image_url_arg == 'NONE' else image_url_arg
     options = sys.argv[4] if len(sys.argv) > 4 else None
     
     # Update the response selection

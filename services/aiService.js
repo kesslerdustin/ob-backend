@@ -181,7 +181,7 @@ async function flashChat(prompt, language = 'en', context = '', imagePath = null
                 pythonScript,
                 'flash',
                 prompt,
-                imagePath || 'null',
+                imagePath || 'NONE',
                 options
             ]);
 
