@@ -11,6 +11,7 @@ const path = require('path');
 const uploadsDir = path.join(__dirname, 'uploads');
 const { v4: uuidv4 } = require('uuid');
 const rateLimiter = require('./services/rateLimiter');
+const revenueCatService = require('./services/revenueCatService');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -699,6 +700,117 @@ try {
       res.status(500).json({
         success: false,
         error: 'Failed to check image appropriateness',
+        details: error.message
+      });
+    }
+  });
+
+  // Premium verification endpoint for server-side checks
+  app.get('/api/premium/verify/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      
+      if (!userId) {
+        return res.status(400).json({ error: 'User ID is required' });
+      }
+      
+      const premiumStatus = await revenueCatService.checkPremiumEntitlements(userId);
+      
+      res.json({
+        success: true,
+        ...premiumStatus
+      });
+    } catch (error) {
+      console.error('Error verifying premium status:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to verify premium status',
+        details: error.message
+      });
+    }
+  });
+
+  // Manual transaction verification endpoint (to replace webhooks)
+  app.post('/api/premium/verify-transaction', express.json(), async (req, res) => {
+    try {
+      const { userId, productId, verificationMode = 'receipt' } = req.body;
+      
+      if (!userId || !productId) {
+        return res.status(400).json({ 
+          success: false, 
+          error: 'User ID and product ID are required' 
+        });
+      }
+      
+      // Get the user's current subscription status
+      const customerInfo = await revenueCatService.getCustomerInfo(userId);
+      
+      // Manual verification logic
+      let creditsToAdd = 0;
+      let isPremium = false;
+      let expiryDate = null;
+      
+      // Check what type of product was purchased
+      if (productId === 'pro_monthly' || productId === 'pro_yearly') {
+        // Check if the user has an active subscription
+        const entitlements = customerInfo.subscriber?.entitlements || {};
+        isPremium = entitlements.pro?.expires_date ? true : false;
+        expiryDate = entitlements.pro?.expires_date || null;
+      } 
+      else if (productId === 'credits_100') {
+        creditsToAdd = 100;
+      } 
+      else if (productId === 'credits_500') {
+        creditsToAdd = 500;
+      }
+      
+      // Update Firestore database
+      if (isPremium || creditsToAdd > 0) {
+        try {
+          const db = admin.firestore();
+          const userRef = db.collection('users').doc(userId);
+          
+          // Get current user data
+          const userDoc = await userRef.get();
+          
+          if (isPremium) {
+            // Update premium status
+            await userRef.set({
+              isPremium: true,
+              premiumExpiry: expiryDate ? new Date(expiryDate) : null,
+              lastUpdated: admin.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+          }
+          
+          if (creditsToAdd > 0) {
+            // Update credits
+            const currentCredits = userDoc.exists ? (userDoc.data().credits || 0) : 0;
+            await userRef.set({
+              credits: currentCredits + creditsToAdd,
+              lastUpdated: admin.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+          }
+        } catch (dbError) {
+          console.error('Error updating Firestore:', dbError);
+          // Continue even if Firestore update fails
+        }
+      }
+      
+      res.json({
+        success: true,
+        userId,
+        productId,
+        isPremium,
+        expiryDate: expiryDate ? new Date(expiryDate) : null,
+        creditsAdded: creditsToAdd,
+        verificationMode
+      });
+      
+    } catch (error) {
+      console.error('Error processing transaction verification:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to verify transaction',
         details: error.message
       });
     }
