@@ -850,6 +850,26 @@ try {
     }
   });
 
+  // App store links endpoint
+  app.get('/api/app-links', (req, res) => {
+    try {
+      res.json({
+        success: true,
+        links: {
+          ios: 'https://apps.apple.com/us/app/facebook/id284882215',
+          android: 'https://play.google.com/store/apps/details?id=com.facebook.katana&hl=en'
+        }
+      });
+    } catch (error) {
+      console.error('Error fetching app links:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to get app links',
+        details: error.message
+      });
+    }
+  });
+
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
