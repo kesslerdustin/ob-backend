@@ -705,93 +705,40 @@ try {
     }
   });
 
-  // Premium verification endpoint for server-side checks
+  // ======== REVENUE CAT VERIFICATION API ENDPOINTS ========
+  // These endpoints provide server-side verification for RevenueCat purchases
+
+  // Endpoint to verify premium status
   app.get('/api/premium/verify/:userId', async (req, res) => {
     try {
       const { userId } = req.params;
       
       if (!userId) {
-        return res.status(400).json({ error: 'User ID is required' });
+        return res.status(400).json({ success: false, error: 'User ID is required' });
       }
       
+      // Get authorization header for additional security (optional)
+      const authHeader = req.headers.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        console.warn('Missing or invalid authorization header for premium verification');
+        // Continue without auth for now, but log it
+      }
+      
+      // Use the RevenueCat service to verify premium entitlements
       const premiumStatus = await revenueCatService.checkPremiumEntitlements(userId);
       
-      res.json({
-        success: true,
-        ...premiumStatus
-      });
-    } catch (error) {
-      console.error('Error verifying premium status:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Failed to verify premium status',
-        details: error.message
-      });
-    }
-  });
-
-  // Manual transaction verification endpoint (to replace webhooks)
-  app.post('/api/premium/verify-transaction', express.json(), async (req, res) => {
-    try {
-      const { userId, productId, verificationMode = 'receipt' } = req.body;
-      
-      if (!userId || !productId) {
-        return res.status(400).json({ 
-          success: false, 
-          error: 'User ID and product ID are required' 
-        });
-      }
-      
-      // Get the user's current subscription status
-      const customerInfo = await revenueCatService.getCustomerInfo(userId);
-      
-      // Manual verification logic
-      let creditsToAdd = 0;
-      let isPremium = false;
-      let expiryDate = null;
-      
-      // Check what type of product was purchased
-      if (productId === 'pro_monthly' || productId === 'pro_yearly') {
-        // Check if the user has an active subscription
-        const entitlements = customerInfo.subscriber?.entitlements || {};
-        isPremium = entitlements.pro?.expires_date ? true : false;
-        expiryDate = entitlements.pro?.expires_date || null;
-      } 
-      else if (productId === 'credits_100') {
-        creditsToAdd = 100;
-      } 
-      else if (productId === 'credits_500') {
-        creditsToAdd = 500;
-      }
-      
-      // Update Firestore database
-      if (isPremium || creditsToAdd > 0) {
+      // If successful verification, also update Firestore
+      if (premiumStatus.isPremium) {
         try {
-          const db = admin.firestore();
-          const userRef = db.collection('users').doc(userId);
-          
-          // Get current user data
-          const userDoc = await userRef.get();
-          
-          if (isPremium) {
-            // Update premium status
-            await userRef.set({
-              isPremium: true,
-              premiumExpiry: expiryDate ? new Date(expiryDate) : null,
-              lastUpdated: admin.firestore.FieldValue.serverTimestamp()
-            }, { merge: true });
-          }
-          
-          if (creditsToAdd > 0) {
-            // Update credits
-            const currentCredits = userDoc.exists ? (userDoc.data().credits || 0) : 0;
-            await userRef.set({
-              credits: currentCredits + creditsToAdd,
-              lastUpdated: admin.firestore.FieldValue.serverTimestamp()
-            }, { merge: true });
-          }
-        } catch (dbError) {
-          console.error('Error updating Firestore:', dbError);
+          const userRef = admin.firestore().collection('users').doc(userId);
+          await userRef.update({
+            isPremium: true,
+            premiumExpiry: premiumStatus.expiryDate,
+            lastVerified: admin.firestore.FieldValue.serverTimestamp()
+          });
+          console.log(`Updated premium status for user ${userId} in Firestore`);
+        } catch (firestoreError) {
+          console.error('Error updating Firestore:', firestoreError);
           // Continue even if Firestore update fails
         }
       }
@@ -799,19 +746,106 @@ try {
       res.json({
         success: true,
         userId,
-        productId,
-        isPremium,
-        expiryDate: expiryDate ? new Date(expiryDate) : null,
-        creditsAdded: creditsToAdd,
-        verificationMode
+        ...premiumStatus
       });
-      
     } catch (error) {
-      console.error('Error processing transaction verification:', error);
+      console.error('Error verifying premium status:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to verify premium status',
+        message: error.message
+      });
+    }
+  });
+
+  // Endpoint to verify specific transactions
+  app.post('/api/premium/verify-transaction', async (req, res) => {
+    try {
+      const { userId, productId, verificationMode } = req.body;
+      
+      if (!userId || !productId) {
+        return res.status(400).json({ 
+          success: false, 
+          error: 'Both userId and productId are required' 
+        });
+      }
+      
+      // Verify the purchase with RevenueCat
+      const verificationResult = await revenueCatService.verifyPurchase(userId, productId);
+      
+      // If it's a consumable credit purchase and it's verified, update the user's credits
+      if (verificationResult.verified && 
+          (productId === 'credits_50' || productId === 'credits_250')) {
+        try {
+          // Add credits based on the product
+          const creditsToAdd = productId === 'credits_50' ? 50 : 250;
+          
+          // Update Firestore
+          const userRef = admin.firestore().collection('users').doc(userId);
+          
+          // Get current credits first
+          const userDoc = await userRef.get();
+          if (userDoc.exists) {
+            const currentCredits = userDoc.data().credits || 0;
+            
+            await userRef.update({
+              credits: currentCredits + creditsToAdd,
+              lastCreditPurchase: admin.firestore.FieldValue.serverTimestamp()
+            });
+            
+            console.log(`Added ${creditsToAdd} credits to user ${userId}`);
+            
+            // Add the credits to the verification result
+            verificationResult.creditsAdded = creditsToAdd;
+            verificationResult.newCreditBalance = currentCredits + creditsToAdd;
+          }
+        } catch (firestoreError) {
+          console.error('Error updating credits in Firestore:', firestoreError);
+          // Continue even if Firestore update fails
+        }
+      }
+      
+      res.json({
+        success: true,
+        ...verificationResult
+      });
+    } catch (error) {
+      console.error('Error verifying transaction:', error);
       res.status(500).json({
         success: false,
         error: 'Failed to verify transaction',
-        details: error.message
+        message: error.message
+      });
+    }
+  });
+
+  // Raw access to customer info (for debugging, consider removing in production)
+  app.get('/api/premium/customer-info/:userId', async (req, res) => {
+    try {
+      // Check if requester has admin privileges (implement proper auth check)
+      const isAdmin = req.headers['x-admin-key'] === process.env.ADMIN_API_KEY;
+      if (!isAdmin) {
+        return res.status(403).json({ success: false, error: 'Unauthorized' });
+      }
+      
+      const { userId } = req.params;
+      
+      if (!userId) {
+        return res.status(400).json({ success: false, error: 'User ID is required' });
+      }
+      
+      const customerInfo = await revenueCatService.getCustomerInfo(userId);
+      
+      res.json({
+        success: true,
+        customerInfo
+      });
+    } catch (error) {
+      console.error('Error fetching customer info:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to fetch customer info',
+        message: error.message
       });
     }
   });
