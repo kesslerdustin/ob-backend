@@ -12,6 +12,7 @@ const uploadsDir = path.join(__dirname, 'uploads');
 const { v4: uuidv4 } = require('uuid');
 const rateLimiter = require('./services/rateLimiter');
 const revenueCatService = require('./services/revenueCatService');
+const premiumService = require('./services/premiumService');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -865,6 +866,53 @@ try {
       res.status(500).json({
         success: false,
         error: 'Failed to get app links',
+        details: error.message
+      });
+    }
+  });
+
+  // New premium service endpoints
+  app.get('/api/premium/limits', async (req, res) => {
+    try {
+      const limits = premiumService.getAllLimits();
+      res.json({
+        success: true,
+        limits
+      });
+    } catch (error) {
+      console.error('Error fetching premium limits:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to fetch premium limits',
+        details: error.message
+      });
+    }
+  });
+
+  app.get('/api/premium/limits/user/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      
+      // Verify the user exists in Firebase
+      try {
+        await admin.auth().getUser(userId);
+      } catch (authError) {
+        return res.status(404).json({
+          success: false,
+          error: 'User not found'
+        });
+      }
+      
+      const userLimits = await premiumService.getUserLimits(userId);
+      res.json({
+        success: true,
+        limits: userLimits
+      });
+    } catch (error) {
+      console.error('Error fetching user premium limits:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to fetch user premium limits',
         details: error.message
       });
     }
