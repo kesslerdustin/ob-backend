@@ -871,6 +871,24 @@ try {
     }
   });
 
+  // New endpoint to get premium constants
+  app.get('/api/premium/constants', (req, res) => {
+    try {
+      const constants = premiumService.getPremiumConstants();
+      res.json({
+        success: true,
+        constants
+      });
+    } catch (error) {
+      console.error('Error fetching premium constants:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to fetch premium constants',
+        details: error.message
+      });
+    }
+  });
+
   // New premium service endpoints
   app.get('/api/premium/limits', async (req, res) => {
     try {
