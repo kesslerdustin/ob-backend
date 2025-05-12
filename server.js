@@ -858,7 +858,7 @@ try {
         success: true,
         links: {
           ios: 'https://apps.apple.com/us/app/facebook/id284882215',
-          android: 'https://play.google.com/store/apps/details?id=com.facebook.katana&hl=en'
+          android: 'https://play.google.com/store/apps/details?id=com.duselk.theoutdoorbible'
         }
       });
     } catch (error) {
