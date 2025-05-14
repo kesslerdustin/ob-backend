@@ -728,8 +728,60 @@ try {
       // Use the RevenueCat service to verify premium entitlements
       const premiumStatus = await revenueCatService.checkPremiumEntitlements(userId);
       
-      // If successful verification, also update Firestore
-      if (premiumStatus.isPremium) {
+      // Check if this is a new account (created within last 24 hours)
+      // This adds protection against incorrect premium status for new users
+      let isNewAccount = false;
+      let shouldUpdateFirestore = true;
+      
+      try {
+        const userRef = admin.firestore().collection('users').doc(userId);
+        const userDoc = await userRef.get();
+        
+        if (userDoc.exists) {
+          const userData = userDoc.data();
+          
+          if (userData.createdAt) {
+            const createdAt = userData.createdAt.toDate();
+            const now = new Date();
+            const hoursSinceCreation = (now - createdAt) / (1000 * 60 * 60);
+            
+            // If account is less than 24 hours old
+            if (hoursSinceCreation < 24) {
+              isNewAccount = true;
+              console.log(`New account detected (created ${hoursSinceCreation.toFixed(1)} hours ago)`);
+              
+              // For new accounts, we're more cautious about marking as premium
+              if (premiumStatus.isPremium) {
+                console.log('WARNING: New account reporting as premium. Performing additional verification...');
+                
+                // Look for clear evidence of a purchase (more than just entitlement check)
+                const hasPurchaseEvidence = 
+                  premiumStatus.purchases && 
+                  premiumStatus.purchases.length > 0 && 
+                  (premiumStatus.purchases.includes('pro_monthly') || 
+                   premiumStatus.purchases.includes('pro_yearly'));
+                
+                if (!hasPurchaseEvidence) {
+                  console.log('New account lacks purchase evidence. Not updating Firestore with premium status.');
+                  shouldUpdateFirestore = false;
+                  
+                  // Override the premium status for new accounts without clear purchase evidence
+                  premiumStatus.isPremium = false;
+                  premiumStatus.expiryDate = null;
+                  premiumStatus.newAccountWithoutPurchase = true;
+                } else {
+                  console.log('New account has valid purchase evidence. Allowing premium status.');
+                }
+              }
+            }
+          }
+        }
+      } catch (firestoreError) {
+        console.error('Error checking account age:', firestoreError);
+      }
+      
+      // If successful verification and we should update Firestore
+      if (premiumStatus.isPremium && shouldUpdateFirestore) {
         try {
           const userRef = admin.firestore().collection('users').doc(userId);
           await userRef.update({
@@ -742,12 +794,27 @@ try {
           console.error('Error updating Firestore:', firestoreError);
           // Continue even if Firestore update fails
         }
+      } else if (!premiumStatus.isPremium && shouldUpdateFirestore) {
+        // If not premium and we should update Firestore, update with non-premium status
+        try {
+          const userRef = admin.firestore().collection('users').doc(userId);
+          await userRef.update({
+            isPremium: false,
+            premiumExpiry: null,
+            lastVerified: admin.firestore.FieldValue.serverTimestamp()
+          });
+          console.log(`Updated non-premium status for user ${userId} in Firestore`);
+        } catch (firestoreError) {
+          console.error('Error updating Firestore with non-premium status:', firestoreError);
+        }
       }
       
       res.json({
         success: true,
         userId,
-        ...premiumStatus
+        ...premiumStatus,
+        isNewAccount,
+        updatedFirestore: shouldUpdateFirestore
       });
     } catch (error) {
       console.error('Error verifying premium status:', error);
