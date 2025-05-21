@@ -924,7 +924,7 @@ try {
       res.json({
         success: true,
         links: {
-          ios: 'https://apps.apple.com/us/app/facebook/id284882215',
+          ios: 'https://apps.apple.com/us/app/wildscope/id6741471953',
           android: 'https://play.google.com/store/apps/details?id=com.duselk.theoutdoorbible'
         }
       });
