@@ -1356,7 +1356,7 @@ Schaffe einen Mix aus realitätsnahen und kniffligen Fragen.:
         CRITICAL REQUIREMENTS:
         category: fauna, flora or survival
         questions starting with easy and ending with expert
-        IMPORTANT! IF {language} IS NOT GERMAN OR ENGLISH, RETURN THE QUESTIONS AND ANSWERS FOR BOTH EN AND DE IN THE {language} LANGUAGE.
+        IMPORTANT! IF {language} IS NOT GERMAN OR ENGLISH, RETURN THE QUESTIONS AND ANSWERS FOR BOTH EN AND DE IN THE {language} LANGUAGE (it = Italian, es = Spanish, fr = French, pt = Portuguese, ja = Japanese, etc.).
         1. Return EXACTLY this JSON structure:
         {{
             "quiz": [
@@ -1364,8 +1364,8 @@ Schaffe einen Mix aus realitätsnahen und kniffligen Fragen.:
                     "category": "fauna",
                     "difficulty": "easy",
                     "question": {{
-                        "en": "english question text or {language} if {language} is neither en or de",
-                        "de": "german question text or {language} if {language} is neither en or de"
+                        "en": "english question text or {language} if {language} is neither en or de. {language} LANGUAGE (it = Italian, es = Spanish, fr = French, pt = Portuguese, ja = Japanese, etc.).",
+                        "de": "german question text or {language} if {language} is neither en or de. {language} LANGUAGE (it = Italian, es = Spanish, fr = French, pt = Portuguese, ja = Japanese, etc.)."
                     }},
                     "answers": {{
                         "en": [
@@ -1395,7 +1395,7 @@ Schaffe einen Mix aus realitätsnahen und kniffligen Fragen.:
         }}
 
         2. Questions should be challenging but fair
-        3. All content must be in {language} language (IF {language} IS NOT GERMAN OR ENGLISH, RETURN THE QUESTIONS AND ANSWERS FOR BOTH EN AND DE IN THE {language} LANGUAGE.)
+        3. All content must be in {language} language (IF {language} IS NOT GERMAN OR ENGLISH, RETURN THE QUESTIONS AND ANSWERS FOR BOTH EN AND DE IN THE {language} LANGUAGE.  {language} LANGUAGE (it = Italian, es = Spanish, fr = French, pt = Portuguese, ja = Japanese, etc.), Keep the exact JSON structure, return nothing else)
         4. Each question must have exactly 4 options
         5. Explanations should be educational and clear
         6. Return EXACTLY the provided JSON structure
