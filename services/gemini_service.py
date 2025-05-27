@@ -1320,7 +1320,7 @@ def generate_quiz(prompt, options=None):
         location_analysis = options.get('locationAnalysis', '')
         
         structured_prompt = f"""
-        Du bist ein Quizmaster für ein Survival- und Naturquiz, das sich auf meinen aktuellen Standort und die umgebenden Bedingungen bezieht. Hier sind die Regeln und Anforderungen:
+        Du bist ein Quizmaster für ein Survival- und Naturquiz, das sich auf meinen aktuellen Standort und die umgebenden Bedingungen bezieht. Hier sind die Regeln und Anforderungen. DEINE RESPONSE SOLLTE EINZIG UND ALLEIN DIE EXAKT VORGEGEBENE JSON STRUKTUR SEIN!:
 
 Fragenstruktur:
 
@@ -1397,6 +1397,7 @@ Schaffe einen Mix aus realitätsnahen und kniffligen Fragen.:
         3. All content must be in {language} language
         4. Each question must have exactly 4 options
         5. Explanations should be educational and clear
+        6. Return EXACTLY the provided JSON structure
         """
 
         # Use MODEL_ID for the API call
