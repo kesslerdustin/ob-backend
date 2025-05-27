@@ -1364,8 +1364,8 @@ Schaffe einen Mix aus realitätsnahen und kniffligen Fragen.:
                     "category": "fauna",
                     "difficulty": "easy",
                     "question": {{
-                        "en": "english question text",
-                        "de": "german question text"
+                        "en": "english question text or {language} if {language} is neither en or de",
+                        "de": "german question text or {language} if {language} is neither en or de"
                     }},
                     "answers": {{
                         "en": [
