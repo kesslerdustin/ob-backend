@@ -1356,6 +1356,7 @@ Schaffe einen Mix aus realitätsnahen und kniffligen Fragen.:
         CRITICAL REQUIREMENTS:
         category: fauna, flora or survival
         questions starting with easy and ending with expert
+        IMPORTANT! IF {language} IS NOT GERMAN OR ENGLISH, RETURN THE QUESTIONS AND ANSWERS FOR BOTH EN AND DE IN THE {language} LANGUAGE.
         1. Return EXACTLY this JSON structure:
         {{
             "quiz": [
@@ -1394,7 +1395,7 @@ Schaffe einen Mix aus realitätsnahen und kniffligen Fragen.:
         }}
 
         2. Questions should be challenging but fair
-        3. All content must be in {language} language
+        3. All content must be in {language} language (IF {language} IS NOT GERMAN OR ENGLISH, RETURN THE QUESTIONS AND ANSWERS FOR BOTH EN AND DE IN THE {language} LANGUAGE.)
         4. Each question must have exactly 4 options
         5. Explanations should be educational and clear
         6. Return EXACTLY the provided JSON structure
