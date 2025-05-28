@@ -183,6 +183,21 @@ def generate_content(prompt):
 def extract_json_from_text(text):
     """Extract JSON from text by finding the first valid JSON object"""
     try:
+        # First, try to parse the text directly as JSON
+        try:
+            return json.loads(text.strip())
+        except json.JSONDecodeError:
+            pass
+        
+        # Remove common markdown formatting
+        cleaned_text = text.replace('```json', '').replace('```', '').strip()
+        
+        # Try parsing the cleaned text
+        try:
+            return json.loads(cleaned_text)
+        except json.JSONDecodeError:
+            pass
+        
         # Find the first '{' and last '}'
         start_idx = text.find('{')
         end_idx = text.rfind('}')
@@ -191,19 +206,32 @@ def extract_json_from_text(text):
             # Extract potential JSON string
             json_str = text[start_idx:end_idx + 1]
             
+            # Try parsing without any cleaning first
+            try:
+                return json.loads(json_str)
+            except json.JSONDecodeError:
+                pass
+            
             # Ensure proper encoding of special characters
             json_str = json_str.encode('utf-8').decode('utf-8')
             
-            # Only clean characters outside of quoted strings
-            # This regex preserves all characters within quotes, including parentheses
-            cleaned = re.sub(r'[^\{\}\[\]",:0-9a-zA-Z\s_\-äöüßÄÖÜ\.!?\(\)](?=(?:[^"]*"[^"]*")*[^"]*$)', '', json_str)
+            # Try parsing after encoding fix
+            try:
+                return json.loads(json_str)
+            except json.JSONDecodeError:
+                pass
+            
+            # Last resort: more aggressive cleaning (but preserve more characters)
+            # Allow more characters that might be in quiz content
+            cleaned = re.sub(r'[^\{\}\[\]",:0-9a-zA-Z\s_\-äöüßÄÖÜàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ\.!?\(\)\'\/\\\n\r\t](?=(?:[^"]*"[^"]*")*[^"]*$)', '', json_str)
             cleaned = re.sub(r'\s+', ' ', cleaned)
             
             # Try to parse the cleaned string
             return json.loads(cleaned)
+            
     except Exception as e:
         print(f"JSON extraction failed: {e}", file=sys.stderr)
-        print(f"Original text: {text}", file=sys.stderr)
+        print(f"Original text (first 500 chars): {text[:500]}", file=sys.stderr)
         return None
 
 def json_dumps_utf8(obj):
@@ -1319,6 +1347,11 @@ def generate_quiz(prompt, options=None):
 
         location_analysis = options.get('locationAnalysis', '')
         
+        print(f"=== QUIZ GENERATION START ===", file=sys.stderr)
+        print(f"Language: {language}", file=sys.stderr)
+        print(f"Model: {MODEL_ID}", file=sys.stderr)
+        print(f"Location analysis length: {len(location_analysis)}", file=sys.stderr)
+        
         structured_prompt = f"""
         Du bist ein Quizmaster für ein Survival- und Naturquiz, das sich auf meinen aktuellen Standort und die umgebenden Bedingungen bezieht. Hier sind die Regeln und Anforderungen. DEINE RESPONSE SOLLTE EINZIG UND ALLEIN DIE EXAKT VORGEGEBENE JSON STRUKTUR SEIN!:
 
@@ -1409,13 +1442,31 @@ Schaffe einen Mix aus realitätsnahen und kniffligen Fragen.:
 
         # Get the response text
         final_response = response.text
+        
+        print(f"Raw response length: {len(final_response)}", file=sys.stderr)
+        print(f"Raw response preview: {final_response[:200]}...", file=sys.stderr)
 
         # Extract JSON from the response
         json_content = extract_json_from_text(final_response)
         
         if not json_content:
+            print(f"JSON extraction failed. Full response:", file=sys.stderr)
+            print(final_response, file=sys.stderr)
             # Raise specific error that bypasses fallback
             raise Exception("Failed to generate valid quiz data")
+
+        # Validate the quiz structure
+        if not isinstance(json_content, dict) or 'quiz' not in json_content:
+            print(f"Invalid quiz structure: {json_content}", file=sys.stderr)
+            raise Exception("Invalid quiz structure - missing 'quiz' key")
+            
+        quiz_array = json_content.get('quiz', [])
+        if not isinstance(quiz_array, list) or len(quiz_array) == 0:
+            print(f"Invalid quiz array: {quiz_array}", file=sys.stderr)
+            raise Exception("Invalid quiz structure - 'quiz' is not a valid array")
+            
+        print(f"Successfully generated {len(quiz_array)} quiz questions", file=sys.stderr)
+        print(f"=== QUIZ GENERATION SUCCESS ===", file=sys.stderr)
 
         return json.dumps({
             "success": True,
@@ -1423,8 +1474,12 @@ Schaffe einen Mix aus realitätsnahen und kniffligen Fragen.:
         })
         
     except Exception as e:
+        print(f"=== QUIZ GENERATION ERROR ===", file=sys.stderr)
+        print(f"Error type: {type(e).__name__}", file=sys.stderr)
+        print(f"Error message: {str(e)}", file=sys.stderr)
+        
         # Check if it's the specific JSON extraction error
-        if "Failed to generate valid quiz data" in str(e):
+        if "Failed to generate valid quiz data" in str(e) or "Invalid quiz structure" in str(e):
              print(f"Quiz generation JSON format error: {str(e)}", file=sys.stderr)
              # Return failure JSON directly
              return json.dumps({"success": False, "error": str(e)})

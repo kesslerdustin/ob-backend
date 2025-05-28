@@ -618,6 +618,13 @@ try {
         const { prompt, language, locationAnalysis } = req.body;
         const requestId = quizManager.createRequest();
         
+        console.log('Quiz generation request:', {
+            requestId,
+            language,
+            promptLength: prompt?.length || 0,
+            locationAnalysisLength: locationAnalysis?.length || 0
+        });
+        
         res.json({
             success: true,
             status: 'processing',
@@ -626,9 +633,16 @@ try {
 
         setTimeout(async () => {
             try {
+                console.log(`Starting quiz generation for request ${requestId}`);
                 const response = await aiService.generateQuiz(prompt, {
                     language,
                     locationAnalysis
+                });
+                
+                console.log(`Quiz generation completed for request ${requestId}:`, {
+                    success: !!response,
+                    responseType: typeof response,
+                    hasQuizData: response && typeof response === 'object' && response.quiz
                 });
                 
                 quizManager.updateRequest(requestId, {
@@ -636,6 +650,12 @@ try {
                     data: response
                 });
             } catch (error) {
+                console.error(`Quiz generation failed for request ${requestId}:`, {
+                    error: error.message,
+                    stack: error.stack,
+                    type: error.constructor.name
+                });
+                
                 quizManager.updateRequest(requestId, {
                     status: 'error',
                     error: error.message
@@ -644,6 +664,7 @@ try {
         }, 0);
 
     } catch (error) {
+        console.error('Quiz generation endpoint error:', error);
         res.status(500).json({
             success: false,
             error: 'Failed to start quiz generation',
