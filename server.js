@@ -1024,6 +1024,120 @@ try {
     }
   });
 
+  // Admin endpoint to grant manual premium
+  app.post('/api/admin/grant-premium', async (req, res) => {
+    try {
+      // Check admin privileges
+      const isAdmin = req.headers['x-admin-key'] === process.env.ADMIN_API_KEY;
+      if (!isAdmin) {
+        return res.status(403).json({ 
+          success: false, 
+          error: 'Unauthorized - Admin key required' 
+        });
+      }
+
+      const { userId, durationDays = 365 } = req.body;
+      
+      if (!userId) {
+        return res.status(400).json({ 
+          success: false, 
+          error: 'User ID is required' 
+        });
+      }
+
+      // Verify the user exists in Firebase Auth
+      try {
+        await admin.auth().getUser(userId);
+      } catch (authError) {
+        return res.status(404).json({
+          success: false,
+          error: 'User not found in Firebase Auth'
+        });
+      }
+
+      // Calculate expiry date
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + durationDays);
+
+      // Update user document in Firestore
+      const userRef = admin.firestore().collection('users').doc(userId);
+      
+      await userRef.set({
+        manualPremium: true,
+        manualPremiumExpiry: admin.firestore.Timestamp.fromDate(expiryDate),
+        manualPremiumGrantedAt: admin.firestore.FieldValue.serverTimestamp(),
+        lastUpdated: admin.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+
+      console.log(`Manual premium granted to user ${userId} until ${expiryDate.toISOString()}`);
+
+      res.json({
+        success: true,
+        message: `Premium granted to user ${userId}`,
+        userId,
+        expiryDate: expiryDate.toISOString(),
+        durationDays
+      });
+
+    } catch (error) {
+      console.error('Error granting manual premium:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to grant premium',
+        details: error.message
+      });
+    }
+  });
+
+  // Admin endpoint to revoke manual premium
+  app.post('/api/admin/revoke-premium', async (req, res) => {
+    try {
+      // Check admin privileges
+      const isAdmin = req.headers['x-admin-key'] === process.env.ADMIN_API_KEY;
+      if (!isAdmin) {
+        return res.status(403).json({ 
+          success: false, 
+          error: 'Unauthorized - Admin key required' 
+        });
+      }
+
+      const { userId } = req.body;
+      
+      if (!userId) {
+        return res.status(400).json({ 
+          success: false, 
+          error: 'User ID is required' 
+        });
+      }
+
+      // Update user document in Firestore
+      const userRef = admin.firestore().collection('users').doc(userId);
+      
+      await userRef.update({
+        manualPremium: false,
+        manualPremiumExpiry: null,
+        manualPremiumRevokedAt: admin.firestore.FieldValue.serverTimestamp(),
+        lastUpdated: admin.firestore.FieldValue.serverTimestamp()
+      });
+
+      console.log(`Manual premium revoked for user ${userId}`);
+
+      res.json({
+        success: true,
+        message: `Premium revoked for user ${userId}`,
+        userId
+      });
+
+    } catch (error) {
+      console.error('Error revoking manual premium:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to revoke premium',
+        details: error.message
+      });
+    }
+  });
+
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
