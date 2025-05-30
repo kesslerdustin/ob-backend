@@ -15,7 +15,10 @@ const REVENUECAT_SECRET_KEY = process.env.REVENUECAT_SECRET_KEY;
  */
 async function checkManualPremiumGrant(userId) {
   try {
+    console.log(`🔍 Checking manual premium grant for userId: "${userId}"`);
+    
     if (!userId) {
+      console.log('❌ No userId provided');
       return null;
     }
 
@@ -24,20 +27,38 @@ async function checkManualPremiumGrant(userId) {
     const userDoc = await userRef.get();
 
     if (!userDoc.exists()) {
+      console.log(`❌ User document does not exist in Firestore for userId: "${userId}"`);
       return null;
     }
 
     const userData = userDoc.data();
+    console.log(`📄 User document found. Manual premium data:`, {
+      manualPremium: userData.manualPremium,
+      manualPremiumExpiry: userData.manualPremiumExpiry,
+      hasManualPremiumField: 'manualPremium' in userData
+    });
     
     // Check for manual premium grant using the simpler field structure
     if (userData.manualPremium === true) {
+      console.log('✅ manualPremium field is true, checking expiry...');
+      
       // Check if manual premium has expired
       let isExpired = false;
       if (userData.manualPremiumExpiry) {
         const expiryDate = userData.manualPremiumExpiry.toDate ? 
           userData.manualPremiumExpiry.toDate() : 
           new Date(userData.manualPremiumExpiry);
-        isExpired = new Date() > expiryDate;
+        
+        const now = new Date();
+        isExpired = now > expiryDate;
+        
+        console.log(`📅 Expiry check:`, {
+          expiryDate: expiryDate.toISOString(),
+          currentDate: now.toISOString(),
+          isExpired
+        });
+      } else {
+        console.log('⚠️ No expiry date set, treating as valid');
       }
 
       if (!isExpired) {
@@ -51,6 +72,8 @@ async function checkManualPremiumGrant(userId) {
       } else {
         console.log(`❌ Manual premium grant expired for user ${userId}`);
       }
+    } else {
+      console.log(`❌ manualPremium is not true. Value: ${userData.manualPremium}`);
     }
 
     return null;
