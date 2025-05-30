@@ -1024,6 +1024,40 @@ try {
     }
   });
 
+  // Premium check endpoint that includes manual grants
+  app.post('/api/premium/check', async (req, res) => {
+    try {
+      const { userId } = req.body;
+      
+      if (!userId) {
+        return res.status(400).json({ 
+          success: false, 
+          error: 'User ID is required' 
+        });
+      }
+
+      console.log(`Checking premium status for user: ${userId}`);
+      
+      // Use the updated checkPremiumEntitlements that checks manual grants first
+      const premiumResult = await revenueCatService.checkPremiumEntitlements(userId);
+      
+      res.json({
+        success: true,
+        isPremium: premiumResult.isPremium,
+        source: premiumResult.source,
+        expiryDate: premiumResult.expiryDate,
+        isExpired: premiumResult.isExpired
+      });
+    } catch (error) {
+      console.error('Error checking premium status:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to check premium status',
+        details: error.message
+      });
+    }
+  });
+
   // Admin endpoint to grant manual premium
   app.post('/api/admin/grant-premium', async (req, res) => {
     try {

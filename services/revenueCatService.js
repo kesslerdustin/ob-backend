@@ -22,38 +22,42 @@ async function checkManualPremiumGrant(userId) {
     const db = admin.firestore();
     const userRef = db.collection('users').doc(userId);
     const userDoc = await userRef.get();
-    
+
     if (!userDoc.exists) {
+      console.log(`No user document found for ${userId}`);
       return null;
     }
-    
+
     const userData = userDoc.data();
-    
+    console.log(`Manual premium grant check for user ${userId}:`, {
+      isPremium: userData.isPremium,
+      premiumExpiry: userData.premiumExpiry
+    });
+
     // Check if user has manual premium grant
-    if (userData.manualPremium === true && userData.manualPremiumExpiry) {
-      const expiryDate = userData.manualPremiumExpiry.toDate();
-      const now = new Date();
-      
-      if (expiryDate > now) {
-        console.log(`Manual premium found for user ${userId}, expires: ${expiryDate.toISOString()}`);
+    if (userData.isPremium === true) {
+      // Check if it has an expiry date
+      let isExpired = false;
+      if (userData.premiumExpiry) {
+        const expiryDate = userData.premiumExpiry.toDate ? userData.premiumExpiry.toDate() : new Date(userData.premiumExpiry);
+        isExpired = expiryDate < new Date();
+      }
+
+      if (!isExpired) {
+        console.log(`User ${userId} has manual premium grant`);
         return {
-          isActive: true,
-          expiryDate: expiryDate,
-          grantedAt: userData.manualPremiumGrantedAt?.toDate() || null
+          isPremium: true,
+          source: 'manual_grant',
+          expiryDate: userData.premiumExpiry ? (userData.premiumExpiry.toDate ? userData.premiumExpiry.toDate() : new Date(userData.premiumExpiry)) : null
         };
       } else {
-        console.log(`Manual premium expired for user ${userId}, expired: ${expiryDate.toISOString()}`);
-        return {
-          isActive: false,
-          expiryDate: expiryDate,
-          grantedAt: userData.manualPremiumGrantedAt?.toDate() || null
-        };
+        console.log(`User ${userId} manual premium grant has expired`);
       }
     }
-    
+
     return null;
   } catch (error) {
-    console.error('Error checking manual premium grant:', error);
+    console.error(`Error checking manual premium grant for user ${userId}:`, error);
     return null;
   }
 }
@@ -94,24 +98,21 @@ async function getCustomerInfo(userId) {
  */
 async function checkPremiumEntitlements(userId) {
   try {
-    // STEP 1: Check for manual premium grants first
-    const manualPremium = await checkManualPremiumGrant(userId);
-    if (manualPremium && manualPremium.isActive) {
-      console.log(`User ${userId} has active manual premium grant`);
+    // First check for manual premium grants in Firestore
+    const manualGrant = await checkManualPremiumGrant(userId);
+    if (manualGrant) {
+      console.log(`User ${userId} has manual premium grant, returning premium status`);
       return {
         userId,
         isPremium: true,
-        expiryDate: manualPremium.expiryDate,
-        isExpired: false,
         source: 'manual_grant',
-        grantedAt: manualPremium.grantedAt,
-        purchases: [],
-        purchaseInfo: {},
-        entitlements: ['manual_premium']
+        expiryDate: manualGrant.expiryDate,
+        isExpired: false
       };
     }
-    
-    // STEP 2: Continue with RevenueCat check if no manual grant
+
+    // If no manual grant, check RevenueCat
+    console.log(`No manual grant for user ${userId}, checking RevenueCat`);
     const customerInfo = await getCustomerInfo(userId);
     
     // Get entitlements
@@ -130,9 +131,9 @@ async function checkPremiumEntitlements(userId) {
     return {
       userId,
       isPremium: hasPro && !isExpired,
+      source: 'revenuecat',
       expiryDate: expiryDate ? new Date(expiryDate) : null,
       isExpired,
-      source: 'revenuecat',
       // Include additional information that might be useful for the client
       purchases: Object.keys(purchases),
       purchaseInfo: purchases,
@@ -145,7 +146,6 @@ async function checkPremiumEntitlements(userId) {
       isPremium: false,
       expiryDate: null,
       isExpired: true,
-      source: 'error',
       error: error.message
     };
   }
