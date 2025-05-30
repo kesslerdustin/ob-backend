@@ -26,7 +26,7 @@ async function checkManualPremiumGrant(userId) {
     const userRef = db.collection('users').doc(userId);
     const userDoc = await userRef.get();
 
-    if (!userDoc.exists()) {
+    if (!userDoc.exists) {
       console.log(`❌ User document does not exist in Firestore for userId: "${userId}"`);
       return null;
     }
