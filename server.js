@@ -1041,11 +1041,24 @@ try {
       // Use the updated checkPremiumEntitlements that checks manual grants first
       const premiumResult = await revenueCatService.checkPremiumEntitlements(userId);
       
+      // Ensure expiry date is properly serialized
+      let expiryDate = null;
+      if (premiumResult.expiryDate) {
+        // Convert Firestore Timestamp to ISO string if needed
+        if (premiumResult.expiryDate.toDate) {
+          expiryDate = premiumResult.expiryDate.toDate().toISOString();
+        } else if (premiumResult.expiryDate instanceof Date) {
+          expiryDate = premiumResult.expiryDate.toISOString();
+        } else {
+          expiryDate = new Date(premiumResult.expiryDate).toISOString();
+        }
+      }
+      
       res.json({
         success: true,
         isPremium: premiumResult.isPremium,
         source: premiumResult.source,
-        expiryDate: premiumResult.expiryDate,
+        expiryDate: expiryDate,
         isExpired: premiumResult.isExpired
       });
     } catch (error) {
