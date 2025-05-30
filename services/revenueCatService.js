@@ -23,41 +23,39 @@ async function checkManualPremiumGrant(userId) {
     const userRef = db.collection('users').doc(userId);
     const userDoc = await userRef.get();
 
-    if (!userDoc.exists) {
-      console.log(`No user document found for ${userId}`);
+    if (!userDoc.exists()) {
       return null;
     }
 
     const userData = userDoc.data();
-    console.log(`Manual premium grant check for user ${userId}:`, {
-      isPremium: userData.isPremium,
-      premiumExpiry: userData.premiumExpiry
-    });
-
-    // Check if user has manual premium grant
-    if (userData.isPremium === true) {
-      // Check if it has an expiry date
+    
+    // Check for manual premium grant using the simpler field structure
+    if (userData.manualPremium === true) {
+      // Check if manual premium has expired
       let isExpired = false;
-      if (userData.premiumExpiry) {
-        const expiryDate = userData.premiumExpiry.toDate ? userData.premiumExpiry.toDate() : new Date(userData.premiumExpiry);
-        isExpired = expiryDate < new Date();
+      if (userData.manualPremiumExpiry) {
+        const expiryDate = userData.manualPremiumExpiry.toDate ? 
+          userData.manualPremiumExpiry.toDate() : 
+          new Date(userData.manualPremiumExpiry);
+        isExpired = new Date() > expiryDate;
       }
 
       if (!isExpired) {
-        console.log(`User ${userId} has manual premium grant`);
+        console.log(`✅ Manual premium grant found for user ${userId}`);
         return {
-          isPremium: true,
-          source: 'manual_grant',
-          expiryDate: userData.premiumExpiry ? (userData.premiumExpiry.toDate ? userData.premiumExpiry.toDate() : new Date(userData.premiumExpiry)) : null
+          granted: true,
+          expiryDate: userData.manualPremiumExpiry,
+          grantedAt: userData.manualPremiumGrantedAt,
+          isExpired: false
         };
       } else {
-        console.log(`User ${userId} manual premium grant has expired`);
+        console.log(`❌ Manual premium grant expired for user ${userId}`);
       }
     }
 
     return null;
   } catch (error) {
-    console.error(`Error checking manual premium grant for user ${userId}:`, error);
+    console.error('Error checking manual premium grant:', error);
     return null;
   }
 }

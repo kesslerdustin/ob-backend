@@ -35,13 +35,10 @@ async function addManualPremium(userId) {
     }
     
     await userRef.set({
-      manualPremiumGrant: {
-        granted: true,
-        grantedBy: 'admin_script',
-        grantedAt: new Date(),
-        expiryDate: expiryDate,
-        reason: 'Manual grant for testing'
-      }
+      manualPremium: true,
+      manualPremiumExpiry: expiryDate,
+      manualPremiumGrantedAt: new Date(),
+      lastUpdated: new Date()
     }, { merge: true });
     
     console.log('✅ Manual premium grant added for user:', userId);
