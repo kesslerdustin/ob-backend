@@ -6,11 +6,12 @@
 // Centralized constants for all premium features
 const CONSTANTS = {
   // Credit-related constants
-  INITIAL_CREDITS: 60,              // Credits given when user first signs up
+  INITIAL_CREDITS: 50,              // Credits given when user first signs up
   FREE_WEEKLY_CREDITS: 50,           // Keep for backward compatibility
   FREE_DAILY_CREDITS: 10,            // Daily credits for free users (was previously 50 weekly)
   PREMIUM_DAILY_CREDITS: 100,        // Daily credits minimum for premium users
   ADVENTURE_CREDIT_THRESHOLD: 20,    // Credit threshold for adventure game
+  FREE_CREDIT_CAP: 50,              // Maximum credits free users can have to receive daily bonus
   
   // Location-related constants
   FREE_DAILY_CUSTOM_LOCATIONS: 3,    // Daily custom location limit for free users
@@ -27,7 +28,8 @@ const CREDIT_LIMITS = {
   FREE_WEEKLY_CREDITS: CONSTANTS.FREE_WEEKLY_CREDITS,
   FREE_DAILY_CREDITS: CONSTANTS.FREE_DAILY_CREDITS,
   PREMIUM_DAILY_CREDITS: CONSTANTS.PREMIUM_DAILY_CREDITS,
-  ADVENTURE_CREDIT_THRESHOLD: CONSTANTS.ADVENTURE_CREDIT_THRESHOLD
+  ADVENTURE_CREDIT_THRESHOLD: CONSTANTS.ADVENTURE_CREDIT_THRESHOLD,
+  FREE_CREDIT_CAP: CONSTANTS.FREE_CREDIT_CAP
 };
 
 const LOCATION_LIMITS = {
