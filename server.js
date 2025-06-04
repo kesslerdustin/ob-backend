@@ -959,6 +959,32 @@ try {
     }
   });
 
+  // Mapbox configuration endpoint
+  app.get('/api/config/mapbox', (req, res) => {
+    try {
+      const mapboxToken = process.env.MAPBOX_ACCESS_TOKEN;
+      
+      if (!mapboxToken) {
+        return res.status(500).json({
+          success: false,
+          error: 'Mapbox token not configured'
+        });
+      }
+      
+      res.json({
+        success: true,
+        accessToken: mapboxToken
+      });
+    } catch (error) {
+      console.error('Error fetching Mapbox config:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to get Mapbox configuration',
+        details: error.message
+      });
+    }
+  });
+
   // New endpoint to get premium constants
   app.get('/api/premium/constants', (req, res) => {
     try {
