@@ -14,7 +14,7 @@ const CONSTANTS = {
   FREE_CREDIT_CAP: 50,              // Maximum credits free users can have to receive daily bonus
   
   // Location-related constants
-  FREE_DAILY_CUSTOM_LOCATIONS: 3,    // Daily custom location limit for free users
+  FREE_DAILY_CUSTOM_LOCATIONS: 1,    // Daily custom location limit for free users
   PREMIUM_DAILY_CUSTOM_LOCATIONS: 10, // Daily custom location limit for premium users
   
   // Other feature limits can be added here
