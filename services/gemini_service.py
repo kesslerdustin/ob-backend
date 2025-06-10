@@ -537,7 +537,7 @@ def analyze_info(prompt, options=None):
           }},
           "howToSpot": {{
             "title": "How to Spot",
-            "content": "Location and identification tips"
+            "content": "Location and identification tips with local relevance"
           }},
           "ratings": {{
             "title": "Ratings",
@@ -573,6 +573,7 @@ def analyze_info(prompt, options=None):
 
         All content must be in {language} language (eg: de = german response, en = english response). When referring times or units of measurement, use the language of the user (miles in english, km in german, etc).
         All ratings must be on a 0-10 scale with detailed explanations.
+        DO NOT MAKE UP FACTS THAT YOU ARE NOT SURE ABOUT. LET THE USER KNOW IF RELEVANT INFORMATION IS MISSING. PROVIDE WHAT YOU CAN AND KNOW. 
         Include seasonal relevance where applicable.
         """
 
