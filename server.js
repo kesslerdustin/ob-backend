@@ -727,6 +727,106 @@ try {
     }
   });
 
+  // Add this new endpoint for Plant.net plant identification
+  app.post('/api/identify-plant', multer({ dest: uploadsDir }).single('image'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ 
+          success: false, 
+          error: 'Image is required for plant identification' 
+        });
+      }
+
+      const plantnetApiKey = process.env.PLANTNET_API_KEY;
+      if (!plantnetApiKey) {
+        return res.status(500).json({
+          success: false,
+          error: 'Plant.net API key not configured on server'
+        });
+      }
+
+      // Get options from request body
+      const { organType = 'auto', project = 'all' } = req.body;
+
+      // Create FormData for Plant.net API
+      const FormData = require('form-data');
+      const formData = new FormData();
+      
+      // Add the image file
+      formData.append('images', fs.createReadStream(req.file.path));
+      formData.append('organs', organType);
+
+      // Make request to Plant.net API
+      const plantnetUrl = `https://my-api.plantnet.org/v2/identify/${project}?api-key=${plantnetApiKey}`;
+      
+      console.log('Making Plant.net API request:', {
+        url: plantnetUrl,
+        organType,
+        project,
+        imagePath: req.file.path
+      });
+
+      const response = await axios.post(plantnetUrl, formData, {
+        headers: {
+          ...formData.getHeaders(),
+        },
+        timeout: 30000, // 30 second timeout
+      });
+
+      console.log('Plant.net API response received:', {
+        resultsCount: response.data.results ? response.data.results.length : 0,
+        query: response.data.query || 'No query info'
+      });
+
+      // Clean up the uploaded file
+      try {
+        fs.unlinkSync(req.file.path);
+        console.log('Cleaned up temporary file');
+      } catch (cleanupError) {
+        console.error('Error cleaning up file:', cleanupError);
+      }
+
+      // Return the Plant.net results
+      res.json({
+        success: true,
+        data: response.data
+      });
+
+    } catch (error) {
+      console.error('Plant identification error:', error.response?.data || error.message);
+      
+      // Clean up the uploaded file in case of error
+      if (req.file) {
+        try {
+          fs.unlinkSync(req.file.path);
+        } catch (cleanupError) {
+          console.error('Error cleaning up file after error:', cleanupError);
+        }
+      }
+
+      // Return appropriate error response
+      if (error.response?.status === 400) {
+        res.status(400).json({
+          success: false,
+          error: 'Invalid request to Plant.net API',
+          details: error.response.data
+        });
+      } else if (error.response?.status === 404) {
+        res.status(404).json({
+          success: false,
+          error: 'Plant.net API endpoint not found',
+          details: 'Please check the API configuration'
+        });
+      } else {
+        res.status(500).json({
+          success: false,
+          error: 'Failed to identify plant',
+          details: error.message
+        });
+      }
+    }
+  });
+
   // ======== REVENUE CAT VERIFICATION API ENDPOINTS ========
   // These endpoints provide server-side verification for RevenueCat purchases
 
