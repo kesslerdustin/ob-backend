@@ -746,7 +746,7 @@ try {
       }
 
       // Get options from request body
-      const { organType = 'auto', project = 'all' } = req.body;
+      const { organType = 'auto', project = 'all', language = 'en' } = req.body;
 
       // Create FormData for Plant.net API
       const FormData = require('form-data');
@@ -756,13 +756,14 @@ try {
       formData.append('images', fs.createReadStream(req.file.path));
       formData.append('organs', organType);
 
-      // Make request to Plant.net API
-      const plantnetUrl = `https://my-api.plantnet.org/v2/identify/${project}?api-key=${plantnetApiKey}`;
+      // Make request to Plant.net API with language parameter
+      const plantnetUrl = `https://my-api.plantnet.org/v2/identify/${project}?api-key=${plantnetApiKey}&lang=${language}`;
       
       console.log('Making Plant.net API request:', {
         url: plantnetUrl,
         organType,
         project,
+        language,
         imagePath: req.file.path
       });
 
