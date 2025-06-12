@@ -1312,6 +1312,106 @@ try {
     }
   });
 
+  // YouTube API key endpoint with fallback logic
+  app.get('/api/youtube/key', (req, res) => {
+    try {
+      const keys = [];
+      
+      // Add available keys from environment variables
+      if (process.env.YOUTUBE_KEY_1) {
+        keys.push({
+          key: process.env.YOUTUBE_KEY_1,
+          id: 'key1'
+        });
+      }
+      
+      if (process.env.YOUTUBE_KEY_2) {
+        keys.push({
+          key: process.env.YOUTUBE_KEY_2,
+          id: 'key2'
+        });
+      }
+      
+      if (keys.length === 0) {
+        return res.status(500).json({
+          success: false,
+          error: 'No YouTube API keys configured'
+        });
+      }
+      
+      // Return the first available key by default
+      res.json({
+        success: true,
+        apiKey: keys[0].key,
+        keyId: keys[0].id,
+        availableKeys: keys.length
+      });
+    } catch (error) {
+      console.error('Error fetching YouTube API key:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to get YouTube API key',
+        details: error.message
+      });
+    }
+  });
+
+  // YouTube API key fallback endpoint - get next available key
+  app.post('/api/youtube/key/fallback', (req, res) => {
+    try {
+      const { currentKeyId } = req.body;
+      
+      const keys = [];
+      
+      // Add available keys from environment variables
+      if (process.env.YOUTUBE_KEY_1) {
+        keys.push({
+          key: process.env.YOUTUBE_KEY_1,
+          id: 'key1'
+        });
+      }
+      
+      if (process.env.YOUTUBE_KEY_2) {
+        keys.push({
+          key: process.env.YOUTUBE_KEY_2,
+          id: 'key2'
+        });
+      }
+      
+      if (keys.length === 0) {
+        return res.status(500).json({
+          success: false,
+          error: 'No YouTube API keys configured'
+        });
+      }
+      
+      // Find next available key (different from current)
+      const nextKey = keys.find(k => k.id !== currentKeyId);
+      
+      if (!nextKey) {
+        return res.status(429).json({
+          success: false,
+          error: 'All YouTube API keys exhausted',
+          allKeysUsed: true
+        });
+      }
+      
+      res.json({
+        success: true,
+        apiKey: nextKey.key,
+        keyId: nextKey.id,
+        availableKeys: keys.length
+      });
+    } catch (error) {
+      console.error('Error getting fallback YouTube API key:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to get fallback YouTube API key',
+        details: error.message
+      });
+    }
+  });
+
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
