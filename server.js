@@ -1312,30 +1312,63 @@ try {
     }
   });
 
+  // YouTube API key quota tracking
+  const youtubeKeyStatus = {
+    key1: { quotaExceeded: false, lastReset: null },
+    key2: { quotaExceeded: false, lastReset: null },
+    key3: { quotaExceeded: false, lastReset: null }
+  };
+
+  // Function to reset quota status (YouTube quotas reset at midnight Pacific Time)
+  const resetYouTubeQuotas = () => {
+    const now = new Date();
+    const pacificTime = new Date(now.toLocaleString("en-US", {timeZone: "America/Los_Angeles"}));
+    const resetTime = new Date(pacificTime);
+    resetTime.setHours(0, 0, 0, 0); // Midnight Pacific
+    
+    Object.keys(youtubeKeyStatus).forEach(keyId => {
+      const lastReset = youtubeKeyStatus[keyId].lastReset;
+      if (!lastReset || new Date(lastReset) < resetTime) {
+        youtubeKeyStatus[keyId].quotaExceeded = false;
+        youtubeKeyStatus[keyId].lastReset = now.toISOString();
+        console.log(`YouTube API key ${keyId} quota status reset`);
+      }
+    });
+  };
+
+  // Reset quotas on server start and then daily
+  resetYouTubeQuotas();
+  setInterval(resetYouTubeQuotas, 60 * 60 * 1000); // Check every hour for reset
+
   // YouTube API key endpoint with fallback logic
   app.get('/api/youtube/key', (req, res) => {
     try {
+      resetYouTubeQuotas(); // Check for quota reset before providing key
+      
       const keys = [];
       
       // Add available keys from environment variables
       if (process.env.YOUTUBE_KEY_1) {
         keys.push({
           key: process.env.YOUTUBE_KEY_1,
-          id: 'key1'
+          id: 'key1',
+          quotaExceeded: youtubeKeyStatus.key1.quotaExceeded
         });
       }
       
       if (process.env.YOUTUBE_KEY_2) {
         keys.push({
           key: process.env.YOUTUBE_KEY_2,
-          id: 'key2'
+          id: 'key2',
+          quotaExceeded: youtubeKeyStatus.key2.quotaExceeded
         });
       }
       
       if (process.env.YOUTUBE_KEY_3) {
         keys.push({
           key: process.env.YOUTUBE_KEY_3,
-          id: 'key3'
+          id: 'key3',
+          quotaExceeded: youtubeKeyStatus.key3.quotaExceeded
         });
       }
       
@@ -1346,12 +1379,25 @@ try {
         });
       }
       
-      // Return the first available key by default
+      // Find the first key that hasn't exceeded quota
+      const availableKey = keys.find(k => !k.quotaExceeded);
+      
+      if (!availableKey) {
+        console.log('All YouTube API keys have exceeded quotas');
+        return res.status(429).json({
+          success: false,
+          error: 'All YouTube API keys have exceeded their quotas. Please try again after midnight Pacific Time.',
+          allKeysExhausted: true
+        });
+      }
+      
+      console.log(`YouTube API key provided: ${availableKey.id} (quota status: ${availableKey.quotaExceeded ? 'exceeded' : 'available'})`);
+      
       res.json({
         success: true,
-        apiKey: keys[0].key,
-        keyId: keys[0].id,
-        availableKeys: keys.length
+        apiKey: availableKey.key,
+        keyId: availableKey.id,
+        availableKeys: keys.filter(k => !k.quotaExceeded).length
       });
     } catch (error) {
       console.error('Error fetching YouTube API key:', error);
@@ -1367,6 +1413,7 @@ try {
   app.post('/api/youtube/key/fallback', (req, res) => {
     try {
       const { currentKeyId } = req.body;
+      resetYouTubeQuotas(); // Check for quota reset before providing fallback
       
       const keys = [];
       
@@ -1374,21 +1421,24 @@ try {
       if (process.env.YOUTUBE_KEY_1) {
         keys.push({
           key: process.env.YOUTUBE_KEY_1,
-          id: 'key1'
+          id: 'key1',
+          quotaExceeded: youtubeKeyStatus.key1.quotaExceeded
         });
       }
       
       if (process.env.YOUTUBE_KEY_2) {
         keys.push({
           key: process.env.YOUTUBE_KEY_2,
-          id: 'key2'
+          id: 'key2',
+          quotaExceeded: youtubeKeyStatus.key2.quotaExceeded
         });
       }
       
       if (process.env.YOUTUBE_KEY_3) {
         keys.push({
           key: process.env.YOUTUBE_KEY_3,
-          id: 'key3'
+          id: 'key3',
+          quotaExceeded: youtubeKeyStatus.key3.quotaExceeded
         });
       }
       
@@ -1399,44 +1449,91 @@ try {
         });
       }
       
-      // Find next available key in sequence (key1 -> key2 -> key3)
-      let nextKey = null;
-      
-      console.log(`YouTube fallback requested: currentKeyId=${currentKeyId}, availableKeys=${keys.map(k => k.id).join(',')}`);
-      
-      if (currentKeyId === 'key1') {
-        nextKey = keys.find(k => k.id === 'key2') || keys.find(k => k.id === 'key3');
-      } else if (currentKeyId === 'key2') {
-        nextKey = keys.find(k => k.id === 'key3') || keys.find(k => k.id === 'key1');
-      } else if (currentKeyId === 'key3') {
-        nextKey = keys.find(k => k.id === 'key1') || keys.find(k => k.id === 'key2');
-      } else {
-        // If currentKeyId is null or unknown, start with key1
-        nextKey = keys.find(k => k.id === 'key1') || keys.find(k => k.id === 'key2') || keys.find(k => k.id === 'key3');
+      // Mark current key as quota exceeded if we're being asked for a fallback
+      if (currentKeyId && youtubeKeyStatus[currentKeyId]) {
+        youtubeKeyStatus[currentKeyId].quotaExceeded = true;
+        console.log(`Marking YouTube API key ${currentKeyId} as quota exceeded`);
       }
       
-      console.log(`YouTube fallback result: ${currentKeyId} -> ${nextKey?.id || 'none'}`);
+      // Find next available key that hasn't exceeded quota
+      const availableKeys = keys.filter(k => !k.quotaExceeded && k.id !== currentKeyId);
       
-      if (!nextKey) {
-        console.log('All YouTube API keys have been tried and failed');
+      console.log(`YouTube fallback requested: currentKeyId=${currentKeyId}, availableKeys=${keys.map(k => `${k.id}(${k.quotaExceeded ? 'exhausted' : 'available'})`).join(',')}`);
+      
+      if (availableKeys.length === 0) {
+        console.log('All YouTube API keys have exceeded quotas');
         return res.status(429).json({
           success: false,
-          error: 'All YouTube API keys exhausted',
-          allKeysUsed: true
+          error: 'All YouTube API keys have exceeded their quotas',
+          allKeysExhausted: true
         });
       }
+      
+      // Use the first available key
+      const nextKey = availableKeys[0];
+      
+      console.log(`YouTube fallback result: ${currentKeyId} -> ${nextKey.id}`);
       
       res.json({
         success: true,
         apiKey: nextKey.key,
         keyId: nextKey.id,
-        availableKeys: keys.length
+        availableKeys: availableKeys.length
       });
     } catch (error) {
       console.error('Error getting fallback YouTube API key:', error);
       res.status(500).json({
         success: false,
         error: 'Failed to get fallback YouTube API key',
+        details: error.message
+      });
+    }
+  });
+
+  // Endpoint to manually reset a key's quota status (for testing/admin)
+  app.post('/api/youtube/key/reset', (req, res) => {
+    try {
+      const { keyId, adminKey } = req.body;
+      
+      // Simple admin check
+      if (adminKey !== process.env.ADMIN_API_KEY) {
+        return res.status(403).json({
+          success: false,
+          error: 'Unauthorized'
+        });
+      }
+      
+      if (keyId && youtubeKeyStatus[keyId]) {
+        youtubeKeyStatus[keyId].quotaExceeded = false;
+        youtubeKeyStatus[keyId].lastReset = new Date().toISOString();
+        console.log(`Manually reset YouTube API key ${keyId} quota status`);
+        
+        res.json({
+          success: true,
+          message: `Key ${keyId} quota status has been reset`
+        });
+      } else if (keyId === 'all') {
+        Object.keys(youtubeKeyStatus).forEach(key => {
+          youtubeKeyStatus[key].quotaExceeded = false;
+          youtubeKeyStatus[key].lastReset = new Date().toISOString();
+        });
+        console.log('Manually reset all YouTube API key quota statuses');
+        
+        res.json({
+          success: true,
+          message: 'All key quota statuses have been reset'
+        });
+      } else {
+        res.status(400).json({
+          success: false,
+          error: 'Invalid key ID'
+        });
+      }
+    } catch (error) {
+      console.error('Error resetting YouTube API key:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to reset key quota status',
         details: error.message
       });
     }
