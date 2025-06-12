@@ -1399,10 +1399,26 @@ try {
         });
       }
       
-      // Find next available key (different from current)
-      const nextKey = keys.find(k => k.id !== currentKeyId);
+      // Find next available key in sequence (key1 -> key2 -> key3)
+      let nextKey = null;
+      
+      console.log(`YouTube fallback requested: currentKeyId=${currentKeyId}, availableKeys=${keys.map(k => k.id).join(',')}`);
+      
+      if (currentKeyId === 'key1') {
+        nextKey = keys.find(k => k.id === 'key2') || keys.find(k => k.id === 'key3');
+      } else if (currentKeyId === 'key2') {
+        nextKey = keys.find(k => k.id === 'key3') || keys.find(k => k.id === 'key1');
+      } else if (currentKeyId === 'key3') {
+        nextKey = keys.find(k => k.id === 'key1') || keys.find(k => k.id === 'key2');
+      } else {
+        // If currentKeyId is null or unknown, start with key1
+        nextKey = keys.find(k => k.id === 'key1') || keys.find(k => k.id === 'key2') || keys.find(k => k.id === 'key3');
+      }
+      
+      console.log(`YouTube fallback result: ${currentKeyId} -> ${nextKey?.id || 'none'}`);
       
       if (!nextKey) {
+        console.log('All YouTube API keys have been tried and failed');
         return res.status(429).json({
           success: false,
           error: 'All YouTube API keys exhausted',
