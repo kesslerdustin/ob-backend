@@ -1332,6 +1332,13 @@ try {
         });
       }
       
+      if (process.env.YOUTUBE_KEY_3) {
+        keys.push({
+          key: process.env.YOUTUBE_KEY_3,
+          id: 'key3'
+        });
+      }
+      
       if (keys.length === 0) {
         return res.status(500).json({
           success: false,
@@ -1375,6 +1382,13 @@ try {
         keys.push({
           key: process.env.YOUTUBE_KEY_2,
           id: 'key2'
+        });
+      }
+      
+      if (process.env.YOUTUBE_KEY_3) {
+        keys.push({
+          key: process.env.YOUTUBE_KEY_3,
+          id: 'key3'
         });
       }
       
