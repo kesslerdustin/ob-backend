@@ -13,6 +13,8 @@ const { v4: uuidv4 } = require('uuid');
 const rateLimiter = require('./services/rateLimiter');
 const revenueCatService = require('./services/revenueCatService');
 const premiumService = require('./services/premiumService');
+const { verifyFirebaseToken, optionalAuth, requirePremium, requireAdmin } = require('./middleware/auth');
+const { createUserRateLimit, createPremiumRateLimit } = require('./middleware/userRateLimit');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -74,7 +76,22 @@ class QuizRequestManager {
 
 const quizManager = new QuizRequestManager();
 
-app.use(cors());
+// Global rate limiting
+const globalRateLimit = createUserRateLimit(200, 15 * 60 * 1000); // 200 requests per 15 minutes
+app.use(globalRateLimit);
+
+// CORS configuration (restrict to your app domains)
+app.use(cors({
+  origin: [
+    'http://localhost:8081',   // Expo development
+    'exp://localhost:8081',    // Expo development
+    'exp://192.168.*:8081',    // Local network development
+    'https://wildscope-dev-9f390cc204f1.herokuapp.com', // Your backend URL
+    // Add your production app schemes when you deploy
+  ],
+  credentials: true
+}));
+
 app.use(express.json({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
 
@@ -109,6 +126,18 @@ try {
 
   app.get('/', (req, res) => {
     res.send('Hello from the backend!');
+  });
+
+  // Test authentication endpoint
+  app.get('/api/auth/test', verifyFirebaseToken, (req, res) => {
+    res.json({
+      success: true,
+      message: 'Authentication successful',
+      user: {
+        uid: req.user.uid,
+        email: req.user.email
+      }
+    });
   });
 
   app.get('/test-firebase', async (req, res) => {
@@ -236,7 +265,7 @@ try {
   });
 
   // Add this endpoint after your existing endpoints
-  app.post('/api/analyze/image', multer({ dest: uploadsDir }).single('image'), async (req, res) => {
+  app.post('/api/analyze/image', verifyFirebaseToken, multer({ dest: uploadsDir }).single('image'), async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ success: false, error: 'No image provided' });
@@ -291,7 +320,7 @@ try {
     });
   });
 
-  app.post('/api/chat/flash', multer({ dest: uploadsDir }).single('image'), async (req, res) => {
+  app.post('/api/chat/flash', verifyFirebaseToken, multer({ dest: uploadsDir }).single('image'), async (req, res) => {
     try {
         const { prompt, language, context } = req.body;
         console.log('Server - Flash Chat Request:', {
@@ -339,7 +368,7 @@ try {
   });
 
   // Add this new endpoint for biome analysis
-  app.post('/api/analyze/biome', express.json(), async (req, res) => {
+  app.post('/api/analyze/biome', verifyFirebaseToken, express.json(), async (req, res) => {
     try {
       const { location, coordinates, language } = req.body;
       
@@ -369,7 +398,7 @@ try {
   });
 
   // Update this endpoint for weather analysis
-  app.post('/api/analyze/weather', express.json(), async (req, res) => {
+  app.post('/api/analyze/weather', verifyFirebaseToken, express.json(), async (req, res) => {
     try {
       const { prompt, language } = req.body;
       console.log('Server: Received weather analysis request with language:', language);
@@ -399,7 +428,7 @@ try {
     }
   });
 
-  app.post('/api/analyze/info', express.json(), async (req, res) => {
+  app.post('/api/analyze/info', verifyFirebaseToken, express.json(), async (req, res) => {
     try {
       const { prompt } = req.body;
       
@@ -482,7 +511,7 @@ try {
   });
 
   // Add this new endpoint for game setup
-  app.post('/api/game/setup', express.json(), async (req, res) => {
+  app.post('/api/game/setup', verifyFirebaseToken, requirePremium, express.json(), async (req, res) => {
     try {
       const gameSettings = req.body;
       console.log('Game Setup Request - Language:', gameSettings.language);
@@ -562,7 +591,7 @@ try {
   });
 
   // Add this new endpoint for game master
-  app.post('/api/game/master', express.json(), async (req, res) => {
+  app.post('/api/game/master', verifyFirebaseToken, requirePremium, express.json(), async (req, res) => {
     try {
       const { context, language } = req.body;
       
@@ -613,7 +642,7 @@ try {
     }
   });
 
-  app.post('/api/quiz/generate', express.json(), async (req, res) => {
+  app.post('/api/quiz/generate', verifyFirebaseToken, requirePremium, express.json(), async (req, res) => {
     try {
         const { prompt, language, locationAnalysis } = req.body;
         const requestId = quizManager.createRequest();
@@ -1199,16 +1228,8 @@ try {
   });
 
   // Admin endpoint to grant manual premium
-  app.post('/api/admin/grant-premium', async (req, res) => {
+  app.post('/api/admin/grant-premium', requireAdmin, async (req, res) => {
     try {
-      // Check admin privileges
-      const isAdmin = req.headers['x-admin-key'] === process.env.ADMIN_API_KEY;
-      if (!isAdmin) {
-        return res.status(403).json({ 
-          success: false, 
-          error: 'Unauthorized - Admin key required' 
-        });
-      }
 
       const { userId, durationDays = 365 } = req.body;
       
@@ -1264,16 +1285,8 @@ try {
   });
 
   // Admin endpoint to revoke manual premium
-  app.post('/api/admin/revoke-premium', async (req, res) => {
+  app.post('/api/admin/revoke-premium', requireAdmin, async (req, res) => {
     try {
-      // Check admin privileges
-      const isAdmin = req.headers['x-admin-key'] === process.env.ADMIN_API_KEY;
-      if (!isAdmin) {
-        return res.status(403).json({ 
-          success: false, 
-          error: 'Unauthorized - Admin key required' 
-        });
-      }
 
       const { userId } = req.body;
       
@@ -1320,7 +1333,7 @@ try {
   };
 
   // Weather API endpoint
-  app.get('/api/weather', async (req, res) => {
+  app.get('/api/weather', optionalAuth, async (req, res) => {
     try {
       const { lat, lon, units = 'metric' } = req.query;
       
