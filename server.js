@@ -1319,6 +1319,103 @@ try {
     key3: { quotaExceeded: false, lastReset: null }
   };
 
+  // Weather API endpoint
+  app.get('/api/weather', async (req, res) => {
+    try {
+      const { lat, lon, units = 'metric' } = req.query;
+      
+      if (!lat || !lon) {
+        return res.status(400).json({
+          success: false,
+          error: 'Latitude and longitude are required'
+        });
+      }
+
+      const apiKey = process.env.OPENWEATHERMAP_API_KEY;
+      if (!apiKey) {
+        return res.status(500).json({
+          success: false,
+          error: 'Weather API key not configured on server'
+        });
+      }
+
+      // Fetch current weather and 5-day forecast in parallel
+      const [currentWeatherResponse, forecastResponse] = await Promise.all([
+        axios.get(`https://api.openweathermap.org/data/2.5/weather`, {
+          params: {
+            lat: parseFloat(lat),
+            lon: parseFloat(lon),
+            appid: apiKey,
+            units: units
+          },
+          headers: {
+            'User-Agent': USER_AGENT
+          },
+          timeout: 10000
+        }),
+        axios.get(`https://api.openweathermap.org/data/2.5/forecast`, {
+          params: {
+            lat: parseFloat(lat),
+            lon: parseFloat(lon),
+            appid: apiKey,
+            units: units
+          },
+          headers: {
+            'User-Agent': USER_AGENT
+          },
+          timeout: 10000
+        })
+      ]);
+
+      const weatherData = {
+        currentWeather: currentWeatherResponse.data,
+        forecast: forecastResponse.data
+      };
+
+      console.log('Weather data fetched successfully:', {
+        location: `${lat}, ${lon}`,
+        currentTemp: weatherData.currentWeather?.main?.temp,
+        forecastItems: weatherData.forecast?.list?.length
+      });
+
+      res.json({
+        success: true,
+        ...weatherData
+      });
+
+    } catch (error) {
+      console.error('Weather API error:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status
+      });
+
+      // Handle specific error cases
+      if (error.response?.status === 401) {
+        res.status(401).json({
+          success: false,
+          error: 'Weather API authentication failed'
+        });
+      } else if (error.response?.status === 429) {
+        res.status(429).json({
+          success: false,
+          error: 'Weather API rate limit exceeded'
+        });
+      } else if (error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED') {
+        res.status(503).json({
+          success: false,
+          error: 'Weather service temporarily unavailable'
+        });
+      } else {
+        res.status(500).json({
+          success: false,
+          error: 'Failed to fetch weather data',
+          details: error.message
+        });
+      }
+    }
+  });
+
   // Function to reset quota status (YouTube quotas reset at midnight Pacific Time)
   const resetYouTubeQuotas = () => {
     const now = new Date();
