@@ -1312,7 +1312,7 @@ try {
     }
   });
 
-  // YouTube API key quota tracking
+  // YouTube API key quota tracking!
   const youtubeKeyStatus = {
     key1: { quotaExceeded: false, lastReset: null },
     key2: { quotaExceeded: false, lastReset: null },
