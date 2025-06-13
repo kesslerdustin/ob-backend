@@ -81,15 +81,80 @@ const globalRateLimit = createUserRateLimit(200, 15 * 60 * 1000); // 200 request
 app.use(globalRateLimit);
 
 // CORS configuration (restrict to your app domains)
+const getAllowedOrigins = () => {
+  const isDevelopment = process.env.NODE_ENV !== 'production';
+  const allowedOrigins = [];
+
+  if (isDevelopment) {
+    // Development origins - use environment variables for IPs
+    const devIPs = process.env.CORS_DEVELOPMENT_IPS?.split(',') || ['192.168.1.1', '192.168.0.1'];
+    
+    allowedOrigins.push(
+      'http://localhost:8081',
+      'exp://localhost:8081',
+      'http://localhost:19006', // Expo web
+      ...devIPs.map(ip => `exp://${ip.trim()}:8081`),
+      // Add your specific development IPs via CORS_DEVELOPMENT_IPS env var
+    );
+  }
+
+  // Production origins - Expo app schemes
+  allowedOrigins.push(
+    // Your Expo app scheme from app.json
+    'wildscope://',
+    // Expo published app URLs
+    'exp://exp.host/@duselk/theoutdoorbible',
+    'https://exp.host/@duselk/theoutdoorbible',
+    // Your backend URL (for server-to-server communication)
+    'https://wildscope-dev-9f390cc204f1.herokuapp.com',
+    // Production domain from environment variable
+    process.env.CORS_PRODUCTION_DOMAIN || 'https://wildscope.com',
+  );
+
+  // Filter out undefined values
+  const filteredOrigins = allowedOrigins.filter(Boolean);
+  
+  console.log('CORS - Allowed origins:', filteredOrigins);
+  return filteredOrigins;
+};
+
+// Enhanced CORS with origin validation
 app.use(cors({
-  origin: [
-    'http://localhost:8081',   // Expo development
-    'exp://localhost:8081',    // Expo development
-    'exp://192.168.*:8081',    // Local network development
-    'https://wildscope-dev-9f390cc204f1.herokuapp.com', // Your backend URL
-    // Add your production app schemes when you deploy
-  ],
-  credentials: true
+  origin: function (origin, callback) {
+    const allowedOrigins = getAllowedOrigins();
+    
+    // Allow requests with no origin (mobile apps, Postman, etc.)
+    if (!origin) {
+      console.log('CORS - Request with no origin allowed');
+      return callback(null, true);
+    }
+
+    // Check if origin is in allowed list
+    const isAllowed = allowedOrigins.some(allowedOrigin => {
+      if (allowedOrigin.endsWith('://')) {
+        // Match scheme only (for app schemes like wildscope://)
+        return origin.startsWith(allowedOrigin);
+      }
+      return origin === allowedOrigin;
+    });
+
+    if (isAllowed) {
+      console.log(`CORS - Origin allowed: ${origin}`);
+      callback(null, true);
+    } else {
+      console.warn(`CORS - Origin blocked: ${origin}`);
+      callback(new Error('Not allowed by CORS'), false);
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: [
+    'Content-Type', 
+    'Authorization', 
+    'X-Requested-With',
+    'X-App-Package', // Custom header for app verification
+    'X-App-Version'  // Custom header for app version
+  ]
 }));
 
 app.use(express.json({ extended: true }));
@@ -100,6 +165,61 @@ app.use((req, res, next) => {
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     next();
 });
+
+// App package verification middleware (for additional security)
+const verifyAppPackage = (req, res, next) => {
+  // Skip verification for development environment
+  if (process.env.NODE_ENV !== 'production') {
+    return next();
+  }
+
+  // Skip verification for certain endpoints that don't require it
+  const skipVerification = [
+    '/api/app-links',
+    '/',
+    '/test-firebase'
+  ];
+
+  if (skipVerification.some(path => req.path.startsWith(path))) {
+    return next();
+  }
+
+  const appPackage = req.headers['x-app-package'];
+  const appVersion = req.headers['x-app-version'];
+  
+  // Expected package names from app.json
+  const validPackages = (process.env.ALLOWED_APP_PACKAGES?.split(',') || [
+    'com.duselk.theoutdoorbible' // Default package
+  ]).map(pkg => pkg.trim());
+
+  // Log for monitoring
+  console.log('App package verification:', {
+    package: appPackage,
+    version: appVersion,
+    path: req.path,
+    userAgent: req.headers['user-agent']
+  });
+
+  // In production, require valid app package
+  if (!appPackage || !validPackages.includes(appPackage)) {
+    console.warn('Invalid or missing app package:', {
+      provided: appPackage,
+      expected: validPackages,
+      ip: req.ip,
+      userAgent: req.headers['user-agent']
+    });
+    
+    return res.status(403).json({
+      success: false,
+      error: 'Access denied: Invalid app package'
+    });
+  }
+
+  next();
+};
+
+// Apply app package verification to all routes except public ones
+app.use(verifyAppPackage);
 
 try {
   console.log('Attempting to initialize Firebase Admin SDK...');
@@ -123,6 +243,26 @@ try {
   });
 
   console.log('Firebase Admin SDK initialized successfully');
+
+  // Security monitoring endpoint (admin only)
+  app.get('/api/security/status', (req, res) => {
+    const adminKey = req.headers['x-admin-key'];
+    if (adminKey !== process.env.ADMIN_API_KEY) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+
+    res.json({
+      success: true,
+      security: {
+        corsEnabled: true,
+        environment: process.env.NODE_ENV,
+        allowedOrigins: getAllowedOrigins(),
+        appPackageVerification: process.env.NODE_ENV === 'production',
+        allowedPackages: (process.env.ALLOWED_APP_PACKAGES?.split(',') || ['com.duselk.theoutdoorbible']).map(pkg => pkg.trim()),
+        rateLimitEnabled: true
+      }
+    });
+  });
 
   app.get('/', (req, res) => {
     res.send('Hello from the backend!');
@@ -163,7 +303,7 @@ try {
     }
   });
 
-  app.get('/api/wiki/:language/:term', async (req, res) => {
+  app.get('/api/wiki/:language/:term', verifyFirebaseToken, async (req, res) => {
     try {
       const { language, term } = req.params;
       
@@ -1129,7 +1269,7 @@ try {
   });
 
   // New endpoint to get premium constants
-  app.get('/api/premium/constants', (req, res) => {
+  app.get('/api/premium/constants', verifyFirebaseToken, (req, res) => {
     try {
       const constants = premiumService.getPremiumConstants();
       res.json({
@@ -1346,7 +1486,7 @@ try {
   };
 
   // Weather API endpoint
-  app.get('/api/weather', optionalAuth, async (req, res) => {
+  app.get('/api/weather', verifyFirebaseToken, async (req, res) => {
     try {
       const { lat, lon, units = 'metric' } = req.query;
       
