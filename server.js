@@ -1345,6 +1345,32 @@ try {
     try {
       resetYouTubeQuotas(); // Check for quota reset before providing key
       
+      // Only use key 1 for now (commented out cycling through multiple keys)
+      if (!process.env.YOUTUBE_KEY_1) {
+        return res.status(500).json({
+          success: false,
+          error: 'No YouTube API keys configured'
+        });
+      }
+      
+      // Only check key1 status
+      const key1 = {
+        key: process.env.YOUTUBE_KEY_1,
+        id: 'key1',
+        quotaExceeded: youtubeKeyStatus.key1.quotaExceeded
+      };
+      
+      // For now, always return key1 regardless of quota status
+      console.log(`YouTube API key provided: ${key1.id} (quota status: ${key1.quotaExceeded ? 'exceeded' : 'available'})`);
+      
+      res.json({
+        success: true,
+        apiKey: key1.key,
+        keyId: key1.id,
+        availableKeys: key1.quotaExceeded ? 0 : 1
+      });
+
+      /* COMMENTED OUT: Multiple key cycling logic
       const keys = [];
       
       // Add available keys from environment variables
@@ -1399,6 +1425,7 @@ try {
         keyId: availableKey.id,
         availableKeys: keys.filter(k => !k.quotaExceeded).length
       });
+      */
     } catch (error) {
       console.error('Error fetching YouTube API key:', error);
       res.status(500).json({
@@ -1415,6 +1442,37 @@ try {
       const { currentKeyId } = req.body;
       resetYouTubeQuotas(); // Check for quota reset before providing fallback
       
+      // Only use key 1 for now (commented out cycling through multiple keys)
+      if (!process.env.YOUTUBE_KEY_1) {
+        return res.status(500).json({
+          success: false,
+          error: 'No YouTube API keys configured'
+        });
+      }
+      
+      // Mark current key as quota exceeded if we're being asked for a fallback
+      if (currentKeyId && youtubeKeyStatus[currentKeyId]) {
+        youtubeKeyStatus[currentKeyId].quotaExceeded = true;
+        console.log(`Marking YouTube API key ${currentKeyId} as quota exceeded`);
+      }
+      
+      // For now, always return the same key1 (no fallback available)
+      console.log(`YouTube fallback requested but only using key1: currentKeyId=${currentKeyId}`);
+      
+      const key1 = {
+        key: process.env.YOUTUBE_KEY_1,
+        id: 'key1',
+        quotaExceeded: youtubeKeyStatus.key1.quotaExceeded
+      };
+      
+      res.json({
+        success: true,
+        apiKey: key1.key,
+        keyId: key1.id,
+        availableKeys: key1.quotaExceeded ? 0 : 1
+      });
+
+      /* COMMENTED OUT: Multiple key cycling logic
       const keys = [];
       
       // Add available keys from environment variables
@@ -1480,6 +1538,7 @@ try {
         keyId: nextKey.id,
         availableKeys: availableKeys.length
       });
+      */
     } catch (error) {
       console.error('Error getting fallback YouTube API key:', error);
       res.status(500).json({
