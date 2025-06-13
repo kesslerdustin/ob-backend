@@ -140,6 +140,19 @@ try {
     });
   });
 
+  // Test endpoint for premium authentication
+  app.get('/api/auth/test-premium', verifyFirebaseToken, requirePremium, (req, res) => {
+    res.json({
+      success: true,
+      message: 'Premium authentication successful',
+      user: {
+        uid: req.user.uid,
+        email: req.user.email
+      },
+      premium: true
+    });
+  });
+
   app.get('/test-firebase', async (req, res) => {
     try {
       const users = await admin.auth().listUsers(10);
