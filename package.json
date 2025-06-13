@@ -5,7 +5,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "postinstall": "pip install -r requirements.txt",
     "test:ai": "node tests/testAI.js",
     "test:ai:vision": "node tests/testAI.js vision",
     "test:ai:search": "node tests/testAI.js search"
