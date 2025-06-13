@@ -495,7 +495,7 @@ try {
   });
 
   // Add this new endpoint for scenario generation
-  app.post('/api/scenarios/generate', express.json(), async (req, res) => {
+  app.post('/api/scenarios/generate', verifyFirebaseToken, express.json(), async (req, res) => {
     try {
       const { location, language } = req.body;
       
@@ -630,7 +630,7 @@ try {
   });
 
   // Add this new endpoint for game summary
-  app.post('/api/game/summary', express.json(), async (req, res) => {
+  app.post('/api/game/summary', verifyFirebaseToken, express.json(), async (req, res) => {
     try {
         console.log('Received summary request:', req.body);
         const { context, language } = req.body;
@@ -735,7 +735,7 @@ try {
   });
 
   // Add this new endpoint for checking image appropriateness
-  app.post('/api/check-image-appropriate', multer({ dest: uploadsDir }).single('image'), async (req, res) => {
+  app.post('/api/check-image-appropriate', verifyFirebaseToken, multer({ dest: uploadsDir }).single('image'), async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ error: 'Image is required' });
@@ -770,7 +770,7 @@ try {
   });
 
   // Add this new endpoint for Plant.net plant identification
-  app.post('/api/identify-plant', multer({ dest: uploadsDir }).single('image'), async (req, res) => {
+  app.post('/api/identify-plant', verifyFirebaseToken, multer({ dest: uploadsDir }).single('image'), async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ 
@@ -1103,7 +1103,7 @@ try {
   });
 
   // Mapbox configuration endpoint
-  app.get('/api/config/mapbox', (req, res) => {
+  app.get('/api/config/mapbox', verifyFirebaseToken, (req, res) => {
     try {
       const mapboxToken = process.env.MAPBOX_ACCESS_TOKEN;
       
@@ -1194,7 +1194,7 @@ try {
   });
 
   // Premium check endpoint that includes manual grants
-  app.post('/api/premium/check', async (req, res) => {
+  app.post('/api/premium/check', verifyFirebaseToken, async (req, res) => {
     try {
       const { userId } = req.body;
       
@@ -1464,7 +1464,7 @@ try {
   setInterval(resetYouTubeQuotas, 60 * 60 * 1000); // Check every hour for reset
 
   // YouTube API key endpoint with fallback logic
-  app.get('/api/youtube/key', (req, res) => {
+  app.get('/api/youtube/key', verifyFirebaseToken, (req, res) => {
     try {
       resetYouTubeQuotas(); // Check for quota reset before providing key
       
@@ -1560,7 +1560,7 @@ try {
   });
 
   // YouTube API key fallback endpoint - get next available key
-  app.post('/api/youtube/key/fallback', (req, res) => {
+  app.post('/api/youtube/key/fallback', verifyFirebaseToken, (req, res) => {
     try {
       const { currentKeyId } = req.body;
       resetYouTubeQuotas(); // Check for quota reset before providing fallback
@@ -1673,7 +1673,7 @@ try {
   });
 
   // Endpoint to manually reset a key's quota status (for testing/admin)
-  app.post('/api/youtube/key/reset', (req, res) => {
+  app.post('/api/youtube/key/reset', verifyFirebaseToken, (req, res) => {
     try {
       const { keyId, adminKey } = req.body;
       

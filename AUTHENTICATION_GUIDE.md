@@ -19,9 +19,9 @@ The backend now requires authentication for most endpoints. This prevents unauth
 
 #### Public Endpoints (No Auth Required)
 - `GET /` - Health check
-- `GET /api/app-links` - App configuration
-- `GET /api/config/mapbox` - Mapbox configuration
+- `GET /api/app-links` - App store links
 - `GET /api/premium/constants` - Premium constants
+- `GET /api/premium/limits` - Premium limits info
 
 #### User Authenticated Endpoints
 - `POST /api/chat/flash` - Flash chat
@@ -29,6 +29,15 @@ The backend now requires authentication for most endpoints. This prevents unauth
 - `POST /api/analyze/biome` - Biome analysis
 - `POST /api/analyze/weather` - Weather analysis
 - `POST /api/analyze/info` - Information analysis
+- `POST /api/scenarios/generate` - Scenario generation
+- `POST /api/game/summary` - Game summary
+- `POST /api/check-image-appropriate` - Image appropriateness check
+- `POST /api/identify-plant` - Plant identification
+- `POST /api/premium/check` - Premium status check
+- `GET /api/config/mapbox` - Mapbox configuration (API key access)
+- `GET /api/youtube/key` - YouTube API key access
+- `POST /api/youtube/key/fallback` - YouTube API key fallback
+- `POST /api/youtube/key/reset` - YouTube API key reset
 
 #### Premium Only Endpoints
 - `POST /api/game/setup` - Game setup
