@@ -260,7 +260,7 @@ def analyze_image(prompt, image_path, options=None):
         You MUST return only ONE object in this exact JSON structure:
         {{
             "data": {{
-                "category": "One of: POI, Flora, Fauna, Fungi, Custom",
+                "category": "One of: POI, Flora, Fauna, Fungi, Bushcraft,Custom",
                 "subcategory": "Specific subcategory based on category",
                 "name": "Common name or title in {language} only (example: de = german, en = english. etc), scientific name if applicable in parentheses after the common name",
                 "description": "Detailed description in {language} only (example: de = german, en = english. etc do not include the language code in the response)"
@@ -358,6 +358,18 @@ def flash_chat(prompt, image_path=None, options=None):
         User message: {prompt}
 
         CRITICAL: Respond in {language} language WITHOUT including the language code. Never start your response with language codes like 'de:', 'en:', etc. Also do not give any introduction, reply only with the answer. When referring times or units of measurement, use the language of the user (miles in english, km in german, etc).
+
+        IMPORTANT EXTRA RULE: IF THE USER is asking for you to create a waypoint, if you have enough information return EXACTLY and ONLY this JSON structure:
+        {
+        "action": "add_waypoint",
+        "data": {
+            "name": "Summit Viewpoint",
+            "location": "45.123456, -122.654321",
+            "color": "#3498db",
+            "category": "POI"
+        }
+        }
+        IF you dont have enough information or need clarification which point to add, ask the user for clarification.
         """
 
         # Prepare content list
