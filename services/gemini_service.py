@@ -367,16 +367,13 @@ def flash_chat(prompt, image_path=None, options=None):
         - "I can save this as a waypoint if you'd like"
         - "This seems like an important spot to remember - shall I create a waypoint?"
         
-        ONLY when creating a waypoint, include this EXACT JSON structure at the end of your response:
-        {{
-            "action": "add_waypoint",
-            "data": {{
-                "name": "Clear, descriptive name (max 50 characters)",
-                "location": "latitude, longitude (as comma-separated decimal degrees)",
-                "color": "One of: #3498db, #2ecc71, #f39c12, #9b59b6, #34495e, #1abc9c",
-                "category": "One of: Custom, POI, Landscape, Flora, Fauna"
-            }}
-        }}
+        CRITICAL: When creating a waypoint, you must:
+        1. Give your normal response text first
+        2. Then add the JSON object directly in the text (NO markdown formatting, NO code blocks, NO backticks)
+        3. The JSON must be a single line or properly formatted object starting with {{ and ending with }}
+        
+        EXACT JSON FORMAT (place directly in your response text):
+        {{"action": "add_waypoint", "data": {{"name": "Clear, descriptive name (max 50 characters)", "location": "latitude, longitude", "color": "#3498db", "category": "Custom"}}}}
         
         Waypoint Guidelines:
         - Name should be descriptive and location-specific
@@ -384,6 +381,8 @@ def flash_chat(prompt, image_path=None, options=None):
         - Choose appropriate category: POI for landmarks/buildings, Landscape for natural features, Flora for plants, Fauna for animal-related spots, Custom for everything else
         - Coordinates must be precise decimal degrees (6 decimal places recommended)
         - Only suggest coordinates that are logical based on the context provided
+        - DO NOT use markdown formatting, code blocks, or backticks around the JSON
+        - The JSON should be embedded directly in your response text
 
         CRITICAL: Respond in {language} language WITHOUT including the language code. Never start your response with language codes like 'de:', 'en:', etc. Also do not give any introduction, reply only with the answer. When referring times or units of measurement, use the language of the user (miles in english, km in german, etc).
         
