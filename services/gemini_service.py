@@ -342,7 +342,7 @@ def search_and_generate(prompt):
 
 @with_model_fallback(primary_model=FLASH_MODEL)
 def flash_chat(prompt, image_path=None, options=None):
-    """Flash chat generation using Gemini 2.0 with optional image support"""
+    """Flash chat generation using Gemini 2.0 with optional image support and waypoint functionality"""
     try:
         options = json.loads(options) if options else {}
         language = options.get('language', 'en')
@@ -350,12 +350,40 @@ def flash_chat(prompt, image_path=None, options=None):
         
         # Make language instruction more explicit and move it to the end
         localized_prompt = f"""
-        You are a helpful outdoor guide and survival expert. You have detailed information about the user's location, time, season, weather, surroundings, and possibly a satellite view of their position. Be precise, logical and helpful, and incorporate this contextual information naturally into your responses when relevant. Only do so, if it makes sense. Be aware of past messages and context and dont repeat yourself except if its really necessary!.
+        You are a helpful outdoor guide and survival expert. You have detailed information about the user's location, time, season, weather, surroundings, and possibly a satellite view of their position. Be precise, logical and helpful, and incorporate this contextual information naturally into your responses when relevant. Only do so, if it makes sense. Be aware of past messages and context and dont repeat yourself except if its really necessary!
 
         Context about the current location and conditions:
         {context}
         
         User message: {prompt}
+
+        WAYPOINT FUNCTIONALITY:
+        You can suggest creating waypoints for points of interest, important locations, or survival-relevant spots. However, ONLY return waypoint JSON if:
+        1. The user EXPLICITLY asks you to create a waypoint, OR
+        2. You strongly recommend a specific location that would be highly beneficial to save (e.g., water source, shelter location, safe zone, landmark)
+        
+        When suggesting a waypoint WITHOUT creating one, use phrases like:
+        - "Would you like me to create a waypoint for this location?"
+        - "I can save this as a waypoint if you'd like"
+        - "This seems like an important spot to remember - shall I create a waypoint?"
+        
+        ONLY when creating a waypoint, include this EXACT JSON structure at the end of your response:
+        {{
+            "action": "add_waypoint",
+            "data": {{
+                "name": "Clear, descriptive name (max 50 characters)",
+                "location": "latitude, longitude (as comma-separated decimal degrees)",
+                "color": "One of: #3498db, #2ecc71, #f39c12, #9b59b6, #34495e, #1abc9c",
+                "category": "One of: Custom, POI, Landscape, Flora, Fauna"
+            }}
+        }}
+        
+        Waypoint Guidelines:
+        - Name should be descriptive and location-specific
+        - Use #3498db (blue) as default color
+        - Choose appropriate category: POI for landmarks/buildings, Landscape for natural features, Flora for plants, Fauna for animal-related spots, Custom for everything else
+        - Coordinates must be precise decimal degrees (6 decimal places recommended)
+        - Only suggest coordinates that are logical based on the context provided
 
         CRITICAL: Respond in {language} language WITHOUT including the language code. Never start your response with language codes like 'de:', 'en:', etc. Also do not give any introduction, reply only with the answer. When referring times or units of measurement, use the language of the user (miles in english, km in german, etc).
         
