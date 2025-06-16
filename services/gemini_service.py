@@ -371,6 +371,7 @@ def flash_chat(prompt, image_path=None, options=None):
         1. Give your normal response text first
         2. Then add the JSON object directly in the text (NO markdown formatting, NO code blocks, NO backticks)
         3. The JSON must be a single line or properly formatted object starting with {{ and ending with }}
+        4. Do not ask for creating the waypoint after youve returned the JSON, it will be created automatically.
         
         EXACT JSON FORMAT (place directly in your response text):
         {{"action": "add_waypoint", "data": {{"name": "Clear, descriptive name (max 50 characters)", "location": "latitude, longitude", "color": "#3498db", "category": "Custom"}}}}
