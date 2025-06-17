@@ -1760,7 +1760,7 @@ try {
         });
       }
       
-      if (!process.env.OPENWEATHER_API_KEY) {
+      if (!process.env.OPENWEATHERMAP_API_KEY) {
         return res.status(500).json({
           success: false,
           error: 'Weather service not configured'
