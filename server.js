@@ -1748,6 +1748,34 @@ try {
     }
   };
 
+  // Feature flags endpoint - secure endpoint to get feature configurations
+  app.get('/api/config/features', verifyFirebaseToken, (req, res) => {
+    try {
+      // Get feature flags from environment variables
+      const showYoutubeFeed = process.env.SHOW_YOUTUBE_FEED === 'true';
+      
+      console.log('Feature flags requested:', {
+        showYoutubeFeed,
+        userId: req.user?.uid
+      });
+      
+      res.json({
+        success: true,
+        features: {
+          showYoutubeFeed
+        },
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Error fetching feature flags:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to fetch feature flags',
+        details: error.message
+      });
+    }
+  });
+
   // Weather API endpoint
   app.get('/api/weather', verifyFirebaseToken, async (req, res) => {
     try {
