@@ -1770,7 +1770,7 @@ try {
       console.log(`Weather request for coordinates: ${lat}, ${lon}, units: ${units}`);
       
       // Fetch current weather
-      const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${process.env.OPENWEATHER_API_KEY}&units=${units}`;
+      const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${process.env.OPENWEATHERMAP_API_KEY}&units=${units}`;
       const currentWeatherResponse = await fetch(currentWeatherUrl);
       
       if (!currentWeatherResponse.ok) {
@@ -1780,7 +1780,7 @@ try {
       const currentWeather = await currentWeatherResponse.json();
       
       // Fetch forecast
-      const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${process.env.OPENWEATHER_API_KEY}&units=${units}`;
+      const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${process.env.OPENWEATHERMAP_API_KEY}&units=${units}`;
       const forecastResponse = await fetch(forecastUrl);
       
       if (!forecastResponse.ok) {
