@@ -1484,388 +1484,433 @@ try {
     }
   });
 
-  // YouTube API key quota tracking!
-  const youtubeKeyStatus = {
-    key1: { quotaExceeded: false, lastReset: null },
-    key2: { quotaExceeded: false, lastReset: null },
-    key3: { quotaExceeded: false, lastReset: null }
+  // Global Trends Feed - Daily Job Configuration
+  const GLOBAL_TRENDS_CATEGORIES = {
+    bushcraft_survival: {
+      terms: ['bushcraft', 'survival', 'wilderness skills', 'outdoor survival', 'primitive skills'],
+      searchQuery: 'bushcraft survival outdoor wilderness primitive skills'
+    },
+    nature_wildlife: {
+      terms: ['nature', 'wildlife', 'outdoor', 'hiking', 'camping', 'adventure'],
+      searchQuery: 'nature wildlife outdoor hiking camping adventure'
+    }
   };
 
-  // Weather API endpoint
-  app.get('/api/weather', verifyFirebaseToken, async (req, res) => {
-    try {
-      const { lat, lon, units = 'metric' } = req.query;
-      
-      if (!lat || !lon) {
-        return res.status(400).json({
-          success: false,
-          error: 'Latitude and longitude are required'
-        });
-      }
+  // Global state to track ongoing fetch operations
+  let globalTrendsFetchInProgress = false;
+  let lastGlobalTrendsFetch = null;
 
-      const apiKey = process.env.OPENWEATHERMAP_API_KEY;
-      if (!apiKey) {
-        return res.status(500).json({
-          success: false,
-          error: 'Weather API key not configured on server'
-        });
-      }
+  // Function to fetch trending videos for global feed
+  const fetchGlobalTrendingVideos = async (forceRefresh = false) => {
+    // Prevent multiple simultaneous fetches
+    if (globalTrendsFetchInProgress && !forceRefresh) {
+      console.log('🔄 Global trends fetch already in progress, skipping...');
+      return false;
+    }
 
-      // Fetch current weather and 5-day forecast in parallel
-      const [currentWeatherResponse, forecastResponse] = await Promise.all([
-        axios.get(`https://api.openweathermap.org/data/2.5/weather`, {
-          params: {
-            lat: parseFloat(lat),
-            lon: parseFloat(lon),
-            appid: apiKey,
-            units: units
-          },
-          headers: {
-            'User-Agent': USER_AGENT
-          },
-          timeout: 10000
-        }),
-        axios.get(`https://api.openweathermap.org/data/2.5/forecast`, {
-          params: {
-            lat: parseFloat(lat),
-            lon: parseFloat(lon),
-            appid: apiKey,
-            units: units
-          },
-          headers: {
-            'User-Agent': USER_AGENT
-          },
-          timeout: 10000
-        })
-      ]);
-
-      const weatherData = {
-        currentWeather: currentWeatherResponse.data,
-        forecast: forecastResponse.data
-      };
-
-      console.log('Weather data fetched successfully:', {
-        location: `${lat}, ${lon}`,
-        currentTemp: weatherData.currentWeather?.main?.temp,
-        forecastItems: weatherData.forecast?.list?.length
-      });
-
-      res.json({
-        success: true,
-        ...weatherData
-      });
-
-    } catch (error) {
-      console.error('Weather API error:', {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status
-      });
-
-      // Handle specific error cases
-      if (error.response?.status === 401) {
-        res.status(401).json({
-          success: false,
-          error: 'Weather API authentication failed'
-        });
-      } else if (error.response?.status === 429) {
-        res.status(429).json({
-          success: false,
-          error: 'Weather API rate limit exceeded'
-        });
-      } else if (error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED') {
-        res.status(503).json({
-          success: false,
-          error: 'Weather service temporarily unavailable'
-        });
-      } else {
-        res.status(500).json({
-          success: false,
-          error: 'Failed to fetch weather data',
-          details: error.message
-        });
+    // Rate limiting: don't fetch more than once every 30 minutes unless forced
+    if (!forceRefresh && lastGlobalTrendsFetch) {
+      const timeSinceLastFetch = Date.now() - lastGlobalTrendsFetch;
+      const minInterval = 30 * 60 * 1000; // 30 minutes
+      if (timeSinceLastFetch < minInterval) {
+        console.log(`🕒 Global trends fetch rate limited. Last fetch: ${Math.round(timeSinceLastFetch / 60000)} minutes ago`);
+        return false;
       }
     }
-  });
 
-  // Function to reset quota status (YouTube quotas reset at midnight Pacific Time)
-  const resetYouTubeQuotas = () => {
-    const now = new Date();
-    const pacificTime = new Date(now.toLocaleString("en-US", {timeZone: "America/Los_Angeles"}));
-    const resetTime = new Date(pacificTime);
-    resetTime.setHours(0, 0, 0, 0); // Midnight Pacific
+    globalTrendsFetchInProgress = true;
+    lastGlobalTrendsFetch = Date.now();
     
-    Object.keys(youtubeKeyStatus).forEach(keyId => {
-      const lastReset = youtubeKeyStatus[keyId].lastReset;
-      if (!lastReset || new Date(lastReset) < resetTime) {
-        youtubeKeyStatus[keyId].quotaExceeded = false;
-        youtubeKeyStatus[keyId].lastReset = now.toISOString();
-        console.log(`YouTube API key ${keyId} quota status reset`);
+    console.log('🌍 Starting Global Trends Feed update...');
+    
+    try {
+      // Get YouTube API key
+      if (!process.env.YOUTUBE_KEY_1) {
+        throw new Error('No YouTube API key configured for global trends');
       }
-    });
+      
+      const apiKey = process.env.YOUTUBE_KEY_1;
+      const trendingVideos = {};
+      
+      // Process each category
+      for (const [categoryKey, categoryData] of Object.entries(GLOBAL_TRENDS_CATEGORIES)) {
+        console.log(`🔍 Fetching trending videos for category: ${categoryKey}`);
+        
+        try {
+          // Search for trending/popular videos in this category
+          const trendingSearches = [
+            `${categoryData.searchQuery} trending 2024`,
+            `${categoryData.searchQuery} viral`,
+            `${categoryData.searchQuery} popular this week`
+          ];
+          
+          let allCategoryVideos = [];
+          
+          // Try multiple search terms for better variety
+          for (const searchTerm of trendingSearches) {
+            try {
+              const searchParams = new URLSearchParams({
+                part: 'snippet',
+                maxResults: '25', // Get 25 videos per search term
+                q: searchTerm,
+                type: 'video',
+                videoDuration: 'medium', // Filter out shorts
+                order: 'relevance',
+                publishedAfter: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), // Last 30 days
+                safeSearch: 'none',
+                key: apiKey
+              });
+
+              const searchUrl = `https://www.googleapis.com/youtube/v3/search?${searchParams.toString()}`;
+              console.log(`🔍 Searching: ${searchTerm}`);
+              
+              const response = await fetch(searchUrl);
+              if (!response.ok) {
+                console.warn(`Search failed for "${searchTerm}": ${response.status}`);
+                continue;
+              }
+              
+              const data = await response.json();
+              if (data.items && data.items.length > 0) {
+                const videos = data.items.map(item => ({
+                  id: item.id.videoId,
+                  title: item.snippet.title,
+                  description: item.snippet.description,
+                  thumbnail: item.snippet.thumbnails.medium?.url || item.snippet.thumbnails.default?.url,
+                  channelTitle: item.snippet.channelTitle,
+                  publishedAt: item.snippet.publishedAt,
+                  url: `https://www.youtube.com/watch?v=${item.id.videoId}`,
+                  searchTerm: searchTerm,
+                  category: categoryKey
+                }));
+                
+                allCategoryVideos.push(...videos);
+                console.log(`✅ Found ${videos.length} videos for "${searchTerm}"`);
+              }
+              
+              // Add delay between requests to avoid rate limiting
+              await new Promise(resolve => setTimeout(resolve, 1000));
+              
+            } catch (searchError) {
+              console.error(`Error in search "${searchTerm}":`, searchError);
+              continue;
+            }
+          }
+          
+          // Remove duplicates and limit to 50 best videos
+          const uniqueVideos = allCategoryVideos.filter((video, index, self) => 
+            index === self.findIndex(v => v.id === video.id)
+          ).slice(0, 50);
+          
+          trendingVideos[categoryKey] = {
+            videos: uniqueVideos,
+            lastUpdated: new Date().toISOString(),
+            totalFound: uniqueVideos.length
+          };
+          
+          console.log(`✅ Category ${categoryKey}: ${uniqueVideos.length} unique trending videos`);
+          
+        } catch (categoryError) {
+          console.error(`Error fetching videos for category ${categoryKey}:`, categoryError);
+          trendingVideos[categoryKey] = {
+            videos: [],
+            lastUpdated: new Date().toISOString(),
+            error: categoryError.message,
+            totalFound: 0
+          };
+        }
+      }
+      
+      // Save to Firestore
+      const db = admin.firestore();
+      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+      
+      const dailyFeedRef = db.collection('dailyFeed').doc(today);
+      await dailyFeedRef.set({
+        date: today,
+        timestamp: admin.firestore.FieldValue.serverTimestamp(),
+        categories: trendingVideos,
+        totalVideos: Object.values(trendingVideos).reduce((sum, cat) => sum + cat.totalFound, 0),
+        generatedAt: new Date().toISOString(),
+        fetchType: forceRefresh ? 'manual' : 'automatic'
+      });
+      
+      console.log(`🌍 Global Trends Feed updated successfully for ${today}`);
+      console.log(`📊 Total videos: ${Object.values(trendingVideos).reduce((sum, cat) => sum + cat.totalFound, 0)}`);
+      
+      return true;
+      
+    } catch (error) {
+      console.error('❌ Error updating Global Trends Feed:', error);
+      return false;
+    } finally {
+      globalTrendsFetchInProgress = false;
+    }
   };
 
-  // Reset quotas on server start and then daily
-  resetYouTubeQuotas();
-  setInterval(resetYouTubeQuotas, 60 * 60 * 1000); // Check every hour for reset
+  // Enhanced function to check for existing data with fallback dates
+  const findLatestGlobalTrendsData = async (requestedDate = null) => {
+    const db = admin.firestore();
+    const today = new Date().toISOString().split('T')[0];
+    const targetDate = requestedDate || today;
+    
+    console.log(`🔍 Looking for global trends data starting from: ${targetDate}`);
+    
+    // Try to find data for the last 7 days
+    const datesToTry = [];
+    for (let i = 0; i < 7; i++) {
+      const checkDate = new Date(targetDate);
+      checkDate.setDate(checkDate.getDate() - i);
+      datesToTry.push(checkDate.toISOString().split('T')[0]);
+    }
+    
+    for (const dateStr of datesToTry) {
+      try {
+        console.log(`🔍 Checking for data on: ${dateStr}`);
+        const dailyFeedRef = db.collection('dailyFeed').doc(dateStr);
+        const doc = await dailyFeedRef.get();
+        
+        if (doc.exists) {
+          const data = doc.data();
+          console.log(`✅ Found global trends data for: ${dateStr}`);
+          return {
+            success: true,
+            date: dateStr,
+            isLatest: dateStr === today,
+            categories: data.categories || {},
+            totalVideos: data.totalVideos || 0,
+            lastUpdated: data.generatedAt || data.timestamp?.toDate?.()?.toISOString(),
+            daysOld: datesToTry.indexOf(dateStr)
+          };
+        }
+      } catch (error) {
+        console.error(`Error checking date ${dateStr}:`, error);
+        continue;
+      }
+    }
+    
+    console.log('❌ No global trends data found for the last 7 days');
+    return null;
+  };
 
-  // YouTube API key endpoint with fallback logic
-  app.get('/api/youtube/key', verifyFirebaseToken, (req, res) => {
+  // Schedule daily global trends update (runs at 6 AM UTC daily)
+  const scheduleGlobalTrendingUpdate = () => {
+    const now = new Date();
+    const next6AM = new Date();
+    next6AM.setUTCHours(6, 0, 0, 0);
+    
+    // If it's already past 6 AM today, schedule for tomorrow
+    if (now >= next6AM) {
+      next6AM.setUTCDate(next6AM.getUTCDate() + 1);
+    }
+    
+    const timeUntilNext = next6AM.getTime() - now.getTime();
+    
+    console.log(`📅 Next Global Trends update scheduled for: ${next6AM.toISOString()}`);
+    console.log(`⏰ Time until next update: ${Math.round(timeUntilNext / (1000 * 60 * 60))} hours`);
+    
+    // Schedule the first run
+    setTimeout(async () => {
+      await fetchGlobalTrendingVideos();
+      
+      // Then run every 24 hours
+      setInterval(async () => {
+        await fetchGlobalTrendingVideos();
+      }, 24 * 60 * 60 * 1000); // 24 hours
+      
+    }, timeUntilNext);
+  };
+
+  // Manual trigger endpoint for testing (admin only)
+  app.post('/api/admin/update-global-trends', requireAdmin, async (req, res) => {
     try {
-      resetYouTubeQuotas(); // Check for quota reset before providing key
-      
-      // Only use key 1 for now (commented out cycling through multiple keys)
-      if (!process.env.YOUTUBE_KEY_1) {
-        return res.status(500).json({
-          success: false,
-          error: 'No YouTube API keys configured'
-        });
-      }
-      
-      // Only check key1 status
-      const key1 = {
-        key: process.env.YOUTUBE_KEY_1,
-        id: 'key1',
-        quotaExceeded: youtubeKeyStatus.key1.quotaExceeded
-      };
-      
-      // For now, always return key1 regardless of quota status
-      console.log(`YouTube API key provided: ${key1.id} (quota status: ${key1.quotaExceeded ? 'exceeded' : 'available'})`);
+      console.log('🔧 Manual Global Trends update triggered');
+      const success = await fetchGlobalTrendingVideos(true); // Force refresh
       
       res.json({
         success: true,
-        apiKey: key1.key,
-        keyId: key1.id,
-        availableKeys: key1.quotaExceeded ? 0 : 1
+        message: 'Global trends update completed',
+        timestamp: new Date().toISOString(),
+        updateSuccess: success
       });
-
-      /* COMMENTED OUT: Multiple key cycling logic
-      const keys = [];
-      
-      // Add available keys from environment variables
-      if (process.env.YOUTUBE_KEY_1) {
-        keys.push({
-          key: process.env.YOUTUBE_KEY_1,
-          id: 'key1',
-          quotaExceeded: youtubeKeyStatus.key1.quotaExceeded
-        });
-      }
-      
-      if (process.env.YOUTUBE_KEY_2) {
-        keys.push({
-          key: process.env.YOUTUBE_KEY_2,
-          id: 'key2',
-          quotaExceeded: youtubeKeyStatus.key2.quotaExceeded
-        });
-      }
-      
-      if (process.env.YOUTUBE_KEY_3) {
-        keys.push({
-          key: process.env.YOUTUBE_KEY_3,
-          id: 'key3',
-          quotaExceeded: youtubeKeyStatus.key3.quotaExceeded
-        });
-      }
-      
-      if (keys.length === 0) {
-        return res.status(500).json({
-          success: false,
-          error: 'No YouTube API keys configured'
-        });
-      }
-      
-      // Find the first key that hasn't exceeded quota
-      const availableKey = keys.find(k => !k.quotaExceeded);
-      
-      if (!availableKey) {
-        console.log('All YouTube API keys have exceeded quotas');
-        return res.status(429).json({
-          success: false,
-          error: 'All YouTube API keys have exceeded their quotas. Please try again after midnight Pacific Time.',
-          allKeysExhausted: true
-        });
-      }
-      
-      console.log(`YouTube API key provided: ${availableKey.id} (quota status: ${availableKey.quotaExceeded ? 'exceeded' : 'available'})`);
-      
-      res.json({
-        success: true,
-        apiKey: availableKey.key,
-        keyId: availableKey.id,
-        availableKeys: keys.filter(k => !k.quotaExceeded).length
-      });
-      */
     } catch (error) {
-      console.error('Error fetching YouTube API key:', error);
+      console.error('Error in manual global trends update:', error);
       res.status(500).json({
         success: false,
-        error: 'Failed to get YouTube API key',
+        error: 'Failed to update global trends',
         details: error.message
       });
     }
   });
 
-  // YouTube API key fallback endpoint - get next available key
-  app.post('/api/youtube/key/fallback', verifyFirebaseToken, (req, res) => {
+  // Enhanced API endpoint to fetch global trending videos with fallback
+  app.get('/api/media/global-trends', verifyFirebaseToken, async (req, res) => {
     try {
-      const { currentKeyId } = req.body;
-      resetYouTubeQuotas(); // Check for quota reset before providing fallback
+      const { date, forceUpdate } = req.query;
       
-      // Only use key 1 for now (commented out cycling through multiple keys)
-      if (!process.env.YOUTUBE_KEY_1) {
-        return res.status(500).json({
-          success: false,
-          error: 'No YouTube API keys configured'
+      let targetDate = date;
+      if (!targetDate) {
+        // Default to today's date
+        targetDate = new Date().toISOString().split('T')[0];
+      }
+      
+      console.log(`📱 Fetching global trends for date: ${targetDate}, forceUpdate: ${forceUpdate}`);
+      
+      // First, try to find existing data
+      let trendsData = await findLatestGlobalTrendsData(targetDate);
+      
+      // If no data found and not a specific date request, trigger a new fetch
+      if (!trendsData && !date) {
+        console.log('🔄 No global trends data found, triggering fetch...');
+        
+        // Return immediate response indicating data is being generated
+        res.json({
+          success: true,
+          generating: true,
+          message: 'Global trends data is being generated. Please try again in a few minutes.',
+          estimatedTime: '2-3 minutes'
         });
+        
+        // Trigger fetch in background (don't await)
+        fetchGlobalTrendingVideos(true).catch(error => {
+          console.error('Background global trends fetch failed:', error);
+        });
+        
+        return;
       }
       
-      // Mark current key as quota exceeded if we're being asked for a fallback
-      if (currentKeyId && youtubeKeyStatus[currentKeyId]) {
-        youtubeKeyStatus[currentKeyId].quotaExceeded = true;
-        console.log(`Marking YouTube API key ${currentKeyId} as quota exceeded`);
+      // If forceUpdate is requested and we have admin privileges
+      if (forceUpdate === 'true') {
+        console.log('🔄 Force update requested...');
+        
+        // Check if user has admin privileges (simplified check)
+        const adminKey = req.headers['x-admin-key'];
+        if (adminKey === process.env.ADMIN_API_KEY) {
+          // Trigger update in background
+          fetchGlobalTrendingVideos(true).catch(error => {
+            console.error('Force update failed:', error);
+          });
+          
+          // Still return existing data if available
+          if (trendsData) {
+            trendsData.updating = true;
+            trendsData.message = 'Data is being updated in the background';
+          }
+        }
       }
       
-      // For now, always return the same key1 (no fallback available)
-      console.log(`YouTube fallback requested but only using key1: currentKeyId=${currentKeyId}`);
+      // If we have data, return it
+      if (trendsData) {
+        return res.json(trendsData);
+      }
       
-      const key1 = {
-        key: process.env.YOUTUBE_KEY_1,
-        id: 'key1',
-        quotaExceeded: youtubeKeyStatus.key1.quotaExceeded
-      };
-      
-      res.json({
-        success: true,
-        apiKey: key1.key,
-        keyId: key1.id,
-        availableKeys: key1.quotaExceeded ? 0 : 1
+      // If no data found at all
+      return res.status(404).json({
+        success: false,
+        error: 'No global trends data available',
+        message: 'Global trends data is being generated. Please try again later.',
+        canTriggerUpdate: true
       });
-
-      /* COMMENTED OUT: Multiple key cycling logic
-      const keys = [];
       
-      // Add available keys from environment variables
-      if (process.env.YOUTUBE_KEY_1) {
-        keys.push({
-          key: process.env.YOUTUBE_KEY_1,
-          id: 'key1',
-          quotaExceeded: youtubeKeyStatus.key1.quotaExceeded
-        });
-      }
-      
-      if (process.env.YOUTUBE_KEY_2) {
-        keys.push({
-          key: process.env.YOUTUBE_KEY_2,
-          id: 'key2',
-          quotaExceeded: youtubeKeyStatus.key2.quotaExceeded
-        });
-      }
-      
-      if (process.env.YOUTUBE_KEY_3) {
-        keys.push({
-          key: process.env.YOUTUBE_KEY_3,
-          id: 'key3',
-          quotaExceeded: youtubeKeyStatus.key3.quotaExceeded
-        });
-      }
-      
-      if (keys.length === 0) {
-        return res.status(500).json({
-          success: false,
-          error: 'No YouTube API keys configured'
-        });
-      }
-      
-      // Mark current key as quota exceeded if we're being asked for a fallback
-      if (currentKeyId && youtubeKeyStatus[currentKeyId]) {
-        youtubeKeyStatus[currentKeyId].quotaExceeded = true;
-        console.log(`Marking YouTube API key ${currentKeyId} as quota exceeded`);
-      }
-      
-      // Find next available key that hasn't exceeded quota
-      const availableKeys = keys.filter(k => !k.quotaExceeded && k.id !== currentKeyId);
-      
-      console.log(`YouTube fallback requested: currentKeyId=${currentKeyId}, availableKeys=${keys.map(k => `${k.id}(${k.quotaExceeded ? 'exhausted' : 'available'})`).join(',')}`);
-      
-      if (availableKeys.length === 0) {
-        console.log('All YouTube API keys have exceeded quotas');
-        return res.status(429).json({
-          success: false,
-          error: 'All YouTube API keys have exceeded their quotas',
-          allKeysExhausted: true
-        });
-      }
-      
-      // Use the first available key
-      const nextKey = availableKeys[0];
-      
-      console.log(`YouTube fallback result: ${currentKeyId} -> ${nextKey.id}`);
-      
-      res.json({
-        success: true,
-        apiKey: nextKey.key,
-        keyId: nextKey.id,
-        availableKeys: availableKeys.length
-      });
-      */
     } catch (error) {
-      console.error('Error getting fallback YouTube API key:', error);
+      console.error('Error fetching global trends:', error);
       res.status(500).json({
         success: false,
-        error: 'Failed to get fallback YouTube API key',
+        error: 'Failed to fetch global trends',
         details: error.message
       });
     }
   });
 
-  // Endpoint to manually reset a key's quota status (for testing/admin)
-  app.post('/api/youtube/key/reset', verifyFirebaseToken, (req, res) => {
+  // Endpoint to manually trigger global trends generation (public but rate-limited)
+  app.post('/api/media/global-trends/generate', verifyFirebaseToken, async (req, res) => {
     try {
-      const { keyId, adminKey } = req.body;
-      
-      // Simple admin check
-      if (adminKey !== process.env.ADMIN_API_KEY) {
-        return res.status(403).json({
-          success: false,
-          error: 'Unauthorized'
+      // Check if a fetch is already in progress
+      if (globalTrendsFetchInProgress) {
+        return res.json({
+          success: true,
+          message: 'Global trends generation already in progress',
+          estimatedTime: '2-3 minutes'
         });
       }
       
-      if (keyId && youtubeKeyStatus[keyId]) {
-        youtubeKeyStatus[keyId].quotaExceeded = false;
-        youtubeKeyStatus[keyId].lastReset = new Date().toISOString();
-        console.log(`Manually reset YouTube API key ${keyId} quota status`);
-        
-        res.json({
-          success: true,
-          message: `Key ${keyId} quota status has been reset`
-        });
-      } else if (keyId === 'all') {
-        Object.keys(youtubeKeyStatus).forEach(key => {
-          youtubeKeyStatus[key].quotaExceeded = false;
-          youtubeKeyStatus[key].lastReset = new Date().toISOString();
-        });
-        console.log('Manually reset all YouTube API key quota statuses');
-        
-        res.json({
-          success: true,
-          message: 'All key quota statuses have been reset'
-        });
+      // Check rate limiting
+      if (lastGlobalTrendsFetch) {
+        const timeSinceLastFetch = Date.now() - lastGlobalTrendsFetch;
+        const minInterval = 10 * 60 * 1000; // 10 minutes for public endpoint
+        if (timeSinceLastFetch < minInterval) {
+          return res.status(429).json({
+            success: false,
+            error: 'Rate limit exceeded',
+            message: `Please wait ${Math.round((minInterval - timeSinceLastFetch) / 60000)} minutes before requesting again`,
+            retryAfter: Math.round((minInterval - timeSinceLastFetch) / 1000)
+          });
+        }
+      }
+      
+      console.log('📱 User-triggered global trends generation');
+      
+      // Start generation in background
+      fetchGlobalTrendingVideos(true).catch(error => {
+        console.error('User-triggered global trends fetch failed:', error);
+      });
+      
+      res.json({
+        success: true,
+        message: 'Global trends generation started',
+        estimatedTime: '2-3 minutes',
+        checkEndpoint: '/api/media/global-trends'
+      });
+      
+    } catch (error) {
+      console.error('Error triggering global trends generation:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to trigger global trends generation',
+        details: error.message
+      });
+    }
+  });
+
+  // Initialize the global trends scheduler
+  scheduleGlobalTrendingUpdate();
+
+  // Run initial check and potential fetch on server startup
+  const initializeGlobalTrends = async () => {
+    try {
+      console.log('🌍 Initializing Global Trends system...');
+      
+      // Check if we have any recent data
+      const existingData = await findLatestGlobalTrendsData();
+      
+      if (!existingData) {
+        console.log('🔄 No global trends data found, scheduling initial fetch...');
+        // Wait 30 seconds after server start to avoid startup conflicts
+        setTimeout(() => {
+          fetchGlobalTrendingVideos(true).catch(error => {
+            console.error('Initial global trends fetch failed:', error);
+          });
+        }, 30000);
       } else {
-        res.status(400).json({
-          success: false,
-          error: 'Invalid key ID'
-        });
+        console.log(`✅ Found global trends data from ${existingData.date} (${existingData.daysOld} days old)`);
+        
+        // If data is more than 1 day old, schedule a refresh
+        if (existingData.daysOld > 0) {
+          console.log('📅 Data is outdated, scheduling refresh...');
+          setTimeout(() => {
+            fetchGlobalTrendingVideos(true).catch(error => {
+              console.error('Refresh global trends fetch failed:', error);
+            });
+          }, 60000); // Wait 1 minute
+        }
       }
     } catch (error) {
-      console.error('Error resetting YouTube API key:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Failed to reset key quota status',
-        details: error.message
-      });
+      console.error('Error initializing global trends:', error);
     }
-  });
+  };
+
+  // Call initialization
+  initializeGlobalTrends();
 
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
