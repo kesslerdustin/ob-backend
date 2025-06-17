@@ -384,6 +384,8 @@ def flash_chat(prompt, image_path=None, options=None):
         - Only suggest coordinates that are logical based on the context provided
         - DO NOT use markdown formatting, code blocks, or backticks around the JSON
         - The JSON should be embedded directly in your response text
+        - DO NOT JUST CREATE WAYPOINTS WITHOUT ASKING THE USER IF THEY WANT ONE, OR WITHOUT BEING PROMPTED TO DO SO.
+        - DONT ASK FOR WAYPOINTS ALWAYS, ONLY IF LOGICALLY RELEVANT.
 
         CRITICAL: Respond in {language} language WITHOUT including the language code. Never start your response with language codes like 'de:', 'en:', etc. Also do not give any introduction, reply only with the answer. When referring times or units of measurement, use the language of the user (miles in english, km in german, etc).
         
