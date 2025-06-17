@@ -1721,6 +1721,223 @@ try {
     }, timeUntilNext);
   };
 
+  // YouTube API key management endpoints
+  // YouTube API key status tracking
+  const youtubeKeyStatus = {
+    key1: { quotaExceeded: false, lastReset: new Date().toISOString() }
+  };
+
+  // Function to reset YouTube quotas at midnight Pacific Time
+  const resetYouTubeQuotas = () => {
+    const now = new Date();
+    const pacificTime = new Date(now.toLocaleString("en-US", {timeZone: "America/Los_Angeles"}));
+    const currentHour = pacificTime.getHours();
+    
+    // Check if it's a new day (reset at midnight Pacific)
+    if (currentHour === 0) {
+      Object.keys(youtubeKeyStatus).forEach(key => {
+        const lastResetDate = new Date(youtubeKeyStatus[key].lastReset).toDateString();
+        const todayDate = new Date().toDateString();
+        
+        if (lastResetDate !== todayDate) {
+          youtubeKeyStatus[key].quotaExceeded = false;
+          youtubeKeyStatus[key].lastReset = new Date().toISOString();
+          console.log(`YouTube API key ${key} quota reset at midnight Pacific`);
+        }
+      });
+    }
+  };
+
+  // Weather API endpoint
+  app.get('/api/weather', verifyFirebaseToken, async (req, res) => {
+    try {
+      const { lat, lon, units = 'metric' } = req.query;
+      
+      if (!lat || !lon) {
+        return res.status(400).json({
+          success: false,
+          error: 'Latitude and longitude are required'
+        });
+      }
+      
+      if (!process.env.OPENWEATHER_API_KEY) {
+        return res.status(500).json({
+          success: false,
+          error: 'Weather service not configured'
+        });
+      }
+      
+      console.log(`Weather request for coordinates: ${lat}, ${lon}, units: ${units}`);
+      
+      // Fetch current weather
+      const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${process.env.OPENWEATHER_API_KEY}&units=${units}`;
+      const currentWeatherResponse = await fetch(currentWeatherUrl);
+      
+      if (!currentWeatherResponse.ok) {
+        throw new Error(`OpenWeather API error: ${currentWeatherResponse.status}`);
+      }
+      
+      const currentWeather = await currentWeatherResponse.json();
+      
+      // Fetch forecast
+      const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${process.env.OPENWEATHER_API_KEY}&units=${units}`;
+      const forecastResponse = await fetch(forecastUrl);
+      
+      if (!forecastResponse.ok) {
+        throw new Error(`OpenWeather forecast API error: ${forecastResponse.status}`);
+      }
+      
+      const forecast = await forecastResponse.json();
+      
+      console.log('Weather data fetched successfully');
+      
+      res.json({
+        success: true,
+        currentWeather: currentWeather,
+        forecast: forecast
+      });
+      
+    } catch (error) {
+      console.error('Weather API error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to fetch weather data',
+        details: error.message
+      });
+    }
+  });
+
+  // YouTube API key endpoint
+  app.get('/api/youtube/key', verifyFirebaseToken, (req, res) => {
+    try {
+      resetYouTubeQuotas(); // Check for quota reset before providing key
+      
+      // Only use key 1 for now
+      if (!process.env.YOUTUBE_KEY_1) {
+        return res.status(500).json({
+          success: false,
+          error: 'No YouTube API keys configured'
+        });
+      }
+      
+      const key1 = {
+        key: process.env.YOUTUBE_KEY_1,
+        id: 'key1',
+        quotaExceeded: youtubeKeyStatus.key1.quotaExceeded
+      };
+      
+      console.log(`YouTube API key requested: ${key1.id} (quota status: ${key1.quotaExceeded ? 'exceeded' : 'available'})`);
+      
+      res.json({
+        success: true,
+        apiKey: key1.key,
+        keyId: key1.id,
+        availableKeys: key1.quotaExceeded ? 0 : 1
+      });
+    } catch (error) {
+      console.error('Error fetching YouTube API key:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to get YouTube API key',
+        details: error.message
+      });
+    }
+  });
+
+  // YouTube API key fallback endpoint - get next available key
+  app.post('/api/youtube/key/fallback', verifyFirebaseToken, (req, res) => {
+    try {
+      const { currentKeyId } = req.body;
+      resetYouTubeQuotas(); // Check for quota reset before providing fallback
+      
+      // Only use key 1 for now (commented out cycling through multiple keys)
+      if (!process.env.YOUTUBE_KEY_1) {
+        return res.status(500).json({
+          success: false,
+          error: 'No YouTube API keys configured'
+        });
+      }
+      
+      // Mark current key as quota exceeded if we're being asked for a fallback
+      if (currentKeyId && youtubeKeyStatus[currentKeyId]) {
+        youtubeKeyStatus[currentKeyId].quotaExceeded = true;
+        console.log(`Marking YouTube API key ${currentKeyId} as quota exceeded`);
+      }
+      
+      // For now, always return the same key1 (no fallback available)
+      console.log(`YouTube fallback requested but only using key1: currentKeyId=${currentKeyId}`);
+      
+      const key1 = {
+        key: process.env.YOUTUBE_KEY_1,
+        id: 'key1',
+        quotaExceeded: youtubeKeyStatus.key1.quotaExceeded
+      };
+      
+      res.json({
+        success: true,
+        apiKey: key1.key,
+        keyId: key1.id,
+        availableKeys: key1.quotaExceeded ? 0 : 1
+      });
+    } catch (error) {
+      console.error('Error getting fallback YouTube API key:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to get fallback YouTube API key',
+        details: error.message
+      });
+    }
+  });
+
+  // Endpoint to manually reset a key's quota status (for testing/admin)
+  app.post('/api/youtube/key/reset', verifyFirebaseToken, (req, res) => {
+    try {
+      const { keyId, adminKey } = req.body;
+      
+      // Simple admin check
+      if (adminKey !== process.env.ADMIN_API_KEY) {
+        return res.status(403).json({
+          success: false,
+          error: 'Unauthorized'
+        });
+      }
+      
+      if (keyId && youtubeKeyStatus[keyId]) {
+        youtubeKeyStatus[keyId].quotaExceeded = false;
+        youtubeKeyStatus[keyId].lastReset = new Date().toISOString();
+        console.log(`Manually reset YouTube API key ${keyId} quota status`);
+        
+        res.json({
+          success: true,
+          message: `Key ${keyId} quota status has been reset`
+        });
+      } else if (keyId === 'all') {
+        Object.keys(youtubeKeyStatus).forEach(key => {
+          youtubeKeyStatus[key].quotaExceeded = false;
+          youtubeKeyStatus[key].lastReset = new Date().toISOString();
+        });
+        console.log('Manually reset all YouTube API key quota statuses');
+        
+        res.json({
+          success: true,
+          message: 'All key quota statuses have been reset'
+        });
+      } else {
+        res.status(400).json({
+          success: false,
+          error: 'Invalid key ID'
+        });
+      }
+    } catch (error) {
+      console.error('Error resetting YouTube API key:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to reset key quota status',
+        details: error.message
+      });
+    }
+  });
+
   // Manual trigger endpoint for testing (admin only)
   app.post('/api/admin/update-global-trends', requireAdmin, async (req, res) => {
     try {
