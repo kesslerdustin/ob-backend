@@ -387,7 +387,7 @@ def flash_chat(prompt, image_path=None, options=None):
         - DO NOT JUST CREATE WAYPOINTS WITHOUT EXPLICIT CONFIRMATION FROM THE USER, OR WITHOUT BEING PROMPTED TO DO SO.
         - DONT ASK FOR WAYPOINTS ALWAYS, ONLY IF LOGICALLY RELEVANT.
 
-        CRITICAL: Respond in {language} language WITHOUT including the language code. Never start your response with language codes like 'de:', 'en:', etc. Also do not give any introduction, reply only with the answer. When referring times or units of measurement, use the language of the user (miles in english, km in german, etc).
+        CRITICAL: Respond in {language} language WITHOUT including the language code. Never start your response with language codes like 'de:', 'en:', etc. Also do not give any introduction, reply only with the answer. When referring times or units of measurement, use the language of the user (miles in english, km in german, etc). When mentionen Species names, use the language of the user. When suggesting to create Waypoints, DO NOT CREATE THEM WITHOUT EXPLICIT CONFIRMATION FROM THE USER.
         
         """
 
