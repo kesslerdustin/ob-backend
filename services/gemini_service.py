@@ -377,6 +377,7 @@ def flash_chat(prompt, image_path=None, options=None):
         {{"action": "add_waypoint", "data": {{"name": "Clear, descriptive name (max 50 characters)", "location": "latitude, longitude", "color": "#3498db", "category": "Custom"}}}}
         
         Waypoint Guidelines:
+        - ONLY CREATE ONE WAYPOINT AT A TIME.
         - Name should be descriptive and location-specific
         - Use #3498db (blue) as default color
         - Choose appropriate category: POI for landmarks/buildings, Landscape for natural features, Flora for plants, Fauna for animal-related spots, Custom for everything else
