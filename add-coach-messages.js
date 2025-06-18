@@ -36,7 +36,7 @@ const exampleMessages = [
         recurring: true 
       }
     },
-    translations: {
+    languages: {
       en: {
         title: 'Today is Earth Day!',
         content: 'Today we celebrate our planet and the incredible biodiversity that surrounds us. As outdoor enthusiasts, we have a special responsibility to protect and preserve the natural world we love to explore.'
@@ -61,7 +61,7 @@ const exampleMessages = [
       type: 'milestone',
       condition: { appStarts: 100 }
     },
-    translations: {
+    languages: {
       en: {
         title: 'Wilderness Expert!',
         content: 'Incredible! You\'ve opened the app 100 times! You\'re truly dedicated to outdoor exploration.'

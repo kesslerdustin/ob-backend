@@ -1897,7 +1897,7 @@ try {
             for (const message of firestoreMessages) {
               if (isMessageTriggered(message, contextWithAppStarts)) {
                 // Get the translation for the user's language
-                const translation = message.translations?.[language] || message.translations?.en;
+                const translation = message.languages?.[language] || message.languages?.en;
                 
                 if (translation) {
                   messages.push({
