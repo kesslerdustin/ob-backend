@@ -1776,10 +1776,64 @@ try {
     }
   });
 
-  // Coach Messages endpoint - serves contextual messages for the coach
+  // === FIRESTORE-BASED COACH MESSAGES SYSTEM ===
+  
+  // Helper function to check if a message trigger condition is met
+  const isMessageTriggered = (message, userContext) => {
+    const { trigger } = message;
+    const now = new Date();
+    const currentMonth = now.getMonth() + 1;
+    const currentDay = now.getDate();
+    const { appStarts = 0 } = userContext;
+    
+    if (!trigger || !message.enabled) return false;
+    
+    switch (trigger.type) {
+      case 'milestone':
+        return appStarts >= (trigger.condition?.appStarts || 0);
+        
+      case 'date_based':
+        const condition = trigger.condition;
+        
+        // Specific date check (e.g., June 19th for Earth Day)
+        if (condition.month && condition.day) {
+          return currentMonth === condition.month && currentDay === condition.day;
+        }
+        
+        // Month range check (e.g., summer months)
+        if (condition.months && Array.isArray(condition.months)) {
+          return condition.months.includes(currentMonth);
+        }
+        
+        // Date range check
+        if (condition.startDate && condition.endDate) {
+          const start = new Date(condition.startDate);
+          const end = new Date(condition.endDate);
+          return now >= start && now <= end;
+        }
+        
+        return false;
+        
+      case 'server_push':
+        // Always show server push messages (they're manually controlled via enabled flag)
+        return true;
+        
+      case 'contextual':
+        // Check user context conditions (location, weather, etc.)
+        if (condition.location && userContext.location) {
+          // Add location-based logic here
+        }
+        return false;
+        
+      default:
+        return false;
+    }
+  };
+  
+  // Coach Messages endpoint - Firestore-based system
   app.post('/api/coach-messages', verifyFirebaseToken, async (req, res) => {
     try {
-      const { userContext } = req.body;
+      const { userContext, language = 'en' } = req.body;
       const userId = req.user?.uid;
       
       // Get app start count from Firestore (consistent with reviewUtils.js)
@@ -1796,219 +1850,147 @@ try {
         console.error('Error getting app launch count from Firestore:', error);
       }
       
+      const contextWithAppStarts = { ...userContext, appStarts };
+      
       console.log('Coach messages requested:', {
         userId,
         appStartCount: appStarts,
+        language,
         hasUserContext: !!userContext
       });
       
       const messages = [];
       const now = new Date();
-      const currentMonth = now.getMonth() + 1;
+      const today = now.toISOString().split('T')[0]; // YYYY-MM-DD
       
-      // Server-side message logic based on various triggers
-      
-      // === MILESTONE MESSAGES ===
-      // Welcome back message for returning users (after 7+ days)
-      if (appStarts >= 50) {
-        messages.push({
-          id: `returning_user_${now.getMonth()}`,
-          type: 'milestone',
-          priority: 7,
-          title: 'Welcome Back, Explorer!',
-          content: 'Great to see you back in the wilderness! Your experience is growing - you\'ve opened the app over 50 times. Ready for your next outdoor adventure?',
-          timestamp: now.toISOString(),
-          trigger: {
-            type: 'milestone',
-            condition: { appStarts: 50 }
+      try {
+        const db = admin.firestore();
+        
+        // Try to get messages for today first
+        let messageDoc = await db.collection('coachMessages').doc(today).get();
+        
+        // If no messages for today, try yesterday and day before (fallback)
+        if (!messageDoc.exists) {
+          const yesterday = new Date(now);
+          yesterday.setDate(yesterday.getDate() - 1);
+          const yesterdayStr = yesterday.toISOString().split('T')[0];
+          
+          messageDoc = await db.collection('coachMessages').doc(yesterdayStr).get();
+          
+          if (!messageDoc.exists) {
+            const dayBefore = new Date(now);
+            dayBefore.setDate(dayBefore.getDate() - 2);
+            const dayBeforeStr = dayBefore.toISOString().split('T')[0];
+            
+            messageDoc = await db.collection('coachMessages').doc(dayBeforeStr).get();
           }
-        });
-      }
-      
-      // 100 app openings milestone
-      if (appStarts >= 100) {
-        messages.push({
-          id: `milestone_100_${now.getFullYear()}`,
-          type: 'milestone',
-          priority: 9,
-          title: 'Wilderness Expert!',
-          content: 'Incredible! You\'ve opened the app 100 times! You\'re truly dedicated to outdoor exploration. Your knowledge and experience are becoming impressive. Keep pushing your boundaries safely!',
-          timestamp: now.toISOString(),
-          trigger: {
-            type: 'milestone',
-            condition: { appStarts: 100 }
-          }
-        });
-      }
-      
-      // 1000 app openings milestone
-      if (appStarts >= 1000) {
-        messages.push({
-          id: `milestone_1000_${now.getFullYear()}`,
-          type: 'milestone',
-          priority: 10,
-          title: 'Outdoor Legend!',
-          content: 'AMAZING! 1000+ app openings! You\'re an absolute outdoor legend! Your dedication to wilderness exploration and learning is extraordinary. You\'ve truly mastered the art of outdoor adventure!',
-          timestamp: now.toISOString(),
-          trigger: {
-            type: 'milestone',
-            condition: { appStarts: 1000 }
-          }
-        });
-      }
-      
-      // === SEASONAL MESSAGES ===
-      // HOW TO ADD: Check currentMonth (1-12) and add seasonal content
-      if (currentMonth >= 6 && currentMonth <= 8) { // Summer
-        messages.push({
-          id: `summer_safety_${now.getFullYear()}`,
-          type: 'seasonal',
-          priority: 6,
-          title: 'Summer Safety Reminder',
-          content: 'Summer is here! Remember to stay hydrated, use sun protection, and be aware of increased wildlife activity. Check weather conditions before heading out and inform someone of your plans.',
-          timestamp: now.toISOString(),
-          trigger: {
-            type: 'date_based',
-            condition: { months: [6, 7, 8], recurring: true }
-          }
-        });
-      }
-      
-      if (currentMonth >= 9 && currentMonth <= 11) { // Fall
-        messages.push({
-          id: `fall_preparation_${now.getFullYear()}`,
-          type: 'seasonal',
-          priority: 6,
-          title: 'Fall Outdoor Preparation',
-          content: 'As temperatures drop and daylight hours shorten, make sure to pack extra layers, bring a reliable light source, and be prepared for rapidly changing weather conditions.',
-          timestamp: now.toISOString(),
-          trigger: {
-            type: 'date_based',
-            condition: { months: [9, 10, 11], recurring: true }
-          }
-        });
-      }
-      
-      // === FEATURE ANNOUNCEMENTS ===
-      // HOW TO ADD: Set a date and add feature announcements
-      const featureAnnouncementDate = new Date('2024-01-01');
-      if (now >= featureAnnouncementDate) {
-        messages.push({
-          id: 'feature_ai_analysis_2024',
-          type: 'feature_announcement',
-          priority: 8,
-          title: 'AI Analysis Enhanced!',
-          content: 'Our AI analysis has been improved with better species identification and more detailed environmental insights. Try taking a photo of plants or wildlife for enhanced identification!',
-          timestamp: now.toISOString(),
-          trigger: {
-            type: 'server_push',
-            condition: {}
-          }
-        });
-      }
-      
-      // === WEEKLY TIPS ===
-      // HOW TO ADD: Add new tips to the tips array, they will rotate weekly
-      const weekOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 1)) / (7 * 24 * 60 * 60 * 1000));
-      const tips = [
-        {
-          title: 'Water Purification Tip',
-          content: 'When in doubt about water quality, boiling for at least 1 minute (3 minutes at high altitude) is the most reliable purification method in survival situations.'
-        },
-        {
-          title: 'Fire Starting Tip',
-          content: 'Always have multiple fire-starting methods: waterproof matches, lighter, ferro rod, and tinder. Practice different techniques before you need them in the field.'
-        },
-        {
-          title: 'Navigation Tip',
-          content: 'Learn to use your phone\'s compass app even without GPS. Understanding basic direction finding can be crucial when electronic navigation fails.'
-        },
-        {
-          title: 'Wildlife Safety Tip',
-          content: 'Make noise while hiking to avoid surprising wildlife. Most animals will move away if they hear you coming, reducing the chance of encounters.'
-        },
-        // ADD NEW TIPS HERE - they will automatically rotate weekly
-        {
-          title: 'Emergency Shelter Tip',
-          content: 'In emergency situations, your priority is insulation from the ground. Use pine needles, leaves, or any available material to create a barrier between you and the cold earth.'
-        },
-        {
-          title: 'Weather Reading Tip',
-          content: 'Watch cloud formations: rapidly building cumulus clouds often indicate incoming storms. Dark, towering clouds suggest severe weather - seek shelter immediately.'
         }
-      ];
-      
-      const weeklyTip = tips[weekOfYear % tips.length];
-      messages.push({
-        id: `weekly_tip_${weekOfYear}`,
-        type: 'tips',
-        priority: 4,
-        title: weeklyTip.title,
-        content: weeklyTip.content,
-        timestamp: now.toISOString(),
-        trigger: {
-          type: 'date_based',
-          condition: { recurring: true }
-        }
-      });
-      
-      // === SPECIAL ANNOUNCEMENTS ===
-      // HOW TO ADD: Set environment variable COACH_SPECIAL_ANNOUNCEMENT with JSON
-      // Example: {"id": "holiday2024", "title": "Holiday Message", "content": "Happy holidays from the team!"}
-      const specialAnnouncement = process.env.COACH_SPECIAL_ANNOUNCEMENT;
-      if (specialAnnouncement) {
-        try {
-          const announcement = JSON.parse(specialAnnouncement);
-          messages.push({
-            id: `special_${announcement.id || 'default'}`,
-            type: 'server_broadcast',
-            priority: 9,
-            title: announcement.title || 'Special Announcement',
-            content: announcement.content || '',
-            timestamp: announcement.timestamp || now.toISOString(),
-            trigger: {
-              type: 'server_push',
-              condition: {}
+        
+        if (messageDoc.exists) {
+          const messageData = messageDoc.data();
+          
+          // Check if the document is active
+          if (messageData.active !== false) {
+            const firestoreMessages = messageData.messages || [];
+            
+            // Process each message and check if it should be shown
+            for (const message of firestoreMessages) {
+              if (isMessageTriggered(message, contextWithAppStarts)) {
+                // Get the translation for the user's language
+                const translation = message.translations?.[language] || message.translations?.en;
+                
+                if (translation) {
+                  messages.push({
+                    id: message.id,
+                    type: message.type,
+                    priority: message.priority || 5,
+                    title: translation.title,
+                    content: translation.content,
+                    timestamp: now.toISOString(),
+                    trigger: message.trigger,
+                    source: 'firestore'
+                  });
+                  
+                  // Update view count (fire and forget)
+                  setTimeout(async () => {
+                    try {
+                      const messageRef = db.collection('coachMessages').doc(messageDoc.id);
+                      const messageIndex = firestoreMessages.findIndex(m => m.id === message.id);
+                      if (messageIndex >= 0) {
+                        await messageRef.update({
+                          [`messages.${messageIndex}.metadata.views`]: admin.firestore.FieldValue.increment(1),
+                          [`messages.${messageIndex}.metadata.lastViewed`]: admin.firestore.FieldValue.serverTimestamp()
+                        });
+                      }
+                    } catch (updateError) {
+                      console.error('Error updating message view count:', updateError);
+                    }
+                  }, 0);
+                }
+              }
             }
-          });
-        } catch (error) {
-          console.warn('Invalid special announcement format:', error);
+          }
         }
+        
+        console.log(`Found ${messages.length} triggered messages from Firestore`);
+        
+      } catch (firestoreError) {
+        console.error('Error fetching messages from Firestore:', firestoreError);
+        // Continue with fallback logic below
       }
       
-      // === HOW TO ADD NEW MESSAGE TYPES ===
-      /*
-      1. MILESTONE MESSAGES: Add conditions based on appStarts
-      2. SEASONAL MESSAGES: Add conditions based on currentMonth (1-12)
-      3. FEATURE ANNOUNCEMENTS: Set a specific date and add announcement
-      4. WEEKLY TIPS: Add to the tips array above
-      5. SPECIAL ANNOUNCEMENTS: Use environment variable COACH_SPECIAL_ANNOUNCEMENT
-      6. CONTEXTUAL MESSAGES: Use userContext data (location, weather, etc.)
-      
-      Message Structure:
-      {
-        id: 'unique_message_id',
-        type: 'milestone|seasonal|feature_announcement|tips|server_broadcast',
-        priority: 1-10 (higher = shown first),
-        title: 'Message Title',
-        content: 'Message content text',
-        timestamp: ISO string,
-        trigger: { type: 'trigger_type', condition: {...} }
+      // FALLBACK: If no Firestore messages or error, use basic hardcoded messages
+      if (messages.length === 0) {
+        console.log('No Firestore messages found, using fallback messages');
+        
+        // Basic milestone messages as fallback
+        if (appStarts >= 100) {
+          messages.push({
+            id: `milestone_100_fallback`,
+            type: 'milestone',
+            priority: 9,
+            title: 'Wilderness Expert!',
+            content: 'Incredible! You\'ve opened the app 100+ times! You\'re truly dedicated to outdoor exploration.',
+            timestamp: now.toISOString(),
+            source: 'fallback'
+          });
+        }
+        
+        // Basic weekly tip as fallback
+        const weekOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 1)) / (7 * 24 * 60 * 60 * 1000));
+        const basicTips = [
+          'Always carry multiple fire-starting methods when heading outdoors.',
+          'Boil water for at least 1 minute to purify it in survival situations.',
+          'Make noise while hiking to avoid surprising wildlife.',
+          'Pack extra layers - weather can change quickly in the wilderness.'
+        ];
+        
+        const tip = basicTips[weekOfYear % basicTips.length];
+        messages.push({
+          id: `fallback_tip_${weekOfYear}`,
+          type: 'tips',
+          priority: 4,
+          title: 'Outdoor Tip',
+          content: tip,
+          timestamp: now.toISOString(),
+          source: 'fallback'
+        });
       }
-      */
       
       // Sort messages by priority
       messages.sort((a, b) => (b.priority || 0) - (a.priority || 0));
       
       console.log('Serving coach messages:', {
         count: messages.length,
-        types: messages.map(m => m.type)
+        types: messages.map(m => m.type),
+        sources: messages.map(m => m.source)
       });
       
       res.json({
         success: true,
         messages,
-        timestamp: now.toISOString()
+        timestamp: now.toISOString(),
+        language
       });
       
     } catch (error) {
@@ -2016,6 +1998,106 @@ try {
       res.status(500).json({
         success: false,
         error: 'Failed to get coach messages',
+        details: error.message
+      });
+    }
+  });
+
+  // Admin endpoint to create/update coach messages in Firestore
+  app.post('/api/admin/coach-messages', requireAdmin, async (req, res) => {
+    try {
+      const { date, messages, active = true } = req.body;
+      
+      if (!date || !messages || !Array.isArray(messages)) {
+        return res.status(400).json({
+          success: false,
+          error: 'Date and messages array are required'
+        });
+      }
+      
+      // Validate date format (YYYY-MM-DD)
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+        return res.status(400).json({
+          success: false,
+          error: 'Date must be in YYYY-MM-DD format'
+        });
+      }
+      
+      const db = admin.firestore();
+      const messageRef = db.collection('coachMessages').doc(date);
+      
+      // Add metadata to each message
+      const processedMessages = messages.map(message => ({
+        ...message,
+        metadata: {
+          views: 0,
+          clicks: 0,
+          createdBy: 'admin',
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+          lastModified: admin.firestore.FieldValue.serverTimestamp(),
+          ...message.metadata
+        }
+      }));
+      
+      await messageRef.set({
+        date,
+        active,
+        messages: processedMessages,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        lastUpdated: admin.firestore.FieldValue.serverTimestamp()
+      });
+      
+      console.log(`Coach messages created/updated for date: ${date}`);
+      
+      res.json({
+        success: true,
+        message: `Coach messages saved for ${date}`,
+        date,
+        messageCount: messages.length
+      });
+      
+    } catch (error) {
+      console.error('Error saving coach messages:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to save coach messages',
+        details: error.message
+      });
+    }
+  });
+
+  // Admin endpoint to get coach messages for editing
+  app.get('/api/admin/coach-messages/:date', requireAdmin, async (req, res) => {
+    try {
+      const { date } = req.params;
+      
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+        return res.status(400).json({
+          success: false,
+          error: 'Date must be in YYYY-MM-DD format'
+        });
+      }
+      
+      const db = admin.firestore();
+      const messageDoc = await db.collection('coachMessages').doc(date).get();
+      
+      if (!messageDoc.exists) {
+        return res.status(404).json({
+          success: false,
+          error: 'No messages found for this date'
+        });
+      }
+      
+      res.json({
+        success: true,
+        data: messageDoc.data()
+      });
+      
+    } catch (error) {
+      console.error('Error fetching coach messages:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to fetch coach messages',
         details: error.message
       });
     }
