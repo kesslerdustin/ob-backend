@@ -1926,57 +1926,13 @@ try {
                     source: 'firestore'
                   });
                   
-                  // Update view count (fire and forget)
-                  setTimeout(async () => {
-                    try {
-                      const messageRef = db.collection('coachMessages').doc(messageDoc.id);
-                      
-                      // Use a transaction to safely update the view count
-                      await db.runTransaction(async (transaction) => {
-                        const doc = await transaction.get(messageRef);
-                        if (!doc.exists) {
-                          console.warn(`⚠️ Document no longer exists for view count update: ${message.id}`);
-                          return;
-                        }
-                        
-                        const data = doc.data();
-                        const messages = data.messages || [];
-                        
-                        if (!Array.isArray(messages)) {
-                          console.warn(`⚠️ Messages field is not an array, skipping view count update`);
-                          return;
-                        }
-                        
-                        const messageIndex = messages.findIndex(m => m.id === message.id);
-                        if (messageIndex >= 0) {
-                          console.log(`📊 Updating view count for message: ${message.id} (index: ${messageIndex})`);
-                          
-                          // Update the message in the array
-                          const updatedMessages = [...messages];
-                          updatedMessages[messageIndex] = {
-                            ...updatedMessages[messageIndex],
-                            metadata: {
-                              ...updatedMessages[messageIndex].metadata,
-                              views: (updatedMessages[messageIndex].metadata?.views || 0) + 1,
-                              lastViewed: new Date()
-                            }
-                          };
-                          
-                          // Update the entire messages array
-                          transaction.update(messageRef, { 
-                            messages: updatedMessages,
-                            lastUpdated: admin.firestore.FieldValue.serverTimestamp()
-                          });
-                          
-                          console.log(`✅ View count updated successfully for message: ${message.id}`);
-                        } else {
-                          console.warn(`⚠️ Could not find message index for: ${message.id}`);
-                        }
-                      });
-                    } catch (updateError) {
-                      console.error('❌ Error updating message view count:', updateError);
-                    }
-                  }, 0);
+                  // Queue analytics event instead of immediate update
+                  queueAnalyticsEvent(
+                    userId, 
+                    message.id, 
+                    messageDoc.id, // This is the date (YYYY-MM-DD)
+                    'view'
+                  );
                 }
               }
             }
@@ -2528,6 +2484,174 @@ try {
 
   // Call initialization
   initializeGlobalTrends();
+
+  // Add analytics queue and batching system after the imports
+  const analyticsQueue = [];
+  const processedEvents = new Set(); // Track processed events to prevent duplicates
+
+  // Batch analytics processing function
+  const processBatchAnalytics = async (events) => {
+    if (events.length === 0) return;
+    
+    console.log(`📊 Processing ${events.length} analytics events in batch...`);
+    
+    try {
+      const db = admin.firestore();
+      
+      // Group events by message and date for efficient processing
+      const eventGroups = {};
+      
+      events.forEach(event => {
+        const key = `${event.date}_${event.messageId}`;
+        if (!eventGroups[key]) {
+          eventGroups[key] = {
+            date: event.date,
+            messageId: event.messageId,
+            views: 0,
+            uniqueUsers: new Set()
+          };
+        }
+        eventGroups[key].views++;
+        eventGroups[key].uniqueUsers.add(event.userId);
+      });
+      
+      // Process each group
+      for (const [key, group] of Object.entries(eventGroups)) {
+        try {
+          const messageRef = db.collection('coachMessages').doc(group.date);
+          
+          await db.runTransaction(async (transaction) => {
+            const doc = await transaction.get(messageRef);
+            if (!doc.exists) {
+              console.warn(`⚠️ Document ${group.date} no longer exists`);
+              return;
+            }
+            
+            const data = doc.data();
+            const messages = data.messages || [];
+            
+            if (!Array.isArray(messages)) {
+              console.warn(`⚠️ Messages field is not an array for ${group.date}`);
+              return;
+            }
+            
+            const messageIndex = messages.findIndex(m => m.id === group.messageId);
+            if (messageIndex >= 0) {
+              const updatedMessages = [...messages];
+              updatedMessages[messageIndex] = {
+                ...updatedMessages[messageIndex],
+                metadata: {
+                  ...updatedMessages[messageIndex].metadata,
+                  views: (updatedMessages[messageIndex].metadata?.views || 0) + group.views,
+                  lastViewed: new Date(),
+                  uniqueViewers: (updatedMessages[messageIndex].metadata?.uniqueViewers || 0) + group.uniqueUsers.size
+                }
+              };
+              
+              transaction.update(messageRef, { 
+                messages: updatedMessages,
+                lastUpdated: admin.firestore.FieldValue.serverTimestamp()
+              });
+              
+              console.log(`✅ Batch updated ${group.messageId}: +${group.views} views, ${group.uniqueUsers.size} unique users`);
+            }
+          });
+        } catch (error) {
+          console.error(`❌ Error processing batch for ${group.messageId}:`, error);
+        }
+      }
+      
+      console.log(`✅ Batch analytics processing completed`);
+    } catch (error) {
+      console.error('❌ Error in batch analytics processing:', error);
+    }
+  };
+
+  // Queue analytics event function
+  const queueAnalyticsEvent = (userId, messageId, date, action = 'view') => {
+    const eventKey = `${userId}_${messageId}_${date}_${action}`;
+    
+    // Prevent duplicate events within the same batch period
+    if (processedEvents.has(eventKey)) {
+      console.log(`🔄 Duplicate event prevented: ${eventKey}`);
+      return;
+    }
+    
+    processedEvents.add(eventKey);
+    analyticsQueue.push({
+      userId,
+      messageId,
+      date,
+      action,
+      timestamp: new Date(),
+      eventKey
+    });
+    
+    console.log(`📊 Queued analytics event: ${eventKey} (queue size: ${analyticsQueue.length})`);
+    
+    // Clean up old processed events (keep only last hour)
+    setTimeout(() => {
+      processedEvents.delete(eventKey);
+    }, 60 * 60 * 1000); // 1 hour
+  };
+
+  // Start batch processing interval (every 5 minutes)
+  const startBatchAnalytics = () => {
+    setInterval(async () => {
+      if (analyticsQueue.length > 0) {
+        const eventsToProcess = analyticsQueue.splice(0); // Take all events
+        await processBatchAnalytics(eventsToProcess);
+      }
+    }, 5 * 60 * 1000); // 5 minutes
+    
+    console.log('📊 Batch analytics system started (5-minute intervals)');
+  };
+
+  // Start the batch analytics system
+startBatchAnalytics();
+
+// Manual flush endpoint for testing
+app.post('/api/analytics/flush', async (req, res) => {
+  try {
+    console.log('🔄 Manual analytics flush requested');
+    if (analyticsQueue.length > 0) {
+      const eventsToProcess = analyticsQueue.splice(0);
+      await processBatchAnalytics(eventsToProcess);
+      res.json({ 
+        success: true, 
+        message: `Processed ${eventsToProcess.length} analytics events`,
+        processedEvents: eventsToProcess.length
+      });
+    } else {
+      res.json({ 
+        success: true, 
+        message: 'No analytics events to process',
+        processedEvents: 0
+      });
+    }
+  } catch (error) {
+    console.error('Error in manual analytics flush:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
+
+// Analytics queue status endpoint
+app.get('/api/analytics/status', (req, res) => {
+  res.json({
+    queueSize: analyticsQueue.length,
+    processedEventsCache: processedEvents.size,
+    recentEvents: analyticsQueue.slice(-5).map(event => ({
+      userId: event.userId.substring(0, 8) + '...',
+      messageId: event.messageId,
+      date: event.date,
+      action: event.action,
+      timestamp: event.timestamp
+    }))
+  });
+});
 
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

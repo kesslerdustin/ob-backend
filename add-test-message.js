@@ -22,7 +22,7 @@ if (!admin.apps.length) {
 
 // New test message to add
 const newTestMessage = {
-  id: 'test_server_push_message',
+  id: 'test_server_push_message2',
   type: 'server_push',
   priority: 10,
   enabled: true,
