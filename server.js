@@ -157,8 +157,8 @@ app.use(cors({
   ]
 }));
 
-app.use(express.json({ extended: true }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Add middleware to ensure proper character encoding
 app.use((req, res, next) => {
@@ -1779,22 +1779,36 @@ try {
   // Coach Messages endpoint - serves contextual messages for the coach
   app.post('/api/coach-messages', verifyFirebaseToken, async (req, res) => {
     try {
-      const { appStartCount, userContext } = req.body;
+      const { userContext } = req.body;
       const userId = req.user?.uid;
+      
+      // Get app start count from Firestore (consistent with reviewUtils.js)
+      let appStarts = 0;
+      try {
+        const db = admin.firestore();
+        const userRef = db.collection('users').doc(userId);
+        const userDoc = await userRef.get();
+        
+        if (userDoc.exists) {
+          appStarts = userDoc.data()?.appLaunchCount || 0;
+        }
+      } catch (error) {
+        console.error('Error getting app launch count from Firestore:', error);
+      }
       
       console.log('Coach messages requested:', {
         userId,
-        appStartCount: parseInt(appStartCount) || 0,
+        appStartCount: appStarts,
         hasUserContext: !!userContext
       });
       
       const messages = [];
       const now = new Date();
       const currentMonth = now.getMonth() + 1;
-      const appStarts = parseInt(appStartCount) || 0;
       
       // Server-side message logic based on various triggers
       
+      // === MILESTONE MESSAGES ===
       // Welcome back message for returning users (after 7+ days)
       if (appStarts >= 50) {
         messages.push({
@@ -1811,7 +1825,40 @@ try {
         });
       }
       
-      // Seasonal server messages with more specific content
+      // 100 app openings milestone
+      if (appStarts >= 100) {
+        messages.push({
+          id: `milestone_100_${now.getFullYear()}`,
+          type: 'milestone',
+          priority: 9,
+          title: 'Wilderness Expert!',
+          content: 'Incredible! You\'ve opened the app 100 times! You\'re truly dedicated to outdoor exploration. Your knowledge and experience are becoming impressive. Keep pushing your boundaries safely!',
+          timestamp: now.toISOString(),
+          trigger: {
+            type: 'milestone',
+            condition: { appStarts: 100 }
+          }
+        });
+      }
+      
+      // 1000 app openings milestone
+      if (appStarts >= 1000) {
+        messages.push({
+          id: `milestone_1000_${now.getFullYear()}`,
+          type: 'milestone',
+          priority: 10,
+          title: 'Outdoor Legend!',
+          content: 'AMAZING! 1000+ app openings! You\'re an absolute outdoor legend! Your dedication to wilderness exploration and learning is extraordinary. You\'ve truly mastered the art of outdoor adventure!',
+          timestamp: now.toISOString(),
+          trigger: {
+            type: 'milestone',
+            condition: { appStarts: 1000 }
+          }
+        });
+      }
+      
+      // === SEASONAL MESSAGES ===
+      // HOW TO ADD: Check currentMonth (1-12) and add seasonal content
       if (currentMonth >= 6 && currentMonth <= 8) { // Summer
         messages.push({
           id: `summer_safety_${now.getFullYear()}`,
@@ -1842,7 +1889,8 @@ try {
         });
       }
       
-      // Feature announcement (you can update this for new features)
+      // === FEATURE ANNOUNCEMENTS ===
+      // HOW TO ADD: Set a date and add feature announcements
       const featureAnnouncementDate = new Date('2024-01-01');
       if (now >= featureAnnouncementDate) {
         messages.push({
@@ -1859,7 +1907,8 @@ try {
         });
       }
       
-      // Weekly tip rotation
+      // === WEEKLY TIPS ===
+      // HOW TO ADD: Add new tips to the tips array, they will rotate weekly
       const weekOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 1)) / (7 * 24 * 60 * 60 * 1000));
       const tips = [
         {
@@ -1877,6 +1926,15 @@ try {
         {
           title: 'Wildlife Safety Tip',
           content: 'Make noise while hiking to avoid surprising wildlife. Most animals will move away if they hear you coming, reducing the chance of encounters.'
+        },
+        // ADD NEW TIPS HERE - they will automatically rotate weekly
+        {
+          title: 'Emergency Shelter Tip',
+          content: 'In emergency situations, your priority is insulation from the ground. Use pine needles, leaves, or any available material to create a barrier between you and the cold earth.'
+        },
+        {
+          title: 'Weather Reading Tip',
+          content: 'Watch cloud formations: rapidly building cumulus clouds often indicate incoming storms. Dark, towering clouds suggest severe weather - seek shelter immediately.'
         }
       ];
       
@@ -1894,7 +1952,9 @@ try {
         }
       });
       
-      // Special announcement (can be updated via environment variable)
+      // === SPECIAL ANNOUNCEMENTS ===
+      // HOW TO ADD: Set environment variable COACH_SPECIAL_ANNOUNCEMENT with JSON
+      // Example: {"id": "holiday2024", "title": "Holiday Message", "content": "Happy holidays from the team!"}
       const specialAnnouncement = process.env.COACH_SPECIAL_ANNOUNCEMENT;
       if (specialAnnouncement) {
         try {
@@ -1915,6 +1975,27 @@ try {
           console.warn('Invalid special announcement format:', error);
         }
       }
+      
+      // === HOW TO ADD NEW MESSAGE TYPES ===
+      /*
+      1. MILESTONE MESSAGES: Add conditions based on appStarts
+      2. SEASONAL MESSAGES: Add conditions based on currentMonth (1-12)
+      3. FEATURE ANNOUNCEMENTS: Set a specific date and add announcement
+      4. WEEKLY TIPS: Add to the tips array above
+      5. SPECIAL ANNOUNCEMENTS: Use environment variable COACH_SPECIAL_ANNOUNCEMENT
+      6. CONTEXTUAL MESSAGES: Use userContext data (location, weather, etc.)
+      
+      Message Structure:
+      {
+        id: 'unique_message_id',
+        type: 'milestone|seasonal|feature_announcement|tips|server_broadcast',
+        priority: 1-10 (higher = shown first),
+        title: 'Message Title',
+        content: 'Message content text',
+        timestamp: ISO string,
+        trigger: { type: 'trigger_type', condition: {...} }
+      }
+      */
       
       // Sort messages by priority
       messages.sort((a, b) => (b.priority || 0) - (a.priority || 0));
