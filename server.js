@@ -1776,6 +1776,170 @@ try {
     }
   });
 
+  // Coach Messages endpoint - serves contextual messages for the coach
+  app.post('/api/coach-messages', verifyFirebaseToken, async (req, res) => {
+    try {
+      const { appStartCount, userContext } = req.body;
+      const userId = req.user?.uid;
+      
+      console.log('Coach messages requested:', {
+        userId,
+        appStartCount: parseInt(appStartCount) || 0,
+        hasUserContext: !!userContext
+      });
+      
+      const messages = [];
+      const now = new Date();
+      const currentMonth = now.getMonth() + 1;
+      const appStarts = parseInt(appStartCount) || 0;
+      
+      // Server-side message logic based on various triggers
+      
+      // Welcome back message for returning users (after 7+ days)
+      if (appStarts >= 50) {
+        messages.push({
+          id: `returning_user_${now.getMonth()}`,
+          type: 'milestone',
+          priority: 7,
+          title: 'Welcome Back, Explorer!',
+          content: 'Great to see you back in the wilderness! Your experience is growing - you\'ve opened the app over 50 times. Ready for your next outdoor adventure?',
+          timestamp: now.toISOString(),
+          trigger: {
+            type: 'milestone',
+            condition: { appStarts: 50 }
+          }
+        });
+      }
+      
+      // Seasonal server messages with more specific content
+      if (currentMonth >= 6 && currentMonth <= 8) { // Summer
+        messages.push({
+          id: `summer_safety_${now.getFullYear()}`,
+          type: 'seasonal',
+          priority: 6,
+          title: 'Summer Safety Reminder',
+          content: 'Summer is here! Remember to stay hydrated, use sun protection, and be aware of increased wildlife activity. Check weather conditions before heading out and inform someone of your plans.',
+          timestamp: now.toISOString(),
+          trigger: {
+            type: 'date_based',
+            condition: { months: [6, 7, 8], recurring: true }
+          }
+        });
+      }
+      
+      if (currentMonth >= 9 && currentMonth <= 11) { // Fall
+        messages.push({
+          id: `fall_preparation_${now.getFullYear()}`,
+          type: 'seasonal',
+          priority: 6,
+          title: 'Fall Outdoor Preparation',
+          content: 'As temperatures drop and daylight hours shorten, make sure to pack extra layers, bring a reliable light source, and be prepared for rapidly changing weather conditions.',
+          timestamp: now.toISOString(),
+          trigger: {
+            type: 'date_based',
+            condition: { months: [9, 10, 11], recurring: true }
+          }
+        });
+      }
+      
+      // Feature announcement (you can update this for new features)
+      const featureAnnouncementDate = new Date('2024-01-01');
+      if (now >= featureAnnouncementDate) {
+        messages.push({
+          id: 'feature_ai_analysis_2024',
+          type: 'feature_announcement',
+          priority: 8,
+          title: 'AI Analysis Enhanced!',
+          content: 'Our AI analysis has been improved with better species identification and more detailed environmental insights. Try taking a photo of plants or wildlife for enhanced identification!',
+          timestamp: now.toISOString(),
+          trigger: {
+            type: 'server_push',
+            condition: {}
+          }
+        });
+      }
+      
+      // Weekly tip rotation
+      const weekOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 1)) / (7 * 24 * 60 * 60 * 1000));
+      const tips = [
+        {
+          title: 'Water Purification Tip',
+          content: 'When in doubt about water quality, boiling for at least 1 minute (3 minutes at high altitude) is the most reliable purification method in survival situations.'
+        },
+        {
+          title: 'Fire Starting Tip',
+          content: 'Always have multiple fire-starting methods: waterproof matches, lighter, ferro rod, and tinder. Practice different techniques before you need them in the field.'
+        },
+        {
+          title: 'Navigation Tip',
+          content: 'Learn to use your phone\'s compass app even without GPS. Understanding basic direction finding can be crucial when electronic navigation fails.'
+        },
+        {
+          title: 'Wildlife Safety Tip',
+          content: 'Make noise while hiking to avoid surprising wildlife. Most animals will move away if they hear you coming, reducing the chance of encounters.'
+        }
+      ];
+      
+      const weeklyTip = tips[weekOfYear % tips.length];
+      messages.push({
+        id: `weekly_tip_${weekOfYear}`,
+        type: 'tips',
+        priority: 4,
+        title: weeklyTip.title,
+        content: weeklyTip.content,
+        timestamp: now.toISOString(),
+        trigger: {
+          type: 'date_based',
+          condition: { recurring: true }
+        }
+      });
+      
+      // Special announcement (can be updated via environment variable)
+      const specialAnnouncement = process.env.COACH_SPECIAL_ANNOUNCEMENT;
+      if (specialAnnouncement) {
+        try {
+          const announcement = JSON.parse(specialAnnouncement);
+          messages.push({
+            id: `special_${announcement.id || 'default'}`,
+            type: 'server_broadcast',
+            priority: 9,
+            title: announcement.title || 'Special Announcement',
+            content: announcement.content || '',
+            timestamp: announcement.timestamp || now.toISOString(),
+            trigger: {
+              type: 'server_push',
+              condition: {}
+            }
+          });
+        } catch (error) {
+          console.warn('Invalid special announcement format:', error);
+        }
+      }
+      
+      // Sort messages by priority
+      messages.sort((a, b) => (b.priority || 0) - (a.priority || 0));
+      
+      console.log('Serving coach messages:', {
+        count: messages.length,
+        types: messages.map(m => m.type)
+      });
+      
+      res.json({
+        success: true,
+        messages,
+        timestamp: now.toISOString()
+      });
+      
+    } catch (error) {
+      console.error('Error serving coach messages:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to get coach messages',
+        details: error.message
+      });
+    }
+  });
+
   // Blacklisted content endpoint - secure endpoint to get blacklisted user IDs
   app.get('/api/config/blacklisted-content', verifyFirebaseToken, (req, res) => {
     try {
