@@ -24,15 +24,15 @@ if (!admin.apps.length) {
 // Example coach messages with all language translations
 const exampleMessages = [
   {
-    id: 'earth_day_2024',
+    id: 'earth_day_2026',
     type: 'seasonal',
     priority: 8,
     enabled: true,
     trigger: {
       type: 'date_based',
       condition: { 
-        month: 6, 
-        day: 19, 
+        month: 4, 
+        day: 22, 
         recurring: true 
       }
     },
@@ -44,6 +44,30 @@ const exampleMessages = [
       de: {
         title: 'Heute ist Tag der Erde!',
         content: 'Heute feiern wir unseren Planeten und die unglaubliche Biodiversität, die uns umgibt. Als Outdoor-Enthusiasten haben wir eine besondere Verantwortung, die natürliche Welt zu schützen und zu bewahren.'
+      },
+      es: {
+        title: '¡Hoy es el Día de la Tierra!',
+        content: 'Hoy celebramos nuestro planeta y la increíble biodiversidad que nos rodea. Como entusiastas del aire libre, tenemos una responsabilidad especial de proteger y preservar el mundo natural que amamos explorar.'
+      },
+      fr: {
+        title: 'Aujourd\'hui c\'est le Jour de la Terre!',
+        content: 'Aujourd\'hui, nous célébrons notre planète et l\'incroyable biodiversité qui nous entoure. En tant qu\'amateurs de plein air, nous avons une responsabilité particulière de protéger et préserver le monde naturel que nous aimons explorer.'
+      },
+      it: {
+        title: 'Oggi è la Giornata della Terra!',
+        content: 'Oggi celebriamo il nostro pianeta e l\'incredibile biodiversità che ci circonda. Come appassionati di attività all\'aperto, abbiamo una responsabilità speciale nel proteggere e preservare il mondo naturale che amiamo esplorare.'
+      },
+      pt: {
+        title: 'Hoje é o Dia da Terra!',
+        content: 'Hoje celebramos o nosso planeta e a incrível biodiversidade que nos rodeia. Como entusiastas do ar livre, temos uma responsabilidade especial de proteger e preservar o mundo natural que adoramos explorar.'
+      },
+      nl: {
+        title: 'Vandaag is het Dag van de Aarde!',
+        content: 'Vandaag vieren we onze planeet en de ongelofelijke biodiversiteit die ons omringt. Als buitensportliefhebbers hebben we een speciale verantwoordelijkheid om de natuurlijke wereld die we graag verkennen te beschermen en te behouden.'
+      },
+      ru: {
+        title: 'Сегодня День Земли!',
+        content: 'Сегодня мы празднуем нашу планету и невероятное биоразнообразие, которое нас окружает. Как любители активного отдыха, мы несем особую ответственность за защиту и сохранение природного мира, который мы любим исследовать.'
       }
     },
     metadata: {
@@ -69,6 +93,30 @@ const exampleMessages = [
       de: {
         title: 'Wildnis-Experte!',
         content: 'Unglaublich! Du hast die App 100 Mal geöffnet! Du bist wirklich der Outdoor-Erkundung gewidmet.'
+      },
+      es: {
+        title: '¡Experto en Naturaleza!',
+        content: '¡Increíble! ¡Has abierto la aplicación 100 veces! Realmente estás dedicado a la exploración al aire libre.'
+      },
+      fr: {
+        title: 'Expert de la Nature!',
+        content: 'Incroyable! Vous avez ouvert l\'application 100 fois! Vous êtes vraiment dévoué à l\'exploration en plein air.'
+      },
+      it: {
+        title: 'Esperto della Natura!',
+        content: 'Incredibile! Hai aperto l\'app 100 volte! Sei davvero dedicato all\'esplorazione all\'aperto.'
+      },
+      pt: {
+        title: 'Especialista da Natureza!',
+        content: 'Incrível! Você abriu o aplicativo 100 vezes! Você é realmente dedicado à exploração ao ar livre.'
+      },
+      nl: {
+        title: 'Natuurexpert!',
+        content: 'Ongelofelijk! Je hebt de app 100 keer geopend! Je bent echt toegewijd aan buitenverkenning.'
+      },
+      ru: {
+        title: 'Эксперт дикой природы!',
+        content: 'Невероятно! Вы открыли приложение 100 раз! Вы действительно преданы исследованию природы.'
       }
     },
     metadata: {

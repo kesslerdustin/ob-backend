@@ -1926,21 +1926,25 @@ try {
                     source: 'firestore'
                   });
                   
-                  // Update view count (fire and forget) - temporarily disabled to prevent corruption
-                  // setTimeout(async () => {
-                  //   try {
-                  //     const messageRef = db.collection('coachMessages').doc(messageDoc.id);
-                  //     const messageIndex = firestoreMessages.findIndex(m => m.id === message.id);
-                  //     if (messageIndex >= 0) {
-                  //       await messageRef.update({
-                  //         [`messages.${messageIndex}.metadata.views`]: admin.firestore.FieldValue.increment(1),
-                  //         [`messages.${messageIndex}.metadata.lastViewed`]: admin.firestore.FieldValue.serverTimestamp()
-                  //       });
-                  //     }
-                  //   } catch (updateError) {
-                  //     console.error('Error updating message view count:', updateError);
-                  //   }
-                  // }, 0);
+                  // Update view count (fire and forget)
+                  setTimeout(async () => {
+                    try {
+                      const messageRef = db.collection('coachMessages').doc(messageDoc.id);
+                      const messageIndex = firestoreMessages.findIndex(m => m.id === message.id);
+                      if (messageIndex >= 0) {
+                        console.log(`📊 Updating view count for message: ${message.id} (index: ${messageIndex})`);
+                        await messageRef.update({
+                          [`messages.${messageIndex}.metadata.views`]: admin.firestore.FieldValue.increment(1),
+                          [`messages.${messageIndex}.metadata.lastViewed`]: admin.firestore.FieldValue.serverTimestamp()
+                        });
+                        console.log(`✅ View count updated successfully for message: ${message.id}`);
+                      } else {
+                        console.warn(`⚠️ Could not find message index for: ${message.id}`);
+                      }
+                    } catch (updateError) {
+                      console.error('❌ Error updating message view count:', updateError);
+                    }
+                  }, 0);
                 }
               }
             }
@@ -1953,44 +1957,6 @@ try {
       } catch (firestoreError) {
         console.error('Error fetching messages from Firestore:', firestoreError);
         // Continue with fallback logic below
-      }
-      
-      // FALLBACK: If no Firestore messages or error, use basic hardcoded messages
-      if (messages.length === 0) {
-        console.log('No Firestore messages found, using fallback messages');
-        
-        // Basic milestone messages as fallback
-        if (appStarts >= 100) {
-          messages.push({
-            id: `milestone_100_fallback`,
-            type: 'milestone',
-            priority: 9,
-            title: 'Wilderness Expert!',
-            content: 'Incredible! You\'ve opened the app 100+ times! You\'re truly dedicated to outdoor exploration.',
-            timestamp: now.toISOString(),
-            source: 'fallback'
-          });
-        }
-        
-        // Basic weekly tip as fallback
-        const weekOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 1)) / (7 * 24 * 60 * 60 * 1000));
-        const basicTips = [
-          'Always carry multiple fire-starting methods when heading outdoors.',
-          'Boil water for at least 1 minute to purify it in survival situations.',
-          'Make noise while hiking to avoid surprising wildlife.',
-          'Pack extra layers - weather can change quickly in the wilderness.'
-        ];
-        
-        const tip = basicTips[weekOfYear % basicTips.length];
-        messages.push({
-          id: `fallback_tip_${weekOfYear}`,
-          type: 'tips',
-          priority: 4,
-          title: 'Outdoor Tip',
-          content: tip,
-          timestamp: now.toISOString(),
-          source: 'fallback'
-        });
       }
       
       // Sort messages by priority
