@@ -359,8 +359,8 @@ def flash_chat(prompt, image_path=None, options=None):
 
         WAYPOINT FUNCTIONALITY:
         You can suggest creating waypoints for points of interest, important locations, or survival-relevant spots. However, ONLY return waypoint JSON if:
-        1. The user EXPLICITLY asks you to create a waypoint, OR
-        2. You strongly recommend a specific location that would be highly beneficial to save (e.g., water source, shelter location, safe zone, landmark)
+        1. The user EXPLICITLY asks you to create a waypoint
+        (You may recommend a specific location that would be highly beneficial to save (e.g., water source, shelter location, safe zone, landmark), but only ask the user if they want it, DO NOT SEND THE JSON BEFORE THE USER CONFIRMED)
         
         When suggesting a waypoint WITHOUT creating one, use phrases like:
         - "Would you like me to create a waypoint for this location?"
@@ -384,7 +384,7 @@ def flash_chat(prompt, image_path=None, options=None):
         - Only suggest coordinates that are logical based on the context provided
         - DO NOT use markdown formatting, code blocks, or backticks around the JSON
         - The JSON should be embedded directly in your response text
-        - DO NOT JUST CREATE WAYPOINTS WITHOUT ASKING THE USER IF THEY WANT ONE, OR WITHOUT BEING PROMPTED TO DO SO.
+        - DO NOT JUST CREATE WAYPOINTS WITHOUT EXPLICIT CONFIRMATION FROM THE USER, OR WITHOUT BEING PROMPTED TO DO SO.
         - DONT ASK FOR WAYPOINTS ALWAYS, ONLY IF LOGICALLY RELEVANT.
 
         CRITICAL: Respond in {language} language WITHOUT including the language code. Never start your response with language codes like 'de:', 'en:', etc. Also do not give any introduction, reply only with the answer. When referring times or units of measurement, use the language of the user (miles in english, km in german, etc).
