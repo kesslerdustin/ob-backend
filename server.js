@@ -1893,6 +1893,21 @@ try {
           if (messageData.active !== false) {
             const firestoreMessages = messageData.messages || [];
             
+            // Debug logging
+            console.log('Firestore message data:', {
+              hasMessages: !!messageData.messages,
+              messagesType: typeof messageData.messages,
+              isArray: Array.isArray(messageData.messages),
+              messagesLength: messageData.messages?.length,
+              messagesSample: messageData.messages
+            });
+            
+            // Ensure it's an array before iterating
+            if (!Array.isArray(firestoreMessages)) {
+              console.error('Messages field is not an array:', typeof firestoreMessages, firestoreMessages);
+              // Skip processing if not an array
+            } else {
+            
             // Process each message and check if it should be shown
             for (const message of firestoreMessages) {
               if (isMessageTriggered(message, contextWithAppStarts)) {
@@ -1911,24 +1926,25 @@ try {
                     source: 'firestore'
                   });
                   
-                  // Update view count (fire and forget)
-                  setTimeout(async () => {
-                    try {
-                      const messageRef = db.collection('coachMessages').doc(messageDoc.id);
-                      const messageIndex = firestoreMessages.findIndex(m => m.id === message.id);
-                      if (messageIndex >= 0) {
-                        await messageRef.update({
-                          [`messages.${messageIndex}.metadata.views`]: admin.firestore.FieldValue.increment(1),
-                          [`messages.${messageIndex}.metadata.lastViewed`]: admin.firestore.FieldValue.serverTimestamp()
-                        });
-                      }
-                    } catch (updateError) {
-                      console.error('Error updating message view count:', updateError);
-                    }
-                  }, 0);
+                  // Update view count (fire and forget) - temporarily disabled to prevent corruption
+                  // setTimeout(async () => {
+                  //   try {
+                  //     const messageRef = db.collection('coachMessages').doc(messageDoc.id);
+                  //     const messageIndex = firestoreMessages.findIndex(m => m.id === message.id);
+                  //     if (messageIndex >= 0) {
+                  //       await messageRef.update({
+                  //         [`messages.${messageIndex}.metadata.views`]: admin.firestore.FieldValue.increment(1),
+                  //         [`messages.${messageIndex}.metadata.lastViewed`]: admin.firestore.FieldValue.serverTimestamp()
+                  //       });
+                  //     }
+                  //   } catch (updateError) {
+                  //     console.error('Error updating message view count:', updateError);
+                  //   }
+                  // }, 0);
                 }
               }
             }
+            } // Close the else block
           }
         }
         
