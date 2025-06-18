@@ -61,7 +61,52 @@ async function addTestMessage(targetDate) {
     if (doc.exists) {
       // Add to existing messages
       const existingData = doc.data();
-      const existingMessages = existingData.messages || [];
+      let existingMessages = existingData.messages || [];
+      
+      // Debug logging
+      console.log('Existing messages type:', typeof existingMessages);
+      console.log('Is array:', Array.isArray(existingMessages));
+      console.log('Existing messages:', existingMessages);
+      
+      // Handle case where messages is not an array (corrupted data)
+      if (!Array.isArray(existingMessages)) {
+        console.log('⚠️  Messages field is not an array, fixing corrupted document...');
+        
+        // Replace the entire document with proper structure
+        const processedMessage = {
+          ...newTestMessage,
+          metadata: {
+            views: 0,
+            clicks: 0,
+            createdBy: 'script',
+            createdAt: admin.firestore.FieldValue.serverTimestamp(),
+            lastModified: admin.firestore.FieldValue.serverTimestamp(),
+            ...newTestMessage.metadata
+          }
+        };
+        
+        await messageRef.set({
+          date: targetDate,
+          active: true,
+          messages: [processedMessage],
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+          lastUpdated: admin.firestore.FieldValue.serverTimestamp()
+        });
+        
+        console.log('✅ Corrupted document fixed and test message added');
+        console.log('📋 Test message details:');
+        console.log(`  - ID: ${newTestMessage.id}`);
+        console.log(`  - Type: ${newTestMessage.type}`);
+        console.log(`  - Priority: ${newTestMessage.priority}`);
+        console.log(`  - Trigger: ${newTestMessage.trigger.type}`);
+        
+        console.log('\n🎯 Test message added! Now you can:');
+        console.log('  1. Open your app to see the message');
+        console.log('  2. Check Firestore to see view count increment');
+        console.log('  3. Verify analytics are working');
+        
+        process.exit(0);
+      }
       
       // Check if test message already exists
       const messageExists = existingMessages.some(msg => msg.id === newTestMessage.id);
