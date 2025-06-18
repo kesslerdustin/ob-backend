@@ -1930,17 +1930,49 @@ try {
                   setTimeout(async () => {
                     try {
                       const messageRef = db.collection('coachMessages').doc(messageDoc.id);
-                      const messageIndex = firestoreMessages.findIndex(m => m.id === message.id);
-                      if (messageIndex >= 0) {
-                        console.log(`📊 Updating view count for message: ${message.id} (index: ${messageIndex})`);
-                        await messageRef.update({
-                          [`messages.${messageIndex}.metadata.views`]: admin.firestore.FieldValue.increment(1),
-                          [`messages.${messageIndex}.metadata.lastViewed`]: admin.firestore.FieldValue.serverTimestamp()
-                        });
-                        console.log(`✅ View count updated successfully for message: ${message.id}`);
-                      } else {
-                        console.warn(`⚠️ Could not find message index for: ${message.id}`);
-                      }
+                      
+                      // Use a transaction to safely update the view count
+                      await db.runTransaction(async (transaction) => {
+                        const doc = await transaction.get(messageRef);
+                        if (!doc.exists) {
+                          console.warn(`⚠️ Document no longer exists for view count update: ${message.id}`);
+                          return;
+                        }
+                        
+                        const data = doc.data();
+                        const messages = data.messages || [];
+                        
+                        if (!Array.isArray(messages)) {
+                          console.warn(`⚠️ Messages field is not an array, skipping view count update`);
+                          return;
+                        }
+                        
+                        const messageIndex = messages.findIndex(m => m.id === message.id);
+                        if (messageIndex >= 0) {
+                          console.log(`📊 Updating view count for message: ${message.id} (index: ${messageIndex})`);
+                          
+                          // Update the message in the array
+                          const updatedMessages = [...messages];
+                          updatedMessages[messageIndex] = {
+                            ...updatedMessages[messageIndex],
+                            metadata: {
+                              ...updatedMessages[messageIndex].metadata,
+                              views: (updatedMessages[messageIndex].metadata?.views || 0) + 1,
+                              lastViewed: new Date()
+                            }
+                          };
+                          
+                          // Update the entire messages array
+                          transaction.update(messageRef, { 
+                            messages: updatedMessages,
+                            lastUpdated: admin.firestore.FieldValue.serverTimestamp()
+                          });
+                          
+                          console.log(`✅ View count updated successfully for message: ${message.id}`);
+                        } else {
+                          console.warn(`⚠️ Could not find message index for: ${message.id}`);
+                        }
+                      });
                     } catch (updateError) {
                       console.error('❌ Error updating message view count:', updateError);
                     }
@@ -2009,14 +2041,15 @@ try {
       const messageRef = db.collection('coachMessages').doc(date);
       
       // Add metadata to each message
+      const now = new Date();
       const processedMessages = messages.map(message => ({
         ...message,
         metadata: {
           views: 0,
           clicks: 0,
           createdBy: 'admin',
-          createdAt: admin.firestore.FieldValue.serverTimestamp(),
-          lastModified: admin.firestore.FieldValue.serverTimestamp(),
+          createdAt: now,
+          lastModified: now,
           ...message.metadata
         }
       }));
