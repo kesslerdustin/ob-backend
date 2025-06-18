@@ -1776,6 +1776,36 @@ try {
     }
   });
 
+  // Blacklisted content endpoint - secure endpoint to get blacklisted user IDs
+  app.get('/api/config/blacklisted-content', verifyFirebaseToken, (req, res) => {
+    try {
+      // Get blacklisted user IDs from environment variable
+      const blacklistedContent = process.env.BLACKLISTED_CONTENT || '';
+      const blacklistedUserIds = blacklistedContent
+        .split(',')
+        .map(id => id.trim())
+        .filter(id => id.length > 0);
+      
+      console.log('Blacklisted content requested:', {
+        count: blacklistedUserIds.length,
+        userId: req.user?.uid
+      });
+      
+      res.json({
+        success: true,
+        blacklistedUserIds,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Error fetching blacklisted content config:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to fetch blacklisted content configuration',
+        details: error.message
+      });
+    }
+  });
+
   // Weather API endpoint
   app.get('/api/weather', verifyFirebaseToken, async (req, res) => {
     try {
