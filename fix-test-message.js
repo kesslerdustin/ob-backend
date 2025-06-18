@@ -69,7 +69,7 @@ const testMessage = {
     views: 0,
     clicks: 0,
     createdBy: 'admin',
-    createdAt: admin.firestore.FieldValue.serverTimestamp()
+    createdAt: new Date().toISOString()
   }
 };
 
