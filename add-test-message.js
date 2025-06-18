@@ -73,14 +73,15 @@ async function addTestMessage(targetDate) {
         console.log('⚠️  Messages field is not an array, fixing corrupted document...');
         
         // Replace the entire document with proper structure
+        const now = new Date();
         const processedMessage = {
           ...newTestMessage,
           metadata: {
             views: 0,
             clicks: 0,
             createdBy: 'script',
-            createdAt: admin.firestore.FieldValue.serverTimestamp(),
-            lastModified: admin.firestore.FieldValue.serverTimestamp(),
+            createdAt: now,
+            lastModified: now,
             ...newTestMessage.metadata
           }
         };
@@ -122,8 +123,8 @@ async function addTestMessage(targetDate) {
               views: msg.metadata?.views || 0, // Preserve existing view count
               clicks: msg.metadata?.clicks || 0,
               createdBy: 'script',
-              createdAt: msg.metadata?.createdAt || admin.firestore.FieldValue.serverTimestamp(),
-              lastModified: admin.firestore.FieldValue.serverTimestamp(),
+              createdAt: msg.metadata?.createdAt || new Date(),
+              lastModified: new Date(),
               ...newTestMessage.metadata
             }
           } : msg
@@ -137,14 +138,15 @@ async function addTestMessage(targetDate) {
         console.log('✅ Test message updated successfully');
       } else {
         // Add new message to existing array
+        const now = new Date();
         const processedMessage = {
           ...newTestMessage,
           metadata: {
             views: 0,
             clicks: 0,
             createdBy: 'script',
-            createdAt: admin.firestore.FieldValue.serverTimestamp(),
-            lastModified: admin.firestore.FieldValue.serverTimestamp(),
+            createdAt: now,
+            lastModified: now,
             ...newTestMessage.metadata
           }
         };
@@ -158,14 +160,15 @@ async function addTestMessage(targetDate) {
       }
     } else {
       // Create new document with just the test message
+      const now = new Date();
       const processedMessage = {
         ...newTestMessage,
         metadata: {
           views: 0,
           clicks: 0,
           createdBy: 'script',
-          createdAt: admin.firestore.FieldValue.serverTimestamp(),
-          lastModified: admin.firestore.FieldValue.serverTimestamp(),
+          createdAt: now,
+          lastModified: now,
           ...newTestMessage.metadata
         }
       };
