@@ -1629,38 +1629,9 @@ try {
      });
    };
 
-   // Function to get varied search terms based on day of week for content freshness
+   // Function to get search terms - simply use the terms as defined
    const getVariedSearchTerms = (categoryData) => {
-     const dayOfWeek = new Date().getDay(); // 0 = Sunday, 6 = Saturday
-     const baseTerms = categoryData.englishTerms || categoryData.terms || [];
-     
-     // Daily variation strategies
-     const strategies = {
-       0: { suffix: 'tutorial guide', focus: 'educational' }, // Sunday
-       1: { suffix: 'tips tricks', focus: 'practical' }, // Monday  
-       2: { suffix: 'adventure expedition', focus: 'adventure' }, // Tuesday
-       3: { suffix: 'documentary', focus: 'documentary' }, // Wednesday
-       4: { suffix: 'techniques skills', focus: 'skills' }, // Thursday
-       5: { suffix: 'gear equipment', focus: 'gear' }, // Friday
-       6: { suffix: 'weekend project', focus: 'projects' } // Saturday
-     };
-     
-     const todayStrategy = strategies[dayOfWeek];
-     const searchTerms = [];
-     
-     // Add base category terms with daily variation
-     baseTerms.forEach(term => {
-       searchTerms.push(`${term} ${todayStrategy.suffix}`);
-       searchTerms.push(`${term} 2024`); // Current year for freshness
-     });
-     
-     // Add the original search query as fallback
-     if (categoryData.searchQuery) {
-       searchTerms.push(categoryData.searchQuery);
-     }
-     
-     // Limit to 3-4 search terms to avoid excessive API calls
-     return searchTerms.slice(0, 4);
+     return categoryData.terms || [];
    };
 
   // Function to fetch trending videos for global feed
