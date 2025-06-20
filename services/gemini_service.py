@@ -348,8 +348,11 @@ def flash_chat(prompt, image_path=None, options=None):
         language = options.get('language', 'en')
         context = options.get('context', '')
         
+        # Extract AI mode settings
+        ai_mode, children_age, expert_info = extract_ai_mode_from_options(options)
+        
         # Make language instruction more explicit and move it to the end
-        localized_prompt = f"""
+        base_prompt = f"""
         You are a helpful outdoor guide and survival expert. You have detailed information about the user's location, time, season, weather, surroundings, and possibly a satellite view of their position. Be precise, logical and helpful, and incorporate this contextual information naturally into your responses when relevant. Only do so, if it makes sense. Be aware of past messages and context and dont repeat yourself except if its really necessary!
 
         Context about the current location and conditions:
@@ -391,6 +394,9 @@ def flash_chat(prompt, image_path=None, options=None):
         CRITICAL: Respond in {language} language WITHOUT including the language code. Never start your response with language codes like 'de:', 'en:', etc. Also do not give any introduction, reply only with the answer. When referring times or units of measurement, use the language of the user (miles in english, km in german, etc). When mentionen Species names, use the language of the user. When suggesting to create Waypoints, DO NOT CREATE THEM WITHOUT EXPLICIT CONFIRMATION FROM THE USER.
         
         """
+        
+        # Apply AI mode context to the prompt
+        localized_prompt = add_ai_mode_context(base_prompt, ai_mode, children_age, expert_info)
 
         # Prepare content list
         contents = [localized_prompt]
@@ -479,7 +485,10 @@ def analyze_weather(prompt, options=None):
         language = options.get('language', 'en')
         print(f"Gemini Service: Starting weather analysis with language: {language}", file=sys.stderr)
         
-        structured_prompt = f"""
+        # Extract AI mode settings
+        ai_mode, children_age, expert_info = extract_ai_mode_from_options(options)
+        
+        base_prompt = f"""
         You will receive some information about a location, current weather and a forecast. 
         Give your expertise on whether or not dangerous weather or circumstances will appear. 
         What to look out for / prepare for when a person is outside (hiking, traveling, etc). 
@@ -504,6 +513,9 @@ def analyze_weather(prompt, options=None):
           * If input uses DD.MM.YYYY format, respond using that format
         - Maintain the same unit system, time format, and date format as provided in the input prompt
         """
+        
+        # Apply AI mode context to the prompt
+        structured_prompt = add_ai_mode_context(base_prompt, ai_mode, children_age, expert_info)
 
         # Use MODEL_ID for the API call
         response = client.models.generate_content(
@@ -539,7 +551,10 @@ def analyze_info(prompt, options=None):
         
         print(f"Python analyze_info extracted values: language={language}, description={description}, location={location}, date={date}", file=sys.stderr)
         
-        structured_prompt = f"""
+        # Extract AI mode settings
+        ai_mode, children_age, expert_info = extract_ai_mode_from_options(options)
+        
+        base_prompt = f"""
         Analyze this query and provide detailed information following these rules. You are an expert in the field of nature and survival:
         
         Search Term: {prompt}
@@ -608,6 +623,9 @@ def analyze_info(prompt, options=None):
         DO NOT MAKE UP FACTS THAT YOU ARE NOT SURE ABOUT. LET THE USER KNOW IF RELEVANT INFORMATION IS MISSING. PROVIDE WHAT YOU CAN AND KNOW. 
         Include seasonal relevance where applicable.
         """
+        
+        # Apply AI mode context to the prompt
+        structured_prompt = add_ai_mode_context(base_prompt, ai_mode, children_age, expert_info)
 
         response = client.models.generate_content(
             model=MODEL_ID,
@@ -649,7 +667,10 @@ def generate_scenarios(location_info, options=None):
         options = json.loads(options) if isinstance(options, str) else options or {}
         language = options.get('language', 'en')
         
-        structured_prompt = f"""
+        # Extract AI mode settings
+        ai_mode, children_age, expert_info = extract_ai_mode_from_options(options)
+        
+        base_prompt = f"""
         Based on this location information:
         {location_info}
 
@@ -679,6 +700,9 @@ def generate_scenarios(location_info, options=None):
         5. Response must be in {language} language
         6. Icons should match the scenario theme
         """
+        
+        # Apply AI mode context to the prompt
+        structured_prompt = add_ai_mode_context(base_prompt, ai_mode, children_age, expert_info)
 
         # Use MODEL_ID for the API call
         response = client.models.generate_content(
@@ -719,6 +743,9 @@ def game_setup(settings_data, options=None):
         settings_dict = json.loads(settings_data) if isinstance(settings_data, str) else settings_data
         settings_data = settings_dict.get('settings', {})
         language = settings_dict.get('language', 'en')
+        
+        # Extract AI mode settings
+        ai_mode, children_age, expert_info = extract_ai_mode_from_options(settings_dict)
         
         print(f"Game setup generating content in language: {language}", file=sys.stderr)
         
@@ -876,10 +903,13 @@ def game_setup(settings_data, options=None):
 
         # Update how we access custom rules
         
+        # Apply AI mode context to the prompt
+        final_prompt = add_ai_mode_context(formatted_settings, ai_mode, children_age, expert_info)
+        
         # Generate response using the formatted settings
         response = client.models.generate_content(
             model=MODEL_ID, # Changed from hardcoded "gemini-2.0-flash-exp"
-            contents=formatted_settings
+            contents=final_prompt
         )
         
         print(f"game_setup raw response: {response.text}", file=sys.stderr)
@@ -917,6 +947,9 @@ def game_master(context, options=None):
         context = json.loads(context) if isinstance(context, str) else context
         options = json.loads(options) if isinstance(options, str) else options or {}
         language = options.get('language', 'en')
+        
+        # Extract AI mode settings
+        ai_mode, children_age, expert_info = extract_ai_mode_from_options(options)
         
         # Get custom rules from context
         custom_rules = context.get('customRules', '')
@@ -1217,10 +1250,13 @@ CRITICAL DATE, TIME AND METRIC SYSTEM FORMATTING: IF YOU CONTEXT INFO CONATINS A
         print(formatted_env_context, file=sys.stderr)
         print("=== END ENVIRONMENTAL CONTEXT ===\n", file=sys.stderr)
 
+        # Apply AI mode context to the prompt
+        final_prompt = add_ai_mode_context(structured_prompt, ai_mode, children_age, expert_info)
+        
         # Generate content using the AI model with our fully constructed prompt
         response = client.models.generate_content(
             model=MODEL_ID,
-            contents=structured_prompt
+            contents=final_prompt
         )
         
         # Extract JSON content from the AI response text.
@@ -1275,7 +1311,10 @@ def game_summary(context, options=None):
         options = json.loads(options) if isinstance(options, str) else options or {}
         language = options.get('language', 'en')
         
-        structured_prompt = f"""
+        # Extract AI mode settings
+        ai_mode, children_age, expert_info = extract_ai_mode_from_options(options)
+        
+        base_prompt = f"""
         You are a game master summarizing an adventure. Create a JSON summary of this game with the following structure:
         
         GAME DETAILS:
@@ -1334,6 +1373,9 @@ def game_summary(context, options=None):
         Include specific details about weather and location challenges.
         Return ONLY the JSON structure, no additional text.
         """
+        
+        # Apply AI mode context to the prompt
+        structured_prompt = add_ai_mode_context(base_prompt, ai_mode, children_age, expert_info)
 
         response = client.models.generate_content(
             model=MODEL_ID, # Changed from hardcoded "gemini-2.0-flash-exp"
@@ -1370,6 +1412,9 @@ def generate_quiz(prompt, options=None):
     try:
         options = json.loads(options) if isinstance(options, str) else options or {}
         language = options.get('language', 'en')
+        
+        # Extract AI mode settings
+        ai_mode, children_age, expert_info = extract_ai_mode_from_options(options)
         
         # Check for cancellation signal via stdin
         if sys.stdin.isatty():  # Only if running in terminal mode
@@ -1466,11 +1511,14 @@ Schaffe einen Mix aus realitätsnahen und kniffligen Fragen.:
         5. Explanations should be educational and clear
         6. Return EXACTLY the provided JSON structure
         """
+        
+        # Apply AI mode context to the prompt
+        final_prompt = add_ai_mode_context(structured_prompt, ai_mode, children_age, expert_info)
 
         # Use MODEL_ID for the API call
         response = client.models.generate_content(
             model=MODEL_ID, # Changed from hardcoded 'gemini-2.0-flash-thinking-exp'
-            contents=structured_prompt
+            contents=final_prompt
         )
 
         # Get the response text
@@ -1583,6 +1631,69 @@ def check_image_appropriate(prompt, image_path, options=None):
             print(f"Error in check_image_appropriate: {str(e)}", file=sys.stderr)
             # Re-raise other exceptions for the decorator
             raise e
+
+def add_ai_mode_context(prompt, ai_mode='default', children_age=10, expert_info=''):
+    """
+    Adds AI mode context to prompts based on user settings
+    
+    Args:
+        prompt (str): Original prompt
+        ai_mode (str): 'default', 'children', or 'expert'
+        children_age (int): Age for children mode (5-16)
+        expert_info (str): Expert information for expert mode
+        
+    Returns:
+        str: Modified prompt with AI mode context
+    """
+    if ai_mode == 'children':
+        ai_context = f"""
+        
+IMPORTANT: You are communicating with a {children_age}-year-old child. Please:
+- Use age-appropriate language and vocabulary suitable for a {children_age}-year-old
+- Explain concepts in simple, easy-to-understand terms
+- Be encouraging and educational
+- Avoid complex scientific terminology unless you explain it simply
+- Keep responses engaging and fun for a {children_age}-year-old
+- Focus on safety and learning
+        """
+        return prompt + ai_context
+    
+    elif ai_mode == 'expert' and expert_info.strip():
+        ai_context = f"""
+        
+IMPORTANT: You are communicating with an expert user with the following background:
+{expert_info}
+
+Please:
+- Provide detailed, technical responses appropriate for their expertise level
+- Use relevant scientific/technical terminology
+- Reference advanced concepts they would understand
+- Tailor examples and explanations to their areas of expertise
+- Provide in-depth analysis and insights
+        """
+        return prompt + ai_context
+    
+    # Default mode - no modification
+    return prompt
+
+def extract_ai_mode_from_options(options=None):
+    """
+    Extracts AI mode settings from options dict
+    
+    Args:
+        options (dict): Options containing aiMode, childrenAge, expertInfo
+        
+    Returns:
+        tuple: (ai_mode, children_age, expert_info)
+    """
+    if not options:
+        return 'default', 10, ''
+    
+    ai_mode = options.get('aiMode', 'default')
+    children_age = options.get('childrenAge', 10)
+    expert_info = options.get('expertInfo', '')
+    
+    return ai_mode, children_age, expert_info
 
 if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "text"

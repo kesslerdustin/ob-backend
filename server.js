@@ -1825,6 +1825,61 @@ try {
         }
         return false;
         
+      case 'location_based':
+        // New location-based trigger type
+        const { currentLocation, polygonData } = userContext;
+        const userLocation = polygonData?.center || currentLocation;
+        
+        if (!userLocation) return false;
+        
+        const { latitude: userLat, longitude: userLon } = userLocation;
+        
+        switch (condition.type) {
+          case 'within_radius':
+            const targetLat = condition.targetLocation.latitude;
+            const targetLon = condition.targetLocation.longitude;
+            const maxDistance = condition.radius || 5;
+            
+            // Simple distance calculation for server
+            const R = 6371; // Earth's radius in km
+            const dLat = (targetLat - userLat) * Math.PI / 180;
+            const dLon = (targetLon - userLon) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                     Math.cos(userLat * Math.PI / 180) * Math.cos(targetLat * Math.PI / 180) * 
+                     Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            const distance = R * c;
+            
+            return distance <= maxDistance;
+            
+          case 'country':
+            const locationDetails = polygonData?.locationDetails;
+            if (!locationDetails) return false;
+            
+            const targetCountries = Array.isArray(condition.countries) 
+              ? condition.countries 
+              : [condition.countries];
+            
+            return targetCountries.some(country => 
+              locationDetails.country?.toLowerCase().includes(country.toLowerCase())
+            );
+            
+          case 'region':
+            const regionDetails = polygonData?.locationDetails;
+            if (!regionDetails) return false;
+            
+            const targetRegions = Array.isArray(condition.regions) 
+              ? condition.regions 
+              : [condition.regions];
+            
+            return targetRegions.some(region => 
+              regionDetails.region?.toLowerCase().includes(region.toLowerCase())
+            );
+            
+          default:
+            return false;
+        }
+        
       default:
         return false;
     }
