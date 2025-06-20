@@ -481,13 +481,16 @@ try {
 
   app.post('/api/chat/flash', verifyFirebaseToken, multer({ dest: uploadsDir }).single('image'), async (req, res) => {
     try {
-        const { prompt, language, context } = req.body;
+        const { prompt, language, context, aiMode, childrenAge, expertInfo } = req.body;
         console.log('Server - Flash Chat Request:', {
             prompt,
             language,
             contextLength: context?.length || 0,
             contextPreview: context?.substring(0, 200) + '...',
-            hasImage: !!req.file
+            hasImage: !!req.file,
+            aiMode,
+            childrenAge,
+            expertInfo
         });
 
         if (!prompt) {
@@ -498,7 +501,8 @@ try {
             prompt, 
             language, 
             context, 
-            req.file?.path || null
+            req.file?.path || null,
+            { aiMode, childrenAge, expertInfo }
         );
         
         // Clean up the uploaded file if it exists
@@ -559,8 +563,13 @@ try {
   // Update this endpoint for weather analysis
   app.post('/api/analyze/weather', verifyFirebaseToken, express.json(), async (req, res) => {
     try {
-      const { prompt, language } = req.body;
-      console.log('Server: Received weather analysis request with language:', language);
+      const { prompt, language, aiMode, childrenAge, expertInfo } = req.body;
+      console.log('Server: Received weather analysis request:', {
+        language,
+        aiMode,
+        childrenAge,
+        expertInfo
+      });
       
       if (!prompt) {
         return res.status(400).json({ error: 'Weather information is required' });
@@ -568,7 +577,7 @@ try {
 
       const response = await aiService.analyze_weather(
         prompt,
-        { language }
+        { language, aiMode, childrenAge, expertInfo }
       );
       console.log('Server: Sending response back to client:', response);
 
@@ -589,7 +598,7 @@ try {
 
   app.post('/api/analyze/info', verifyFirebaseToken, express.json(), async (req, res) => {
     try {
-      const { prompt } = req.body;
+      const { prompt, aiMode, childrenAge, expertInfo } = req.body;
       
       // Parse the prompt to extract information
       const lines = prompt.split('\n');
@@ -597,7 +606,10 @@ try {
         language: 'en',  // default value
         description: '',
         location: '',
-        date: ''
+        date: '',
+        aiMode,
+        childrenAge,
+        expertInfo
       };
 
       // Extract values from prompt
@@ -643,7 +655,11 @@ try {
   // Add this new endpoint for scenario generation
   app.post('/api/scenarios/generate', verifyFirebaseToken, express.json(), async (req, res) => {
     try {
-      const { location, language } = req.body;
+      const { location, language, aiMode, childrenAge, expertInfo } = req.body;
+      console.log('Generating scenarios:', {
+        location: typeof location === 'string' ? location.substring(0, 100) + '...' : location,
+        options: { language, aiMode, childrenAge, expertInfo }
+      });
       
       if (!location) {
         return res.status(400).json({ error: 'Location information is required' });
@@ -651,7 +667,7 @@ try {
 
       const response = await aiService.generateScenarios(
         location,
-        { language }
+        { language, aiMode, childrenAge, expertInfo }
       );
 
       res.json({
@@ -696,13 +712,21 @@ try {
           location: gameSettings.settings?.location?.name,
           difficulty: gameSettings.settings?.difficulty,
           scenarioType: gameSettings.settings?.scenario?.type,
-          language: gameSettings.language
+          language: gameSettings.language,
+          aiMode: gameSettings.aiMode,
+          childrenAge: gameSettings.childrenAge,
+          expertInfo: gameSettings.expertInfo
         }
       });
 
       const response = await aiService.gameSetup(
         gameSettings,
-        { language: gameSettings.language || 'en' }
+        { 
+          language: gameSettings.language || 'en',
+          aiMode: gameSettings.aiMode,
+          childrenAge: gameSettings.childrenAge,
+          expertInfo: gameSettings.expertInfo
+        }
       );
 
       console.log('3. Received response from aiService:', {
@@ -752,13 +776,18 @@ try {
   // Add this new endpoint for game master
   app.post('/api/game/master', verifyFirebaseToken, requirePremium, express.json(), async (req, res) => {
     try {
-      const { context, language } = req.body;
+      const { context, language, aiMode, childrenAge, expertInfo } = req.body;
       
       if (!context) {
         return res.status(400).json({ error: 'Game context is required' });
       }
 
-      const response = await aiService.gameMaster(context, { language });
+      const response = await aiService.gameMaster(context, { 
+        language, 
+        aiMode, 
+        childrenAge, 
+        expertInfo 
+      });
 
       res.json({
         success: true,
@@ -779,14 +808,25 @@ try {
   app.post('/api/game/summary', verifyFirebaseToken, express.json(), async (req, res) => {
     try {
         console.log('Received summary request:', req.body);
-        const { context, language } = req.body;
+        const { context, language, aiMode, childrenAge, expertInfo } = req.body;
         
         if (!context) {
             return res.status(400).json({ error: 'Game context is required' });
         }
 
-        console.log('Calling aiService.gameSummary with:', { context, language });
-        const response = await aiService.gameSummary(context, { language });
+        console.log('Calling aiService.gameSummary with:', { 
+          context, 
+          language, 
+          aiMode, 
+          childrenAge, 
+          expertInfo 
+        });
+        const response = await aiService.gameSummary(context, { 
+          language, 
+          aiMode, 
+          childrenAge, 
+          expertInfo 
+        });
         console.log('Got response from aiService:', response);
 
         // Pass through the entire response structure
@@ -803,14 +843,17 @@ try {
 
   app.post('/api/quiz/generate', verifyFirebaseToken, requirePremium, express.json(), async (req, res) => {
     try {
-        const { prompt, language, locationAnalysis } = req.body;
+        const { prompt, language, locationAnalysis, aiMode, childrenAge, expertInfo } = req.body;
         const requestId = quizManager.createRequest();
         
         console.log('Quiz generation request:', {
             requestId,
             language,
             promptLength: prompt?.length || 0,
-            locationAnalysisLength: locationAnalysis?.length || 0
+            locationAnalysisLength: locationAnalysis?.length || 0,
+            aiMode,
+            childrenAge,
+            expertInfo
         });
         
         res.json({
@@ -824,7 +867,10 @@ try {
                 console.log(`Starting quiz generation for request ${requestId}`);
                 const response = await aiService.generateQuiz(prompt, {
                     language,
-                    locationAnalysis
+                    locationAnalysis,
+                    aiMode,
+                    childrenAge,
+                    expertInfo
                 });
                 
                 console.log(`Quiz generation completed for request ${requestId}:`, {

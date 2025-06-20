@@ -1676,22 +1676,21 @@ Please:
     # Default mode - no modification
     return prompt
 
-def extract_ai_mode_from_options(options=None):
+def extract_ai_mode_from_options(options):
     """
-    Extracts AI mode settings from options dict
+    Extracts AI mode settings from options dictionary
     
     Args:
-        options (dict): Options containing aiMode, childrenAge, expertInfo
+        options (dict): Options dictionary containing potential AI mode settings
         
     Returns:
         tuple: (ai_mode, children_age, expert_info)
     """
-    if not options:
-        return 'default', 10, ''
-    
     ai_mode = options.get('aiMode', 'default')
-    children_age = options.get('childrenAge', 10)
+    children_age = int(options.get('childrenAge', 10))
     expert_info = options.get('expertInfo', '')
+    
+    print(f"AI Mode Debug - Extracted from options: aiMode={ai_mode}, childrenAge={children_age}, expertInfo='{expert_info[:50]}{'...' if len(expert_info) > 50 else ''}'", file=sys.stderr)
     
     return ai_mode, children_age, expert_info
 
