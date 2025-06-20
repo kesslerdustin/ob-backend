@@ -139,7 +139,12 @@ app.use(cors({
     });
 
     if (isAllowed) {
-      console.log(`CORS - Origin allowed: ${origin}`);
+      // Only log CORS info once per origin to reduce log spam
+      if (!global.loggedOrigins) global.loggedOrigins = new Set();
+      if (!global.loggedOrigins.has(origin)) {
+        console.log(`CORS - Origin allowed: ${origin}`);
+        global.loggedOrigins.add(origin);
+      }
       callback(null, true);
     } else {
       console.warn(`CORS - Origin blocked: ${origin}`);
