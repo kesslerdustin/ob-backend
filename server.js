@@ -1535,21 +1535,133 @@ try {
     }
   });
 
-  // Global Trends Feed - Daily Job Configuration
+  // Global Trends Feed - Enhanced Daily Job Configuration
   const GLOBAL_TRENDS_CATEGORIES = {
     bushcraft_survival: {
-      terms: ['bushcraft', 'survival', 'wilderness skills', 'outdoor survival', 'primitive skills'],
-      searchQuery: 'bushcraft survival outdoor wilderness primitive skills'
+      terms: ['bushcraft', 'survival', 'camping'],
+      searchQuery: 'bushcraft survival camping'
     },
     nature_wildlife: {
-      terms: ['nature', 'wildlife', 'outdoor', 'hiking', 'camping', 'adventure'],
-      searchQuery: 'nature wildlife outdoor hiking camping adventure'
+      terms: ['nature', 'wildlife'],
+      searchQuery: 'nature wildlife'
+    },
+    seven_vs_wild: {
+      terms: ['7 vs wild'],
+      searchQuery: '7 vs wild'
     }
   };
 
   // Global state to track ongoing fetch operations
   let globalTrendsFetchInProgress = false;
   let lastGlobalTrendsFetch = null;
+
+  // Enhanced content filtering function to remove Asian languages and unwanted content
+  const filterContent = (videos) => {
+    return videos.filter(video => {
+      const title = video.title?.toLowerCase() || '';
+      const description = video.description?.toLowerCase() || '';
+      const channelTitle = video.channelTitle?.toLowerCase() || '';
+      
+      // Filter out Asian languages and unwanted content
+      const asianLanguageIndicators = [
+        // Chinese characters and terms
+        '中文', '中国', '台湾', '香港', '普通话', '国语', '粤语',
+        // Japanese characters and terms
+        'ひらがな', 'カタカナ', '日本', '日本語', 'にほん', 'にっぽん',
+        // Korean characters and terms
+        '한국', '한글', '조선', '대한민국',
+        // Hindi/Urdu terms
+        'hindi', 'urdu', 'हिंदी', 'اردو', 'भारत', 'پاکستان',
+                 // Arabic terms
+         'العربية', 'عربي', 'مسلم', 'إسلام',
+         // Turkish terms
+         'türkçe', 'türkiye', 'türk',
+         // Russian terms
+         'русский', 'россия', 'русские',
+         // Other language indicators
+         'বাংলা', 'ไทย', 'tiếng việt', 'bahasa'
+       ];
+       
+       // Unwanted content types
+       const unwantedContent = [
+         'reaction', 'react to', 'reacts to', 'compilation', 'tiktok', 'shorts',
+         'prank', 'pranks', 'funny moments', 'fails', 'fail compilation',
+         'meme', 'memes', 'cringe', 'roast', 'roasting', 'drama',
+         'gossip', 'celebrity', 'influencer', 'vlog', 'daily vlog',
+         'unboxing', 'haul', 'shopping', 'makeup', 'fashion',
+         'gaming', 'fortnite', 'minecraft', 'roblox', 'among us',
+         'music video', 'song', 'lyrics', 'cover song', 'dance',
+         'anime', 'manga', 'cartoon', 'kids', 'children',
+         'toy', 'toys', 'play', 'playground'
+       ];
+       
+       // Check for Asian language indicators
+       const hasAsianContent = asianLanguageIndicators.some(indicator => 
+         title.includes(indicator) || 
+         description.includes(indicator) || 
+         channelTitle.includes(indicator)
+       );
+       
+       // Check for unwanted content
+       const hasUnwantedContent = unwantedContent.some(unwanted => 
+         title.includes(unwanted) || 
+         description.includes(unwanted) || 
+         channelTitle.includes(unwanted)
+       );
+       
+       // Check for non-Latin characters (additional Asian language detection)
+       const hasNonLatinChars = /[^\x00-\x7F\u00C0-\u017F\u0100-\u024F]/.test(title + description + channelTitle);
+       
+       // Filter out videos with Asian content, unwanted content, or excessive non-Latin characters
+       if (hasAsianContent || hasUnwantedContent) {
+         return false;
+       }
+       
+       // Allow some non-Latin characters but not if they dominate the title
+       if (hasNonLatinChars) {
+         const nonLatinRatio = (title.match(/[^\x00-\x7F\u00C0-\u017F\u0100-\u024F]/g) || []).length / title.length;
+         if (nonLatinRatio > 0.3) { // More than 30% non-Latin characters
+           return false;
+         }
+       }
+       
+       return true;
+     });
+   };
+
+   // Function to get varied search terms based on day of week for content freshness
+   const getVariedSearchTerms = (categoryData) => {
+     const dayOfWeek = new Date().getDay(); // 0 = Sunday, 6 = Saturday
+     const baseTerms = categoryData.englishTerms || categoryData.terms || [];
+     
+     // Daily variation strategies
+     const strategies = {
+       0: { suffix: 'tutorial guide', focus: 'educational' }, // Sunday
+       1: { suffix: 'tips tricks', focus: 'practical' }, // Monday  
+       2: { suffix: 'adventure expedition', focus: 'adventure' }, // Tuesday
+       3: { suffix: 'documentary', focus: 'documentary' }, // Wednesday
+       4: { suffix: 'techniques skills', focus: 'skills' }, // Thursday
+       5: { suffix: 'gear equipment', focus: 'gear' }, // Friday
+       6: { suffix: 'weekend project', focus: 'projects' } // Saturday
+     };
+     
+     const todayStrategy = strategies[dayOfWeek];
+     const searchTerms = [];
+     
+     // Add base category terms with daily variation
+     baseTerms.forEach(term => {
+       searchTerms.push(`${term} ${todayStrategy.suffix}`);
+       searchTerms.push(`${term} 2024`); // Current year for freshness
+     });
+     
+     // Add the original search query as fallback
+     if (categoryData.searchQuery) {
+       searchTerms.push(categoryData.searchQuery);
+     }
+     
+     // Limit to 3-4 search terms to avoid excessive API calls
+     return searchTerms.slice(0, 4);
+   };
 
   // Function to fetch trending videos for global feed
   const fetchGlobalTrendingVideos = async (forceRefresh = false) => {
@@ -1572,7 +1684,7 @@ try {
     globalTrendsFetchInProgress = true;
     lastGlobalTrendsFetch = Date.now();
     
-    console.log('🌍 Starting Global Trends Feed update...');
+    console.log('🌍 Starting Enhanced Global Trends Feed update...');
     
     try {
       // Get YouTube API key
@@ -1585,15 +1697,12 @@ try {
       
       // Process each category
       for (const [categoryKey, categoryData] of Object.entries(GLOBAL_TRENDS_CATEGORIES)) {
-        console.log(`🔍 Fetching trending videos for category: ${categoryKey}`);
+        console.log(`🔍 Fetching enhanced trending videos for category: ${categoryKey}`);
         
         try {
-          // Search for trending/popular videos in this category
-          const trendingSearches = [
-            `${categoryData.searchQuery} trending 2024`,
-            `${categoryData.searchQuery} viral`,
-            `${categoryData.searchQuery} popular this week`
-          ];
+          // Get varied search terms for today
+          const trendingSearches = getVariedSearchTerms(categoryData);
+          console.log(`📝 Using varied search terms for ${categoryKey}:`, trendingSearches);
           
           let allCategoryVideos = [];
           
@@ -1602,18 +1711,20 @@ try {
             try {
               const searchParams = new URLSearchParams({
                 part: 'snippet',
-                maxResults: '25', // Get 25 videos per search term
+                maxResults: '30', // Increased to get more options for filtering
                 q: searchTerm,
                 type: 'video',
                 videoDuration: 'medium', // Filter out shorts
                 order: 'relevance',
-                publishedAfter: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), // Last 30 days
+                publishedAfter: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(), // Last 14 days (fresher)
                 safeSearch: 'none',
+                relevanceLanguage: 'en', // Prefer English content
+                regionCode: 'US', // Prefer US/English content
                 key: apiKey
               });
 
               const searchUrl = `https://www.googleapis.com/youtube/v3/search?${searchParams.toString()}`;
-              console.log(`🔍 Searching: ${searchTerm}`);
+              console.log(`🔍 Enhanced search: ${searchTerm}`);
               
               const response = await fetch(searchUrl);
               if (!response.ok) {
@@ -1635,12 +1746,14 @@ try {
                   category: categoryKey
                 }));
                 
-                allCategoryVideos.push(...videos);
-                console.log(`✅ Found ${videos.length} videos for "${searchTerm}"`);
+                // Apply enhanced content filtering
+                const filteredVideos = filterContent(videos);
+                allCategoryVideos.push(...filteredVideos);
+                console.log(`✅ Found ${videos.length} videos, ${filteredVideos.length} after filtering for "${searchTerm}"`);
               }
               
               // Add delay between requests to avoid rate limiting
-              await new Promise(resolve => setTimeout(resolve, 1000));
+              await new Promise(resolve => setTimeout(resolve, 1500)); // Increased delay
               
             } catch (searchError) {
               console.error(`Error in search "${searchTerm}":`, searchError);
@@ -1648,18 +1761,30 @@ try {
             }
           }
           
-          // Remove duplicates and limit to 50 best videos
+          // Remove duplicates and limit to 40 best videos (reduced for quality)
           const uniqueVideos = allCategoryVideos.filter((video, index, self) => 
             index === self.findIndex(v => v.id === video.id)
-          ).slice(0, 50);
+          );
+          
+          // Sort by published date to get fresher content first
+          uniqueVideos.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+          
+          // Take top 40 after sorting
+          const finalVideos = uniqueVideos.slice(0, 40);
           
           trendingVideos[categoryKey] = {
-            videos: uniqueVideos,
+            videos: finalVideos,
             lastUpdated: new Date().toISOString(),
-            totalFound: uniqueVideos.length
+            totalFound: finalVideos.length,
+            totalBeforeFiltering: allCategoryVideos.length,
+            filteringStats: {
+              originalCount: allCategoryVideos.length,
+              afterDuplicateRemoval: uniqueVideos.length,
+              finalCount: finalVideos.length
+            }
           };
           
-          console.log(`✅ Category ${categoryKey}: ${uniqueVideos.length} unique trending videos`);
+          console.log(`✅ Category ${categoryKey}: ${finalVideos.length} high-quality videos (${allCategoryVideos.length} before filtering)`);
           
         } catch (categoryError) {
           console.error(`Error fetching videos for category ${categoryKey}:`, categoryError);
@@ -1672,7 +1797,7 @@ try {
         }
       }
       
-      // Save to Firestore
+      // Save to Firestore with enhanced metadata
       const db = admin.firestore();
       const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
       
@@ -1683,16 +1808,23 @@ try {
         categories: trendingVideos,
         totalVideos: Object.values(trendingVideos).reduce((sum, cat) => sum + cat.totalFound, 0),
         generatedAt: new Date().toISOString(),
-        fetchType: forceRefresh ? 'manual' : 'automatic'
+        fetchType: forceRefresh ? 'manual' : 'automatic',
+        version: '2.0', // Enhanced version
+        enhancements: {
+          languageFiltering: true,
+          contentFiltering: true,
+          dailyVariation: true,
+          fresherContent: true
+        }
       });
       
-      console.log(`🌍 Global Trends Feed updated successfully for ${today}`);
-      console.log(`📊 Total videos: ${Object.values(trendingVideos).reduce((sum, cat) => sum + cat.totalFound, 0)}`);
+      console.log(`🌍 Enhanced Global Trends Feed updated successfully for ${today}`);
+      console.log(`📊 Total high-quality videos: ${Object.values(trendingVideos).reduce((sum, cat) => sum + cat.totalFound, 0)}`);
       
       return true;
       
     } catch (error) {
-      console.error('❌ Error updating Global Trends Feed:', error);
+      console.error('❌ Error updating Enhanced Global Trends Feed:', error);
       return false;
     } finally {
       globalTrendsFetchInProgress = false;
@@ -2400,23 +2532,39 @@ try {
     }
   });
 
-  // Manual trigger endpoint for testing (admin only)
+  // Enhanced manual trigger endpoint for testing (admin only)
   app.post('/api/admin/update-global-trends', requireAdmin, async (req, res) => {
     try {
-      console.log('🔧 Manual Global Trends update triggered');
+      console.log('🔧 Manual Enhanced Global Trends update triggered');
       const success = await fetchGlobalTrendingVideos(true); // Force refresh
+      
+      // Get the latest data to show results
+      const latestData = await findLatestGlobalTrendsData();
       
       res.json({
         success: true,
-        message: 'Global trends update completed',
+        message: 'Enhanced global trends update completed',
         timestamp: new Date().toISOString(),
-        updateSuccess: success
+        updateSuccess: success,
+        results: latestData ? {
+          totalVideos: latestData.totalVideos,
+          categories: Object.keys(latestData.categories).reduce((acc, key) => {
+            const cat = latestData.categories[key];
+            acc[key] = {
+              videoCount: cat.totalFound,
+              filteringStats: cat.filteringStats,
+              sampleTitles: cat.videos?.slice(0, 3).map(v => v.title) || []
+            };
+            return acc;
+          }, {}),
+          enhancements: latestData.enhancements
+        } : null
       });
     } catch (error) {
-      console.error('Error in manual global trends update:', error);
+      console.error('Error in manual enhanced global trends update:', error);
       res.status(500).json({
         success: false,
-        error: 'Failed to update global trends',
+        error: 'Failed to update enhanced global trends',
         details: error.message
       });
     }
