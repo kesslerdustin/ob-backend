@@ -1538,15 +1538,12 @@ try {
   // Global Trends Feed - Enhanced Daily Job Configuration
   const GLOBAL_TRENDS_CATEGORIES = {
     bushcraft_survival: {
-      terms: ['bushcraft', 'survival', 'camping'],
       searchQuery: 'bushcraft survival camping'
     },
     nature_wildlife: {
-      terms: ['nature', 'wildlife'],
-      searchQuery: 'nature wildlife'
+      searchQuery: 'wildlife nature landscape'
     },
     seven_vs_wild: {
-      terms: ['7 vs wild'],
       searchQuery: '7 vs wild'
     }
   };
@@ -1629,9 +1626,9 @@ try {
      });
    };
 
-   // Function to get search terms - simply use the terms as defined
+   // Function to get search terms - use single searchQuery per category
    const getVariedSearchTerms = (categoryData) => {
-     return categoryData.terms || [];
+     return categoryData.searchQuery ? [categoryData.searchQuery] : [];
    };
 
   // Function to fetch trending videos for global feed
