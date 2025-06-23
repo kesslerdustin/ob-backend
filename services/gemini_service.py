@@ -392,7 +392,7 @@ def flash_chat(prompt, image_path=None, options=None):
         - DONT ASK FOR WAYPOINTS ALWAYS, ONLY IF LOGICALLY RELEVANT.
 
         CRITICAL: Respond in {language} language WITHOUT including the language code. Never start your response with language codes like 'de:', 'en:', etc. Also do not give any introduction, reply only with the answer. When referring times or units of measurement, use the language of the user (miles in english, km in german, etc). When mentionen Species names, use the language of the user. When suggesting to create Waypoints, DO NOT CREATE THEM WITHOUT EXPLICIT CONFIRMATION FROM THE USER.
-        
+        ADDITIONAL INFO: You get a list of closeby national parks. Those are center cooridnates, use your knowledge to estimate if user might be in one of those. 
         """
         
         # Apply AI mode context to the prompt
