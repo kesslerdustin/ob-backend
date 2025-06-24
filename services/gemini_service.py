@@ -1773,15 +1773,15 @@ Return ONLY the JSON object, no additional text or formatting."""
         print(f"=== BIOME ANALYSIS START ===", file=sys.stderr)
         print(f"Language: {language}, AI Mode: {ai_mode}", file=sys.stderr)
         
-        result = client.generate_content(
-            model=FLASH_THINKING_MODEL,
-            contents=[{"text": prompt}],
-            config={
-                "temperature": 0.3,
-                "top_p": 0.8,
-                "top_k": 40,
-                "max_output_tokens": 8192
-            }
+        result = client.models.generate_content(
+            model=MODEL_ID,
+            contents=prompt,
+            config=GenerateContentConfig(
+                temperature=0.3,
+                top_p=0.8,
+                top_k=40,
+                max_output_tokens=8192
+            )
         )
         
         response_text = result.text.strip()
