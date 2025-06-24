@@ -565,11 +565,14 @@ try {
     }
   });
 
-  // New endpoint for creating comprehensive biome analysis
+  // Async endpoint for creating comprehensive biome analysis
   app.post('/api/analyze/biome/create', verifyFirebaseToken, express.json(), async (req, res) => {
     try {
       const { biomeData, language, aiMode, childrenAge, expertInfo } = req.body;
-      console.log('Server: Received comprehensive biome analysis request:', {
+      const requestId = quizManager.createRequest(); // Reuse the same request manager for biome analysis
+      
+      console.log('Biome analysis request:', {
+        requestId,
         language,
         aiMode,
         childrenAge,
@@ -581,32 +584,84 @@ try {
         return res.status(400).json({ error: 'Biome data is required' });
       }
 
-      const response = await aiService.createBiomeAnalysis(
-        biomeData,
-        { language, aiMode, childrenAge, expertInfo }
-      );
-
-      // Parse the response if it's a string
-      let parsedResponse;
-      try {
-        parsedResponse = typeof response === 'string' ? JSON.parse(response) : response;
-      } catch (e) {
-        throw new Error('Invalid response format from AI service');
-      }
-
+      // Return requestId immediately for async processing
       res.json({
-        success: parsedResponse.success || true,
-        analysis: parsedResponse.text || parsedResponse
+        success: true,
+        status: 'processing',
+        requestId: requestId
       });
 
+      // Start async processing
+      setTimeout(async () => {
+        try {
+          console.log(`Starting biome analysis for request ${requestId}`);
+          const response = await aiService.createBiomeAnalysis(
+            biomeData,
+            { language, aiMode, childrenAge, expertInfo }
+          );
+
+          // Parse the response if it's a string  
+          let parsedResponse;
+          try {
+            parsedResponse = typeof response === 'string' ? JSON.parse(response) : response;
+          } catch (e) {
+            throw new Error('Invalid response format from AI service');
+          }
+
+          console.log(`Biome analysis completed for request ${requestId}:`, {
+            success: !!parsedResponse,
+            responseType: typeof parsedResponse
+          });
+
+          quizManager.updateRequest(requestId, {
+            status: 'completed',
+            data: {
+              success: parsedResponse.success || true,
+              analysis: parsedResponse.text || parsedResponse
+            }
+          });
+        } catch (error) {
+          console.error(`Biome analysis failed for request ${requestId}:`, {
+            error: error.message,
+            stack: error.stack,
+            type: error.constructor.name
+          });
+          
+          quizManager.updateRequest(requestId, {
+            status: 'error',
+            error: error.message
+          });
+        }
+      }, 0);
+
     } catch (error) {
-      console.error('Comprehensive biome analysis error:', error);
+      console.error('Biome analysis endpoint error:', error);
       res.status(500).json({
         success: false,
-        error: 'Failed to create biome analysis',
+        error: 'Failed to start biome analysis',
         details: error.message
       });
     }
+  });
+
+  // Status endpoint for biome analysis
+  app.get('/api/analyze/biome/status/:requestId', (req, res) => {
+    const { requestId } = req.params;
+    const result = quizManager.getRequest(requestId);
+    
+    if (!result) {
+      return res.status(404).json({ 
+        status: 'error',
+        error: 'Biome analysis request not found'
+      });
+    }
+    
+    if (result.status === 'completed') {
+      // Clean up after sending
+      quizManager.deleteRequest(requestId);
+    }
+    
+    res.json(result);
   });
 
   // Update this endpoint for weather analysis
