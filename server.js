@@ -565,6 +565,50 @@ try {
     }
   });
 
+  // New endpoint for creating comprehensive biome analysis
+  app.post('/api/analyze/biome/create', verifyFirebaseToken, express.json(), async (req, res) => {
+    try {
+      const { biomeData, language, aiMode, childrenAge, expertInfo } = req.body;
+      console.log('Server: Received comprehensive biome analysis request:', {
+        language,
+        aiMode,
+        childrenAge,
+        expertInfo,
+        hasBiomeData: !!biomeData
+      });
+      
+      if (!biomeData) {
+        return res.status(400).json({ error: 'Biome data is required' });
+      }
+
+      const response = await aiService.createBiomeAnalysis(
+        biomeData,
+        { language, aiMode, childrenAge, expertInfo }
+      );
+
+      // Parse the response if it's a string
+      let parsedResponse;
+      try {
+        parsedResponse = typeof response === 'string' ? JSON.parse(response) : response;
+      } catch (e) {
+        throw new Error('Invalid response format from AI service');
+      }
+
+      res.json({
+        success: parsedResponse.success || true,
+        analysis: parsedResponse.text || parsedResponse
+      });
+
+    } catch (error) {
+      console.error('Comprehensive biome analysis error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to create biome analysis',
+        details: error.message
+      });
+    }
+  });
+
   // Update this endpoint for weather analysis
   app.post('/api/analyze/weather', verifyFirebaseToken, express.json(), async (req, res) => {
     try {

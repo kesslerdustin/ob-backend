@@ -1694,6 +1694,128 @@ def extract_ai_mode_from_options(options):
     
     return ai_mode, children_age, expert_info
 
+@with_model_fallback(primary_model=FLASH_THINKING_MODEL)
+def create_biome_analysis(biome_data, options=None):
+    """Create comprehensive biome analysis with structured JSON output"""
+    options = options or {}
+    
+    # Extract language and AI mode settings
+    language = options.get('language', 'en')
+    ai_mode, children_age, expert_info = extract_ai_mode_from_options(options)
+    
+    # Define the expected JSON structure
+    structure_template = """{
+  "waterQuality": {
+    "sources": [{"type": "river", "safety": "high", "purification": ["boiling"], "notes": ""}],
+    "purification": ["boiling", "filtration"], 
+    "risks": [{"type": "bacterial", "severity": "low", "prevention": ""}]
+  },
+  "venomousPlants": [{"name": "", "latinName": "", "toxicity": "", "identification": "", "symptoms": "", "treatment": "", "season": ""}],
+  "diseaseVectors": [{"name": "", "diseases": [], "habitat": "", "season": "", "prevention": "", "identification": "", "removal": ""}],
+  "terrainHazards": [{"name": "", "riskLevel": "", "indicators": [], "prevention": "", "response": "", "season": ""}],
+  "medicinalPlants": [{"name": "", "latinName": "", "uses": [], "preparation": "", "dosage": "", "warnings": "", "availability": "", "identification": ""}],
+  "seasonalFood": {
+    "spring": [{"name": "", "availability": "", "identification": "", "preparation": "", "nutrition": "", "warnings": ""}],
+    "summer": [{"name": "", "availability": "", "identification": "", "preparation": "", "nutrition": "", "warnings": ""}],
+    "fall": [{"name": "", "availability": "", "identification": "", "preparation": "", "nutrition": "", "warnings": ""}],
+    "winter": [{"name": "", "availability": "", "identification": "", "preparation": "", "nutrition": "", "warnings": ""}]
+  },
+  "naturalIndicators": [{"indicator": "", "meaning": "", "observations": "", "action": "", "reliability": "", "timeframe": ""}],
+  "topPredator": {"name": "", "latinName": "", "dangerLevel": 0, "occurrences": 0, "habitat": "", "behavior": ""},
+  "predatorBalance": {"predators": 0, "prey": 0, "ratio": "", "assessment": ""},
+  "biodiversity": {"score": 0, "status": "", "description": "", "keyIndicators": []},
+  "toxicAnimals": [{"name": "", "latinName": "", "toxicityLevel": "", "habitat": "", "symptoms": "", "avoidance": ""}],
+  "keyPlant": {"name": "", "latinName": "", "benefits": [], "occurrences": 0, "uses": []},
+  "resources": {
+    "water": [{"material": "", "abundance": "", "quality": ""}],
+    "shelter": [{"material": "", "abundance": "", "suitability": ""}],
+    "food": [{"material": "", "abundance": "", "safety": ""}],
+    "fire": [{"material": "", "abundance": "", "quality": ""}]
+  }
+}"""
+    
+    prompt = f"""You are a leading survival biologist and ecosystem expert. Analyze the comprehensive biome data provided and create a detailed survival analysis.
+
+INPUT DATA:
+{json.dumps(biome_data, indent=2)}
+
+LOCATION CONTEXT:
+{f"Closest City: {biome_data.get('locationDetails', {}).get('closestCity', 'Unknown')}" if biome_data.get('locationDetails') else "Location: Coordinates provided"}
+{f"Region: {biome_data.get('locationDetails', {}).get('region', 'Unknown')}" if biome_data.get('locationDetails') else ""}
+{f"Country: {biome_data.get('locationDetails', {}).get('country', 'Unknown')}" if biome_data.get('locationDetails') else ""}
+
+ANALYSIS REQUIREMENTS:
+Create a comprehensive biome analysis based on the provided species data, landscape features, biome information, environmental data, and location context. Consider the specific geographic region and local characteristics when making recommendations. Return ONLY a valid JSON response that matches this exact structure:
+
+{structure_template}
+
+GUIDELINES:
+1. Base your analysis on the actual species data provided (flora and fauna lists)
+2. Consider the biome type, ecoregion, and landscape features
+3. Include realistic quantities: 
+   - venomousPlants: max 8 species
+   - diseaseVectors: max 6 vectors  
+   - terrainHazards: max 5 hazards
+   - medicinalPlants: max 10 plants
+   - seasonalFood: max 5 items per season
+   - naturalIndicators: max 8 indicators
+   - toxicAnimals: max 6 animals
+4. Use the provided species scientific names when available
+5. Provide practical survival information
+6. Ensure all danger levels are realistic (1-10 scale)
+7. Language: {language}
+
+{add_ai_mode_context("", ai_mode, children_age, expert_info)}
+
+Return ONLY the JSON object, no additional text or formatting."""
+
+    try:
+        print(f"=== BIOME ANALYSIS START ===", file=sys.stderr)
+        print(f"Language: {language}, AI Mode: {ai_mode}", file=sys.stderr)
+        
+        result = client.generate_content(
+            model=FLASH_THINKING_MODEL,
+            contents=[{"text": prompt}],
+            config={
+                "temperature": 0.3,
+                "top_p": 0.8,
+                "top_k": 40,
+                "max_output_tokens": 8192
+            }
+        )
+        
+        response_text = result.text.strip()
+        
+        # Clean up the response to extract JSON
+        if '```json' in response_text:
+            response_text = response_text.split('```json')[1].split('```')[0].strip()
+        elif '```' in response_text:
+            response_text = response_text.split('```')[1].split('```')[0].strip()
+        
+        # Try to parse as JSON to validate
+        try:
+            parsed_json = json.loads(response_text)
+            print(f"=== BIOME ANALYSIS SUCCESS ===", file=sys.stderr)
+            return json_dumps_utf8({"success": True, "text": parsed_json})
+        except json.JSONDecodeError as e:
+            print(f"JSON parsing error: {e}", file=sys.stderr)
+            print(f"Response text: {response_text[:500]}...", file=sys.stderr)
+            
+            # Try to fix common JSON issues
+            fixed_response = response_text.replace('\n', ' ').replace('\r', '')
+            try:
+                parsed_json = json.loads(fixed_response)
+                print(f"=== BIOME ANALYSIS SUCCESS (after fixing) ===", file=sys.stderr)
+                return json_dumps_utf8({"success": True, "text": parsed_json})
+            except:
+                print(f"=== BIOME ANALYSIS ERROR ===", file=sys.stderr)
+                return json_dumps_utf8({"success": False, "error": f"Invalid JSON response: {str(e)}"})
+                
+    except Exception as e:
+        print(f"=== BIOME ANALYSIS ERROR ===", file=sys.stderr)
+        print(f"Error: {str(e)}", file=sys.stderr)
+        return json_dumps_utf8({"success": False, "error": f"Analysis failed: {str(e)}"})
+
 if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "text"
     prompt = sys.argv[2] if len(sys.argv) > 2 else "Hello, Gemini!"
@@ -1728,6 +1850,9 @@ if __name__ == "__main__":
         response = generate_quiz(prompt, options)
     elif mode == "check_appropriate":
         response = check_image_appropriate(prompt, image_url, options)
+    elif mode == "create_biome_analysis":
+        biome_data = json.loads(prompt)
+        response = create_biome_analysis(biome_data, json.loads(options) if options else {})
     else:
         response = generate_content(prompt)
     

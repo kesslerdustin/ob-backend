@@ -279,6 +279,52 @@ async function analyzeBiome(location, coordinates, language = 'en') {
     });
 }
 
+async function createBiomeAnalysis(biomeData, options = {}) {
+    return rateLimiter.enqueue('analysis', () => {
+        return new Promise((resolve, reject) => {
+            const pythonScript = path.join(__dirname, 'gemini_service.py');
+            
+            console.log('Creating comprehensive biome analysis with options:', options);
+
+            const pythonProcess = spawn('python', [
+                pythonScript,
+                'create_biome_analysis',
+                JSON.stringify(biomeData),
+                'null',  // no image
+                JSON.stringify(options)
+            ]);
+
+            let dataString = '';
+
+            pythonProcess.stdout.on('data', (data) => {
+                dataString += data.toString();
+            });
+
+            pythonProcess.stderr.on('data', (data) => {
+                console.error(`Python Error: ${data}`);
+            });
+
+            pythonProcess.on('close', (code) => {
+                if (code !== 0) {
+                    reject(new Error(`Python process exited with code ${code}`));
+                    return;
+                }
+                
+                try {
+                    const response = JSON.parse(dataString);
+                    if (response.success) {
+                        resolve(response.text);
+                    } else {
+                        reject(new Error(response.error));
+                    }
+                } catch (error) {
+                    reject(new Error('Failed to parse Python response'));
+                }
+            });
+        });
+    });
+}
+
 async function analyze_weather(prompt, options = {}) {
     return rateLimiter.enqueue('analysis', () => {
         return new Promise((resolve, reject) => {
@@ -787,6 +833,7 @@ module.exports = {
     analyzeImage,
     flashChat,
     analyzeBiome,
+    createBiomeAnalysis,
     analyze_weather,
     analyzeInfo,
     generateScenarios,
