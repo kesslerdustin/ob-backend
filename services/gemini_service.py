@@ -1703,29 +1703,28 @@ def create_biome_analysis(biome_data, options=None):
     language = options.get('language', 'en')
     ai_mode, children_age, expert_info = extract_ai_mode_from_options(options)
     
-    # Define the expected JSON structure
+    # Define the expected JSON structure (simplified to prevent truncation)
     structure_template = """{
   "waterQuality": {
     "sources": [{"type": "river", "safety": "high", "purification": ["boiling"], "notes": ""}],
-    "purification": ["boiling", "filtration"], 
     "risks": [{"type": "bacterial", "severity": "low", "prevention": ""}]
   },
-  "venomousPlants": [{"name": "", "latinName": "", "toxicity": "", "identification": "", "symptoms": "", "treatment": "", "season": ""}],
-  "diseaseVectors": [{"name": "", "diseases": [], "habitat": "", "season": "", "prevention": "", "identification": "", "removal": ""}],
-  "terrainHazards": [{"name": "", "riskLevel": "", "indicators": [], "prevention": "", "response": "", "season": ""}],
-  "medicinalPlants": [{"name": "", "latinName": "", "uses": [], "preparation": "", "dosage": "", "warnings": "", "availability": "", "identification": ""}],
+  "venomousPlants": [{"name": "", "latinName": "", "toxicity": "", "identification": [""], "symptoms": [""], "treatment": [""], "season": ""}],
+  "diseaseVectors": [{"name": "", "diseases": [""], "habitat": "", "season": "", "prevention": "", "identification": [""], "removal": ""}],
+  "terrainHazards": [{"name": "", "riskLevel": "", "indicators": [""], "prevention": "", "response": "", "season": ""}],
+  "medicinalPlants": [{"name": "", "latinName": "", "uses": [""], "preparation": [""], "warnings": [""], "identification": [""]}],
   "seasonalFood": {
-    "spring": [{"name": "", "availability": "", "identification": "", "preparation": "", "nutrition": "", "warnings": ""}],
-    "summer": [{"name": "", "availability": "", "identification": "", "preparation": "", "nutrition": "", "warnings": ""}],
-    "fall": [{"name": "", "availability": "", "identification": "", "preparation": "", "nutrition": "", "warnings": ""}],
-    "winter": [{"name": "", "availability": "", "identification": "", "preparation": "", "nutrition": "", "warnings": ""}]
+    "spring": [{"name": "", "identification": [""], "preparation": [""], "warnings": ""}],
+    "summer": [{"name": "", "identification": [""], "preparation": [""], "warnings": ""}],
+    "fall": [{"name": "", "identification": [""], "preparation": [""], "warnings": ""}],
+    "winter": [{"name": "", "identification": [""], "preparation": [""], "warnings": ""}]
   },
-  "naturalIndicators": [{"indicator": "", "meaning": "", "observations": "", "action": "", "reliability": "", "timeframe": ""}],
-  "topPredator": {"name": "", "latinName": "", "dangerLevel": 0, "occurrences": 0, "habitat": "", "behavior": ""},
+  "naturalIndicators": [{"indicator": "", "meaning": "", "observations": [""], "action": "", "reliability": ""}],
+  "topPredator": {"name": "", "latinName": "", "dangerLevel": 0, "habitat": "", "behavior": ""},
   "predatorBalance": {"predators": 0, "prey": 0, "ratio": "", "assessment": ""},
-  "biodiversity": {"score": 0, "status": "", "description": "", "keyIndicators": []},
-  "toxicAnimals": [{"name": "", "latinName": "", "toxicityLevel": "", "habitat": "", "symptoms": "", "avoidance": ""}],
-  "keyPlant": {"name": "", "latinName": "", "benefits": [], "occurrences": 0, "uses": []},
+  "biodiversity": {"score": 0, "status": "", "description": "", "keyIndicators": [""]},
+  "toxicAnimals": [{"name": "", "latinName": "", "toxicityLevel": "", "habitat": "", "symptoms": [""], "avoidance": ""}],
+  "keyPlant": {"name": "", "latinName": "", "benefits": [""], "uses": [""]},
   "resources": {
     "water": [{"material": "", "abundance": "", "quality": ""}],
     "shelter": [{"material": "", "abundance": "", "suitability": ""}],
@@ -1734,40 +1733,28 @@ def create_biome_analysis(biome_data, options=None):
   }
 }"""
     
-    prompt = f"""You are a leading survival biologist and ecosystem expert. Analyze the comprehensive biome data provided and create a detailed survival analysis.
+    prompt = f"""You are a survival expert. Analyze this biome data and create a survival analysis.
 
-INPUT DATA:
-{json.dumps(biome_data, indent=2)}
+LOCATION: {biome_data.get('locationDetails', {}).get('closestCity', 'Unknown')}, {biome_data.get('locationDetails', {}).get('country', 'Unknown')}
+BIOME: {biome_data.get('biomeInfo', {}).get('biome', 'Unknown')}
 
-LOCATION CONTEXT:
-{f"Closest City: {biome_data.get('locationDetails', {}).get('closestCity', 'Unknown')}" if biome_data.get('locationDetails') else "Location: Coordinates provided"}
-{f"Region: {biome_data.get('locationDetails', {}).get('region', 'Unknown')}" if biome_data.get('locationDetails') else ""}
-{f"Country: {biome_data.get('locationDetails', {}).get('country', 'Unknown')}" if biome_data.get('locationDetails') else ""}
+SPECIES DATA SUMMARY:
+- Flora: {len(biome_data.get('floraBySubcategory', {}).get('trees', []))} trees, {len(biome_data.get('floraBySubcategory', {}).get('flowering_and_shrubs', []))} shrubs
+- Fauna: {len(biome_data.get('faunaBySubcategory', {}).get('mammals', []))} mammals, {len(biome_data.get('faunaBySubcategory', {}).get('birds', []))} birds
 
-ANALYSIS REQUIREMENTS:
-Create a comprehensive biome analysis based on the provided species data, landscape features, biome information, environmental data, and location context. Consider the specific geographic region and local characteristics when making recommendations. Return ONLY a valid JSON response that matches this exact structure:
+Return ONLY this JSON structure in {language}:
 
 {structure_template}
 
-GUIDELINES:
-1. Base your analysis on the actual species data provided (flora and fauna lists)
-2. Consider the biome type, ecoregion, and landscape features
-3. Include realistic quantities: 
-   - venomousPlants: max 8 species
-   - diseaseVectors: max 6 vectors  
-   - terrainHazards: max 5 hazards
-   - medicinalPlants: max 10 plants
-   - seasonalFood: max 5 items per season
-   - naturalIndicators: max 8 indicators
-   - toxicAnimals: max 6 animals
-4. Use the provided species scientific names when available
-5. Provide practical survival information
-6. Ensure all danger levels are realistic (1-10 scale)
-7. Language: {language}
+REQUIREMENTS:
+- Base analysis on provided species (use scientific names when available)
+- Max items: venomousPlants(8), diseaseVectors(6), terrainHazards(5), medicinalPlants(10), seasonalFood(5/season), naturalIndicators(8), toxicAnimals(6)
+- Danger levels 1-10 scale
+- Practical survival focus
 
 {add_ai_mode_context("", ai_mode, children_age, expert_info)}
 
-Return ONLY the JSON object, no additional text or formatting."""
+JSON only, no extra text:"""
 
     try:
         print(f"=== BIOME ANALYSIS START ===", file=sys.stderr)
@@ -1799,17 +1786,34 @@ Return ONLY the JSON object, no additional text or formatting."""
             return json_dumps_utf8({"success": True, "text": parsed_json})
         except json.JSONDecodeError as e:
             print(f"JSON parsing error: {e}", file=sys.stderr)
-            print(f"Response text: {response_text[:500]}...", file=sys.stderr)
+            print(f"Response text: {response_text[:1000]}...", file=sys.stderr)
             
-            # Try to fix common JSON issues
-            fixed_response = response_text.replace('\n', ' ').replace('\r', '')
-            try:
-                parsed_json = json.loads(fixed_response)
-                print(f"=== BIOME ANALYSIS SUCCESS (after fixing) ===", file=sys.stderr)
-                return json_dumps_utf8({"success": True, "text": parsed_json})
-            except:
-                print(f"=== BIOME ANALYSIS ERROR ===", file=sys.stderr)
-                return json_dumps_utf8({"success": False, "error": f"Invalid JSON response: {str(e)}"})
+            # Try multiple JSON recovery strategies
+            recovery_attempts = [
+                # Strategy 1: Clean whitespace
+                response_text.replace('\n', ' ').replace('\r', '').replace('\t', ' '),
+                
+                # Strategy 2: Find last complete JSON object
+                response_text[:response_text.rfind('}') + 1] if '}' in response_text else response_text,
+                
+                # Strategy 3: Find last complete JSON array
+                response_text[:response_text.rfind(']') + 1] if ']' in response_text else response_text,
+                
+                # Strategy 4: Remove trailing incomplete content
+                response_text.rstrip(',').rstrip()
+            ]
+            
+            for i, attempt in enumerate(recovery_attempts):
+                try:
+                    parsed_json = json.loads(attempt)
+                    print(f"=== BIOME ANALYSIS SUCCESS (recovery strategy {i+1}) ===", file=sys.stderr)
+                    return json_dumps_utf8({"success": True, "text": parsed_json})
+                except json.JSONDecodeError:
+                    continue
+            
+            # If all recovery attempts fail, re-raise to trigger model fallback
+            print(f"=== JSON RECOVERY FAILED - TRIGGERING FALLBACK ===", file=sys.stderr)
+            raise e
                 
     except Exception as e:
         print(f"=== BIOME ANALYSIS ERROR ===", file=sys.stderr)
