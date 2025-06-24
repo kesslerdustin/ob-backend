@@ -1814,7 +1814,8 @@ Return ONLY the JSON object, no additional text or formatting."""
     except Exception as e:
         print(f"=== BIOME ANALYSIS ERROR ===", file=sys.stderr)
         print(f"Error: {str(e)}", file=sys.stderr)
-        return json_dumps_utf8({"success": False, "error": f"Analysis failed: {str(e)}"})
+        # Re-raise the exception to trigger model fallback
+        raise e
 
 if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "text"
