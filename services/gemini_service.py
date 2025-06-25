@@ -1703,34 +1703,35 @@ def create_biome_analysis(biome_data, options=None):
     language = options.get('language', 'en')
     ai_mode, children_age, expert_info = extract_ai_mode_from_options(options)
     
-    # Define the expected JSON structure (simplified to prevent truncation)
+    # Define the expected JSON structure (comprehensive to match BiomeAnalysis.js expectations)
     structure_template = """{
-  "waterQuality": {
-    "sources": [{"type": "river", "safety": "high", "purification": ["boiling"], "notes": ""}],
-    "risks": [{"type": "bacterial", "severity": "low", "prevention": ""}]
-  },
-  "venomousPlants": [{"name": "", "latinName": "", "toxicity": "", "identification": [""], "symptoms": [""], "treatment": [""], "season": ""}],
-  "diseaseVectors": [{"name": "", "diseases": [""], "habitat": "", "season": "", "prevention": "", "identification": [""], "removal": ""}],
-  "terrainHazards": [{"name": "", "riskLevel": "", "indicators": [""], "prevention": "", "response": "", "season": ""}],
-  "medicinalPlants": [{"name": "", "latinName": "", "uses": [""], "preparation": [""], "warnings": [""], "identification": [""]}],
-  "seasonalFood": {
-    "spring": [{"name": "", "identification": [""], "preparation": [""], "warnings": ""}],
-    "summer": [{"name": "", "identification": [""], "preparation": [""], "warnings": ""}],
-    "fall": [{"name": "", "identification": [""], "preparation": [""], "warnings": ""}],
-    "winter": [{"name": "", "identification": [""], "preparation": [""], "warnings": ""}]
-  },
-  "naturalIndicators": [{"indicator": "", "meaning": "", "observations": [""], "action": "", "reliability": ""}],
-  "topPredator": {"name": "", "latinName": "", "dangerLevel": 0, "habitat": "", "behavior": ""},
-  "predatorBalance": {"predators": 0, "prey": 0, "ratio": "", "assessment": ""},
-  "biodiversity": {"score": 0, "status": "", "description": "", "keyIndicators": [""]},
-  "toxicAnimals": [{"name": "", "latinName": "", "toxicityLevel": "", "habitat": "", "symptoms": [""], "avoidance": ""}],
-  "keyPlant": {"name": "", "latinName": "", "benefits": [""], "uses": [""]},
+  "topPredator": {"name": "", "latinName": "", "dangerLevel": 9, "habitat": "", "behavior": "", "occurrences": 0},
+  "predatorBalance": {"predators": 0, "prey": 0, "ratio": 0.15, "assessment": ""},
+  "biodiversity": {"score": 7.8, "status": "High", "description": "", "keyIndicators": [""]},
+  "toxicAnimals": [{"name": "", "latinName": "", "toxicityLevel": 8, "habitat": "", "symptoms": [""], "avoidance": "", "dangerLevel": 8}],
+  "keyPlant": {"name": "", "latinName": "", "benefits": [""], "uses": [""], "occurrences": 0},
   "resources": {
-    "water": [{"material": "", "abundance": "", "quality": ""}],
-    "shelter": [{"material": "", "abundance": "", "suitability": ""}],
-    "food": [{"material": "", "abundance": "", "safety": ""}],
-    "fire": [{"material": "", "abundance": "", "quality": ""}]
-  }
+    "waterSources": [{"type": "", "count": 0, "quality": "High", "accessibility": "Easy"}],
+    "shelterMaterials": [{"material": "", "abundance": "High", "suitability": "Excellent"}],
+    "ediblePlants": [{"plant": "", "season": "", "nutrition": "High", "safety": "Safe"}],
+    "fireResources": [{"resource": "", "abundance": "High", "burnQuality": "Excellent"}]
+  },
+  "waterQuality": {
+    "naturalSources": [{"source": "", "quality": "Excellent", "flowRate": "Steady", "contamination": "Low", "assessment": ""}],
+    "purificationMethods": [{"method": "", "effectiveness": "99%", "time": "10-15 minutes", "notes": ""}],
+    "contaminationRisks": [{"risk": "", "source": "", "symptoms": "", "prevention": ""}]
+  },
+  "venomousPlants": [{"name": "", "latinName": "", "toxicity": "High", "identification": [""], "symptoms": [""], "treatment": [""], "season": ""}],
+  "diseaseVectors": [{"vector": "", "diseases": [""], "habitat": "", "season": "", "prevention": [""], "identification": "", "removal": ""}],
+  "terrainHazards": [{"hazard": "", "riskLevel": "High", "indicators": [""], "prevention": [""], "response": [""], "season": ""}],
+  "medicinalPlants": [{"name": "", "latinName": "", "uses": [""], "preparation": [""], "dosage": "", "warnings": [""], "identification": [""]}],
+  "seasonalFood": {
+    "spring": [{"food": "", "availability": "", "identification": [""], "preparation": [""], "nutrition": "", "warnings": ""}],
+    "summer": [{"food": "", "availability": "", "identification": [""], "preparation": [""], "nutrition": "", "warnings": ""}],
+    "fall": [{"food": "", "availability": "", "identification": [""], "preparation": [""], "nutrition": "", "warnings": ""}],
+    "winter": [{"food": "", "availability": "", "identification": [""], "preparation": [""], "nutrition": "", "warnings": ""}]
+  },
+  "naturalIndicators": [{"indicator": "", "meaning": "", "observation": [""], "action": "", "reliability": "High", "timeframe": ""}]
 }"""
     
     # Build detailed species data for the prompt
@@ -1781,30 +1782,103 @@ def create_biome_analysis(biome_data, options=None):
             feature_entries = [f"  • {feature.get('type', 'Unknown')}: {feature.get('count', 0)}" for feature in features[:8]]
             landscape_text += f"\n{category.replace('_', ' ').title()}:\n" + "\n".join(feature_entries)
 
-    prompt = f"""You are a survival expert. Analyze this biome data and create a survival analysis.
+    # Calculate comprehensive fauna statistics for predator-prey analysis
+    total_predators = 0
+    total_prey = 0
+    total_fauna_species = 0
+    
+    # Predator categories (carnivores and omnivores that hunt)
+    predator_categories = ['birds', 'mammals', 'reptiles', 'fish']
+    prey_categories = ['mammals', 'birds', 'reptiles', 'amphibians', 'fish', 'invertebrates']
+    
+    # Count predators and prey from actual fauna data
+    for subcategory, species_list in fauna_data.items():
+        total_fauna_species += len(species_list)
+        
+        # Estimate predators vs prey based on subcategory and species analysis
+        if subcategory in ['birds']:
+            # Birds: ~30% raptors/predators, 70% prey
+            predator_count = int(len(species_list) * 0.3)
+            prey_count = len(species_list) - predator_count
+        elif subcategory in ['mammals']:
+            # Mammals: ~25% carnivores/large omnivores, 75% herbivores/small mammals
+            predator_count = int(len(species_list) * 0.25)
+            prey_count = len(species_list) - predator_count
+        elif subcategory in ['reptiles']:
+            # Reptiles: ~40% predators (snakes, large lizards), 60% prey
+            predator_count = int(len(species_list) * 0.4)
+            prey_count = len(species_list) - predator_count
+        elif subcategory in ['fish']:
+            # Fish: ~35% predatory fish, 65% prey fish
+            predator_count = int(len(species_list) * 0.35)
+            prey_count = len(species_list) - predator_count
+        elif subcategory in ['amphibians']:
+            # Amphibians: mostly prey, ~10% predators
+            predator_count = int(len(species_list) * 0.1)
+            prey_count = len(species_list) - predator_count
+        else:
+            # Invertebrates: mostly prey, ~15% predators
+            predator_count = int(len(species_list) * 0.15)
+            prey_count = len(species_list) - predator_count
+            
+        total_predators += predator_count
+        total_prey += prey_count
+    
+    # Calculate biodiversity score based on multiple factors
+    flora_diversity = len([species for subcat in flora_data.values() for species in subcat])
+    fauna_diversity = total_fauna_species
+    landscape_diversity = sum(len(features) for features in landscape_data.values())
+    
+    # Biodiversity scoring algorithm (0-10 scale)
+    base_score = min(10, (flora_diversity / 50) + (fauna_diversity / 30) + (landscape_diversity / 20))
+    
+    # Adjust for ecosystem balance
+    if total_prey > 0:
+        predator_prey_ratio = total_predators / total_prey
+        balance_factor = 1.0 if 0.1 <= predator_prey_ratio <= 0.3 else 0.8
+        biodiversity_score = round(base_score * balance_factor, 1)
+    else:
+        biodiversity_score = round(base_score * 0.7, 1)
+    
+    prompt = f"""You are a survival expert. Analyze this comprehensive biome data and create a detailed survival analysis.
 
 LOCATION: {biome_data.get('locationDetails', {}).get('closestCity', 'Unknown')}, {biome_data.get('locationDetails', {}).get('country', 'Unknown')}
 BIOME: {biome_data.get('biomeInfo', {}).get('biome', 'Unknown')}
 
-FLORA SPECIES:{flora_text or "\nNo flora data available"}
+FLORA SPECIES ANALYSIS:{flora_text or "\nNo flora data available"}
 
-FAUNA SPECIES:{fauna_text or "\nNo fauna data available"}
+FAUNA SPECIES ANALYSIS:{fauna_text or "\nNo fauna data available"}
 
 LANDSCAPE FEATURES:{landscape_text or "\nNo landscape data available"}
+
+CALCULATED ECOSYSTEM METRICS:
+- Total Species: {total_fauna_species} fauna, {flora_diversity} flora
+- Predator Count: {total_predators}
+- Prey Count: {total_prey}
+- Predator-Prey Ratio: {round(total_predators/total_prey, 3) if total_prey > 0 else 0}
+- Calculated Biodiversity Score: {biodiversity_score}/10
 
 Return ONLY this JSON structure in {language}:
 
 {structure_template}
 
-REQUIREMENTS:
-- Base analysis on provided species (use scientific names when available)
-- Max items: venomousPlants(8), diseaseVectors(6), terrainHazards(5), medicinalPlants(10), seasonalFood(5/season), naturalIndicators(8), toxicAnimals(6)
-- Danger levels 1-10 scale
-- Practical survival focus
+CRITICAL REQUIREMENTS:
+1. BASE ALL ANALYSIS ON PROVIDED SPECIES DATA - use scientific names from the species lists
+2. PREDATOR-PREY BALANCE: Use provided calculations (predators: {total_predators}, prey: {total_prey})
+3. BIODIVERSITY SCORE: Use calculated score {biodiversity_score} and justify with keyIndicators
+4. DANGER LEVELS: All numeric scales 1-10 (dangerLevel, toxicityLevel, riskLevel as numbers)
+5. TOXIC ANIMALS: Include dangerLevel field (1-10) for skull display
+6. NATURAL RESOURCES: Use specific material names from landscape features
+7. EDIBLE PLANTS: Name specific plants from flora species list
+8. FIRE RESOURCES: Name specific materials from landscape data
+9. WATER QUALITY: Provide comprehensive sources, purification methods, and contamination risks
+10. NATURAL INDICATORS: Include timeframe field for best observation times
+11. SEASONAL FOOD: Use "food" field instead of "name", add nutrition details
+12. Max items: venomousPlants(8), diseaseVectors(6), terrainHazards(5), medicinalPlants(10), seasonalFood(5/season), naturalIndicators(8), toxicAnimals(6)
 
 {add_ai_mode_context("", ai_mode, children_age, expert_info)}
 
-JSON only, no extra text:"""
+JSON only, no explanations:"""
 
     try:
         print(f"=== BIOME ANALYSIS START ===", file=sys.stderr)
