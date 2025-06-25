@@ -1703,37 +1703,196 @@ def create_biome_analysis(biome_data, options=None):
     language = options.get('language', 'en')
     ai_mode, children_age, expert_info = extract_ai_mode_from_options(options)
     
-    # Define the expected JSON structure (comprehensive to match BiomeAnalysis.js expectations)
+    # Define the expected JSON structure with realistic examples for better AI guidance
     structure_template = """{
-  "topPredator": {"name": "", "latinName": "", "dangerLevel": 9, "habitat": "", "behavior": "", "occurrences": 0},
-  "predatorBalance": {"predators": 0, "prey": 0, "ratio": 0.15, "assessment": ""},
-  "biodiversity": {"score": 7.8, "status": "High", "description": "", "keyIndicators": [""]},
-  "toxicAnimals": [{"name": "", "latinName": "", "toxicityLevel": 8, "habitat": "", "symptoms": [""], "avoidance": "", "dangerLevel": 8}],
-  "keyPlant": {"name": "", "latinName": "", "benefits": [""], "uses": [""], "occurrences": 0},
+  "topPredator": {
+    "name": "Brown Bear",
+    "latinName": "Ursus arctos", 
+    "dangerLevel": 9,
+    "habitat": "Dense forests, mountainous regions",
+    "behavior": "Opportunistic omnivore, territorial during salmon runs, hibernates in winter",
+    "occurrences": 12
+  },
+  "predatorBalance": {
+    "predators": 24,
+    "prey": 156,
+    "ratio": "1:6.5",
+    "assessment": "Healthy predator-prey balance supports ecosystem stability"
+  },
+  "biodiversity": {
+    "score": 7.8,
+    "status": "High",
+    "description": "Rich ecosystem with excellent species variety and habitat diversity",
+    "keyIndicators": ["High species richness", "Stable food webs", "Diverse habitat types", "Minimal invasive species"]
+  },
+     "toxicAnimals": [
+     {
+       "name": "Timber Rattlesnake",
+       "latinName": "Crotalus horridus",
+       "toxicityLevel": 8,
+       "dangerLevel": 8,
+       "habitat": "Rocky outcrops, dense woodlands",
+       "symptoms": ["Severe pain", "Swelling", "Tissue damage", "Systemic effects"],
+       "avoidance": "Watch footing on rocky areas, listen for rattle sound, wear proper boots"
+     },
+     {
+       "name": "Black Widow Spider",
+       "latinName": "Latrodectus mactans",
+       "toxicityLevel": 7,
+       "dangerLevel": 7,
+       "habitat": "Dark, undisturbed areas, wood piles, sheds",
+       "symptoms": ["Muscle cramps", "Abdominal pain", "Breathing difficulty", "Sweating"],
+       "avoidance": "Check before reaching into dark spaces, wear gloves when handling wood"
+     }
+   ],
+  "keyPlant": {
+    "name": "White Oak",
+    "latinName": "Quercus alba",
+    "benefits": ["Provides acorns for wildlife", "Excellent shelter material", "Tannins for leather processing"],
+    "uses": ["Emergency food source (acorns)", "Construction material", "Firewood"],
+    "occurrences": 34
+  },
   "resources": {
-    "waterSources": [{"type": "", "count": 0, "quality": "High", "accessibility": "Easy"}],
-    "shelterMaterials": [{"material": "", "abundance": "High", "suitability": "Excellent"}],
-    "ediblePlants": [{"plant": "", "season": "", "nutrition": "High", "safety": "Safe"}],
-    "fireResources": [{"resource": "", "abundance": "High", "burnQuality": "Excellent"}]
+    "waterSources": [
+      {"type": "Mountain Springs", "count": 3, "quality": "Excellent", "accessibility": "Moderate"},
+      {"type": "Forest Streams", "count": 8, "quality": "Good", "accessibility": "Easy"}
+    ],
+    "shelterMaterials": [
+      {"material": "Fallen Logs", "abundance": "High", "suitability": "Excellent"},
+      {"material": "Dense Pine Boughs", "abundance": "High", "suitability": "Good"}
+    ],
+    "ediblePlants": [
+      {"plant": "Wild Blackberries", "season": "Late Summer", "nutrition": "High", "safety": "Safe"},
+      {"plant": "Acorns", "season": "Fall", "nutrition": "High", "safety": "Process Required"}
+    ],
+    "fireResources": [
+      {"resource": "Dry Hardwood", "abundance": "High", "burnQuality": "Excellent"},
+      {"resource": "Birch Bark", "abundance": "Medium", "burnQuality": "Excellent"}
+    ]
   },
-  "waterQuality": {
-    "naturalSources": [{"source": "", "quality": "Excellent", "flowRate": "Steady", "contamination": "Low", "assessment": ""}],
-    "purificationMethods": [{"method": "", "effectiveness": "99%", "time": "10-15 minutes", "notes": ""}],
-    "contaminationRisks": [{"risk": "", "source": "", "symptoms": "", "prevention": ""}]
-  },
-  "venomousPlants": [{"name": "", "latinName": "", "toxicity": "High", "identification": [""], "symptoms": [""], "treatment": [""], "season": ""}],
-  "diseaseVectors": [{"vector": "", "diseases": [""], "habitat": "", "season": "", "prevention": [""], "identification": "", "removal": ""}],
-  "terrainHazards": [{"hazard": "", "riskLevel": "High", "indicators": [""], "prevention": [""], "response": [""], "season": ""}],
-  "medicinalPlants": [{"name": "", "latinName": "", "uses": [""], "preparation": [""], "dosage": "", "warnings": [""], "identification": [""]}],
+     "waterQuality": {
+     "naturalSources": [
+       {
+         "source": "Mountain Springs",
+         "quality": "Excellent",
+         "flowRate": "Steady",
+         "contamination": "Low",
+         "assessment": "Clear, cold, mineral-rich water from underground sources"
+       },
+       {
+         "source": "Forest Streams",
+         "quality": "Good",
+         "flowRate": "Variable",
+         "contamination": "Medium",
+         "assessment": "Generally safe but may contain bacteria from wildlife"
+       }
+     ],
+     "purificationMethods": [
+       {"method": "Boiling", "effectiveness": "99%", "time": "10-15 minutes", "notes": "Kills bacteria, viruses, parasites"},
+       {"method": "UV Sterilization", "effectiveness": "95%", "time": "5 minutes", "notes": "Requires clear water, portable devices available"}
+     ],
+     "contaminationRisks": [
+       {"risk": "Giardia", "source": "Animal waste", "symptoms": "Diarrhea, cramping", "prevention": "Boil or filter all water"},
+       {"risk": "E. coli", "source": "Fecal contamination", "symptoms": "Severe illness", "prevention": "Avoid stagnant sources"}
+     ]
+   },
+  "venomousPlants": [
+    {
+      "name": "Poison Ivy",
+      "latinName": "Toxicodendron radicans",
+      "toxicity": "High",
+      "identification": ["Three leaflets", "Reddish stems", "Waxy appearance", "Grows as vine or shrub"],
+      "symptoms": ["Severe rash", "Blistering", "Intense itching", "Swelling"],
+      "treatment": ["Wash immediately with soap", "Apply cool compresses", "Use antihistamines", "Seek medical help for severe cases"],
+      "season": "Spring-Fall"
+    }
+  ],
+  "diseaseVectors": [
+    {
+      "vector": "Deer Ticks",
+      "diseases": ["Lyme Disease", "Rocky Mountain Spotted Fever"],
+      "habitat": "Tall grass, wooded areas, leaf litter",
+      "season": "Spring-Fall",
+      "prevention": "Long pants tucked into socks, insect repellent with DEET, daily tick checks",
+      "identification": "Small, dark, spider-like appearance, embed deeply in skin",
+      "removal": "Use fine-tip tweezers, pull straight up steadily, clean wound"
+    }
+  ],
+  "terrainHazards": [
+    {
+      "hazard": "Flash Floods",
+      "riskLevel": "High",
+      "indicators": ["Dark clouds upstream", "Rising water levels", "Debris in water", "Distant thunder"],
+      "prevention": "Avoid camping in washes, check weather forecasts, have escape routes",
+      "response": "Move to higher ground immediately, never drive through flood water",
+      "season": "Spring, Summer storms"
+    }
+  ],
+  "medicinalPlants": [
+    {
+      "name": "White Willow",
+      "latinName": "Salix alba",
+      "uses": ["Pain relief", "Fever reduction", "Anti-inflammatory"],
+      "preparation": ["Harvest inner bark in spring", "Dry for 2-3 weeks", "Brew as tea: 1 tsp per cup", "Steep 10-15 minutes"],
+      "dosage": "1-2 cups tea daily",
+      "warnings": ["Avoid if allergic to aspirin", "Not for children under 16"],
+      "identification": ["Narrow leaves", "Drooping branches", "Found near water"]
+    }
+  ],
   "seasonalFood": {
-    "spring": [{"food": "", "availability": "", "identification": [""], "preparation": [""], "nutrition": "", "warnings": ""}],
-    "summer": [{"food": "", "availability": "", "identification": [""], "preparation": [""], "nutrition": "", "warnings": ""}],
-    "fall": [{"food": "", "availability": "", "identification": [""], "preparation": [""], "nutrition": "", "warnings": ""}],
-    "winter": [{"food": "", "availability": "", "identification": [""], "preparation": [""], "nutrition": "", "warnings": ""}]
+    "spring": [
+      {
+        "food": "Wild Asparagus",
+        "availability": "Early Spring",
+        "identification": ["Thin green spears", "6-8 inches tall", "Ferny appearance when mature"],
+        "preparation": ["Snap at natural break", "Steam or sauté", "Eat raw when young"],
+        "nutrition": "High in vitamins A, C, K",
+        "warnings": "None - generally safe"
+      }
+    ],
+    "summer": [
+      {
+        "food": "Wild Blackberries",
+        "availability": "Mid-Late Summer",
+        "identification": ["Dark purple-black berries", "Thorny canes", "Three-part leaves"],
+        "preparation": ["Eat fresh", "Make preserves", "Dry for storage"],
+        "nutrition": "High in vitamin C, antioxidants",
+        "warnings": "Watch for thorns, avoid roadside plants"
+      }
+    ],
+    "fall": [
+      {
+        "food": "Acorns",
+        "availability": "Fall",
+        "identification": ["Oval nuts from oak trees", "Cap on one end", "Brown when ripe"],
+        "preparation": ["Shell and grind", "Leach tannins with water", "Dry as flour"],
+        "nutrition": "High carbohydrates, protein",
+        "warnings": "Must leach tannins - bitter raw"
+      }
+    ],
+    "winter": [
+      {
+        "food": "Pine Needles",
+        "availability": "Year-round",
+        "identification": ["Evergreen needles", "Resinous smell", "Five-needle clusters preferred"],
+        "preparation": ["Tea from young needles", "Don't brew too strong", "Vitamin C source"],
+        "nutrition": "Vitamin C, minerals",
+        "warnings": "Avoid Ponderosa Pine, not for pregnant women"
+      }
+    ]
   },
-  "naturalIndicators": [{"indicator": "", "meaning": "", "observation": [""], "action": "", "reliability": "High", "timeframe": ""}]
+  "naturalIndicators": [
+    {
+      "indicator": "Bee Activity",
+      "meaning": "Water source within 3 miles",
+      "observations": ["Heavy bee traffic", "Consistent flight direction", "Multiple bee species"],
+      "action": "Follow bee flight path, especially in morning",
+      "reliability": "High",
+      "timeframe": "Active daylight hours"
+    }
+  ]
 }"""
-    
+
     # Build detailed species data for the prompt
     flora_data = biome_data.get('flora', {})
     fauna_data = biome_data.get('fauna', {})
@@ -1840,10 +1999,11 @@ def create_biome_analysis(biome_data, options=None):
     else:
         biodiversity_score = round(base_score * 0.7, 1)
     
-    prompt = f"""You are a survival expert. Analyze this comprehensive biome data and create a detailed survival analysis.
+    prompt = f"""You are a survival expert creating a comprehensive biome analysis. Use the provided species data to create realistic, detailed survival information.
 
 LOCATION: {biome_data.get('locationDetails', {}).get('closestCity', 'Unknown')}, {biome_data.get('locationDetails', {}).get('country', 'Unknown')}
 BIOME: {biome_data.get('biomeInfo', {}).get('biome', 'Unknown')}
+ECOREGION: {biome_data.get('biomeInfo', {}).get('ecoregion', 'Unknown')}
 
 FLORA SPECIES ANALYSIS:{flora_text or "\nNo flora data available"}
 
@@ -1858,25 +2018,49 @@ CALCULATED ECOSYSTEM METRICS:
 - Predator-Prey Ratio: {round(total_predators/total_prey, 3) if total_prey > 0 else 0}
 - Calculated Biodiversity Score: {biodiversity_score}/10
 
-Return ONLY this JSON structure in {language}:
+Return ONLY this JSON structure in {language}, following the examples exactly:
 
 {structure_template}
 
-CRITICAL REQUIREMENTS:
-1. BASE ALL ANALYSIS ON PROVIDED SPECIES DATA - use scientific names from the species lists
-2. PREDATOR-PREY BALANCE: Use provided calculations (predators: {total_predators}, prey: {total_prey})
-3. BIODIVERSITY SCORE: Use calculated score {biodiversity_score} and justify with keyIndicators
-4. DANGER LEVELS: All numeric scales 1-10 (dangerLevel, toxicityLevel, riskLevel as numbers)
-5. TOXIC ANIMALS: Include dangerLevel field (1-10) for skull display
-6. NATURAL RESOURCES: Use specific material names from landscape features
-7. EDIBLE PLANTS: Name specific plants from flora species list
-8. FIRE RESOURCES: Name specific materials from landscape data
-9. WATER QUALITY: Provide comprehensive sources, purification methods, and contamination risks
-10. NATURAL INDICATORS: Include timeframe field for best observation times
-11. SEASONAL FOOD: Use "food" field instead of "name", add nutrition details
-12. Max items: venomousPlants(8), diseaseVectors(6), terrainHazards(5), medicinalPlants(10), seasonalFood(5/season), naturalIndicators(8), toxicAnimals(6)
+🌍 LANGUAGE REQUIREMENT: ALL text content MUST be in {language.upper()} language (de=German, en=English, es=Spanish, fr=French, etc.). 
+This includes: names, descriptions, symptoms, treatments, preparation steps, warnings, assessments, and ALL other text fields.
+Do NOT mix languages - everything must be consistently in {language.upper()}.
+
+CRITICAL QUALITY REQUIREMENTS:
+
+1. SPECIES ACCURACY: Use ONLY species from the provided lists above - match scientific names exactly
+2. REALISTIC CONTENT: Base all information on actual biology and ecology, not generic descriptions
+3. DETAILED DESCRIPTIONS: Follow example format with specific, actionable information
+4. PROPER FORMATTING: Arrays must have detailed objects, not simple strings
+
+SPECIFIC FIELD REQUIREMENTS:
+
+🏆 TOP PREDATOR: Choose from provided fauna with highest danger potential
+🧮 PREDATOR BALANCE: Use calculated numbers above (predators: {total_predators}, prey: {total_prey})
+🌿 BIODIVERSITY: Use score {biodiversity_score}, explain with specific ecosystem indicators
+☠️ TOXIC ANIMALS: Include dangerLevel (1-10) field for skull display, specific symptoms
+🌱 KEY PLANT: Choose most abundant/useful species from flora list
+🏗️ RESOURCES: Reference specific landscape features (vegetation, water, geology types)
+💧 WATER QUALITY: Comprehensive sources, detailed purification methods, specific risks
+🍄 VENOMOUS PLANTS: Detailed identification, symptoms, treatment arrays
+🦟 DISEASE VECTORS: Regional diseases, specific prevention/removal methods
+⛰️ TERRAIN HAZARDS: Location-appropriate hazards with detailed responses
+💊 MEDICINAL PLANTS: Detailed preparation steps, specific dosages, warnings
+🍯 SEASONAL FOOD: Use "food" field, detailed preparation, nutrition info
+👁️ NATURAL INDICATORS: Include "timeframe" field, specific observation times
+
+QUALITY EXAMPLES TO FOLLOW:
+- Identification: ["Three leaflets", "Reddish stems", "Waxy appearance"]
+- Preparation: ["Harvest inner bark in spring", "Dry for 2-3 weeks", "Brew as tea"]
+- Symptoms: ["Severe pain", "Swelling", "Tissue damage"]
+- Prevention: "Long pants tucked into socks, insect repellent with DEET"
+
+MAX ITEMS: venomousPlants(8), diseaseVectors(6), terrainHazards(5), medicinalPlants(10), seasonalFood(5/season), naturalIndicators(8), toxicAnimals(6)
 
 {add_ai_mode_context("", ai_mode, children_age, expert_info)}
+
+🔴 CRITICAL: Generate ALL content in {language.upper()} language only. No English text if language != 'en'.
+🔴 Scientific names can remain in Latin, but ALL descriptions, symptoms, treatments must be in {language.upper()}.
 
 JSON only, no explanations:"""
 
