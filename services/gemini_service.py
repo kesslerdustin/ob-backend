@@ -1852,6 +1852,7 @@ def create_biome_analysis(biome_data, options=None):
       "preparation": ["Harvest inner bark in spring", "Dry for 2-3 weeks", "Brew as tea: 1 tsp per cup", "Steep 10-15 minutes"],
       "dosage": "1-2 cups tea daily",
       "warnings": ["Avoid if allergic to aspirin", "Not for children under 16"],
+      "availability": "Spring bark harvest",
       "identification": ["Narrow leaves", "Drooping branches", "Found near water"]
     }
   ],
