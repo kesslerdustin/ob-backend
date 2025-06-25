@@ -1733,14 +1733,44 @@ def create_biome_analysis(biome_data, options=None):
   }
 }"""
     
+    # Build detailed species data for the prompt
+    flora_data = biome_data.get('flora', {})
+    fauna_data = biome_data.get('fauna', {})
+    landscape_data = biome_data.get('landscapeFeatures', {})
+    
+    # Format flora data  
+    flora_text = ""
+    for subcategory, species_list in flora_data.items():
+        if species_list:
+            top_species = species_list[:10]  # Top 10 per subcategory
+            species_entries = [f"  • {species.get('scientificName', 'Unknown')} ({species.get('vernacularName', 'Unknown')}) - {species.get('occurrences', 0)} occurrences" for species in top_species]
+            flora_text += f"\n{subcategory.replace('_', ' ').title()}:\n" + "\n".join(species_entries)
+    
+    # Format fauna data
+    fauna_text = ""  
+    for subcategory, species_list in fauna_data.items():
+        if species_list:
+            top_species = species_list[:10]  # Top 10 per subcategory
+            species_entries = [f"  • {species.get('scientificName', 'Unknown')} ({species.get('vernacularName', 'Unknown')}) - {species.get('occurrences', 0)} occurrences" for species in top_species]
+            fauna_text += f"\n{subcategory.replace('_', ' ').title()}:\n" + "\n".join(species_entries)
+    
+    # Format landscape data
+    landscape_text = ""
+    for category, features in landscape_data.items():
+        if features:
+            feature_entries = [f"  • {feature.get('type', 'Unknown')}: {feature.get('count', 0)}" for feature in features[:8]]
+            landscape_text += f"\n{category.replace('_', ' ').title()}:\n" + "\n".join(feature_entries)
+
     prompt = f"""You are a survival expert. Analyze this biome data and create a survival analysis.
 
 LOCATION: {biome_data.get('locationDetails', {}).get('closestCity', 'Unknown')}, {biome_data.get('locationDetails', {}).get('country', 'Unknown')}
 BIOME: {biome_data.get('biomeInfo', {}).get('biome', 'Unknown')}
 
-SPECIES DATA SUMMARY:
-- Flora: {len(biome_data.get('floraBySubcategory', {}).get('trees', []))} trees, {len(biome_data.get('floraBySubcategory', {}).get('flowering_and_shrubs', []))} shrubs
-- Fauna: {len(biome_data.get('faunaBySubcategory', {}).get('mammals', []))} mammals, {len(biome_data.get('faunaBySubcategory', {}).get('birds', []))} birds
+FLORA SPECIES:{flora_text or "\nNo flora data available"}
+
+FAUNA SPECIES:{fauna_text or "\nNo fauna data available"}
+
+LANDSCAPE FEATURES:{landscape_text or "\nNo landscape data available"}
 
 Return ONLY this JSON structure in {language}:
 
@@ -1759,6 +1789,24 @@ JSON only, no extra text:"""
     try:
         print(f"=== BIOME ANALYSIS START ===", file=sys.stderr)
         print(f"Language: {language}, AI Mode: {ai_mode}", file=sys.stderr)
+        
+        # Debug: Log what flora/fauna data we're receiving
+        print(f"Flora subcategories available: {list(flora_data.keys())}", file=sys.stderr)
+        print(f"Fauna subcategories available: {list(fauna_data.keys())}", file=sys.stderr)
+        print(f"Landscape categories available: {list(landscape_data.keys())}", file=sys.stderr)
+        
+        # Debug: Log species counts per subcategory
+        for subcategory, species_list in flora_data.items():
+            print(f"Flora {subcategory}: {len(species_list)} species", file=sys.stderr)
+        for subcategory, species_list in fauna_data.items():
+            print(f"Fauna {subcategory}: {len(species_list)} species", file=sys.stderr)
+        for category, features in landscape_data.items():
+            print(f"Landscape {category}: {len(features)} features", file=sys.stderr)
+        
+        # Debug: Log the prompt sections
+        print(f"PROMPT FLORA SECTION (first 500 chars): {flora_text[:500]}...", file=sys.stderr)
+        print(f"PROMPT FAUNA SECTION (first 500 chars): {fauna_text[:500]}...", file=sys.stderr)
+        print(f"PROMPT LANDSCAPE SECTION (first 500 chars): {landscape_text[:500]}...", file=sys.stderr)
         
         result = client.models.generate_content(
             model=MODEL_ID,
