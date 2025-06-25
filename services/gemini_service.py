@@ -1736,23 +1736,43 @@ def create_biome_analysis(biome_data, options=None):
     # Build detailed species data for the prompt
     flora_data = biome_data.get('flora', {})
     fauna_data = biome_data.get('fauna', {})
+    flora_statistics = biome_data.get('floraStatistics', {})
+    fauna_statistics = biome_data.get('faunaStatistics', {})
     landscape_data = biome_data.get('landscapeFeatures', {})
     
-    # Format flora data  
+    # Format flora data with statistics
     flora_text = ""
     for subcategory, species_list in flora_data.items():
         if species_list:
+            # Get statistics for this subcategory
+            stats = flora_statistics.get(subcategory, {})
+            total_occurrences = stats.get('totalOccurrences', 0)
+            unique_species = stats.get('uniqueSpeciesCount', len(species_list))
+            
+            # Add subcategory header with statistics
+            flora_text += f"\n{subcategory.replace('_', ' ').title()} ({unique_species} species, {total_occurrences} total occurrences):\n"
+            
+            # Add top species
             top_species = species_list[:10]  # Top 10 per subcategory
             species_entries = [f"  • {species.get('scientificName', 'Unknown')} ({species.get('vernacularName', 'Unknown')}) - {species.get('occurrences', 0)} occurrences" for species in top_species]
-            flora_text += f"\n{subcategory.replace('_', ' ').title()}:\n" + "\n".join(species_entries)
+            flora_text += "\n".join(species_entries)
     
-    # Format fauna data
-    fauna_text = ""  
+        # Format fauna data with statistics
+    fauna_text = ""
     for subcategory, species_list in fauna_data.items():
         if species_list:
+            # Get statistics for this subcategory
+            stats = fauna_statistics.get(subcategory, {})
+            total_occurrences = stats.get('totalOccurrences', 0)
+            unique_species = stats.get('uniqueSpeciesCount', len(species_list))
+            
+            # Add subcategory header with statistics
+            fauna_text += f"\n{subcategory.replace('_', ' ').title()} ({unique_species} species, {total_occurrences} total occurrences):\n"
+            
+            # Add top species
             top_species = species_list[:10]  # Top 10 per subcategory
             species_entries = [f"  • {species.get('scientificName', 'Unknown')} ({species.get('vernacularName', 'Unknown')}) - {species.get('occurrences', 0)} occurrences" for species in top_species]
-            fauna_text += f"\n{subcategory.replace('_', ' ').title()}:\n" + "\n".join(species_entries)
+            fauna_text += "\n".join(species_entries)
     
     # Format landscape data
     landscape_text = ""
@@ -1795,11 +1815,13 @@ JSON only, no extra text:"""
         print(f"Fauna subcategories available: {list(fauna_data.keys())}", file=sys.stderr)
         print(f"Landscape categories available: {list(landscape_data.keys())}", file=sys.stderr)
         
-        # Debug: Log species counts per subcategory
+        # Debug: Log species counts per subcategory with statistics
         for subcategory, species_list in flora_data.items():
-            print(f"Flora {subcategory}: {len(species_list)} species", file=sys.stderr)
+            stats = flora_statistics.get(subcategory, {})
+            print(f"Flora {subcategory}: {len(species_list)} species (top 50), {stats.get('uniqueSpeciesCount', 0)} total unique, {stats.get('totalOccurrences', 0)} occurrences", file=sys.stderr)
         for subcategory, species_list in fauna_data.items():
-            print(f"Fauna {subcategory}: {len(species_list)} species", file=sys.stderr)
+            stats = fauna_statistics.get(subcategory, {})
+            print(f"Fauna {subcategory}: {len(species_list)} species (top 50), {stats.get('uniqueSpeciesCount', 0)} total unique, {stats.get('totalOccurrences', 0)} occurrences", file=sys.stderr)
         for category, features in landscape_data.items():
             print(f"Landscape {category}: {len(features)} features", file=sys.stderr)
         
