@@ -1725,6 +1725,22 @@ def create_biome_analysis(biome_data, options=None):
     "description": "Rich ecosystem with excellent species variety and habitat diversity",
     "keyIndicators": ["High species richness", "Stable food webs", "Diverse habitat types", "Minimal invasive species"]
   },
+  "ecologicalThreats": [
+    {
+      "threat": "Habitat Fragmentation",
+      "severity": "High",
+      "impact": 85,
+      "description": "Roads and development divide natural habitats into smaller patches",
+      "consequences": "Reduced wildlife corridors and genetic isolation of species populations"
+    },
+    {
+      "threat": "Invasive Species",
+      "severity": "Medium", 
+      "impact": 60,
+      "description": "Non-native plants and animals outcompete local species",
+      "consequences": "Disruption of native food webs and ecosystem balance"
+    }
+  ],
      "toxicAnimals": [
      {
        "name": "Timber Rattlesnake",
@@ -2022,6 +2038,8 @@ Return ONLY this JSON structure in {language}, following the examples exactly:
 
 {structure_template}
 
+🔴 MANDATORY: You MUST include ALL sections from the JSON template above, including ecologicalThreats!
+
 🌍 LANGUAGE REQUIREMENT: ALL text content MUST be in {language.upper()} language (de=German, en=English, es=Spanish, fr=French, etc.). 
 This includes: names, descriptions, symptoms, treatments, preparation steps, warnings, assessments, and ALL other text fields.
 Do NOT mix languages - everything must be consistently in {language.upper()}.
@@ -2048,6 +2066,7 @@ SPECIFIC FIELD REQUIREMENTS:
 💊 MEDICINAL PLANTS: Detailed preparation steps, specific dosages, warnings
 🍯 SEASONAL FOOD: Use "food" field, detailed preparation, nutrition info
 👁️ NATURAL INDICATORS: Include "timeframe" field, specific observation times
+🚨 ECOLOGICAL THREATS: MANDATORY SECTION - Include region-specific threats with severity, impact percentage, detailed descriptions and consequences
 
 QUALITY EXAMPLES TO FOLLOW:
 - Identification: ["Three leaflets", "Reddish stems", "Waxy appearance"]
@@ -2055,12 +2074,13 @@ QUALITY EXAMPLES TO FOLLOW:
 - Symptoms: ["Severe pain", "Swelling", "Tissue damage"]
 - Prevention: "Long pants tucked into socks, insect repellent with DEET"
 
-MAX ITEMS: venomousPlants(8), diseaseVectors(6), terrainHazards(5), medicinalPlants(10), seasonalFood(5/season), naturalIndicators(8), toxicAnimals(6)
+MAX ITEMS: venomousPlants(8), diseaseVectors(6), terrainHazards(5), medicinalPlants(10), seasonalFood(5/season), naturalIndicators(8), toxicAnimals(6), ecologicalThreats(5)
 
 {add_ai_mode_context("", ai_mode, children_age, expert_info)}
 
 🔴 CRITICAL: Generate ALL content in {language.upper()} language only. No English text if language != 'en'.
 🔴 Scientific names can remain in Latin, but ALL descriptions, symptoms, treatments must be in {language.upper()}.
+🔴 ECOLOGICAL THREATS IS MANDATORY - Do NOT skip this section!
 
 JSON only, no explanations:"""
 
@@ -2095,7 +2115,7 @@ JSON only, no explanations:"""
                 temperature=0.3,
                 top_p=0.8,
                 top_k=40,
-                max_output_tokens=8192
+                max_output_tokens=12288
             )
         )
         
