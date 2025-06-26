@@ -518,6 +518,22 @@ def analyze_biome(prompt, options=None):
             # Parse and validate JSON response
             response_text = response.text.strip()
             try:
+                # Remove markdown code block wrapper if present
+                if response_text.startswith('```json'):
+                    # Find the closing ```
+                    start_index = response_text.find('\n') + 1  # After ```json\n
+                    end_index = response_text.rfind('```')
+                    if end_index > start_index:
+                        response_text = response_text[start_index:end_index].strip()
+                elif response_text.startswith('```'):
+                    # Handle generic code block
+                    start_index = response_text.find('\n') + 1  # After ```\n
+                    end_index = response_text.rfind('```')
+                    if end_index > start_index:
+                        response_text = response_text[start_index:end_index].strip()
+                
+                print(f"Cleaned response text: {response_text}", file=sys.stderr)
+                
                 biome_data = json.loads(response_text)
                 # Validate required fields
                 required_fields = ['ecoregionName', 'biomeName', 'realm', 'biomeNum']

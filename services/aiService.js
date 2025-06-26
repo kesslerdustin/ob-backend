@@ -261,12 +261,70 @@ async function analyzeBiome(prompt, options = '{}') {
                     return;
                 }
                 
+                console.log('Raw Python response:', dataString);
+                
                 try {
                     const response = JSON.parse(dataString);
-                    resolve(response);  // Return the full response including success/error flags
+                    console.log('Parsed Python response:', response);
+                    
+                    // Transform the response to match expected client format
+                    if (response.success && response.biomeData) {
+                        resolve({
+                            success: true,
+                            biomeData: response.biomeData
+                        });
+                    } else if (response.success && response.text) {
+                        // Try to parse structured data from text response
+                        try {
+                            const biomeText = response.text;
+                            console.log('Attempting to parse biome data from text:', biomeText);
+                            
+                            // Try to extract JSON if embedded in text
+                            const jsonMatch = biomeText.match(/\{[\s\S]*\}/);
+                            if (jsonMatch) {
+                                const biomeData = JSON.parse(jsonMatch[0]);
+                                resolve({
+                                    success: true,
+                                    biomeData: biomeData
+                                });
+                            } else {
+                                // Fallback: parse structured text response
+                                const lines = biomeText.split('\n').filter(line => line.trim());
+                                const biomeName = lines[0] || 'Unknown Biome';
+                                
+                                resolve({
+                                    success: true,
+                                    biomeData: {
+                                        ecoregionName: biomeName,
+                                        biomeName: biomeName,
+                                        realm: 'Unknown',
+                                        biomeNum: 0,
+                                        source: 'api-fallback'
+                                    }
+                                });
+                            }
+                        } catch (parseError) {
+                            console.error('Failed to parse biome data from text:', parseError);
+                            resolve({
+                                success: false,
+                                error: 'Failed to parse structured biome data',
+                                fallback: true
+                            });
+                        }
+                    } else {
+                        resolve({
+                            success: false,
+                            error: response.error || 'Unknown error from Python script',
+                            fallback: true
+                        });
+                    }
                 } catch (error) {
-                    console.error('Failed to parse Python response:', dataString);
-                    reject(new Error('Failed to parse Python response'));
+                    console.error('Failed to parse Python JSON response:', dataString);
+                    resolve({
+                        success: false,
+                        error: 'Failed to parse Python response',
+                        fallback: true
+                    });
                 }
             });
         });
