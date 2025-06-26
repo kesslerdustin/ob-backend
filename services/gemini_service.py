@@ -439,27 +439,74 @@ def analyze_biome(prompt, options=None):
         options = json.loads(options) if options else {}
         language = options.get('language', 'en')
         coordinates = options.get('coordinates', {})
+        return_structured_data = options.get('returnStructuredData', False)
         
-        structured_prompt = f"""
-        You are a biome classification expert. For this location:
-        {prompt}
-        If location includes a location, let that influence your biome description. if its just coordinates, try to estimate the biome based on the coordinates as good as possible.
-        Return ONLY:
-        1. The primary biome name (e.g., Temperate broadleaf and mixed forests, Tropical rainforest, desert etc.)
-        2. Followed by 2-3 major geographic features in parentheses, separated by commas
-        
-        Example format:
-        Temperate broadleaf and mixed forests (rolling hills, river valleys, coastal cliffs)
-        
-        CRITICAL REQUIREMENTS:
-        - You MUST respond in {language} language (if {language}='de', use German)
-        - Translate BOTH the biome name AND features to {language}
-        - Use ONLY the format shown above
-        - No additional text or explanations
-        - Keep feature descriptions very brief (1-2 words each)
-        
-        Remember: The ENTIRE response must be in {language} language!
-        """
+        if return_structured_data:
+            # Return structured biome data for polygon fallback
+            structured_prompt = f"""
+            You are a biome classification expert. For this location:
+            {prompt}
+            
+            Based on the coordinates or location provided, determine the biome classification.
+            
+            Return ONLY valid JSON in this exact format:
+            {{
+              "ecoregionName": "Specific ecoregion name",
+              "biomeName": "One of the 14 WWF biome categories",
+              "realm": "Biogeographic realm",
+              "biomeNum": 1-14
+            }}
+            
+            Use these standard WWF biome categories for biomeName:
+            1: Tropical and subtropical moist broadleaf forests
+            2: Tropical and subtropical dry broadleaf forests  
+            3: Tropical and subtropical coniferous forests
+            4: Temperate broadleaf and mixed forests
+            5: Temperate Coniferous Forest
+            6: Boreal forests / Taiga
+            7: Tropical and subtropical grasslands, savannas and shrublands
+            8: Temperate grasslands, savannas and shrublands
+            9: Flooded grasslands and savannas
+            10: Montane grasslands and shrublands
+            11: Tundra
+            12: Mediterranean Forests, woodlands and scrubs
+            13: Deserts and xeric shrublands
+            14: Mangroves
+            
+            Use these standard biogeographic realms:
+            - Nearctic (North America)
+            - Palearctic (Europe, Asia, North Africa)
+            - Neotropical (Central/South America, Caribbean)
+            - Afrotropical (Sub-Saharan Africa)
+            - Indomalayan (South/Southeast Asia)
+            - Australasian (Australia, New Guinea, New Zealand)
+            - Antarctic
+            - Oceania (Pacific Islands)
+            
+            CRITICAL: Return ONLY the JSON object, no additional text.
+            """
+        else:
+            # Original text-based response
+            structured_prompt = f"""
+            You are a biome classification expert. For this location:
+            {prompt}
+            If location includes a location, let that influence your biome description. if its just coordinates, try to estimate the biome based on the coordinates as good as possible.
+            Return ONLY:
+            1. The primary biome name (e.g., Temperate broadleaf and mixed forests, Tropical rainforest, desert etc.)
+            2. Followed by 2-3 major geographic features in parentheses, separated by commas
+            
+            Example format:
+            Temperate broadleaf and mixed forests (rolling hills, river valleys, coastal cliffs)
+            
+            CRITICAL REQUIREMENTS:
+            - You MUST respond in {language} language (if {language}='de', use German)
+            - Translate BOTH the biome name AND features to {language}
+            - Use ONLY the format shown above
+            - No additional text or explanations
+            - Keep feature descriptions very brief (1-2 words each)
+            
+            Remember: The ENTIRE response must be in {language} language!
+            """
 
         # Use MODEL_ID for the API call
         response = client.models.generate_content(
@@ -467,10 +514,35 @@ def analyze_biome(prompt, options=None):
             contents=structured_prompt
         )
         
-        return json.dumps({
-            "success": True,
-            "text": response.text.strip()
-        })
+        if return_structured_data:
+            # Parse and validate JSON response
+            response_text = response.text.strip()
+            try:
+                biome_data = json.loads(response_text)
+                # Validate required fields
+                required_fields = ['ecoregionName', 'biomeName', 'realm', 'biomeNum']
+                if all(field in biome_data for field in required_fields):
+                    return json.dumps({
+                        "success": True,
+                        "biomeData": biome_data
+                    })
+                else:
+                    raise ValueError("Missing required fields in biome data")
+            except (json.JSONDecodeError, ValueError) as parse_error:
+                print(f"Failed to parse biome JSON response: {parse_error}", file=sys.stderr)
+                print(f"Raw response: {response_text}", file=sys.stderr)
+                # Return fallback structure
+                return json.dumps({
+                    "success": False,
+                    "error": "Failed to parse structured biome data",
+                    "fallback": True
+                })
+        else:
+            return json.dumps({
+                "success": True,
+                "text": response.text.strip()
+            })
+            
     except Exception as e:
         print(f"Biome analysis error: {str(e)}", file=sys.stderr) # Keep logging
         # Re-raise the exception for the decorator
