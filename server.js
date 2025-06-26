@@ -538,22 +538,43 @@ try {
   // Add this new endpoint for biome analysis
   app.post('/api/analyze/biome', verifyFirebaseToken, express.json(), async (req, res) => {
     try {
-      const { location, coordinates, language } = req.body;
+      console.log('Biome analysis endpoint hit');
+      console.log('Request body:', JSON.stringify(req.body, null, 2));
+      console.log('Request headers:', {
+        'content-type': req.headers['content-type'],
+        'authorization': req.headers['authorization'] ? 'Bearer [TOKEN]' : 'No auth header'
+      });
       
-      if (!coordinates || !coordinates.latitude || !coordinates.longitude) {
-        return res.status(400).json({ error: 'Valid coordinates are required' });
+      const { prompt, options } = req.body;
+      console.log('Extracted prompt:', prompt);
+      console.log('Extracted options:', options);
+      
+      if (!prompt) {
+        console.log('Missing prompt - returning 400');
+        return res.status(400).json({ error: 'Prompt is required' });
       }
 
+      // Extract coordinates and other options
+      const coordinates = options?.coordinates;
+      console.log('Extracted coordinates:', coordinates);
+      
+      if (!coordinates || !coordinates.latitude || !coordinates.longitude) {
+        console.log('Invalid coordinates - returning 400');
+        return res.status(400).json({ error: 'Valid coordinates are required in options' });
+      }
+
+      console.log('Calling aiService.analyzeBiome with:', {
+        prompt,
+        options: JSON.stringify(options || {})
+      });
+
       const response = await aiService.analyzeBiome(
-        location,
-        coordinates,
-        language || 'en'
+        prompt,
+        JSON.stringify(options || {})
       );
 
-      res.json({
-        success: true,
-        biome: response
-      });
+      console.log('aiService response:', response);
+      res.json(response);
 
     } catch (error) {
       console.error('Biome analysis error:', error);

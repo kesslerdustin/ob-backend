@@ -228,27 +228,23 @@ async function flashChat(prompt, language = 'en', context = '', imagePath = null
     });
 }
 
-async function analyzeBiome(location, coordinates, language = 'en') {
+async function analyzeBiome(prompt, options = '{}') {
     return rateLimiter.enqueue('analysis', () => {
         return new Promise((resolve, reject) => {
             const pythonScript = path.join(__dirname, 'gemini_service.py');
-            const options = JSON.stringify({
-                language,
-                type: 'biome_analysis',
-                coordinates
-            });
             
-            const prompt = `Location: ${location}\nCoordinates: ${coordinates.latitude}, ${coordinates.longitude}`;
+            console.log('aiService.analyzeBiome called with:', { prompt, options });
             
             const pythonProcess = spawn('python', [
                 pythonScript,
-                'biome',
+                'analyze_biome',  // Use the correct Python function name
                 prompt,
                 'null',  // no image
                 options
             ]);
 
             let dataString = '';
+            let errorString = '';
 
             pythonProcess.stdout.on('data', (data) => {
                 dataString += data.toString();
@@ -256,22 +252,20 @@ async function analyzeBiome(location, coordinates, language = 'en') {
 
             pythonProcess.stderr.on('data', (data) => {
                 console.error(`Python Error: ${data}`);
+                errorString += data.toString();
             });
 
             pythonProcess.on('close', (code) => {
                 if (code !== 0) {
-                    reject(new Error(`Python process exited with code ${code}`));
+                    reject(new Error(`Python process exited with code ${code}: ${errorString}`));
                     return;
                 }
                 
                 try {
                     const response = JSON.parse(dataString);
-                    if (response.success) {
-                        resolve(response.text);
-                    } else {
-                        reject(new Error(response.error));
-                    }
+                    resolve(response);  // Return the full response including success/error flags
                 } catch (error) {
+                    console.error('Failed to parse Python response:', dataString);
                     reject(new Error('Failed to parse Python response'));
                 }
             });

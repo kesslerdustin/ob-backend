@@ -2260,6 +2260,8 @@ if __name__ == "__main__":
         response = flash_chat(prompt, image_url, options)
     elif mode == "biome":
         response = analyze_biome(prompt, options)
+    elif mode == "analyze_biome":  # Add the new command for API biome analysis
+        response = analyze_biome(prompt, options)
     elif mode == "weather":
         response = analyze_weather(prompt, options)
     elif mode == "info":
