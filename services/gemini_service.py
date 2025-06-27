@@ -19,6 +19,9 @@ load_dotenv()
 client = genai.Client(api_key=os.getenv('GOOGLE_API_KEY'))
 FLASH_THINKING_MODEL = "gemini-2.0-flash-thinking-exp"
 FLASH_MODEL = "gemini-2.0-flash-exp"
+FLASH_25_LITE = "gemini-2.5-flash-lite-preview-06-17"
+FLASH_25_PREVIEW = "gemini-2.5-flash-preview-05-20" 
+FLASH_25_STABLE = "gemini-2.5-flash"
 MODEL_ID = "gemini-2.0-flash-thinking-exp"  # Default model
 
 # Configure OpenAI API
@@ -120,51 +123,79 @@ def with_model_fallback(primary_model):
         def wrapper(*args, **kwargs):
             global MODEL_ID
             original_global_model_id = MODEL_ID 
-            secondary_flash_model = FLASH_MODEL if primary_model == FLASH_THINKING_MODEL else FLASH_THINKING_MODEL
             
             try:
-                # Try with the function's specific primary model
-                MODEL_ID = primary_model
-                print(f"Attempting {func.__name__} with primary model: {MODEL_ID}", file=sys.stderr)
-                return func(*args, **kwargs)
-            except Exception as e:
-                # ANY exception from primary model triggers fallback to the *other* flash model
-                print(f"Primary model ({primary_model}) failed for {func.__name__} ({type(e).__name__}: {e}), falling back to secondary flash model ({secondary_flash_model})", file=sys.stderr)
-                try:
-                    MODEL_ID = secondary_flash_model 
-                    print(f"Retrying {func.__name__} with secondary model: {MODEL_ID}", file=sys.stderr)
-                    return func(*args, **kwargs)
-                except Exception as e2:
-                    # Determine target OpenAI model based on the ORIGINAL primary model for this function
-                    target_openai_model = "gpt-4o" if primary_model == FLASH_THINKING_MODEL else "gpt-4o-mini"
-                    print(f"Secondary model ({secondary_flash_model}) failed for {func.__name__} ({type(e2).__name__}: {e2}), falling back to OpenAI model: {target_openai_model}", file=sys.stderr)
-                    
-                    # Monkey-patch the generate_content method temporarily
-                    original_generate = client.models.generate_content
+                # Define fallback chains based on primary model type
+                if primary_model == FLASH_THINKING_MODEL:
+                    # For thinking models: thinking -> exp -> 2.5-preview -> 2.5-stable -> gpt-4o
+                    fallback_chain = [
+                        FLASH_THINKING_MODEL,
+                        FLASH_MODEL, 
+                        FLASH_25_PREVIEW,
+                        FLASH_25_STABLE,
+                        "gpt-4o"
+                    ]
+                else:
+                    # For non-thinking models: exp -> thinking -> 2.5-lite -> 2.5-preview -> gpt-4o-mini
+                    fallback_chain = [
+                        FLASH_MODEL,
+                        FLASH_THINKING_MODEL,
+                        FLASH_25_LITE, 
+                        FLASH_25_PREVIEW,
+                        "gpt-4o-mini"
+                    ]
+                
+                # Ensure primary model is first in the chain
+                if primary_model not in fallback_chain:
+                    fallback_chain.insert(0, primary_model)
+                elif fallback_chain[0] != primary_model:
+                    fallback_chain.remove(primary_model)
+                    fallback_chain.insert(0, primary_model)
+                
+                last_exception = None
+                
+                for i, model in enumerate(fallback_chain):
                     try:
-                        # Temporarily use OpenAI client's method
-                        client.models.generate_content = openai_client.generate_content
+                        if model.startswith("gpt-"):
+                            # OpenAI fallback
+                            print(f"Attempting {func.__name__} with OpenAI model: {model} (attempt {i+1}/{len(fallback_chain)})", file=sys.stderr)
+                            
+                            # Monkey-patch the generate_content method temporarily
+                            original_generate = client.models.generate_content
+                            try:
+                                client.models.generate_content = openai_client.generate_content
+                                MODEL_ID = model
+                                return func(*args, **kwargs)
+                            finally:
+                                client.models.generate_content = original_generate
+                        else:
+                            # Gemini model
+                            MODEL_ID = model
+                            print(f"Attempting {func.__name__} with Gemini model: {MODEL_ID} (attempt {i+1}/{len(fallback_chain)})", file=sys.stderr)
+                            return func(*args, **kwargs)
+                            
+                    except Exception as e:
+                        last_exception = e
+                        model_type = "OpenAI" if model.startswith("gpt-") else "Gemini"
+                        print(f"{model_type} model ({model}) failed for {func.__name__} ({type(e).__name__}: {e})", file=sys.stderr)
                         
-                        # Set MODEL_ID to the target OpenAI model name for the retry
-                        MODEL_ID = target_openai_model 
-                        print(f"Retrying {func.__name__} with OpenAI client (passing model hint: {MODEL_ID})", file=sys.stderr)
-                        # Retry the function call. The OpenAIClient will use the MODEL_ID hint.
-                        return func(*args, **kwargs)
-                    except Exception as e3:
-                        # If OpenAI also fails, log and raise the OpenAI error
-                        print(f"OpenAI fallback failed for {func.__name__}: {type(e3).__name__}: {e3}", file=sys.stderr)
-                        raise e3 # Raise the OpenAI error
-                    finally:
-                        # Always restore the original generate_content method
-                        client.models.generate_content = original_generate
-                finally:
-                    # Reset MODEL_ID after secondary flash model/OpenAI attempt
-                    # Important: Reset to primary model *before* restoring global, 
-                    # in case outer finally block needs it (though current logic doesn't).
-                    MODEL_ID = primary_model 
+                        # If this is the last model in the chain, we'll raise the exception after the loop
+                        if i == len(fallback_chain) - 1:
+                            break
+                        else:
+                            print(f"Falling back to next model in chain...", file=sys.stderr)
+                
+                # If we get here, all models failed
+                print(f"All fallback models failed for {func.__name__}. Raising last exception.", file=sys.stderr)
+                if last_exception:
+                    raise last_exception
+                else:
+                    raise Exception(f"All models failed for {func.__name__} with unknown error")
+                    
             finally:
-                # Restore the original global MODEL_ID after all attempts
+                # Always restore the original global MODEL_ID
                 MODEL_ID = original_global_model_id
+                
         return wrapper
     return decorator
 
