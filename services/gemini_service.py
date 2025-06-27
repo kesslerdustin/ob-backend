@@ -457,7 +457,7 @@ def analyze_biome(prompt, options=None):
               "biomeNum": 1-14
             }}
             
-            Use these standard WWF biome categories for biomeName:
+            Use these standard WWF biome categories for biomeName (exactly as listed in biomes.json):
             1: Tropical and subtropical moist broadleaf forests
             2: Tropical and subtropical dry broadleaf forests  
             3: Tropical and subtropical coniferous forests
@@ -1207,7 +1207,7 @@ CRITICAL DATE, TIME AND METRIC SYSTEM FORMATTING: IF YOU CONTEXT INFO CONATINS A
         - depending on the difficulty, the progression and ending should be different. 
         - easy: slow, gradual improvement depending on player actions. easy to win. 
         - normal: slow, gradual improvement depending on player actions. medium to win. 
-        - hard: slow, gradual improvement depending on player actions. hard to win, requires careful actions.
+        - hard: slow, gradual improvement depending on player actions. hard to win, requires careful actions. But allow progress if smart decisions are made.
         - WIN / END possible before the 20th turn.  
         - Game Ends (send json with hasGameEnded: true) if any stat is 0 or a critical event (rescue, death) occurs OR the main goal is achieved and all subgoals are completed..
         - if after 20 turns (0 remaining turns) the game is not ended, the game should end with an ending that sums up the story and final stats (send json with hasGameEnded: true).
@@ -1672,6 +1672,7 @@ def check_image_appropriate(prompt, image_path, options=None):
         structured_prompt = """
         Analyze this image and determine if it's appropriate for public sharing on a nature and outdoor activities platform.
         Consider the following criteria:
+        - No Screencaptures meaning species photos of desktop wallpapers, photo of monitors etc.
         - No explicit adult content
         - No graphic violence or gore
         - No hate symbols or offensive content
