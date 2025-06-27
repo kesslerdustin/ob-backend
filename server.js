@@ -80,6 +80,100 @@ const quizManager = new QuizRequestManager();
 const globalRateLimit = createUserRateLimit(200, 15 * 60 * 1000); // 200 requests per 15 minutes
 app.use(globalRateLimit);
 
+// Create specific rate limiters for different endpoint types
+const expensiveOperationLimit = createUserRateLimit(5, 60 * 1000); // 5 requests per minute for expensive operations
+const premiumEndpointLimit = createUserRateLimit(20, 60 * 1000); // 20 requests per minute for premium endpoints
+const statusEndpointLimit = createUserRateLimit(30, 60 * 1000); // 30 requests per minute for status endpoints
+
+// Input validation middleware
+const validateInput = (req, res, next) => {
+  // Basic input sanitization
+  const blacklistedPatterns = [
+    /<script[^>]*>.*?<\/script>/gi,
+    /javascript:/gi,
+    /on\w+\s*=/gi,
+    /data:text\/html/gi
+  ];
+
+  const checkValue = (value) => {
+    if (typeof value === 'string') {
+      return !blacklistedPatterns.some(pattern => pattern.test(value));
+    }
+    if (typeof value === 'object' && value !== null) {
+      return Object.values(value).every(checkValue);
+    }
+    return true;
+  };
+
+  if (!checkValue(req.body) || !checkValue(req.query) || !checkValue(req.params)) {
+    return res.status(400).json({
+      success: false,
+      error: 'Invalid input detected'
+    });
+  }
+
+  next();
+};
+
+// Enhanced app package verification middleware
+const verifyAppPackage = (req, res, next) => {
+  // Enable verification for production and specific sensitive endpoints
+  const shouldVerify = process.env.NODE_ENV === 'production' || 
+                      req.path.startsWith('/api/analyze') ||
+                      req.path.startsWith('/api/premium');
+
+  if (!shouldVerify) {
+    return next();
+  }
+
+  // Skip verification for certain public endpoints
+  const skipVerification = [
+    '/api/premium/constants',
+    '/api/app-links',
+    '/',
+    '/test-firebase',
+    '/api/queue-status',
+    '/api/analytics/status'
+  ];
+
+  if (skipVerification.some(path => req.path.startsWith(path))) {
+    return next();
+  }
+
+  const appPackage = req.headers['x-app-package'];
+  const appVersion = req.headers['x-app-version'];
+  
+  // Expected package names from app.json
+  const validPackages = (process.env.ALLOWED_APP_PACKAGES?.split(',') || [
+    'com.duselk.theoutdoorbible' // Default package
+  ]).map(pkg => pkg.trim());
+
+  // Log for monitoring
+  console.log('App package verification:', {
+    package: appPackage,
+    version: appVersion,
+    path: req.path,
+    userAgent: req.headers['user-agent']
+  });
+
+  // Require valid app package for sensitive endpoints
+  if (!appPackage || !validPackages.includes(appPackage)) {
+    console.warn('Invalid or missing app package:', {
+      provided: appPackage,
+      expected: validPackages,
+      ip: req.ip,
+      userAgent: req.headers['user-agent']
+    });
+    
+    return res.status(403).json({
+      success: false,
+      error: 'Access denied: Invalid app package'
+    });
+  }
+
+  next();
+};
+
 // CORS configuration (restrict to your app domains)
 const getAllowedOrigins = () => {
   const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -170,64 +264,6 @@ app.use((req, res, next) => {
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     next();
 });
-
-// App package verification middleware (for additional security)
-const verifyAppPackage = (req, res, next) => {
-  // TEMPORARILY DISABLED - Skip verification until app headers are properly configured
-  // TODO: Re-enable after configuring X-App-Package headers in Expo app
-  console.log('App package verification temporarily disabled');
-  return next();
-  
-  // Skip verification for development environment
-  if (process.env.NODE_ENV !== 'production') {
-    return next();
-  }
-
-  // Skip verification for certain endpoints that don't require it
-  const skipVerification = [
-    '/api/premium/constants',
-    '/api/app-links',
-    '/',
-    '/test-firebase'
-  ];
-
-  if (skipVerification.some(path => req.path.startsWith(path))) {
-    return next();
-  }
-
-  const appPackage = req.headers['x-app-package'];
-  const appVersion = req.headers['x-app-version'];
-  
-  // Expected package names from app.json
-  const validPackages = (process.env.ALLOWED_APP_PACKAGES?.split(',') || [
-    'com.duselk.theoutdoorbible' // Default package
-  ]).map(pkg => pkg.trim());
-
-  // Log for monitoring
-  console.log('App package verification:', {
-    package: appPackage,
-    version: appVersion,
-    path: req.path,
-    userAgent: req.headers['user-agent']
-  });
-
-  // In production, require valid app package
-  if (!appPackage || !validPackages.includes(appPackage)) {
-    console.warn('Invalid or missing app package:', {
-      provided: appPackage,
-      expected: validPackages,
-      ip: req.ip,
-      userAgent: req.headers['user-agent']
-    });
-    
-    return res.status(403).json({
-      success: false,
-      error: 'Access denied: Invalid app package'
-    });
-  }
-
-  next();
-};
 
 // Apply app package verification to all routes except public ones
 app.use(verifyAppPackage);
@@ -371,13 +407,16 @@ try {
     }
   });
 
-  // New endpoint for AI analysis
-  app.post('/api/analyze', express.json(), async (req, res) => {
+  // New endpoint for AI analysis - NOW REQUIRES AUTHENTICATION
+  app.post('/api/analyze', verifyFirebaseToken, expensiveOperationLimit, validateInput, express.json(), async (req, res) => {
     try {
       const { prompt, context } = req.body;
 
-      if (!prompt) {
-        return res.status(400).json({ error: 'Prompt is required' });
+      if (!prompt || typeof prompt !== 'string' || prompt.length > 2000) {
+        return res.status(400).json({ 
+          success: false,
+          error: 'Prompt is required and must be a string under 2000 characters' 
+        });
       }
 
       const analysis = await aiService.generateContent(prompt, context);
@@ -397,13 +436,16 @@ try {
     }
   });
 
-  // Optional: Endpoint for streaming responses
-  app.post('/api/analyze/stream', express.json(), async (req, res) => {
+  // Optional: Endpoint for streaming responses - NOW REQUIRES AUTHENTICATION
+  app.post('/api/analyze/stream', verifyFirebaseToken, expensiveOperationLimit, validateInput, express.json(), async (req, res) => {
     try {
       const { prompt, context } = req.body;
 
-      if (!prompt) {
-        return res.status(400).json({ error: 'Prompt is required' });
+      if (!prompt || typeof prompt !== 'string' || prompt.length > 2000) {
+        return res.status(400).json({ 
+          success: false,
+          error: 'Prompt is required and must be a string under 2000 characters' 
+        });
       }
 
       // Set up SSE headers
@@ -476,7 +518,7 @@ try {
   });
 
   // Add this endpoint to monitor queue status
-  app.get('/api/queue-status', (req, res) => {
+  app.get('/api/queue-status', statusEndpointLimit, (req, res) => {
     res.json({
         queueLength: rateLimiter.queue.length,
         isProcessing: rateLimiter.isProcessing,
@@ -1191,9 +1233,17 @@ try {
   // These endpoints provide server-side verification for RevenueCat purchases
 
   // Endpoint to verify premium status
-  app.get('/api/premium/verify/:userId', async (req, res) => {
+  app.get('/api/premium/verify/:userId', premiumEndpointLimit, validateInput, async (req, res) => {
     try {
       const { userId } = req.params;
+      
+      // Basic user ID validation to prevent enumeration
+      if (!userId || typeof userId !== 'string' || userId.length < 3 || userId.length > 50) {
+        return res.status(400).json({
+          success: false,
+          error: 'Invalid user ID format'
+        });
+      }
       
       if (!userId) {
         return res.status(400).json({ success: false, error: 'User ID is required' });
@@ -1308,7 +1358,7 @@ try {
   });
 
   // Endpoint to verify specific transactions
-  app.post('/api/premium/verify-transaction', async (req, res) => {
+  app.post('/api/premium/verify-transaction', premiumEndpointLimit, validateInput, async (req, res) => {
     try {
       const { userId, productId, verificationMode } = req.body;
       
@@ -1369,7 +1419,7 @@ try {
   });
 
   // Raw access to customer info (for debugging, consider removing in production)
-  app.get('/api/premium/customer-info/:userId', async (req, res) => {
+  app.get('/api/premium/customer-info/:userId', premiumEndpointLimit, validateInput, async (req, res) => {
     try {
       // Check if requester has admin privileges (implement proper auth check)
       const isAdmin = req.headers['x-admin-key'] === process.env.ADMIN_API_KEY;
@@ -1481,7 +1531,7 @@ try {
     }
   });
 
-  app.get('/api/premium/limits/user/:userId', async (req, res) => {
+  app.get('/api/premium/limits/user/:userId', premiumEndpointLimit, validateInput, async (req, res) => {
     try {
       const { userId } = req.params;
       
@@ -2953,7 +3003,7 @@ try {
 startBatchAnalytics();
 
 // Manual flush endpoint for testing
-app.post('/api/analytics/flush', async (req, res) => {
+  app.post('/api/analytics/flush', statusEndpointLimit, validateInput, async (req, res) => {
   try {
     console.log('🔄 Manual analytics flush requested');
     if (analyticsQueue.length > 0) {
@@ -2981,7 +3031,7 @@ app.post('/api/analytics/flush', async (req, res) => {
 });
 
 // Analytics queue status endpoint
-app.get('/api/analytics/status', (req, res) => {
+  app.get('/api/analytics/status', statusEndpointLimit, (req, res) => {
   res.json({
     queueSize: analyticsQueue.length,
     processedEventsCache: processedEvents.size,
