@@ -6,8 +6,8 @@
 // Centralized constants for all premium features
 const CONSTANTS = {
   // Credit-related constants
-  INITIAL_CREDITS: 50,              // Credits given when user first signs up
-  FREE_WEEKLY_CREDITS: 50,           // Keep for backward compatibility
+  INITIAL_CREDITS: 30,              // Credits given when user first signs up
+  FREE_WEEKLY_CREDITS: 25,           // Keep for backward compatibility
   FREE_DAILY_CREDITS: 10,            // Daily credits for free users (was previously 50 weekly)
   PREMIUM_DAILY_CREDITS: 100,        // Daily credits minimum for premium users
   ADVENTURE_CREDIT_THRESHOLD: 20,    // Credit threshold for adventure game
