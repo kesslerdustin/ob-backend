@@ -19,13 +19,12 @@ if (!admin.apps.length) {
       privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
       clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
     }),
-    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
     databaseURL: 'https://outdoor-bible.firebaseio.com'
   });
 }
 
 const storage = admin.storage();
-const bucket = storage.bucket();
+const bucket = storage.bucket(process.env.FIREBASE_STORAGE_BUCKET || 'outdoor-bible.appspot.com');
 
 // Supported units for stats
 const SUPPORTED_UNITS = [
