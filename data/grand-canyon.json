@@ -2,6 +2,7 @@
   "id": "grand-canyon",
   "active": true,
   "searchRadius": 50,
+  "priority": 1,
   "center": {
     "lat": 36.1069,
     "lng": -112.1129
@@ -15,6 +16,12 @@
   "customStyle": {
     "color": "#B7410E",
     "icon": "mountain"
+  },
+  "heroImage": {
+    "storageRef": "partner-zones/grand-canyon/hero/grand-canyon-overview.jpg",
+    "caption": "Panoramic view of Grand Canyon National Park from the South Rim",
+    "alt": "Grand Canyon panoramic landscape view",
+    "priority": "high"
   },
   "hasTour": true,
   "hasQuiz": true,
@@ -38,6 +45,26 @@
             "de": {
               "label": "Alter",
               "description": "Zeit seit der Entstehung des Canyons"
+            },
+            "es": {
+              "label": "Edad",
+              "description": "Tiempo desde que comenzó la formación del cañón"
+            },
+            "fr": {
+              "label": "Âge",
+              "description": "Temps écoulé depuis le début de la formation du canyon"
+            },
+            "it": {
+              "label": "Età",
+              "description": "Tempo trascorso dall'inizio della formazione del canyon"
+            },
+            "pt": {
+              "label": "Idade",
+              "description": "Tempo decorrido desde o início da formação do canyon"
+            },
+            "ja": {
+              "label": "年齢",
+              "description": "キャニオンの形成開始からの経過時間"
             }
           }
         },
@@ -56,6 +83,26 @@
             "de": {
               "label": "Tiefe",
               "description": "Maximale Tiefe des Canyons"
+            },
+            "es": {
+              "label": "Profundidad",
+              "description": "Profundidad máxima del cañón"
+            },
+            "fr": {
+              "label": "Profondeur",
+              "description": "Profondeur maximale du canyon"
+            },
+            "it": {
+              "label": "Profondità",
+              "description": "Profondità massima del canyon"
+            },
+            "pt": {
+              "label": "Profundidade",
+              "description": "Profundidade máxima do canyon"
+            },
+            "ja": {
+              "label": "深度",
+              "description": "キャニオンの最大深度"
             }
           }
         },
@@ -74,6 +121,26 @@
             "de": {
               "label": "Länge",
               "description": "Gesamtlänge des Canyons"
+            },
+            "es": {
+              "label": "Longitud",
+              "description": "Longitud total del cañón"
+            },
+            "fr": {
+              "label": "Longueur",
+              "description": "Longueur totale du canyon"
+            },
+            "it": {
+              "label": "Lunghezza",
+              "description": "Lunghezza totale del canyon"
+            },
+            "pt": {
+              "label": "Comprimento",
+              "description": "Comprimento total do canyon"
+            },
+            "ja": {
+              "label": "長さ",
+              "description": "キャニオンの全長"
             }
           }
         },
@@ -92,6 +159,26 @@
             "de": {
               "label": "Breite",
               "description": "Maximale Breite des Canyons"
+            },
+            "es": {
+              "label": "Anchura",
+              "description": "Anchura máxima del cañón"
+            },
+            "fr": {
+              "label": "Largeur",
+              "description": "Largeur maximale du canyon"
+            },
+            "it": {
+              "label": "Larghezza",
+              "description": "Larghezza massima del canyon"
+            },
+            "pt": {
+              "label": "Largura",
+              "description": "Largura máxima do canyon"
+            },
+            "ja": {
+              "label": "幅",
+              "description": "キャニオンの最大幅"
             }
           }
         },
@@ -108,6 +195,26 @@
             "de": {
               "label": "Jährliche Besucher",
               "description": "Durchschnittliche Besucherzahl pro Jahr"
+            },
+            "es": {
+              "label": "Visitantes Anuales",
+              "description": "Número promedio de visitantes por año"
+            },
+            "fr": {
+              "label": "Visiteurs Annuels",
+              "description": "Nombre moyen de visiteurs par an"
+            },
+            "it": {
+              "label": "Visitatori Annuali",
+              "description": "Numero medio di visitatori all'anno"
+            },
+            "pt": {
+              "label": "Visitantes Anuais",
+              "description": "Número médio de visitantes por ano"
+            },
+            "ja": {
+              "label": "年間訪問者数",
+              "description": "年間平均訪問者数"
             }
           }
         },
@@ -126,6 +233,26 @@
             "de": {
               "label": "Randhöhe",
               "description": "Durchschnittliche Höhe am South Rim"
+            },
+            "es": {
+              "label": "Elevación del Borde",
+              "description": "Elevación promedio en el Borde Sur"
+            },
+            "fr": {
+              "label": "Élévation du Bord",
+              "description": "Élévation moyenne au Bord Sud"
+            },
+            "it": {
+              "label": "Elevazione del Bordo",
+              "description": "Elevazione media al South Rim"
+            },
+            "pt": {
+              "label": "Elevação da Borda",
+              "description": "Elevação média na Borda Sul"
+            },
+            "ja": {
+              "label": "リム標高",
+              "description": "サウスリムの平均標高"
             }
           }
         }
@@ -250,8 +377,119 @@
       "name": "Grand Canyon Nationalpark",
       "region": "Arizona, USA",
       "description": "Einer der berühmtesten Nationalparks der Welt, bekannt für seine geschichteten roten Gesteinsformationen, die Millionen Jahre geologischer Geschichte offenbaren.",
-      "historicalInfo": "Vom Colorado River über Millionen von Jahren geformt, ist der Grand Canyon seit Jahrhunderten die Heimat amerikanischer Ureinwohner.",
-      "interestingFacts": "Der Grand Canyon ist 446 km lang, bis zu 29 km breit und über 1,6 km tief. Er empfängt jährlich über 6 Millionen Besucher.",
+      "historicalInfo": {
+        "text": "Vom Colorado River über Millionen von Jahren geformt, ist der Grand Canyon seit Jahrhunderten die Heimat amerikanischer Ureinwohner.",
+        "icon": "history_edu"
+      },
+      "interestingFacts": [
+        {
+          "id": "geology",
+          "icon": "landscape",
+          "text": "Die Gesteinsschichten des Grand Canyon enthüllen 2 Milliarden Jahre der geologischen Geschichte der Erde."
+        },
+        {
+          "id": "ecosystem", 
+          "icon": "eco",
+          "text": "Der Canyon beherbergt fünf der sieben Lebenszonen Nordamerikas und drei der vier Wüstentypen."
+        },
+        {
+          "id": "river",
+          "icon": "water", 
+          "text": "Der Colorado River fließt mit einer durchschnittlichen Geschwindigkeit von 12.000 Kubikfuß pro Sekunde durch den Canyon."
+        },
+        {
+          "id": "native_history",
+          "icon": "account_balance",
+          "text": "Amerikanische Ureinwohner bewohnen die Grand Canyon Region seit über 4.000 Jahren kontinuierlich."
+        },
+        {
+          "id": "climate",
+          "icon": "thermostat", 
+          "text": "Temperaturunterschiede zwischen Rand und Canyonboden können 25°C (45°F) überschreiten."
+        }
+      ],
+      "stats": [
+        {
+          "id": "age",
+          "icon": "history",
+          "value": "70",
+          "unit": "million_years",
+          "translations": {
+            "de": {
+              "label": "Alter",
+              "description": "Zeit seit der Entstehung des Canyons"
+            }
+          }
+        },
+        {
+          "id": "depth", 
+          "icon": "height",
+          "value": "1.6",
+          "unit": "km",
+          "secondaryValue": "1",
+          "secondaryUnit": "miles",
+          "translations": {
+            "de": {
+              "label": "Tiefe",
+              "description": "Maximale Tiefe des Canyons"
+            }
+          }
+        },
+        {
+          "id": "length",
+          "icon": "straighten", 
+          "value": "446",
+          "unit": "km",
+          "secondaryValue": "277",
+          "secondaryUnit": "miles",
+          "translations": {
+            "de": {
+              "label": "Länge",
+              "description": "Gesamtlänge des Canyons"
+            }
+          }
+        },
+        {
+          "id": "width",
+          "icon": "expand",
+          "value": "29", 
+          "unit": "km",
+          "secondaryValue": "18",
+          "secondaryUnit": "miles",
+          "translations": {
+            "de": {
+              "label": "Breite",
+              "description": "Maximale Breite des Canyons"
+            }
+          }
+        },
+        {
+          "id": "visitors",
+          "icon": "groups",
+          "value": "6.38",
+          "unit": "million",
+          "translations": {
+            "de": {
+              "label": "Jährliche Besucher",
+              "description": "Durchschnittliche Besucherzahl pro Jahr"
+            }
+          }
+        },
+        {
+          "id": "elevation",
+          "icon": "terrain",
+          "value": "2200",
+          "unit": "m",
+          "secondaryValue": "7200", 
+          "secondaryUnit": "ft",
+          "translations": {
+            "de": {
+              "label": "Randhöhe",
+              "description": "Durchschnittliche Höhe am South Rim"
+            }
+          }
+        }
+      ],
       "contact": {
         "website": "https://www.nps.gov/grca/",
         "phone": "+1-928-638-7888",
@@ -285,8 +523,119 @@
       "name": "Parque Nacional del Gran Cañón",
       "region": "Arizona, EE.UU.",
       "description": "Uno de los parques nacionales más famosos del mundo, conocido por sus bandas estratificadas de roca roja que revelan millones de años de historia geológica.",
-      "historicalInfo": "Tallado por el Río Colorado durante millones de años, el Gran Cañón ha sido hogar de tribus nativas americanas durante siglos.",
-      "interestingFacts": "El Gran Cañón tiene 446 km de largo, hasta 29 km de ancho y más de 1,6 km de profundidad. Recibe más de 6 millones de visitantes al año.",
+      "historicalInfo": {
+        "text": "Tallado por el Río Colorado durante millones de años, el Gran Cañón ha sido hogar de tribus nativas americanas durante siglos.",
+        "icon": "history_edu"
+      },
+      "interestingFacts": [
+        {
+          "id": "geology",
+          "icon": "landscape",
+          "text": "Las capas de roca del Gran Cañón revelan 2 mil millones de años de historia geológica de la Tierra."
+        },
+        {
+          "id": "ecosystem",
+          "icon": "eco", 
+          "text": "El cañón contiene cinco de las siete zonas de vida de América del Norte y tres de los cuatro tipos de desierto."
+        },
+        {
+          "id": "river",
+          "icon": "water",
+          "text": "El Río Colorado fluye a través del cañón a una velocidad promedio de 12,000 pies cúbicos por segundo."
+        },
+        {
+          "id": "native_history",
+          "icon": "account_balance",
+          "text": "Los nativos americanos han habitado continuamente la región del Gran Cañón durante más de 4,000 años."
+        },
+        {
+          "id": "climate",
+          "icon": "thermostat",
+          "text": "Las variaciones de temperatura entre el borde y el fondo del cañón pueden exceder los 25°C (45°F)."
+        }
+      ],
+      "stats": [
+        {
+          "id": "age",
+          "icon": "history",
+          "value": "70",
+          "unit": "million_years",
+          "translations": {
+            "es": {
+              "label": "Edad",
+              "description": "Tiempo desde que comenzó la formación del cañón"
+            }
+          }
+        },
+        {
+          "id": "depth", 
+          "icon": "height",
+          "value": "1.6",
+          "unit": "km",
+          "secondaryValue": "1",
+          "secondaryUnit": "miles",
+          "translations": {
+            "es": {
+              "label": "Profundidad",
+              "description": "Profundidad máxima del cañón"
+            }
+          }
+        },
+        {
+          "id": "length",
+          "icon": "straighten", 
+          "value": "446",
+          "unit": "km",
+          "secondaryValue": "277",
+          "secondaryUnit": "miles",
+          "translations": {
+            "es": {
+              "label": "Longitud",
+              "description": "Longitud total del cañón"
+            }
+          }
+        },
+        {
+          "id": "width",
+          "icon": "expand",
+          "value": "29", 
+          "unit": "km",
+          "secondaryValue": "18",
+          "secondaryUnit": "miles",
+          "translations": {
+            "es": {
+              "label": "Anchura",
+              "description": "Anchura máxima del cañón"
+            }
+          }
+        },
+        {
+          "id": "visitors",
+          "icon": "groups",
+          "value": "6.38",
+          "unit": "million",
+          "translations": {
+            "es": {
+              "label": "Visitantes Anuales",
+              "description": "Número promedio de visitantes por año"
+            }
+          }
+        },
+        {
+          "id": "elevation",
+          "icon": "terrain",
+          "value": "2200",
+          "unit": "m",
+          "secondaryValue": "7200", 
+          "secondaryUnit": "ft",
+          "translations": {
+            "es": {
+              "label": "Elevación del Borde",
+              "description": "Elevación promedio en el Borde Sur"
+            }
+          }
+        }
+      ],
       "contact": {
         "website": "https://www.nps.gov/grca/",
         "phone": "+1-928-638-7888",
@@ -320,8 +669,119 @@
       "name": "Parc National du Grand Canyon",
       "region": "Arizona, États-Unis",
       "description": "L'un des parcs nationaux les plus célèbres au monde, connu pour ses bandes de roche rouge révélant des millions d'années d'histoire géologique.",
-      "historicalInfo": "Sculpté par le fleuve Colorado pendant des millions d'années, le Grand Canyon abrite des tribus amérindiennes depuis des siècles.",
-      "interestingFacts": "Le Grand Canyon fait 446 km de long, jusqu'à 29 km de large et plus de 1,6 km de profondeur. Il reçoit plus de 6 millions de visiteurs par an.",
+      "historicalInfo": {
+        "text": "Sculpté par le fleuve Colorado pendant des millions d'années, le Grand Canyon abrite des tribus amérindiennes depuis des siècles.",
+        "icon": "history_edu"
+      },
+      "interestingFacts": [
+        {
+          "id": "geology",
+          "icon": "landscape",
+          "text": "Les couches rocheuses du Grand Canyon révèlent 2 milliards d'années d'histoire géologique de la Terre."
+        },
+        {
+          "id": "ecosystem",
+          "icon": "eco",
+          "text": "Le canyon contient cinq des sept zones de vie de l'Amérique du Nord et trois des quatre types de désert."
+        },
+        {
+          "id": "river",
+          "icon": "water",
+          "text": "Le fleuve Colorado coule à travers le canyon à un débit moyen de 12 000 pieds cubes par seconde."
+        },
+        {
+          "id": "native_history",
+          "icon": "account_balance",
+          "text": "Les Amérindiens habitent continuellement la région du Grand Canyon depuis plus de 4 000 ans."
+        },
+        {
+          "id": "climate",
+          "icon": "thermostat",
+          "text": "Les variations de température entre le bord et le fond du canyon peuvent dépasser 25°C (45°F)."
+        }
+      ],
+      "stats": [
+        {
+          "id": "age",
+          "icon": "history",
+          "value": "70",
+          "unit": "million_years",
+          "translations": {
+            "fr": {
+              "label": "Âge",
+              "description": "Temps écoulé depuis le début de la formation du canyon"
+            }
+          }
+        },
+        {
+          "id": "depth", 
+          "icon": "height",
+          "value": "1.6",
+          "unit": "km",
+          "secondaryValue": "1",
+          "secondaryUnit": "miles",
+          "translations": {
+            "fr": {
+              "label": "Profondeur",
+              "description": "Profondeur maximale du canyon"
+            }
+          }
+        },
+        {
+          "id": "length",
+          "icon": "straighten", 
+          "value": "446",
+          "unit": "km",
+          "secondaryValue": "277",
+          "secondaryUnit": "miles",
+          "translations": {
+            "fr": {
+              "label": "Longueur",
+              "description": "Longueur totale du canyon"
+            }
+          }
+        },
+        {
+          "id": "width",
+          "icon": "expand",
+          "value": "29", 
+          "unit": "km",
+          "secondaryValue": "18",
+          "secondaryUnit": "miles",
+          "translations": {
+            "fr": {
+              "label": "Largeur",
+              "description": "Largeur maximale du canyon"
+            }
+          }
+        },
+        {
+          "id": "visitors",
+          "icon": "groups",
+          "value": "6.38",
+          "unit": "million",
+          "translations": {
+            "fr": {
+              "label": "Visiteurs Annuels",
+              "description": "Nombre moyen de visiteurs par an"
+            }
+          }
+        },
+        {
+          "id": "elevation",
+          "icon": "terrain",
+          "value": "2200",
+          "unit": "m",
+          "secondaryValue": "7200", 
+          "secondaryUnit": "ft",
+          "translations": {
+            "fr": {
+              "label": "Élévation du Bord",
+              "description": "Élévation moyenne au Bord Sud"
+            }
+          }
+        }
+      ],
       "contact": {
         "website": "https://www.nps.gov/grca/",
         "phone": "+1-928-638-7888",
@@ -355,8 +815,119 @@
       "name": "Parco Nazionale del Grand Canyon",
       "region": "Arizona, Stati Uniti",
       "description": "Uno dei parchi nazionali più famosi al mondo, noto per i suoi strati di roccia rossa che rivelano milioni di anni di storia geologica.",
-      "historicalInfo": "Scolpito dal fiume Colorado nel corso di milioni di anni, il Grand Canyon è stato la casa delle tribù dei nativi americani per secoli.",
-      "interestingFacts": "Il Grand Canyon è lungo 446 km, largo fino a 29 km e profondo più di 1,6 km. Riceve oltre 6 milioni di visitatori all'anno.",
+      "historicalInfo": {
+        "text": "Scolpito dal fiume Colorado nel corso di milioni di anni, il Grand Canyon è stato la casa delle tribù dei nativi americani per secoli.",
+        "icon": "history_edu"
+      },
+      "interestingFacts": [
+        {
+          "id": "geology",
+          "icon": "landscape",
+          "text": "Gli strati rocciosi del Grand Canyon rivelano 2 miliardi di anni di storia geologica della Terra."
+        },
+        {
+          "id": "ecosystem",
+          "icon": "eco",
+          "text": "Il canyon contiene cinque delle sette zone di vita del Nord America e tre dei quattro tipi di deserto."
+        },
+        {
+          "id": "river",
+          "icon": "water",
+          "text": "Il fiume Colorado scorre attraverso il canyon a una velocità media di 12.000 piedi cubi al secondo."
+        },
+        {
+          "id": "native_history",
+          "icon": "account_balance",
+          "text": "I nativi americani hanno abitato continuamente la regione del Grand Canyon per oltre 4.000 anni."
+        },
+        {
+          "id": "climate",
+          "icon": "thermostat",
+          "text": "Le variazioni di temperatura tra il bordo e il fondo del canyon possono superare i 25°C (45°F)."
+        }
+      ],
+      "stats": [
+        {
+          "id": "age",
+          "icon": "history",
+          "value": "70",
+          "unit": "million_years",
+          "translations": {
+            "it": {
+              "label": "Età",
+              "description": "Tempo trascorso dall'inizio della formazione del canyon"
+            }
+          }
+        },
+        {
+          "id": "depth", 
+          "icon": "height",
+          "value": "1.6",
+          "unit": "km",
+          "secondaryValue": "1",
+          "secondaryUnit": "miles",
+          "translations": {
+            "it": {
+              "label": "Profondità",
+              "description": "Profondità massima del canyon"
+            }
+          }
+        },
+        {
+          "id": "length",
+          "icon": "straighten", 
+          "value": "446",
+          "unit": "km",
+          "secondaryValue": "277",
+          "secondaryUnit": "miles",
+          "translations": {
+            "it": {
+              "label": "Lunghezza",
+              "description": "Lunghezza totale del canyon"
+            }
+          }
+        },
+        {
+          "id": "width",
+          "icon": "expand",
+          "value": "29", 
+          "unit": "km",
+          "secondaryValue": "18",
+          "secondaryUnit": "miles",
+          "translations": {
+            "it": {
+              "label": "Larghezza",
+              "description": "Larghezza massima del canyon"
+            }
+          }
+        },
+        {
+          "id": "visitors",
+          "icon": "groups",
+          "value": "6.38",
+          "unit": "million",
+          "translations": {
+            "it": {
+              "label": "Visitatori Annuali",
+              "description": "Numero medio di visitatori all'anno"
+            }
+          }
+        },
+        {
+          "id": "elevation",
+          "icon": "terrain",
+          "value": "2200",
+          "unit": "m",
+          "secondaryValue": "7200", 
+          "secondaryUnit": "ft",
+          "translations": {
+            "it": {
+              "label": "Elevazione del Bordo",
+              "description": "Elevazione media al South Rim"
+            }
+          }
+        }
+      ],
       "contact": {
         "website": "https://www.nps.gov/grca/",
         "phone": "+1-928-638-7888",
@@ -390,8 +961,119 @@
       "name": "Parque Nacional do Grand Canyon",
       "region": "Arizona, EUA",
       "description": "Um dos parques nacionais mais famosos do mundo, conhecido por suas camadas de rocha vermelha que revelam milhões de anos de história geológica.",
-      "historicalInfo": "Esculpido pelo Rio Colorado ao longo de milhões de anos, o Grand Canyon tem sido lar de tribos nativas americanas por séculos.",
-      "interestingFacts": "O Grand Canyon tem 446 km de comprimento, até 29 km de largura e mais de 1,6 km de profundidade. Recebe mais de 6 milhões de visitantes anualmente.",
+      "historicalInfo": {
+        "text": "Esculpido pelo Rio Colorado ao longo de milhões de anos, o Grand Canyon tem sido lar de tribos nativas americanas por séculos.",
+        "icon": "history_edu"
+      },
+      "interestingFacts": [
+        {
+          "id": "geology",
+          "icon": "landscape",
+          "text": "As camadas rochosas do Grand Canyon revelam 2 bilhões de anos de história geológica da Terra."
+        },
+        {
+          "id": "ecosystem",
+          "icon": "eco",
+          "text": "O canyon contém cinco das sete zonas de vida da América do Norte e três dos quatro tipos de deserto."
+        },
+        {
+          "id": "river",
+          "icon": "water",
+          "text": "O Rio Colorado flui através do canyon a uma velocidade média de 12.000 pés cúbicos por segundo."
+        },
+        {
+          "id": "native_history",
+          "icon": "account_balance",
+          "text": "Os nativos americanos habitaram continuamente a região do Grand Canyon por mais de 4.000 anos."
+        },
+        {
+          "id": "climate",
+          "icon": "thermostat",
+          "text": "As variações de temperatura entre a borda e o fundo do canyon podem exceder 25°C (45°F)."
+        }
+      ],
+      "stats": [
+        {
+          "id": "age",
+          "icon": "history",
+          "value": "70",
+          "unit": "million_years",
+          "translations": {
+            "pt": {
+              "label": "Idade",
+              "description": "Tempo decorrido desde o início da formação do canyon"
+            }
+          }
+        },
+        {
+          "id": "depth", 
+          "icon": "height",
+          "value": "1.6",
+          "unit": "km",
+          "secondaryValue": "1",
+          "secondaryUnit": "miles",
+          "translations": {
+            "pt": {
+              "label": "Profundidade",
+              "description": "Profundidade máxima do canyon"
+            }
+          }
+        },
+        {
+          "id": "length",
+          "icon": "straighten", 
+          "value": "446",
+          "unit": "km",
+          "secondaryValue": "277",
+          "secondaryUnit": "miles",
+          "translations": {
+            "pt": {
+              "label": "Comprimento",
+              "description": "Comprimento total do canyon"
+            }
+          }
+        },
+        {
+          "id": "width",
+          "icon": "expand",
+          "value": "29", 
+          "unit": "km",
+          "secondaryValue": "18",
+          "secondaryUnit": "miles",
+          "translations": {
+            "pt": {
+              "label": "Largura",
+              "description": "Largura máxima do canyon"
+            }
+          }
+        },
+        {
+          "id": "visitors",
+          "icon": "groups",
+          "value": "6.38",
+          "unit": "million",
+          "translations": {
+            "pt": {
+              "label": "Visitantes Anuais",
+              "description": "Número médio de visitantes por ano"
+            }
+          }
+        },
+        {
+          "id": "elevation",
+          "icon": "terrain",
+          "value": "2200",
+          "unit": "m",
+          "secondaryValue": "7200", 
+          "secondaryUnit": "ft",
+          "translations": {
+            "pt": {
+              "label": "Elevação da Borda",
+              "description": "Elevação média na Borda Sul"
+            }
+          }
+        }
+      ],
       "contact": {
         "website": "https://www.nps.gov/grca/",
         "phone": "+1-928-638-7888",
@@ -425,8 +1107,119 @@
       "name": "グランドキャニオン国立公園",
       "region": "アリゾナ州、アメリカ合衆国",
       "description": "世界で最も有名な国立公園の1つで、何百万年もの地質学的歴史を物語る層状の赤い岩層で知られています。",
-      "historicalInfo": "コロラド川によって何百万年もかけて形成され、グランドキャニオンは何世紀にもわたってネイティブアメリカンの部族の故郷となってきました。",
-      "interestingFacts": "グランドキャニオンは長さ446km、幅最大29km、深さ1.6km以上です。年間600万人以上の観光客が訪れます。",
+      "historicalInfo": {
+        "text": "コロラド川によって何百万年もかけて形成され、グランドキャニオンは何世紀にもわたってネイティブアメリカンの部族の故郷となってきました。",
+        "icon": "history_edu"
+      },
+      "interestingFacts": [
+        {
+          "id": "geology",
+          "icon": "landscape",
+          "text": "グランドキャニオンの岩層は、20億年の地球の地質学的歴史を物語っています。"
+        },
+        {
+          "id": "ecosystem",
+          "icon": "eco",
+          "text": "峡谷には北アメリカの7つの生命圏のうち5つと、4つの砂漠タイプのうち3つが含まれています。"
+        },
+        {
+          "id": "river",
+          "icon": "water",
+          "text": "コロラド川は毎秒平均12,000立方フィートの流量で峡谷を流れています。"
+        },
+        {
+          "id": "native_history",
+          "icon": "account_balance",
+          "text": "ネイティブアメリカンは4,000年以上にわたってグランドキャニオン地域に継続的に住み続けています。"
+        },
+        {
+          "id": "climate",
+          "icon": "thermostat",
+          "text": "峡谷の縁と底部の温度差は25°C（45°F）を超えることがあります。"
+        }
+      ],
+      "stats": [
+        {
+          "id": "age",
+          "icon": "history",
+          "value": "70",
+          "unit": "million_years",
+          "translations": {
+            "ja": {
+              "label": "年齢",
+              "description": "キャニオンの形成開始からの経過時間"
+            }
+          }
+        },
+        {
+          "id": "depth", 
+          "icon": "height",
+          "value": "1.6",
+          "unit": "km",
+          "secondaryValue": "1",
+          "secondaryUnit": "miles",
+          "translations": {
+            "ja": {
+              "label": "深度",
+              "description": "キャニオンの最大深度"
+            }
+          }
+        },
+        {
+          "id": "length",
+          "icon": "straighten", 
+          "value": "446",
+          "unit": "km",
+          "secondaryValue": "277",
+          "secondaryUnit": "miles",
+          "translations": {
+            "ja": {
+              "label": "長さ",
+              "description": "キャニオンの全長"
+            }
+          }
+        },
+        {
+          "id": "width",
+          "icon": "expand",
+          "value": "29", 
+          "unit": "km",
+          "secondaryValue": "18",
+          "secondaryUnit": "miles",
+          "translations": {
+            "ja": {
+              "label": "幅",
+              "description": "キャニオンの最大幅"
+            }
+          }
+        },
+        {
+          "id": "visitors",
+          "icon": "groups",
+          "value": "6.38",
+          "unit": "million",
+          "translations": {
+            "ja": {
+              "label": "年間訪問者数",
+              "description": "年間平均訪問者数"
+            }
+          }
+        },
+        {
+          "id": "elevation",
+          "icon": "terrain",
+          "value": "2200",
+          "unit": "m",
+          "secondaryValue": "7200", 
+          "secondaryUnit": "ft",
+          "translations": {
+            "ja": {
+              "label": "リム標高",
+              "description": "サウスリムの平均標高"
+            }
+          }
+        }
+      ],
       "contact": {
         "website": "https://www.nps.gov/grca/",
         "phone": "+1-928-638-7888",
@@ -482,7 +1275,12 @@
             "type": "main",
             "translations": {
               "en": { "caption": "Historic exterior of Bright Angel Lodge" },
-              "de": { "caption": "Historische Außenansicht der Bright Angel Lodge" }
+              "de": { "caption": "Historische Außenansicht der Bright Angel Lodge" },
+              "es": { "caption": "Exterior histórico de Bright Angel Lodge" },
+              "fr": { "caption": "Extérieur historique de Bright Angel Lodge" },
+              "it": { "caption": "Esterno storico di Bright Angel Lodge" },
+              "pt": { "caption": "Exterior histórico da Bright Angel Lodge" },
+              "ja": { "caption": "ブライトエンジェルロッジの歴史的な外観" }
             }
           },
           {
@@ -491,7 +1289,12 @@
             "type": "interior",
             "translations": {
               "en": { "caption": "Lodge's rustic restaurant" },
-              "de": { "caption": "Rustikales Restaurant der Lodge" }
+              "de": { "caption": "Rustikales Restaurant der Lodge" },
+              "es": { "caption": "Restaurante rústico del lodge" },
+              "fr": { "caption": "Restaurant rustique du lodge" },
+              "it": { "caption": "Ristorante rustico del lodge" },
+              "pt": { "caption": "Restaurante rústico da pousada" },
+              "ja": { "caption": "ロッジの素朴なレストラン" }
             }
           }
         ]

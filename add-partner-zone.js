@@ -65,9 +65,10 @@ const SUPPORTED_ICONS = [
 /**
  * Validates a stat object
  * @param {Object} stat The stat object to validate
+ * @param {Array<string>} supportedLanguages List of supported languages to validate
  * @returns {string|null} Error message if invalid, null if valid
  */
-function validateStat(stat) {
+function validateStat(stat, supportedLanguages = ['en']) {
   if (!stat.id) return 'Stat missing ID';
   if (!stat.icon) return `Stat ${stat.id} missing icon`;
   if (!SUPPORTED_ICONS.includes(stat.icon)) return `Stat ${stat.id} has unsupported icon: ${stat.icon}`;
@@ -77,8 +78,61 @@ function validateStat(stat) {
   if (stat.secondaryUnit && !SUPPORTED_UNITS.includes(stat.secondaryUnit)) {
     return `Stat ${stat.id} has unsupported secondary unit: ${stat.secondaryUnit}`;
   }
-  if (!stat.translations?.en?.label) return `Stat ${stat.id} missing English label`;
+  
+  // Validate translations for all supported languages
+  if (!stat.translations) return `Stat ${stat.id} missing translations object`;
+  for (const lang of supportedLanguages) {
+    if (!stat.translations[lang]) return `Stat ${stat.id} missing ${lang} translation`;
+    if (!stat.translations[lang].label) return `Stat ${stat.id} missing ${lang} label`;
+    if (!stat.translations[lang].description) return `Stat ${stat.id} missing ${lang} description`;
+  }
+  
   return null;
+}
+
+/**
+ * Validates translation completeness across all supported languages
+ * @param {Object} zoneData The zone data to validate
+ * @returns {Array<string>} Array of error messages
+ */
+function validateTranslationCompleteness(zoneData) {
+  const errors = [];
+  const supportedLanguages = Object.keys(zoneData.translations);
+  
+  // Required sections for each language
+  const requiredSections = ['name', 'region', 'description', 'interestingFacts', 'historicalInfo'];
+  
+  for (const lang of supportedLanguages) {
+    const translation = zoneData.translations[lang];
+    
+    // Check required sections
+    for (const section of requiredSections) {
+      if (!translation[section]) {
+        errors.push(`Language ${lang} missing required section: ${section}`);
+      }
+    }
+    
+    // Validate stats if present in English (should be present in all languages)
+    if (zoneData.translations.en.stats) {
+      if (!translation.stats) {
+        errors.push(`Language ${lang} missing stats section (required because English has stats)`);
+      } else if (translation.stats.length !== zoneData.translations.en.stats.length) {
+        errors.push(`Language ${lang} has ${translation.stats.length} stats, but English has ${zoneData.translations.en.stats.length}`);
+      }
+    }
+    
+    // Validate contact info if present
+    if (translation.contact && zoneData.translations.en.contact) {
+      const requiredContactFields = ['address', 'hours'];
+      for (const field of requiredContactFields) {
+        if (!translation.contact[field]) {
+          errors.push(`Language ${lang} contact missing field: ${field}`);
+        }
+      }
+    }
+  }
+  
+  return errors;
 }
 
 /**
@@ -269,14 +323,25 @@ async function addPartnerZone(zoneData, imagesDir) {
     console.log('🔧 Adding partner zone to Firestore...');
     console.log(`📍 Zone: ${zoneData.translations.en.name}`);
     
+    // Validate translation completeness
+    console.log('🌍 Validating translation completeness...');
+    const translationErrors = validateTranslationCompleteness(zoneData);
+    if (translationErrors.length > 0) {
+      console.error('❌ Translation validation errors:');
+      translationErrors.forEach(error => console.error(`  - ${error}`));
+      throw new Error(`Translation validation failed: ${translationErrors.length} errors found`);
+    }
+    console.log(`✅ Validated translations for ${Object.keys(zoneData.translations).length} languages`);
+
     // Validate stats if provided
     if (zoneData.translations.en.stats) {
       console.log('📊 Validating stats...');
+      const supportedLanguages = Object.keys(zoneData.translations);
       for (const stat of zoneData.translations.en.stats) {
-        const error = validateStat(stat);
+        const error = validateStat(stat, supportedLanguages);
         if (error) throw new Error(`Invalid stat: ${error}`);
       }
-      console.log(`✅ Validated ${zoneData.translations.en.stats.length} stats`);
+      console.log(`✅ Validated ${zoneData.translations.en.stats.length} stats across ${supportedLanguages.length} languages`);
     }
 
     // Validate icons in facts and historical info
@@ -299,9 +364,30 @@ async function addPartnerZone(zoneData, imagesDir) {
       }
     }
     
+    // Validate hero image if provided
+    if (zoneData.heroImage) {
+      console.log('🖼️ Validating hero image...');
+      if (!zoneData.heroImage.storageRef) {
+        throw new Error('Hero image missing storageRef');
+      }
+      if (!zoneData.heroImage.caption) {
+        throw new Error('Hero image missing caption');
+      }
+      if (!zoneData.heroImage.alt) {
+        throw new Error('Hero image missing alt text for accessibility');
+      }
+      console.log('✅ Hero image validation passed');
+    }
+    
     // Process and upload all images first
     if (imagesDir) {
       console.log('📸 Processing images...');
+      
+      // Log hero image processing
+      if (zoneData.heroImage) {
+        console.log('🖼️ Processing hero image...');
+      }
+      
       await processImages(zoneData, imagesDir, uploadedFiles);
     }
     
@@ -386,6 +472,7 @@ async function addPartnerZone(zoneData, imagesDir) {
     console.log(`  - Available translations: ${Object.keys(zoneData.translations).join(', ')}`);
     console.log(`  - Center: ${zoneData.center.latitude}, ${zoneData.center.longitude}`);
     console.log(`  - Features:`);
+    console.log(`    • Hero Image: ${zoneData.heroImage ? '✓' : '✗'}`);
     console.log(`    • Stats: ${zoneData.translations.en.stats?.length || 0}`);
     console.log(`    • Facts: ${zoneData.translations.en.interestingFacts?.length || 0}`);
     console.log(`    • POIs: ${zoneData.pois?.length || 0}`);
