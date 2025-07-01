@@ -10,6 +10,7 @@ const admin = require('firebase-admin');
 const fs = require('fs');
 const path = require('path');
 const mime = require('mime-types');
+const geohash = require('ngeohash'); // Add ngeohash for geographic optimization
 
 // Initialize Firebase Admin
 if (!admin.apps.length) {
@@ -203,6 +204,64 @@ async function processImages(obj, imagesDir, uploadedFiles = new Set()) {
   }
 }
 
+/**
+ * Generates geohashes for efficient geographic querying
+ * @param {number} latitude 
+ * @param {number} longitude 
+ * @param {number} radiusKm Search radius in kilometers (default 50km)
+ * @returns {Array<string>} Array of geohashes at different precisions
+ */
+function generateGeohashes(latitude, longitude, radiusKm = 50) {
+  const geohashes = [];
+  
+  // Generate multiple precision levels for efficient querying
+  // Precision 4: ~20km x 20km boxes
+  // Precision 5: ~4.9km x 4.9km boxes  
+  // Precision 6: ~1.2km x 0.6km boxes
+  // Precision 7: ~152.9m x 152.4m boxes
+  for (let precision = 4; precision <= 7; precision++) {
+    const centerHash = geohash.encode(latitude, longitude, precision);
+    geohashes.push(centerHash);
+    
+    // Add neighboring geohashes for edge cases
+    const neighbors = geohash.neighbors(centerHash);
+    geohashes.push(...Object.values(neighbors));
+  }
+  
+  // Remove duplicates and return
+  return [...new Set(geohashes)];
+}
+
+/**
+ * Determines geographic region based on coordinates
+ * @param {number} latitude 
+ * @param {number} longitude 
+ * @returns {string} Geographic region identifier
+ */
+function getGeographicRegion(latitude, longitude) {
+  // Define region boundaries
+  const regions = {
+    'north-america-west': { latMin: 25, latMax: 72, lngMin: -180, lngMax: -95 },
+    'north-america-east': { latMin: 25, latMax: 72, lngMin: -95, lngMax: -50 },
+    'europe-west': { latMin: 35, latMax: 72, lngMin: -15, lngMax: 15 },
+    'europe-east': { latMin: 35, latMax: 72, lngMin: 15, lngMax: 50 },
+    'asia-west': { latMin: 10, latMax: 72, lngMin: 50, lngMax: 90 },
+    'asia-east': { latMin: 10, latMax: 72, lngMin: 90, lngMax: 180 },
+    'africa': { latMin: -35, latMax: 40, lngMin: -20, lngMax: 55 },
+    'oceania': { latMin: -50, latMax: 0, lngMin: 110, lngMax: 180 },
+    'south-america': { latMin: -60, latMax: 15, lngMin: -85, lngMax: -30 }
+  };
+  
+  for (const [regionName, bounds] of Object.entries(regions)) {
+    if (latitude >= bounds.latMin && latitude <= bounds.latMax &&
+        longitude >= bounds.lngMin && longitude <= bounds.lngMax) {
+      return regionName;
+    }
+  }
+  
+  return 'unknown';
+}
+
 async function addPartnerZone(zoneData, imagesDir) {
   const uploadedFiles = new Set();
   
@@ -248,12 +307,25 @@ async function addPartnerZone(zoneData, imagesDir) {
     
     const db = admin.firestore();
     
-    // Convert center coordinates to GeoPoint
+    // Convert center coordinates to GeoPoint and generate geohashes
     if (zoneData.center) {
-      zoneData.center = new admin.firestore.GeoPoint(
-        zoneData.center.lat,
-        zoneData.center.lng
-      );
+      const originalLat = zoneData.center.lat;
+      const originalLng = zoneData.center.lng;
+      
+      // Generate geohashes for efficient querying
+      const geohashes = generateGeohashes(originalLat, originalLng, zoneData.searchRadius || 50);
+      console.log(`🔗 Generated ${geohashes.length} geohashes for efficient querying`);
+      
+      // Determine geographic region
+      const region = getGeographicRegion(originalLat, originalLng);
+      console.log(`🌍 Detected geographic region: ${region}`);
+      
+      // Add geohashes and region to zone data
+      zoneData.geohashes = geohashes;
+      zoneData.region = region;
+      
+      // Convert to GeoPoint
+      zoneData.center = new admin.firestore.GeoPoint(originalLat, originalLng);
       console.log(`📍 Converted coordinates to GeoPoint: ${zoneData.center.latitude}, ${zoneData.center.longitude}`);
     }
     

@@ -1,7 +1,7 @@
 {
   "id": "grand-canyon",
   "active": true,
-  "radiusKm": 25,
+  "searchRadius": 50,
   "center": {
     "lat": 36.1069,
     "lng": -112.1129
