@@ -104,12 +104,13 @@ function validateIcons(obj) {
 }
 
 /**
- * Uploads an image to Firebase Storage
+ * Uploads an image to Firebase Storage and tracks it for cleanup
  * @param {string} localPath Path to local image file
  * @param {string} storagePath Path in Firebase Storage
+ * @param {Set} uploadedFiles Set to track uploaded files for cleanup
  * @returns {Promise<string>} Public URL of the uploaded image
  */
-async function uploadImage(localPath, storagePath) {
+async function uploadImage(localPath, storagePath, uploadedFiles = new Set()) {
   try {
     const contentType = mime.lookup(localPath) || 'image/jpeg';
     
@@ -124,6 +125,9 @@ async function uploadImage(localPath, storagePath) {
     // Make the file publicly accessible
     await bucket.file(storagePath).makePublic();
     
+    // Track file for cleanup
+    uploadedFiles.add(localPath);
+    
     const publicUrl = `https://storage.googleapis.com/${bucket.name}/${storagePath}`;
     console.log(`📸 Uploaded image: ${storagePath}`);
     return publicUrl;
@@ -135,17 +139,41 @@ async function uploadImage(localPath, storagePath) {
 }
 
 /**
+ * Cleans up uploaded files from local storage
+ * @param {Set} uploadedFiles Set of file paths to clean up
+ */
+async function cleanupUploadedFiles(uploadedFiles) {
+  if (uploadedFiles.size === 0) return;
+  
+  console.log(`🧹 Cleaning up ${uploadedFiles.size} uploaded files...`);
+  
+  for (const filePath of uploadedFiles) {
+    try {
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+        console.log(`🗑️ Removed: ${filePath}`);
+      }
+    } catch (error) {
+      console.warn(`⚠️ Could not remove file ${filePath}:`, error.message);
+    }
+  }
+  
+  console.log('✅ Cleanup completed');
+}
+
+/**
  * Recursively processes image references in an object and uploads images
  * @param {Object} obj Object containing image references
  * @param {string} imagesDir Base directory containing images
+ * @param {Set} uploadedFiles Set to track uploaded files for cleanup
  */
-async function processImages(obj, imagesDir) {
+async function processImages(obj, imagesDir, uploadedFiles = new Set()) {
   if (!obj || typeof obj !== 'object') return;
   
   if (obj.storageRef && typeof obj.storageRef === 'string') {
     const localPath = path.join(imagesDir, obj.storageRef);
     if (fs.existsSync(localPath)) {
-      obj.publicUrl = await uploadImage(localPath, obj.storageRef);
+      obj.publicUrl = await uploadImage(localPath, obj.storageRef, uploadedFiles);
     } else {
       console.warn(`⚠️ Image not found: ${localPath}`);
     }
@@ -156,7 +184,7 @@ async function processImages(obj, imagesDir) {
       const storagePath = obj.gallery.storagePrefix + image.filename;
       const localPath = path.join(imagesDir, storagePath);
       if (fs.existsSync(localPath)) {
-        image.publicUrl = await uploadImage(localPath, storagePath);
+        image.publicUrl = await uploadImage(localPath, storagePath, uploadedFiles);
       } else {
         console.warn(`⚠️ Gallery image not found: ${localPath}`);
       }
@@ -167,15 +195,17 @@ async function processImages(obj, imagesDir) {
   for (const key in obj) {
     if (Array.isArray(obj[key])) {
       for (const item of obj[key]) {
-        await processImages(item, imagesDir);
+        await processImages(item, imagesDir, uploadedFiles);
       }
     } else if (typeof obj[key] === 'object') {
-      await processImages(obj[key], imagesDir);
+      await processImages(obj[key], imagesDir, uploadedFiles);
     }
   }
 }
 
 async function addPartnerZone(zoneData, imagesDir) {
+  const uploadedFiles = new Set();
+  
   try {
     console.log('🔧 Adding partner zone to Firestore...');
     console.log(`📍 Zone: ${zoneData.translations.en.name}`);
@@ -200,10 +230,20 @@ async function addPartnerZone(zoneData, imagesDir) {
       if (error) throw new Error(`Invalid historical info icon: ${error}`);
     }
     
+    // Validate news icons if provided
+    if (zoneData.translations.en.news) {
+      for (const newsItem of zoneData.translations.en.news) {
+        if (newsItem.icon) {
+          const error = validateIcons(newsItem);
+          if (error) throw new Error(`Invalid news icon: ${error}`);
+        }
+      }
+    }
+    
     // Process and upload all images first
     if (imagesDir) {
       console.log('📸 Processing images...');
-      await processImages(zoneData, imagesDir);
+      await processImages(zoneData, imagesDir, uploadedFiles);
     }
     
     const db = admin.firestore();
@@ -232,52 +272,39 @@ async function addPartnerZone(zoneData, imagesDir) {
     
     // Create main zone document
     const zoneRef = db.collection('partnerZones').doc(zoneData.id);
-    await zoneRef.set(zoneData);
-    console.log('✅ Created main zone document');
     
-    // Add POIs if provided
+    // Process POIs coordinates
     if (zoneData.pois && zoneData.pois.length > 0) {
-      const poisRef = zoneRef.collection('pois');
-      for (const poi of zoneData.pois) {
-        // Convert POI coordinates to GeoPoint
+      zoneData.pois = zoneData.pois.map(poi => {
         if (poi.coords) {
           poi.coords = new admin.firestore.GeoPoint(
             poi.coords.lat,
             poi.coords.lng
           );
         }
-        await poisRef.doc(poi.id).set(poi);
-      }
-      console.log(`✅ Added ${zoneData.pois.length} POIs`);
+        return poi;
+      });
+      console.log(`📍 Converted ${zoneData.pois.length} POI coordinates to GeoPoints`);
     }
     
-    // Add tour if provided
-    if (zoneData.tour) {
-      // Convert tour waypoint coordinates to GeoPoints
-      if (zoneData.tour.waypoints) {
-        zoneData.tour.waypoints = zoneData.tour.waypoints.map(waypoint => ({
-          ...waypoint,
-          coords: new admin.firestore.GeoPoint(
-            waypoint.coords.lat,
-            waypoint.coords.lng
-          )
-        }));
-      }
-      await zoneRef.collection('tour').doc('main').set(zoneData.tour);
-      console.log('✅ Added tour data');
+    // Process tour waypoint coordinates
+    if (zoneData.tour && zoneData.tour.waypoints) {
+      zoneData.tour.waypoints = zoneData.tour.waypoints.map(waypoint => ({
+        ...waypoint,
+        coords: new admin.firestore.GeoPoint(
+          waypoint.coords.lat,
+          waypoint.coords.lng
+        )
+      }));
+      console.log(`📍 Converted ${zoneData.tour.waypoints.length} tour waypoint coordinates to GeoPoints`);
     }
     
-    // Add quiz if provided
-    if (zoneData.quiz) {
-      await zoneRef.collection('quiz').doc('main').set(zoneData.quiz);
-      console.log('✅ Added quiz data');
-    }
+    // Store everything in the main document
+    await zoneRef.set(zoneData);
+    console.log('✅ Created complete zone document with all data');
     
-    // Add tickets if provided
-    if (zoneData.tickets) {
-      await zoneRef.collection('tickets').doc('main').set(zoneData.tickets);
-      console.log('✅ Added tickets data');
-    }
+    // Clean up uploaded files after successful Firestore write
+    await cleanupUploadedFiles(uploadedFiles);
     
     console.log('\n🎯 Partner zone added successfully!');
     console.log('📋 Zone details:');
@@ -296,6 +323,10 @@ async function addPartnerZone(zoneData, imagesDir) {
     
   } catch (error) {
     console.error('❌ Error adding partner zone:', error);
+    
+    // Clean up uploaded files even on error
+    await cleanupUploadedFiles(uploadedFiles);
+    
     throw error;
   }
 }
