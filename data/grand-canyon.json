@@ -47,7 +47,7 @@
           "value": "1.6",
           "unit": "km",
           "secondaryValue": "1",
-          "secondaryUnit": "mile",
+          "secondaryUnit": "miles",
           "translations": {
             "en": {
               "label": "Depth",
