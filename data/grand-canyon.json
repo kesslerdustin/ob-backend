@@ -1,0 +1,635 @@
+{
+  "id": "grand-canyon",
+  "active": true,
+  "radiusKm": 25,
+  "center": {
+    "lat": 36.1069,
+    "lng": -112.1129
+  },
+  "areaPolygon": [
+    { "lat": 36.2995, "lng": -112.2764 },
+    { "lat": 36.2892, "lng": -111.9847 },
+    { "lat": 35.9151, "lng": -111.9736 },
+    { "lat": 35.9151, "lng": -112.2874 }
+  ],
+  "customStyle": {
+    "color": "#B7410E",
+    "icon": "mountain"
+  },
+  "hasTour": true,
+  "hasQuiz": true,
+  "hasTickets": true,
+  "translations": {
+    "en": {
+      "name": "Grand Canyon National Park",
+      "region": "Arizona, USA",
+      "description": "One of the world's most famous national parks, known for its layered bands of red rock revealing millions of years of geological history.",
+      "stats": [
+        {
+          "id": "age",
+          "icon": "history",
+          "value": "70",
+          "unit": "million_years",
+          "translations": {
+            "en": {
+              "label": "Age",
+              "description": "Time since the canyon's formation began"
+            },
+            "de": {
+              "label": "Alter",
+              "description": "Zeit seit der Entstehung des Canyons"
+            }
+          }
+        },
+        {
+          "id": "depth",
+          "icon": "height",
+          "value": "1.6",
+          "unit": "km",
+          "secondaryValue": "1",
+          "secondaryUnit": "mile",
+          "translations": {
+            "en": {
+              "label": "Depth",
+              "description": "Maximum depth of the canyon"
+            },
+            "de": {
+              "label": "Tiefe",
+              "description": "Maximale Tiefe des Canyons"
+            }
+          }
+        },
+        {
+          "id": "length",
+          "icon": "straighten",
+          "value": "446",
+          "unit": "km",
+          "secondaryValue": "277",
+          "secondaryUnit": "miles",
+          "translations": {
+            "en": {
+              "label": "Length",
+              "description": "Total length of the canyon"
+            },
+            "de": {
+              "label": "Länge",
+              "description": "Gesamtlänge des Canyons"
+            }
+          }
+        },
+        {
+          "id": "width",
+          "icon": "expand",
+          "value": "29",
+          "unit": "km",
+          "secondaryValue": "18",
+          "secondaryUnit": "miles",
+          "translations": {
+            "en": {
+              "label": "Width",
+              "description": "Maximum width of the canyon"
+            },
+            "de": {
+              "label": "Breite",
+              "description": "Maximale Breite des Canyons"
+            }
+          }
+        },
+        {
+          "id": "visitors",
+          "icon": "groups",
+          "value": "6.38",
+          "unit": "million",
+          "translations": {
+            "en": {
+              "label": "Annual Visitors",
+              "description": "Average number of visitors per year"
+            },
+            "de": {
+              "label": "Jährliche Besucher",
+              "description": "Durchschnittliche Besucherzahl pro Jahr"
+            }
+          }
+        },
+        {
+          "id": "elevation",
+          "icon": "terrain",
+          "value": "2200",
+          "unit": "m",
+          "secondaryValue": "7200",
+          "secondaryUnit": "ft",
+          "translations": {
+            "en": {
+              "label": "Rim Elevation",
+              "description": "Average elevation at the South Rim"
+            },
+            "de": {
+              "label": "Randhöhe",
+              "description": "Durchschnittliche Höhe am South Rim"
+            }
+          }
+        }
+      ],
+      "interestingFacts": [
+        {
+          "id": "geology",
+          "icon": "landscape",
+          "text": "The Grand Canyon's rock layers reveal 2 billion years of Earth's geological history.",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/rock-layers.jpg",
+            "caption": "Distinct layers of rock showing geological timeline"
+          }
+        },
+        {
+          "id": "ecosystem",
+          "icon": "eco",
+          "text": "The canyon contains five of North America's seven life zones and three of the four desert types.",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/ecosystems.jpg",
+            "caption": "Diverse ecosystems within the canyon"
+          }
+        },
+        {
+          "id": "river",
+          "icon": "water",
+          "text": "The Colorado River flows through the canyon at an average rate of 12,000 cubic feet per second.",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/colorado-river.jpg",
+            "caption": "Colorado River flowing through the canyon"
+          }
+        },
+        {
+          "id": "native_history",
+          "icon": "account_balance",
+          "text": "Native Americans have continuously inhabited the Grand Canyon region for over 4,000 years.",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/native-settlements.jpg",
+            "caption": "Ancient Native American dwellings"
+          }
+        },
+        {
+          "id": "climate",
+          "icon": "thermostat",
+          "text": "Temperature variations between the rim and canyon floor can exceed 25°C (45°F).",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/temperature-variation.jpg",
+            "caption": "Temperature differences visualized"
+          }
+        }
+      ],
+      "historicalInfo": {
+        "text": "Carved by the Colorado River over millions of years, the Grand Canyon has been home to Native American tribes for centuries.",
+        "icon": "history_edu",
+        "images": [
+          {
+            "id": "history-1",
+            "storageRef": "partner-zones/grand-canyon/history/colorado-river-erosion.jpg",
+            "caption": "Colorado River's erosion process over millions of years"
+          },
+          {
+            "id": "history-2",
+            "storageRef": "partner-zones/grand-canyon/history/native-tribes.jpg",
+            "caption": "Native American settlements in the canyon"
+          }
+        ]
+      }
+    },
+    "de": {
+      "name": "Grand Canyon Nationalpark",
+      "region": "Arizona, USA",
+      "description": "Einer der berühmtesten Nationalparks der Welt, bekannt für seine geschichteten roten Gesteinsformationen, die Millionen Jahre geologischer Geschichte offenbaren.",
+      "historicalInfo": "Vom Colorado River über Millionen von Jahren geformt, ist der Grand Canyon seit Jahrhunderten die Heimat amerikanischer Ureinwohner.",
+      "interestingFacts": "Der Grand Canyon ist 446 km lang, bis zu 29 km breit und über 1,6 km tief. Er empfängt jährlich über 6 Millionen Besucher."
+    },
+    "es": {
+      "name": "Parque Nacional del Gran Cañón",
+      "region": "Arizona, EE.UU.",
+      "description": "Uno de los parques nacionales más famosos del mundo, conocido por sus bandas estratificadas de roca roja que revelan millones de años de historia geológica.",
+      "historicalInfo": "Tallado por el Río Colorado durante millones de años, el Gran Cañón ha sido hogar de tribus nativas americanas durante siglos.",
+      "interestingFacts": "El Gran Cañón tiene 446 km de largo, hasta 29 km de ancho y más de 1,6 km de profundidad. Recibe más de 6 millones de visitantes al año."
+    },
+    "fr": {
+      "name": "Parc National du Grand Canyon",
+      "region": "Arizona, États-Unis",
+      "description": "L'un des parcs nationaux les plus célèbres au monde, connu pour ses bandes de roche rouge révélant des millions d'années d'histoire géologique.",
+      "historicalInfo": "Sculpté par le fleuve Colorado pendant des millions d'années, le Grand Canyon abrite des tribus amérindiennes depuis des siècles.",
+      "interestingFacts": "Le Grand Canyon fait 446 km de long, jusqu'à 29 km de large et plus de 1,6 km de profondeur. Il reçoit plus de 6 millions de visiteurs par an."
+    },
+    "it": {
+      "name": "Parco Nazionale del Grand Canyon",
+      "region": "Arizona, Stati Uniti",
+      "description": "Uno dei parchi nazionali più famosi al mondo, noto per i suoi strati di roccia rossa che rivelano milioni di anni di storia geologica.",
+      "historicalInfo": "Scolpito dal fiume Colorado nel corso di milioni di anni, il Grand Canyon è stato la casa delle tribù dei nativi americani per secoli.",
+      "interestingFacts": "Il Grand Canyon è lungo 446 km, largo fino a 29 km e profondo più di 1,6 km. Riceve oltre 6 milioni di visitatori all'anno."
+    },
+    "pt": {
+      "name": "Parque Nacional do Grand Canyon",
+      "region": "Arizona, EUA",
+      "description": "Um dos parques nacionais mais famosos do mundo, conhecido por suas camadas de rocha vermelha que revelam milhões de anos de história geológica.",
+      "historicalInfo": "Esculpido pelo Rio Colorado ao longo de milhões de anos, o Grand Canyon tem sido lar de tribos nativas americanas por séculos.",
+      "interestingFacts": "O Grand Canyon tem 446 km de comprimento, até 29 km de largura e mais de 1,6 km de profundidade. Recebe mais de 6 milhões de visitantes anualmente."
+    },
+    "ja": {
+      "name": "グランドキャニオン国立公園",
+      "region": "アリゾナ州、アメリカ合衆国",
+      "description": "世界で最も有名な国立公園の1つで、何百万年もの地質学的歴史を物語る層状の赤い岩層で知られています。",
+      "historicalInfo": "コロラド川によって何百万年もかけて形成され、グランドキャニオンは何世紀にもわたってネイティブアメリカンの部族の故郷となってきました。",
+      "interestingFacts": "グランドキャニオンは長さ446km、幅最大29km、深さ1.6km以上です。年間600万人以上の観光客が訪れます。"
+    }
+  },
+  "pois": [
+    {
+      "id": "bright-angel-lodge",
+      "type": "lodge",
+      "amenities": ["restaurant", "gift_shop", "restrooms"],
+      "openingHours": "Open year-round",
+      "accessibility": "Wheelchair accessible",
+      "coords": {
+        "lat": 36.0544,
+        "lng": -112.0844
+      },
+      "imageUrl": "https://example.com/images/bright-angel-lodge.jpg",
+      "media": [
+        "https://example.com/videos/lodge-tour.mp4",
+        "https://example.com/images/lodge-historic.jpg"
+      ],
+      "gallery": {
+        "storagePrefix": "partner-zones/grand-canyon/pois/bright-angel-lodge/",
+        "images": [
+          {
+            "id": "exterior",
+            "filename": "exterior.jpg",
+            "type": "main",
+            "translations": {
+              "en": { "caption": "Historic exterior of Bright Angel Lodge" },
+              "de": { "caption": "Historische Außenansicht der Bright Angel Lodge" }
+            }
+          },
+          {
+            "id": "restaurant",
+            "filename": "restaurant.jpg",
+            "type": "interior",
+            "translations": {
+              "en": { "caption": "Lodge's rustic restaurant" },
+              "de": { "caption": "Rustikales Restaurant der Lodge" }
+            }
+          }
+        ]
+      },
+      "translations": {
+        "en": {
+          "title": "Bright Angel Lodge",
+          "description": "Historic lodge and restaurant complex on the South Rim, designed by Mary Colter in 1935."
+        },
+        "de": {
+          "title": "Bright Angel Lodge",
+          "description": "Historische Lodge- und Restaurantanlage am South Rim, 1935 von Mary Colter entworfen."
+        },
+        "es": {
+          "title": "Albergue Bright Angel",
+          "description": "Complejo histórico de albergue y restaurante en el Borde Sur, diseñado por Mary Colter en 1935."
+        },
+        "fr": {
+          "title": "Lodge Bright Angel",
+          "description": "Complexe historique de lodge et restaurant sur le Rim Sud, conçu par Mary Colter en 1935."
+        },
+        "it": {
+          "title": "Lodge Bright Angel",
+          "description": "Complesso storico di lodge e ristorante sul South Rim, progettato da Mary Colter nel 1935."
+        },
+        "pt": {
+          "title": "Pousada Bright Angel",
+          "description": "Complexo histórico de pousada e restaurante na Borda Sul, projetado por Mary Colter em 1935."
+        },
+        "ja": {
+          "title": "ブライトエンジェルロッジ",
+          "description": "サウスリムにある歴史的なロッジとレストラン施設で、1935年にメアリー・コルターによって設計されました。"
+        }
+      }
+    },
+    {
+      "id": "hopi-point",
+      "type": "viewpoint",
+      "bestTimeToVisit": "Sunset",
+      "amenities": ["parking", "benches"],
+      "accessibility": "Paved pathway",
+      "coords": {
+        "lat": 36.0590,
+        "lng": -112.1420
+      },
+      "imageUrl": "https://example.com/images/hopi-point.jpg",
+      "media": [
+        "https://example.com/images/hopi-sunset.jpg",
+        "https://example.com/images/hopi-panorama.jpg"
+      ],
+      "translations": {
+        "en": {
+          "title": "Hopi Point",
+          "description": "One of the most popular viewpoints for sunset viewing, offering panoramic views of the canyon."
+        },
+        "de": {
+          "title": "Hopi Point",
+          "description": "Einer der beliebtesten Aussichtspunkte für Sonnenuntergänge mit Panoramablick auf den Canyon."
+        },
+        "es": {
+          "title": "Punto Hopi",
+          "description": "Uno de los miradores más populares para ver la puesta del sol, que ofrece vistas panorámicas del cañón."
+        },
+        "fr": {
+          "title": "Point Hopi",
+          "description": "L'un des points de vue les plus populaires pour observer le coucher du soleil, offrant des vues panoramiques sur le canyon."
+        },
+        "it": {
+          "title": "Punto Hopi",
+          "description": "Uno dei punti panoramici più popolari per ammirare il tramonto, che offre viste panoramiche sul canyon."
+        },
+        "pt": {
+          "title": "Ponto Hopi",
+          "description": "Um dos pontos de vista mais populares para observar o pôr do sol, oferecendo vistas panorâmicas do canyon."
+        },
+        "ja": {
+          "title": "ホピポイント",
+          "description": "キャニオンのパノラマビューを提供する、夕日観賞に最も人気のある展望ポイントの1つ。"
+        }
+      }
+    },
+    {
+      "id": "yavapai-point",
+      "type": "museum",
+      "amenities": ["museum", "gift_shop", "restrooms", "water_fountain"],
+      "openingHours": "8:00 AM - 6:00 PM",
+      "accessibility": "Fully accessible",
+      "coords": {
+        "lat": 36.0520,
+        "lng": -112.1276
+      },
+      "imageUrl": "https://example.com/images/yavapai-point.jpg",
+      "media": [
+        "https://example.com/images/geology-museum.jpg",
+        "https://example.com/videos/geology-tour.mp4"
+      ],
+      "translations": {
+        "en": {
+          "title": "Yavapai Point & Geology Museum",
+          "description": "Excellent viewpoint for understanding the canyon's geology, featuring educational exhibits."
+        },
+        "de": {
+          "title": "Yavapai Point & Geologisches Museum",
+          "description": "Ausgezeichneter Aussichtspunkt zum Verständnis der Geologie des Canyons mit Lehrausstellungen."
+        },
+        "es": {
+          "title": "Punto Yavapai y Museo Geológico",
+          "description": "Excelente mirador para comprender la geología del cañón, con exhibiciones educativas."
+        },
+        "fr": {
+          "title": "Point Yavapai et Musée Géologique",
+          "description": "Excellent point de vue pour comprendre la géologie du canyon, avec des expositions éducatives."
+        },
+        "it": {
+          "title": "Punto Yavapai e Museo Geologico",
+          "description": "Eccellente punto panoramico per comprendere la geologia del canyon, con mostre educative."
+        },
+        "pt": {
+          "title": "Ponto Yavapai e Museu Geológico",
+          "description": "Excelente ponto de vista para entender a geologia do canyon, com exposições educativas."
+        },
+        "ja": {
+          "title": "ヤバパイポイント＆地質博物館",
+          "description": "教育展示を備え、キャニオンの地質を理解するための優れた展望ポイント。"
+        }
+      }
+    }
+  ],
+  "tour": {
+    "translations": {
+      "en": {
+        "name": "South Rim Highlights",
+        "description": "A scenic tour along the South Rim's most spectacular viewpoints and historic structures.",
+        "waypoints": [
+          {
+            "id": "visitor-center",
+            "title": "Grand Canyon Visitor Center",
+            "info": "Start your tour here. Get maps, information, and watch the introductory film.",
+            "images": [
+              {
+                "id": "vc-exterior",
+                "storageRef": "partner-zones/grand-canyon/tour/visitor-center/exterior.jpg",
+                "caption": "Visitor Center entrance"
+              },
+              {
+                "id": "vc-exhibits",
+                "storageRef": "partner-zones/grand-canyon/tour/visitor-center/exhibits.jpg",
+                "caption": "Interactive exhibits inside"
+              }
+            ]
+          },
+          {
+            "id": "mather-point",
+            "title": "Mather Point",
+            "info": "Your first dramatic view of the canyon. Perfect for photos!"
+          },
+          {
+            "id": "yavapai-point",
+            "title": "Yavapai Point & Geology Museum",
+            "info": "Learn about the canyon's formation and rock layers."
+          },
+          {
+            "id": "hopi-point",
+            "title": "Hopi Point",
+            "info": "Best sunset viewing spot. Arrive 30 minutes before sunset."
+          }
+        ]
+      },
+      "de": {
+        "name": "South Rim Höhepunkte",
+        "description": "Eine malerische Tour entlang der spektakulärsten Aussichtspunkte und historischen Bauwerke des South Rim.",
+        "waypoints": [
+          {
+            "id": "visitor-center",
+            "title": "Grand Canyon Besucherzentrum",
+            "info": "Beginnen Sie hier Ihre Tour. Holen Sie sich Karten, Informationen und sehen Sie sich den Einführungsfilm an."
+          },
+          {
+            "id": "mather-point",
+            "title": "Mather Point",
+            "info": "Ihr erster dramatischer Blick auf den Canyon. Perfekt für Fotos!"
+          },
+          {
+            "id": "yavapai-point",
+            "title": "Yavapai Point & Geologisches Museum",
+            "info": "Erfahren Sie mehr über die Entstehung des Canyons und seine Gesteinsschichten."
+          },
+          {
+            "id": "hopi-point",
+            "title": "Hopi Point",
+            "info": "Bester Aussichtspunkt für den Sonnenuntergang. Kommen Sie 30 Minuten vor Sonnenuntergang."
+          }
+        ]
+      }
+    },
+    "duration": "4-6 hours",
+    "difficulty": "Easy to moderate",
+    "distance": "7.5 miles",
+    "waypoints": [
+      {
+        "id": "visitor-center",
+        "coords": { "lat": 36.0544, "lng": -112.1241 },
+        "estimatedTime": 45,
+        "type": "start"
+      },
+      {
+        "id": "mather-point",
+        "coords": { "lat": 36.0520, "lng": -112.1276 },
+        "estimatedTime": 30,
+        "type": "viewpoint"
+      },
+      {
+        "id": "yavapai-point",
+        "coords": { "lat": 36.0520, "lng": -112.1276 },
+        "estimatedTime": 60,
+        "type": "museum"
+      },
+      {
+        "id": "hopi-point",
+        "coords": { "lat": 36.0590, "lng": -112.1420 },
+        "estimatedTime": 45,
+        "type": "viewpoint"
+      }
+    ]
+  },
+  "quiz": {
+    "translations": {
+      "en": {
+        "title": "Grand Canyon Explorer Quiz",
+        "description": "Test your knowledge about the Grand Canyon's geology, history, and wildlife!",
+        "questions": [
+          {
+            "id": "gc_q1",
+            "type": "image_based",
+            "image": {
+              "storageRef": "partner-zones/grand-canyon/quiz/rock-layers.jpg",
+              "caption": "Rock layers at the Grand Canyon"
+            },
+            "question": "Which rock layer shown in this image is the oldest?",
+            "options": [
+              "About 100 million years old",
+              "About 1.8 billion years old",
+              "About 500 million years old"
+            ],
+            "correctOption": 1,
+            "explanation": {
+              "text": "The Vishnu Basement Rocks at the bottom of the canyon are about 1.8 billion years old.",
+              "image": {
+                "storageRef": "partner-zones/grand-canyon/quiz/vishnu-rocks.jpg",
+                "caption": "Close-up of Vishnu Basement Rocks"
+              }
+            }
+          },
+          {
+            "id": "gc_q2",
+            "type": "image_sequence",
+            "question": "Put these rock formations in order from youngest to oldest",
+            "images": [
+              {
+                "id": "layer1",
+                "storageRef": "partner-zones/grand-canyon/quiz/layer-kaibab.jpg",
+                "caption": "Kaibab Formation"
+              },
+              {
+                "id": "layer2",
+                "storageRef": "partner-zones/grand-canyon/quiz/layer-coconino.jpg",
+                "caption": "Coconino Sandstone"
+              },
+              {
+                "id": "layer3",
+                "storageRef": "partner-zones/grand-canyon/quiz/layer-vishnu.jpg",
+                "caption": "Vishnu Schist"
+              }
+            ],
+            "correctSequence": ["layer1", "layer2", "layer3"],
+            "explanation": {
+              "text": "The layers of rock in the Grand Canyon are like pages in a book telling Earth's history.",
+              "image": {
+                "storageRef": "partner-zones/grand-canyon/quiz/layer-diagram.jpg",
+                "caption": "Diagram showing rock layer sequence"
+              }
+            }
+          }
+        ]
+      },
+      "de": {
+        "title": "Grand Canyon Entdecker Quiz",
+        "description": "Teste dein Wissen über die Geologie, Geschichte und Tierwelt des Grand Canyon!",
+        "questions": [
+          {
+            "id": "gc_q1",
+            "question": "Wie alt sind die ältesten Gesteine am Grund des Grand Canyon?",
+            "options": [
+              "Etwa 100 Millionen Jahre",
+              "Etwa 1,8 Milliarden Jahre",
+              "Etwa 500 Millionen Jahre"
+            ],
+            "correctOption": 1,
+            "explanation": "Die Vishnu-Grundgesteine am Boden des Canyons sind etwa 1,8 Milliarden Jahre alt."
+          }
+        ]
+      }
+    },
+    "settings": {
+      "timePerQuestion": 30,
+      "passingScore": 70,
+      "randomizeQuestions": true,
+      "showExplanations": true
+    },
+    "rewards": {
+      "bronzeScore": 60,
+      "silverScore": 80,
+      "goldScore": 90,
+      "completionAchievement": "grand_canyon_expert"
+    }
+  },
+  "tickets": {
+    "translations": {
+      "en": {
+        "infoText": "As a Wildscope user, you get a 10% discount on entrance fees and guided tours!",
+        "offers": [
+          {
+            "name": "Park Entrance",
+            "description": "7-day entrance pass for one private vehicle and all its passengers",
+            "normalPrice": 35,
+            "discountedPrice": 31.50,
+            "currency": "USD",
+            "validityDays": 7
+          }
+        ],
+        "terms": [
+          "Discount valid only with Wildscope app verification",
+          "Cannot be combined with other offers",
+          "Subject to availability",
+          "Advance booking recommended"
+        ]
+      },
+      "de": {
+        "infoText": "Als Wildscope-Nutzer erhalten Sie 10% Rabatt auf Eintrittspreise und geführte Touren!",
+        "offers": [
+          {
+            "name": "Parkeintritt",
+            "description": "7-Tage-Eintrittskarte für ein Privatfahrzeug und alle Insassen",
+            "normalPrice": 35,
+            "discountedPrice": 31.50,
+            "currency": "USD",
+            "validityDays": 7
+          }
+        ],
+        "terms": [
+          "Rabatt nur gültig mit Wildscope-App-Verifizierung",
+          "Nicht mit anderen Angeboten kombinierbar",
+          "Vorbehaltlich der Verfügbarkeit",
+          "Vorherige Buchung empfohlen"
+        ]
+      }
+    },
+    "validUntil": "2025-12-31T23:59:59Z",
+    "ticketLink": "https://www.nps.gov/grca/planyourvisit/fees.htm"
+  }
+} 
