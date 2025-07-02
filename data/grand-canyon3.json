@@ -1,5 +1,7 @@
 {
-  "id": "grand-canyon2",
+  "id": "grand-canyon3",
+  "author": "Wildscope",
+  "official": true,
   "active": true,
   "searchRadius": 50,
   "priority": 1,
@@ -19,9 +21,37 @@
   },
   "heroImage": {
     "storageRef": "partner-zones/grand-canyon/hero/grand-canyon-overview.jpg",
-    "caption": "Panoramic view of Grand Canyon National Park from the South Rim",
-    "alt": "Grand Canyon panoramic landscape view",
-    "priority": "high"
+    "priority": "high",
+    "translations": {
+      "en": {
+        "caption": "Panoramic view of Grand Canyon National Park from the South Rim",
+        "alt": "Grand Canyon panoramic landscape view"
+      },
+      "de": {
+        "caption": "Panoramablick auf den Grand Canyon Nationalpark vom South Rim",
+        "alt": "Grand Canyon Panorama-Landschaftsansicht"
+      },
+      "es": {
+        "caption": "Vista panorámica del Parque Nacional del Gran Cañón desde el Borde Sur",
+        "alt": "Vista panorámica del paisaje del Gran Cañón"
+      },
+      "fr": {
+        "caption": "Vue panoramique du Parc National du Grand Canyon depuis le Rim Sud",
+        "alt": "Vue panoramique du paysage du Grand Canyon"
+      },
+      "it": {
+        "caption": "Vista panoramica del Parco Nazionale del Grand Canyon dal South Rim",
+        "alt": "Vista panoramica del paesaggio del Grand Canyon"
+      },
+      "pt": {
+        "caption": "Vista panorâmica do Parque Nacional do Grand Canyon da Borda Sul",
+        "alt": "Vista panorâmica da paisagem do Grand Canyon"
+      },
+      "ja": {
+        "caption": "サウスリムからのグランドキャニオン国立公園のパノラマビュー",
+        "alt": "グランドキャニオンのパノラマ風景ビュー"
+      }
+    }
   },
   "hasTour": true,
   "hasQuiz": true,

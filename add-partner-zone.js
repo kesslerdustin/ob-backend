@@ -370,12 +370,42 @@ async function addPartnerZone(zoneData, imagesDir) {
       if (!zoneData.heroImage.storageRef) {
         throw new Error('Hero image missing storageRef');
       }
-      if (!zoneData.heroImage.caption) {
-        throw new Error('Hero image missing caption');
+      
+      // Support both legacy format (caption/alt directly) and new translation format
+      if (zoneData.heroImage.translations) {
+        // New translation format - validate that English translation exists
+        if (!zoneData.heroImage.translations.en) {
+          throw new Error('Hero image missing English translation');
+        }
+        if (!zoneData.heroImage.translations.en.caption) {
+          throw new Error('Hero image missing English caption in translations');
+        }
+        if (!zoneData.heroImage.translations.en.alt) {
+          throw new Error('Hero image missing English alt text in translations');
+        }
+        
+        // Validate all provided language translations have required fields
+        const supportedLanguages = Object.keys(zoneData.translations);
+        for (const lang of supportedLanguages) {
+          if (zoneData.heroImage.translations[lang]) {
+            if (!zoneData.heroImage.translations[lang].caption) {
+              throw new Error(`Hero image missing ${lang} caption in translations`);
+            }
+            if (!zoneData.heroImage.translations[lang].alt) {
+              throw new Error(`Hero image missing ${lang} alt text in translations`);
+            }
+          }
+        }
+      } else {
+        // Legacy format - direct caption and alt properties
+        if (!zoneData.heroImage.caption) {
+          throw new Error('Hero image missing caption');
+        }
+        if (!zoneData.heroImage.alt) {
+          throw new Error('Hero image missing alt text for accessibility');
+        }
       }
-      if (!zoneData.heroImage.alt) {
-        throw new Error('Hero image missing alt text for accessibility');
-      }
+      
       console.log('✅ Hero image validation passed');
     }
     
@@ -467,6 +497,9 @@ async function addPartnerZone(zoneData, imagesDir) {
     console.log('\n🎯 Partner zone added successfully!');
     console.log('📋 Zone details:');
     console.log(`  - ID: ${zoneData.id}`);
+    console.log(`  - Author: ${zoneData.author}`);
+    console.log(`  - Official: ${zoneData.official}`);
+    console.log(`  - User ID: ${zoneData.userid || 'Not specified'}`);
     console.log(`  - Name (EN): ${zoneData.translations.en.name}`);
     console.log(`  - Region (EN): ${zoneData.translations.en.region}`);
     console.log(`  - Available translations: ${Object.keys(zoneData.translations).join(', ')}`);
@@ -503,6 +536,20 @@ async function processZoneFile(filePath, imagesDir) {
       if (!zoneData[field]) {
         throw new Error(`Missing required field: ${field}`);
       }
+    }
+    
+    // Validate new required fields
+    if (!zoneData.author || typeof zoneData.author !== 'string' || zoneData.author.trim() === '') {
+      throw new Error('Missing or invalid required field: author (must be a non-empty string)');
+    }
+    
+    if (typeof zoneData.official !== 'boolean') {
+      throw new Error('Missing or invalid required field: official (must be a boolean)');
+    }
+    
+    // userid is optional, but if provided must be a string
+    if (zoneData.userid !== undefined && (typeof zoneData.userid !== 'string' || zoneData.userid.trim() === '')) {
+      throw new Error('Invalid userid field: if provided, must be a non-empty string');
     }
     
     // Validate translations
