@@ -115,22 +115,30 @@ function validateTranslationCompleteness(zoneData) {
     
     // Validate stats - these are now in the main English stats array with nested translations
     if (lang === 'en' && translation.stats) {
-      for (const stat of translation.stats) {
-        const statError = validateStat(stat, supportedLanguages);
-        if (statError) {
-          errors.push(`Stats validation error: ${statError}`);
+      if (!Array.isArray(translation.stats)) {
+        errors.push(`Language ${lang} stats must be an array`);
+      } else {
+        for (const stat of translation.stats) {
+          const statError = validateStat(stat, supportedLanguages);
+          if (statError) {
+            errors.push(`Stats validation error: ${statError}`);
+          }
         }
       }
     }
     
     // Validate interesting facts
     if (translation.interestingFacts) {
-      for (const fact of translation.interestingFacts) {
-        if (!fact.id) errors.push(`Language ${lang} fact missing ID`);
-        if (!fact.text) errors.push(`Language ${lang} fact ${fact.id} missing text`);
-        if (!fact.icon) errors.push(`Language ${lang} fact ${fact.id} missing icon`);
-        if (fact.icon && !SUPPORTED_ICONS.includes(fact.icon)) {
-          errors.push(`Language ${lang} fact ${fact.id} has unsupported icon: ${fact.icon}`);
+      if (!Array.isArray(translation.interestingFacts)) {
+        errors.push(`Language ${lang} interestingFacts must be an array`);
+      } else {
+        for (const fact of translation.interestingFacts) {
+          if (!fact.id) errors.push(`Language ${lang} fact missing ID`);
+          if (!fact.text) errors.push(`Language ${lang} fact ${fact.id} missing text`);
+          if (!fact.icon) errors.push(`Language ${lang} fact ${fact.id} missing icon`);
+          if (fact.icon && !SUPPORTED_ICONS.includes(fact.icon)) {
+            errors.push(`Language ${lang} fact ${fact.id} has unsupported icon: ${fact.icon}`);
+          }
         }
       }
     }
@@ -150,11 +158,15 @@ function validateTranslationCompleteness(zoneData) {
     
     // Validate news if present
     if (translation.news) {
-      for (const newsItem of translation.news) {
-        if (!newsItem.id) errors.push(`Language ${lang} news item missing ID`);
-        if (!newsItem.title) errors.push(`Language ${lang} news item ${newsItem.id} missing title`);
-        if (!newsItem.summary) errors.push(`Language ${lang} news item ${newsItem.id} missing summary`);
-        if (!newsItem.content) errors.push(`Language ${lang} news item ${newsItem.id} missing content`);
+      if (!Array.isArray(translation.news)) {
+        errors.push(`Language ${lang} news must be an array`);
+      } else {
+        for (const newsItem of translation.news) {
+          if (!newsItem.id) errors.push(`Language ${lang} news item missing ID`);
+          if (!newsItem.title) errors.push(`Language ${lang} news item ${newsItem.id} missing title`);
+          if (!newsItem.summary) errors.push(`Language ${lang} news item ${newsItem.id} missing summary`);
+          if (!newsItem.content) errors.push(`Language ${lang} news item ${newsItem.id} missing content`);
+        }
       }
     }
   }
@@ -604,6 +616,9 @@ async function addPartnerZone(zoneData, imagesDir) {
     // Validate news icons and structure
     if (zoneData.news) {
       console.log('📰 Validating news items...');
+      if (!Array.isArray(zoneData.news)) {
+        throw new Error('News must be an array');
+      }
       for (const newsItem of zoneData.news) {
         if (newsItem.icon && !SUPPORTED_ICONS.includes(newsItem.icon)) {
           throw new Error(`News item ${newsItem.id} has unsupported icon: ${newsItem.icon}`);
