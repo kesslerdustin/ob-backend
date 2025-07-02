@@ -344,14 +344,38 @@ async function addPartnerZone(zoneData, imagesDir) {
       console.log(`✅ Validated ${zoneData.translations.en.stats.length} stats across ${supportedLanguages.length} languages`);
     }
 
-    // Validate icons in facts and historical info
-    if (zoneData.translations.en.interestingFacts) {
-      const error = validateIcons(zoneData.translations.en.interestingFacts);
-      if (error) throw new Error(`Invalid fact icon: ${error}`);
-    }
-    if (zoneData.translations.en.historicalInfo) {
-      const error = validateIcons(zoneData.translations.en.historicalInfo);
-      if (error) throw new Error(`Invalid historical info icon: ${error}`);
+    // Validate icons in facts and historical info across all languages
+    const supportedLanguages = Object.keys(zoneData.translations);
+    for (const lang of supportedLanguages) {
+      if (zoneData.translations[lang].interestingFacts) {
+        const error = validateIcons(zoneData.translations[lang].interestingFacts);
+        if (error) throw new Error(`Invalid fact icon in ${lang}: ${error}`);
+        
+        // Validate that all facts have the required structure
+        for (const fact of zoneData.translations[lang].interestingFacts) {
+          if (!fact.id) throw new Error(`Fact missing ID in ${lang} translation`);
+          if (!fact.text) throw new Error(`Fact ${fact.id} missing text in ${lang} translation`);
+          if (!fact.icon) throw new Error(`Fact ${fact.id} missing icon in ${lang} translation`);
+          if (!SUPPORTED_ICONS.includes(fact.icon)) {
+            throw new Error(`Fact ${fact.id} has unsupported icon in ${lang}: ${fact.icon}`);
+          }
+          
+          // Validate image structure if present
+          if (fact.image) {
+            if (!fact.image.storageRef) {
+              throw new Error(`Fact ${fact.id} image missing storageRef in ${lang} translation`);
+            }
+            if (!fact.image.caption) {
+              throw new Error(`Fact ${fact.id} image missing caption in ${lang} translation`);
+            }
+          }
+        }
+      }
+      
+      if (zoneData.translations[lang].historicalInfo) {
+        const error = validateIcons(zoneData.translations[lang].historicalInfo);
+        if (error) throw new Error(`Invalid historical info icon in ${lang}: ${error}`);
+      }
     }
     
     // Validate news icons if provided
@@ -475,8 +499,9 @@ async function addPartnerZone(zoneData, imagesDir) {
       console.log(`📍 Converted ${zoneData.pois.length} POI coordinates to GeoPoints`);
     }
     
-    // Process tour waypoint coordinates
+    // Process tour waypoint coordinates (supports both single tour and multiple tours)
     if (zoneData.tour && zoneData.tour.waypoints) {
+      // Legacy single tour format
       zoneData.tour.waypoints = zoneData.tour.waypoints.map(waypoint => ({
         ...waypoint,
         coords: new admin.firestore.GeoPoint(
@@ -484,7 +509,26 @@ async function addPartnerZone(zoneData, imagesDir) {
           waypoint.coords.lng
         )
       }));
-      console.log(`📍 Converted ${zoneData.tour.waypoints.length} tour waypoint coordinates to GeoPoints`);
+      console.log(`📍 Converted ${zoneData.tour.waypoints.length} tour waypoint coordinates to GeoPoints (legacy single tour)`);
+    }
+    
+    if (zoneData.tours && Array.isArray(zoneData.tours)) {
+      // New multiple tours format
+      let totalWaypoints = 0;
+      zoneData.tours = zoneData.tours.map(tour => {
+        if (tour.waypoints && Array.isArray(tour.waypoints)) {
+          tour.waypoints = tour.waypoints.map(waypoint => ({
+            ...waypoint,
+            coords: new admin.firestore.GeoPoint(
+              waypoint.coords.lat,
+              waypoint.coords.lng
+            )
+          }));
+          totalWaypoints += tour.waypoints.length;
+        }
+        return tour;
+      });
+      console.log(`📍 Converted ${totalWaypoints} waypoint coordinates across ${zoneData.tours.length} tours to GeoPoints`);
     }
     
     // Store everything in the main document
@@ -509,7 +553,7 @@ async function addPartnerZone(zoneData, imagesDir) {
     console.log(`    • Stats: ${zoneData.translations.en.stats?.length || 0}`);
     console.log(`    • Facts: ${zoneData.translations.en.interestingFacts?.length || 0}`);
     console.log(`    • POIs: ${zoneData.pois?.length || 0}`);
-    console.log(`    • Tour: ${zoneData.tour ? '✓' : '✗'}`);
+    console.log(`    • Tours: ${zoneData.tours ? zoneData.tours.length : (zoneData.tour ? '1 (legacy)' : '0')}`);
     console.log(`    • Quiz: ${zoneData.quiz ? '✓' : '✗'}`);
     console.log(`    • Tickets: ${zoneData.tickets ? '✓' : '✗'}`);
     

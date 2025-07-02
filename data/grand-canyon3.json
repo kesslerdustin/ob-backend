@@ -53,7 +53,7 @@
       }
     }
   },
-  "hasTour": true,
+  "hasTours": true,
   "hasQuiz": true,
   "hasTickets": true,
   "translations": {
@@ -415,27 +415,47 @@
         {
           "id": "geology",
           "icon": "landscape",
-          "text": "Die Gesteinsschichten des Grand Canyon enthüllen 2 Milliarden Jahre der geologischen Geschichte der Erde."
+          "text": "Die Gesteinsschichten des Grand Canyon enthüllen 2 Milliarden Jahre der geologischen Geschichte der Erde.",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/rock-layers.jpg",
+            "caption": "Verschiedene Gesteinsschichten zeigen die geologische Zeitlinie"
+          }
         },
         {
           "id": "ecosystem", 
           "icon": "eco",
-          "text": "Der Canyon beherbergt fünf der sieben Lebenszonen Nordamerikas und drei der vier Wüstentypen."
+          "text": "Der Canyon beherbergt fünf der sieben Lebenszonen Nordamerikas und drei der vier Wüstentypen.",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/ecosystems.jpg",
+            "caption": "Vielfältige Ökosysteme innerhalb des Canyons"
+          }
         },
         {
           "id": "river",
           "icon": "water", 
-          "text": "Der Colorado River fließt mit einer durchschnittlichen Geschwindigkeit von 12.000 Kubikfuß pro Sekunde durch den Canyon."
+          "text": "Der Colorado River fließt mit einer durchschnittlichen Geschwindigkeit von 12.000 Kubikfuß pro Sekunde durch den Canyon.",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/colorado-river.jpg",
+            "caption": "Colorado River fließt durch den Canyon"
+          }
         },
         {
           "id": "native_history",
           "icon": "account_balance",
-          "text": "Amerikanische Ureinwohner bewohnen die Grand Canyon Region seit über 4.000 Jahren kontinuierlich."
+          "text": "Amerikanische Ureinwohner bewohnen die Grand Canyon Region seit über 4.000 Jahren kontinuierlich.",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/native-settlements.jpg",
+            "caption": "Alte Behausungen der amerikanischen Ureinwohner"
+          }
         },
         {
           "id": "climate",
           "icon": "thermostat", 
-          "text": "Temperaturunterschiede zwischen Rand und Canyonboden können 25°C (45°F) überschreiten."
+          "text": "Temperaturunterschiede zwischen Rand und Canyonboden können 25°C (45°F) überschreiten.",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/temperature-variation.jpg",
+            "caption": "Visualisierung der Temperaturunterschiede"
+          }
         }
       ],
       "stats": [
@@ -561,27 +581,47 @@
         {
           "id": "geology",
           "icon": "landscape",
-          "text": "Las capas de roca del Gran Cañón revelan 2 mil millones de años de historia geológica de la Tierra."
+          "text": "Las capas de roca del Gran Cañón revelan 2 mil millones de años de historia geológica de la Tierra.",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/rock-layers.jpg",
+            "caption": "Capas distintas de roca mostrando la línea de tiempo geológica"
+          }
         },
         {
           "id": "ecosystem",
           "icon": "eco", 
-          "text": "El cañón contiene cinco de las siete zonas de vida de América del Norte y tres de los cuatro tipos de desierto."
+          "text": "El cañón contiene cinco de las siete zonas de vida de América del Norte y tres de los cuatro tipos de desierto.",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/ecosystems.jpg",
+            "caption": "Ecosistemas diversos dentro del cañón"
+          }
         },
         {
           "id": "river",
           "icon": "water",
-          "text": "El Río Colorado fluye a través del cañón a una velocidad promedio de 12,000 pies cúbicos por segundo."
+          "text": "El Río Colorado fluye a través del cañón a una velocidad promedio de 12,000 pies cúbicos por segundo.",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/colorado-river.jpg",
+            "caption": "Río Colorado fluyendo a través del cañón"
+          }
         },
         {
           "id": "native_history",
           "icon": "account_balance",
-          "text": "Los nativos americanos han habitado continuamente la región del Gran Cañón durante más de 4,000 años."
+          "text": "Los nativos americanos han habitado continuamente la región del Gran Cañón durante más de 4,000 años.",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/native-settlements.jpg",
+            "caption": "Antiguos asentamientos de nativos americanos"
+          }
         },
         {
           "id": "climate",
           "icon": "thermostat",
-          "text": "Las variaciones de temperatura entre el borde y el fondo del cañón pueden exceder los 25°C (45°F)."
+          "text": "Las variaciones de temperatura entre el borde y el fondo del cañón pueden exceder los 25°C (45°F).",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/temperature-variation.jpg",
+            "caption": "Diferencias de temperatura visualizadas"
+          }
         }
       ],
       "stats": [
@@ -707,27 +747,47 @@
         {
           "id": "geology",
           "icon": "landscape",
-          "text": "Les couches rocheuses du Grand Canyon révèlent 2 milliards d'années d'histoire géologique de la Terre."
+          "text": "Les couches rocheuses du Grand Canyon révèlent 2 milliards d'années d'histoire géologique de la Terre.",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/rock-layers.jpg",
+            "caption": "Couches distinctes de roche montrant la chronologie géologique"
+          }
         },
         {
           "id": "ecosystem",
           "icon": "eco",
-          "text": "Le canyon contient cinq des sept zones de vie de l'Amérique du Nord et trois des quatre types de désert."
+          "text": "Le canyon contient cinq des sept zones de vie de l'Amérique du Nord et trois des quatre types de désert.",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/ecosystems.jpg",
+            "caption": "Écosystèmes diversifiés dans le canyon"
+          }
         },
         {
           "id": "river",
           "icon": "water",
-          "text": "Le fleuve Colorado coule à travers le canyon à un débit moyen de 12 000 pieds cubes par seconde."
+          "text": "Le fleuve Colorado coule à travers le canyon à un débit moyen de 12 000 pieds cubes par seconde.",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/colorado-river.jpg",
+            "caption": "Fleuve Colorado coulant à travers le canyon"
+          }
         },
         {
           "id": "native_history",
           "icon": "account_balance",
-          "text": "Les Amérindiens habitent continuellement la région du Grand Canyon depuis plus de 4 000 ans."
+          "text": "Les Amérindiens habitent continuellement la région du Grand Canyon depuis plus de 4 000 ans.",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/native-settlements.jpg",
+            "caption": "Anciennes habitations amérindiennes"
+          }
         },
         {
           "id": "climate",
           "icon": "thermostat",
-          "text": "Les variations de température entre le bord et le fond du canyon peuvent dépasser 25°C (45°F)."
+          "text": "Les variations de température entre le bord et le fond du canyon peuvent dépasser 25°C (45°F).",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/temperature-variation.jpg",
+            "caption": "Différences de température visualisées"
+          }
         }
       ],
       "stats": [
@@ -853,27 +913,47 @@
         {
           "id": "geology",
           "icon": "landscape",
-          "text": "Gli strati rocciosi del Grand Canyon rivelano 2 miliardi di anni di storia geologica della Terra."
+          "text": "Gli strati rocciosi del Grand Canyon rivelano 2 miliardi di anni di storia geologica della Terra.",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/rock-layers.jpg",
+            "caption": "Strati distinti di roccia che mostrano la cronologia geologica"
+          }
         },
         {
           "id": "ecosystem",
           "icon": "eco",
-          "text": "Il canyon contiene cinque delle sette zone di vita del Nord America e tre dei quattro tipi di deserto."
+          "text": "Il canyon contiene cinque delle sette zone di vita del Nord America e tre dei quattro tipi di deserto.",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/ecosystems.jpg",
+            "caption": "Ecosistemi diversificati all'interno del canyon"
+          }
         },
         {
           "id": "river",
           "icon": "water",
-          "text": "Il fiume Colorado scorre attraverso il canyon a una velocità media di 12.000 piedi cubi al secondo."
+          "text": "Il fiume Colorado scorre attraverso il canyon a una velocità media di 12.000 piedi cubi al secondo.",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/colorado-river.jpg",
+            "caption": "Fiume Colorado che scorre attraverso il canyon"
+          }
         },
         {
           "id": "native_history",
           "icon": "account_balance",
-          "text": "I nativi americani hanno abitato continuamente la regione del Grand Canyon per oltre 4.000 anni."
+          "text": "I nativi americani hanno abitato continuamente la regione del Grand Canyon per oltre 4.000 anni.",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/native-settlements.jpg",
+            "caption": "Antiche abitazioni dei nativi americani"
+          }
         },
         {
           "id": "climate",
           "icon": "thermostat",
-          "text": "Le variazioni di temperatura tra il bordo e il fondo del canyon possono superare i 25°C (45°F)."
+          "text": "Le variazioni di temperatura tra il bordo e il fondo del canyon possono superare i 25°C (45°F).",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/temperature-variation.jpg",
+            "caption": "Differenze di temperatura visualizzate"
+          }
         }
       ],
       "stats": [
@@ -999,27 +1079,47 @@
         {
           "id": "geology",
           "icon": "landscape",
-          "text": "As camadas rochosas do Grand Canyon revelam 2 bilhões de anos de história geológica da Terra."
+          "text": "As camadas rochosas do Grand Canyon revelam 2 bilhões de anos de história geológica da Terra.",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/rock-layers.jpg",
+            "caption": "Camadas distintas de rocha mostrando a cronologia geológica"
+          }
         },
         {
           "id": "ecosystem",
           "icon": "eco",
-          "text": "O canyon contém cinco das sete zonas de vida da América do Norte e três dos quatro tipos de deserto."
+          "text": "O canyon contém cinco das sete zonas de vida da América do Norte e três dos quatro tipos de deserto.",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/ecosystems.jpg",
+            "caption": "Ecossistemas diversificados dentro do canyon"
+          }
         },
         {
           "id": "river",
           "icon": "water",
-          "text": "O Rio Colorado flui através do canyon a uma velocidade média de 12.000 pés cúbicos por segundo."
+          "text": "O Rio Colorado flui através do canyon a uma velocidade média de 12.000 pés cúbicos por segundo.",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/colorado-river.jpg",
+            "caption": "Rio Colorado fluindo através do canyon"
+          }
         },
         {
           "id": "native_history",
           "icon": "account_balance",
-          "text": "Os nativos americanos habitaram continuamente a região do Grand Canyon por mais de 4.000 anos."
+          "text": "Os nativos americanos habitaram continuamente a região do Grand Canyon por mais de 4.000 anos.",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/native-settlements.jpg",
+            "caption": "Antigas habitações de nativos americanos"
+          }
         },
         {
           "id": "climate",
           "icon": "thermostat",
-          "text": "As variações de temperatura entre a borda e o fundo do canyon podem exceder 25°C (45°F)."
+          "text": "As variações de temperatura entre a borda e o fundo do canyon podem exceder 25°C (45°F).",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/temperature-variation.jpg",
+            "caption": "Diferenças de temperatura visualizadas"
+          }
         }
       ],
       "stats": [
@@ -1145,27 +1245,47 @@
         {
           "id": "geology",
           "icon": "landscape",
-          "text": "グランドキャニオンの岩層は、20億年の地球の地質学的歴史を物語っています。"
+          "text": "グランドキャニオンの岩層は、20億年の地球の地質学的歴史を物語っています。",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/rock-layers.jpg",
+            "caption": "地質学的タイムラインを示す異なる岩層"
+          }
         },
         {
           "id": "ecosystem",
           "icon": "eco",
-          "text": "峡谷には北アメリカの7つの生命圏のうち5つと、4つの砂漠タイプのうち3つが含まれています。"
+          "text": "峡谷には北アメリカの7つの生命圏のうち5つと、4つの砂漠タイプのうち3つが含まれています。",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/ecosystems.jpg",
+            "caption": "峡谷内の多様な生態系"
+          }
         },
         {
           "id": "river",
           "icon": "water",
-          "text": "コロラド川は毎秒平均12,000立方フィートの流量で峡谷を流れています。"
+          "text": "コロラド川は毎秒平均12,000立方フィートの流量で峡谷を流れています。",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/colorado-river.jpg",
+            "caption": "峡谷を流れるコロラド川"
+          }
         },
         {
           "id": "native_history",
           "icon": "account_balance",
-          "text": "ネイティブアメリカンは4,000年以上にわたってグランドキャニオン地域に継続的に住み続けています。"
+          "text": "ネイティブアメリカンは4,000年以上にわたってグランドキャニオン地域に継続的に住み続けています。",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/native-settlements.jpg",
+            "caption": "古代ネイティブアメリカンの住居"
+          }
         },
         {
           "id": "climate",
           "icon": "thermostat",
-          "text": "峡谷の縁と底部の温度差は25°C（45°F）を超えることがあります。"
+          "text": "峡谷の縁と底部の温度差は25°C（45°F）を超えることがあります。",
+          "image": {
+            "storageRef": "partner-zones/grand-canyon/facts/temperature-variation.jpg",
+            "caption": "視覚化された温度差"
+          }
         }
       ],
       "stats": [
@@ -1375,6 +1495,25 @@
         "https://example.com/images/hopi-sunset.jpg",
         "https://example.com/images/hopi-panorama.jpg"
       ],
+      "gallery": {
+        "storagePrefix": "partner-zones/grand-canyon/pois/hopi-point/",
+        "images": [
+          {
+            "id": "sunset-view",
+            "filename": "sunset-view.jpg",
+            "type": "main",
+            "translations": {
+              "en": { "caption": "Spectacular sunset view from Hopi Point" },
+              "de": { "caption": "Spektakulärer Sonnenuntergang vom Hopi Point" },
+              "es": { "caption": "Vista espectacular del atardecer desde Punto Hopi" },
+              "fr": { "caption": "Vue spectaculaire du coucher de soleil depuis Point Hopi" },
+              "it": { "caption": "Vista spettacolare del tramonto dal Punto Hopi" },
+              "pt": { "caption": "Vista espetacular do pôr do sol do Ponto Hopi" },
+              "ja": { "caption": "ホピポイントからの壮大な夕日の眺め" }
+            }
+          }
+        ]
+      },
       "translations": {
         "en": {
           "title": "Hopi Point",
@@ -1421,6 +1560,25 @@
         "https://example.com/images/geology-museum.jpg",
         "https://example.com/videos/geology-tour.mp4"
       ],
+      "gallery": {
+        "storagePrefix": "partner-zones/grand-canyon/pois/yavapai-point/",
+        "images": [
+          {
+            "id": "museum-exterior",
+            "filename": "museum-exterior.jpg",
+            "type": "main",
+            "translations": {
+              "en": { "caption": "Yavapai Geology Museum exterior with canyon views" },
+              "de": { "caption": "Äußeres des Yavapai Geologiemuseums mit Canyon-Aussicht" },
+              "es": { "caption": "Exterior del Museo Geológico Yavapai con vistas del cañón" },
+              "fr": { "caption": "Extérieur du Musée Géologique Yavapai avec vues sur le canyon" },
+              "it": { "caption": "Esterno del Museo Geologico Yavapai con vista del canyon" },
+              "pt": { "caption": "Exterior do Museu Geológico Yavapai com vista do canyon" },
+              "ja": { "caption": "キャニオンの景色を望むヤバパイ地質博物館の外観" }
+            }
+          }
+        ]
+      },
       "translations": {
         "en": {
           "title": "Yavapai Point & Geology Museum",
@@ -1453,103 +1611,192 @@
       }
     }
   ],
-  "tour": {
-    "translations": {
-      "en": {
-        "name": "South Rim Highlights",
-        "description": "A scenic tour along the South Rim's most spectacular viewpoints and historic structures.",
-        "waypoints": [
-          {
-            "id": "visitor-center",
-            "title": "Grand Canyon Visitor Center",
-            "info": "Start your tour here. Get maps, information, and watch the introductory film.",
-            "images": [
-              {
-                "id": "vc-exterior",
-                "storageRef": "partner-zones/grand-canyon/tour/visitor-center/exterior.jpg",
-                "caption": "Visitor Center entrance"
-              },
-              {
-                "id": "vc-exhibits",
-                "storageRef": "partner-zones/grand-canyon/tour/visitor-center/exhibits.jpg",
-                "caption": "Interactive exhibits inside"
-              }
-            ]
-          },
-          {
-            "id": "mather-point",
-            "title": "Mather Point",
-            "info": "Your first dramatic view of the canyon. Perfect for photos!"
-          },
-          {
-            "id": "yavapai-point",
-            "title": "Yavapai Point & Geology Museum",
-            "info": "Learn about the canyon's formation and rock layers."
-          },
-          {
-            "id": "hopi-point",
-            "title": "Hopi Point",
-            "info": "Best sunset viewing spot. Arrive 30 minutes before sunset."
-          }
-        ]
+  "tours": [
+    {
+      "id": "south-rim-highlights",
+      "translations": {
+        "en": {
+          "name": "South Rim Highlights",
+          "description": "A scenic tour along the South Rim's most spectacular viewpoints and historic structures.",
+          "waypoints": [
+            {
+              "id": "visitor-center",
+              "title": "Grand Canyon Visitor Center",
+              "info": "Start your tour here. Get maps, information, and watch the introductory film.",
+              "images": [
+                {
+                  "id": "vc-exterior",
+                  "storageRef": "partner-zones/grand-canyon/tour/visitor-center/exterior.jpg",
+                  "caption": "Visitor Center entrance"
+                },
+                {
+                  "id": "vc-exhibits",
+                  "storageRef": "partner-zones/grand-canyon/tour/visitor-center/exhibits.jpg",
+                  "caption": "Interactive exhibits inside"
+                }
+              ]
+            },
+            {
+              "id": "mather-point",
+              "title": "Mather Point",
+              "info": "Your first dramatic view of the canyon. Perfect for photos!"
+            },
+            {
+              "id": "yavapai-point",
+              "title": "Yavapai Point & Geology Museum",
+              "info": "Learn about the canyon's formation and rock layers."
+            },
+            {
+              "id": "hopi-point",
+              "title": "Hopi Point",
+              "info": "Best sunset viewing spot. Arrive 30 minutes before sunset."
+            }
+          ]
+        },
+        "de": {
+          "name": "South Rim Höhepunkte",
+          "description": "Eine malerische Tour entlang der spektakulärsten Aussichtspunkte und historischen Bauwerke des South Rim.",
+          "waypoints": [
+            {
+              "id": "visitor-center",
+              "title": "Grand Canyon Besucherzentrum",
+              "info": "Beginnen Sie hier Ihre Tour. Holen Sie sich Karten, Informationen und sehen Sie sich den Einführungsfilm an."
+            },
+            {
+              "id": "mather-point",
+              "title": "Mather Point",
+              "info": "Ihr erster dramatischer Blick auf den Canyon. Perfekt für Fotos!"
+            },
+            {
+              "id": "yavapai-point",
+              "title": "Yavapai Point & Geologisches Museum",
+              "info": "Erfahren Sie mehr über die Entstehung des Canyons und seine Gesteinsschichten."
+            },
+            {
+              "id": "hopi-point",
+              "title": "Hopi Point",
+              "info": "Bester Aussichtspunkt für den Sonnenuntergang. Kommen Sie 30 Minuten vor Sonnenuntergang."
+            }
+          ]
+        }
       },
-      "de": {
-        "name": "South Rim Höhepunkte",
-        "description": "Eine malerische Tour entlang der spektakulärsten Aussichtspunkte und historischen Bauwerke des South Rim.",
-        "waypoints": [
-          {
-            "id": "visitor-center",
-            "title": "Grand Canyon Besucherzentrum",
-            "info": "Beginnen Sie hier Ihre Tour. Holen Sie sich Karten, Informationen und sehen Sie sich den Einführungsfilm an."
-          },
-          {
-            "id": "mather-point",
-            "title": "Mather Point",
-            "info": "Ihr erster dramatischer Blick auf den Canyon. Perfekt für Fotos!"
-          },
-          {
-            "id": "yavapai-point",
-            "title": "Yavapai Point & Geologisches Museum",
-            "info": "Erfahren Sie mehr über die Entstehung des Canyons und seine Gesteinsschichten."
-          },
-          {
-            "id": "hopi-point",
-            "title": "Hopi Point",
-            "info": "Bester Aussichtspunkt für den Sonnenuntergang. Kommen Sie 30 Minuten vor Sonnenuntergang."
-          }
-        ]
-      }
+      "duration": "4-6 hours",
+      "difficulty": "Easy to moderate",
+      "distance": "7.5 miles",
+      "waypoints": [
+        {
+          "id": "visitor-center",
+          "coords": { "lat": 36.0544, "lng": -112.1241 },
+          "estimatedTime": 45,
+          "type": "start"
+        },
+        {
+          "id": "mather-point",
+          "coords": { "lat": 36.0520, "lng": -112.1276 },
+          "estimatedTime": 30,
+          "type": "viewpoint"
+        },
+        {
+          "id": "yavapai-point",
+          "coords": { "lat": 36.0520, "lng": -112.1276 },
+          "estimatedTime": 60,
+          "type": "museum"
+        },
+        {
+          "id": "hopi-point",
+          "coords": { "lat": 36.0590, "lng": -112.1420 },
+          "estimatedTime": 45,
+          "type": "viewpoint"
+        }
+      ]
     },
-    "duration": "4-6 hours",
-    "difficulty": "Easy to moderate",
-    "distance": "7.5 miles",
-    "waypoints": [
-      {
-        "id": "visitor-center",
-        "coords": { "lat": 36.0544, "lng": -112.1241 },
-        "estimatedTime": 45,
-        "type": "start"
+    {
+      "id": "geology-deep-dive",
+      "translations": {
+        "en": {
+          "name": "Geological Time Journey",
+          "description": "Focus on the canyon's rock layers and geological formations. Perfect for geology enthusiasts and educational groups.",
+          "waypoints": [
+            {
+              "id": "yavapai-geology-museum",
+              "title": "Yavapai Geology Museum",
+              "info": "Start with comprehensive geological exhibits and rock samples."
+            },
+            {
+              "id": "trail-of-time",
+              "title": "Trail of Time",
+              "info": "Walk through 2 billion years of Earth's history along this interpretive trail."
+            },
+            {
+              "id": "kolb-studio",
+              "title": "Kolb Studio",
+              "info": "Historic photography studio with geological timeline exhibits."
+            },
+            {
+              "id": "lookout-studio",
+              "title": "Lookout Studio",
+              "info": "Mary Colter-designed building offering close-up views of rock formations."
+            }
+          ]
+        },
+        "de": {
+          "name": "Geologische Zeitreise",
+          "description": "Fokus auf die Gesteinsschichten und geologischen Formationen des Canyons. Perfekt für Geologie-Enthusiasten und Bildungsgruppen.",
+          "waypoints": [
+            {
+              "id": "yavapai-geology-museum",
+              "title": "Yavapai Geologisches Museum",
+              "info": "Beginnen Sie mit umfassenden geologischen Ausstellungen und Gesteinsproben."
+            },
+            {
+              "id": "trail-of-time",
+              "title": "Pfad der Zeit",
+              "info": "Wandeln Sie durch 2 Milliarden Jahre Erdgeschichte entlang dieses Lehrpfads."
+            },
+            {
+              "id": "kolb-studio",
+              "title": "Kolb Studio",
+              "info": "Historisches Fotostudio mit geologischen Zeitleisten-Ausstellungen."
+            },
+            {
+              "id": "lookout-studio",
+              "title": "Lookout Studio",
+              "info": "Von Mary Colter entworfenes Gebäude mit Nahaufnahmen der Gesteinsformationen."
+            }
+          ]
+        }
       },
-      {
-        "id": "mather-point",
-        "coords": { "lat": 36.0520, "lng": -112.1276 },
-        "estimatedTime": 30,
-        "type": "viewpoint"
-      },
-      {
-        "id": "yavapai-point",
-        "coords": { "lat": 36.0520, "lng": -112.1276 },
-        "estimatedTime": 60,
-        "type": "museum"
-      },
-      {
-        "id": "hopi-point",
-        "coords": { "lat": 36.0590, "lng": -112.1420 },
-        "estimatedTime": 45,
-        "type": "viewpoint"
-      }
-    ]
-  },
+      "duration": "2-3 hours",
+      "difficulty": "Easy",
+      "distance": "3.2 miles",
+      "waypoints": [
+        {
+          "id": "yavapai-geology-museum",
+          "coords": { "lat": 36.0520, "lng": -112.1276 },
+          "estimatedTime": 60,
+          "type": "museum"
+        },
+        {
+          "id": "trail-of-time",
+          "coords": { "lat": 36.0580, "lng": -112.1300 },
+          "estimatedTime": 45,
+          "type": "trail"
+        },
+        {
+          "id": "kolb-studio",
+          "coords": { "lat": 36.0595, "lng": -112.1395 },
+          "estimatedTime": 30,
+          "type": "historic"
+        },
+        {
+          "id": "lookout-studio",
+          "coords": { "lat": 36.0598, "lng": -112.1398 },
+          "estimatedTime": 30,
+          "type": "viewpoint"
+        }
+      ]
+    }
+  ],
   "quiz": {
     "translations": {
       "en": {
