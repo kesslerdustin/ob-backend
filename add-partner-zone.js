@@ -113,59 +113,108 @@ function validateTranslationCompleteness(zoneData) {
       }
     }
     
-    // Validate stats - these are now in the main English stats array with nested translations
-    if (lang === 'en' && translation.stats) {
-      if (!Array.isArray(translation.stats)) {
-        errors.push(`Language ${lang} stats must be an array`);
+    // Validate stats - these are objects with keys, not arrays
+    if (translation.stats) {
+      if (typeof translation.stats !== 'object' || Array.isArray(translation.stats)) {
+        errors.push(`Language ${lang} stats must be an object`);
       } else {
-        for (const stat of translation.stats) {
-          const statError = validateStat(stat, supportedLanguages);
-          if (statError) {
-            errors.push(`Stats validation error: ${statError}`);
+        // Validate each stat in the object
+        for (const [statId, statTranslation] of Object.entries(translation.stats)) {
+          if (!statTranslation.label) {
+            errors.push(`Language ${lang} stat ${statId} missing label`);
+          }
+          if (!statTranslation.description) {
+            errors.push(`Language ${lang} stat ${statId} missing description`);
           }
         }
       }
     }
     
-    // Validate interesting facts
+    // Validate interesting facts - these are objects with keys, not arrays
     if (translation.interestingFacts) {
-      if (!Array.isArray(translation.interestingFacts)) {
-        errors.push(`Language ${lang} interestingFacts must be an array`);
+      if (typeof translation.interestingFacts !== 'object' || Array.isArray(translation.interestingFacts)) {
+        errors.push(`Language ${lang} interestingFacts must be an object`);
       } else {
-        for (const fact of translation.interestingFacts) {
-          if (!fact.id) errors.push(`Language ${lang} fact missing ID`);
-          if (!fact.text) errors.push(`Language ${lang} fact ${fact.id} missing text`);
-          if (!fact.icon) errors.push(`Language ${lang} fact ${fact.id} missing icon`);
-          if (fact.icon && !SUPPORTED_ICONS.includes(fact.icon)) {
-            errors.push(`Language ${lang} fact ${fact.id} has unsupported icon: ${fact.icon}`);
+        for (const [factId, factTranslation] of Object.entries(translation.interestingFacts)) {
+          if (!factTranslation.text) {
+            errors.push(`Language ${lang} fact ${factId} missing text`);
           }
         }
       }
     }
     
-    // Validate historical info
+    // Validate historical info - icon is in root object, not translation
     if (translation.historicalInfo) {
       if (!translation.historicalInfo.text) {
         errors.push(`Language ${lang} historicalInfo missing text`);
       }
-      if (!translation.historicalInfo.icon) {
-        errors.push(`Language ${lang} historicalInfo missing icon`);
-      }
-      if (translation.historicalInfo.icon && !SUPPORTED_ICONS.includes(translation.historicalInfo.icon)) {
-        errors.push(`Language ${lang} historicalInfo has unsupported icon: ${translation.historicalInfo.icon}`);
+      // Check icon in root historicalInfo object instead of translation
+      if (zoneData.historicalInfo && zoneData.historicalInfo.icon && !SUPPORTED_ICONS.includes(zoneData.historicalInfo.icon)) {
+        errors.push(`Root historicalInfo has unsupported icon: ${zoneData.historicalInfo.icon}`);
       }
     }
     
-    // Validate news if present
+    // Validate news if present in translations - these are objects with keys, not arrays
     if (translation.news) {
-      if (!Array.isArray(translation.news)) {
-        errors.push(`Language ${lang} news must be an array`);
+      if (typeof translation.news !== 'object' || Array.isArray(translation.news)) {
+        errors.push(`Language ${lang} news must be an object`);
       } else {
-        for (const newsItem of translation.news) {
-          if (!newsItem.id) errors.push(`Language ${lang} news item missing ID`);
-          if (!newsItem.title) errors.push(`Language ${lang} news item ${newsItem.id} missing title`);
-          if (!newsItem.summary) errors.push(`Language ${lang} news item ${newsItem.id} missing summary`);
-          if (!newsItem.content) errors.push(`Language ${lang} news item ${newsItem.id} missing content`);
+        for (const [newsId, newsTranslation] of Object.entries(translation.news)) {
+          if (!newsTranslation.title) {
+            errors.push(`Language ${lang} news item ${newsId} missing title`);
+          }
+          if (!newsTranslation.summary) {
+            errors.push(`Language ${lang} news item ${newsId} missing summary`);
+          }
+          if (!newsTranslation.content) {
+            errors.push(`Language ${lang} news item ${newsId} missing content`);
+          }
+        }
+      }
+    }
+  }
+  
+  // Validate root-level stats structure if present
+  if (zoneData.stats) {
+    if (typeof zoneData.stats !== 'object' || Array.isArray(zoneData.stats)) {
+      errors.push('Root stats must be an object');
+    } else {
+      for (const [statId, stat] of Object.entries(zoneData.stats)) {
+        if (!stat.icon) errors.push(`Root stat ${statId} missing icon`);
+        if (!stat.value) errors.push(`Root stat ${statId} missing value`);
+        if (!stat.unit) errors.push(`Root stat ${statId} missing unit`);
+        if (stat.icon && !SUPPORTED_ICONS.includes(stat.icon)) {
+          errors.push(`Root stat ${statId} has unsupported icon: ${stat.icon}`);
+        }
+        if (stat.unit && !SUPPORTED_UNITS.includes(stat.unit)) {
+          errors.push(`Root stat ${statId} has unsupported unit: ${stat.unit}`);
+        }
+      }
+    }
+  }
+  
+  // Validate root-level interestingFacts structure if present
+  if (zoneData.interestingFacts) {
+    if (typeof zoneData.interestingFacts !== 'object' || Array.isArray(zoneData.interestingFacts)) {
+      errors.push('Root interestingFacts must be an object');
+    } else {
+      for (const [factId, fact] of Object.entries(zoneData.interestingFacts)) {
+        if (!fact.icon) errors.push(`Root fact ${factId} missing icon`);
+        if (fact.icon && !SUPPORTED_ICONS.includes(fact.icon)) {
+          errors.push(`Root fact ${factId} has unsupported icon: ${fact.icon}`);
+        }
+      }
+    }
+  }
+  
+  // Validate root-level news structure if present
+  if (zoneData.news) {
+    if (typeof zoneData.news !== 'object' || Array.isArray(zoneData.news)) {
+      errors.push('Root news must be an object');
+    } else {
+      for (const [newsId, newsItem] of Object.entries(zoneData.news)) {
+        if (newsItem.icon && !SUPPORTED_ICONS.includes(newsItem.icon)) {
+          errors.push(`Root news item ${newsId} has unsupported icon: ${newsItem.icon}`);
         }
       }
     }
@@ -176,38 +225,24 @@ function validateTranslationCompleteness(zoneData) {
 
 /**
  * Validates POI translations
- * @param {Array} pois Array of POI objects to validate
+ * @param {Object} pois Object of POI objects to validate
  * @param {Array<string>} supportedLanguages List of supported languages
  * @returns {Array<string>} Array of error messages
  */
 function validatePOITranslations(pois, supportedLanguages) {
   const errors = [];
   
-  if (!pois || !Array.isArray(pois)) return errors;
+  if (!pois || typeof pois !== 'object' || Array.isArray(pois)) return errors;
   
-  for (const poi of pois) {
-    if (!poi.id) {
-      errors.push('POI missing ID');
-      continue;
+  for (const [poiId, poi] of Object.entries(pois)) {
+    // Check if poi has translations in zone translations instead
+    // POI translations are stored in the main zone translations under pois section
+    // This function just validates the structure exists
+    if (!poi.type) {
+      errors.push(`POI ${poiId} missing type`);
     }
-    
-    if (!poi.translations) {
-      errors.push(`POI ${poi.id} missing translations object`);
-      continue;
-    }
-    
-    for (const lang of supportedLanguages) {
-      if (!poi.translations[lang]) {
-        errors.push(`POI ${poi.id} missing ${lang} translation`);
-        continue;
-      }
-      
-      if (!poi.translations[lang].title) {
-        errors.push(`POI ${poi.id} missing ${lang} title`);
-      }
-      if (!poi.translations[lang].description) {
-        errors.push(`POI ${poi.id} missing ${lang} description`);
-      }
+    if (!poi.coords) {
+      errors.push(`POI ${poiId} missing coords`);
     }
   }
   
@@ -216,41 +251,27 @@ function validatePOITranslations(pois, supportedLanguages) {
 
 /**
  * Validates tour translations
- * @param {Array} tours Array of tour objects to validate
+ * @param {Object} tours Object of tour objects to validate
  * @param {Array<string>} supportedLanguages List of supported languages
  * @returns {Array<string>} Array of error messages
  */
 function validateTourTranslations(tours, supportedLanguages) {
   const errors = [];
   
-  if (!tours || !Array.isArray(tours)) return errors;
+  if (!tours || typeof tours !== 'object' || Array.isArray(tours)) return errors;
   
-  for (const tour of tours) {
-    if (!tour.id) {
-      errors.push('Tour missing ID');
-      continue;
+  for (const [tourId, tour] of Object.entries(tours)) {
+    // Check basic tour structure
+    if (!tour.duration) {
+      errors.push(`Tour ${tourId} missing duration`);
     }
-    
-    if (!tour.translations) {
-      errors.push(`Tour ${tour.id} missing translations object`);
-      continue;
+    if (!tour.difficulty) {
+      errors.push(`Tour ${tourId} missing difficulty`);
     }
-    
-    for (const lang of supportedLanguages) {
-      if (!tour.translations[lang]) {
-        errors.push(`Tour ${tour.id} missing ${lang} translation`);
-        continue;
-      }
-      
-      if (!tour.translations[lang].name) {
-        errors.push(`Tour ${tour.id} missing ${lang} name`);
-      }
-      if (!tour.translations[lang].description) {
-        errors.push(`Tour ${tour.id} missing ${lang} description`);
-      }
-      if (!tour.translations[lang].waypoints) {
-        errors.push(`Tour ${tour.id} missing ${lang} waypoints`);
-      }
+    if (!tour.waypoints) {
+      errors.push(`Tour ${tourId} missing waypoints`);
+    } else if (typeof tour.waypoints !== 'object') {
+      errors.push(`Tour ${tourId} waypoints must be an object`);
     }
   }
   
@@ -540,7 +561,7 @@ async function addPartnerZone(zoneData, imagesDir) {
     // Validate tours if provided
     if (zoneData.tours) {
       console.log('🚶 Validating tour translations...');
-      const supportedLanguages = Object.keys(zoneData.translations);
+    const supportedLanguages = Object.keys(zoneData.translations);
       const tourErrors = validateTourTranslations(zoneData.tours, supportedLanguages);
       if (tourErrors.length > 0) {
         console.error('❌ Tour validation errors:');
@@ -661,8 +682,9 @@ async function addPartnerZone(zoneData, imagesDir) {
     
     // Convert center coordinates to GeoPoint and generate geohashes
     if (zoneData.center) {
-      const originalLat = zoneData.center.lat;
-      const originalLng = zoneData.center.lng;
+      // Handle both array format [lat, lng] and object format {lat, lng}
+      const originalLat = Array.isArray(zoneData.center) ? zoneData.center[0] : zoneData.center.lat;
+      const originalLng = Array.isArray(zoneData.center) ? zoneData.center[1] : zoneData.center.lng;
       
       // Generate geohashes for efficient querying
       const geohashes = generateGeohashes(originalLat, originalLng, zoneData.searchRadius || 50);
@@ -683,9 +705,12 @@ async function addPartnerZone(zoneData, imagesDir) {
     
     // Convert polygon coordinates to GeoPoints if provided
     if (zoneData.areaPolygon) {
-      zoneData.areaPolygon = zoneData.areaPolygon.map(point => 
-        new admin.firestore.GeoPoint(point.lat, point.lng)
-      );
+      zoneData.areaPolygon = zoneData.areaPolygon.map(point => {
+        // Handle both array format [lat, lng] and object format {lat, lng}
+        const lat = Array.isArray(point) ? point[0] : point.lat;
+        const lng = Array.isArray(point) ? point[1] : point.lng;
+        return new admin.firestore.GeoPoint(lat, lng);
+      });
       console.log(`📍 Converted ${zoneData.areaPolygon.length} polygon points to GeoPoints`);
     }
     
@@ -698,17 +723,17 @@ async function addPartnerZone(zoneData, imagesDir) {
     const zoneRef = db.collection('partnerZones').doc(zoneData.id);
     
     // Process POIs coordinates
-    if (zoneData.pois && zoneData.pois.length > 0) {
-      zoneData.pois = zoneData.pois.map(poi => {
+    if (zoneData.pois && typeof zoneData.pois === 'object') {
+      for (const [poiId, poi] of Object.entries(zoneData.pois)) {
         if (poi.coords) {
-          poi.coords = new admin.firestore.GeoPoint(
-            poi.coords.lat,
-            poi.coords.lng
-          );
+          // Handle both array format [lat, lng] and object format {lat, lng}
+          const lat = Array.isArray(poi.coords) ? poi.coords[0] : poi.coords.lat;
+          const lng = Array.isArray(poi.coords) ? poi.coords[1] : poi.coords.lng;
+          poi.coords = new admin.firestore.GeoPoint(lat, lng);
         }
-        return poi;
-      });
-      console.log(`📍 Converted ${zoneData.pois.length} POI coordinates to GeoPoints`);
+      }
+      const poiCount = Object.keys(zoneData.pois).length;
+      console.log(`📍 Converted ${poiCount} POI coordinates to GeoPoints`);
     }
     
     // Process tour waypoint coordinates (supports both single tour and multiple tours)
@@ -724,23 +749,24 @@ async function addPartnerZone(zoneData, imagesDir) {
       console.log(`📍 Converted ${zoneData.tour.waypoints.length} tour waypoint coordinates to GeoPoints (legacy single tour)`);
     }
     
-    if (zoneData.tours && Array.isArray(zoneData.tours)) {
-      // New multiple tours format
+    if (zoneData.tours && typeof zoneData.tours === 'object') {
+      // Handle tours as object with tour IDs as keys
       let totalWaypoints = 0;
-      zoneData.tours = zoneData.tours.map(tour => {
-        if (tour.waypoints && Array.isArray(tour.waypoints)) {
-          tour.waypoints = tour.waypoints.map(waypoint => ({
-            ...waypoint,
-            coords: new admin.firestore.GeoPoint(
-              waypoint.coords.lat,
-              waypoint.coords.lng
-            )
-          }));
-          totalWaypoints += tour.waypoints.length;
+      for (const [tourId, tour] of Object.entries(zoneData.tours)) {
+        if (tour.waypoints && typeof tour.waypoints === 'object') {
+          for (const [waypointId, waypoint] of Object.entries(tour.waypoints)) {
+            if (waypoint.coords) {
+              // Handle both array format [lat, lng] and object format {lat, lng}
+              const lat = Array.isArray(waypoint.coords) ? waypoint.coords[0] : waypoint.coords.lat;
+              const lng = Array.isArray(waypoint.coords) ? waypoint.coords[1] : waypoint.coords.lng;
+              waypoint.coords = new admin.firestore.GeoPoint(lat, lng);
+              totalWaypoints++;
+            }
+          }
         }
-        return tour;
-      });
-      console.log(`📍 Converted ${totalWaypoints} waypoint coordinates across ${zoneData.tours.length} tours to GeoPoints`);
+      }
+      const tourCount = Object.keys(zoneData.tours).length;
+      console.log(`📍 Converted ${totalWaypoints} waypoint coordinates across ${tourCount} tours to GeoPoints`);
     }
     
     // Store everything in the main document
@@ -762,12 +788,12 @@ async function addPartnerZone(zoneData, imagesDir) {
     console.log(`  - Center: ${zoneData.center.latitude}, ${zoneData.center.longitude}`);
     console.log(`  - Features:`);
     console.log(`    • Hero Image: ${zoneData.heroImage ? '✓' : '✗'}`);
-    console.log(`    • Stats: ${zoneData.translations.en.stats?.length || 0}`);
-    console.log(`    • Facts: ${zoneData.translations.en.interestingFacts?.length || 0}`);
+    console.log(`    • Stats: ${zoneData.translations.en.stats ? Object.keys(zoneData.translations.en.stats).length : 0}`);
+    console.log(`    • Facts: ${zoneData.translations.en.interestingFacts ? Object.keys(zoneData.translations.en.interestingFacts).length : 0}`);
     console.log(`    • Historical Info: ${zoneData.translations.en.historicalInfo ? '✓' : '✗'}`);
-    console.log(`    • News: ${zoneData.news?.length || 0}`);
-    console.log(`    • POIs: ${zoneData.pois?.length || 0}`);
-    console.log(`    • Tours: ${zoneData.tours ? zoneData.tours.length : (zoneData.tour ? '1 (legacy)' : '0')}`);
+    console.log(`    • News: ${zoneData.news ? Object.keys(zoneData.news).length : 0}`);
+    console.log(`    • POIs: ${zoneData.pois ? Object.keys(zoneData.pois).length : 0}`);
+    console.log(`    • Tours: ${zoneData.tours ? Object.keys(zoneData.tours).length : (zoneData.tour ? '1 (legacy)' : '0')}`);
     console.log(`    • Quiz: ${zoneData.quiz ? '✓' : '✗'}`);
     console.log(`    • Tickets: ${zoneData.tickets ? '✓' : '✗'}`);
     console.log(`    • Contact: ${zoneData.contact ? '✓' : '✗'}`);
