@@ -279,35 +279,36 @@ function validateTourTranslations(tours, supportedLanguages) {
 }
 
 /**
- * Validates quiz translations
- * @param {Object} quiz Quiz object to validate
+ * Validates quiz translations in the main translations object
+ * @param {Object} quiz Quiz object to validate (contains settings, questions, etc.)
+ * @param {Object} translations Main translations object from zone data
  * @param {Array<string>} supportedLanguages List of supported languages
  * @returns {Array<string>} Array of error messages
  */
-function validateQuizTranslations(quiz, supportedLanguages) {
+function validateQuizTranslations(quiz, translations, supportedLanguages) {
   const errors = [];
   
   if (!quiz) return errors;
   
-  if (!quiz.translations) {
-    errors.push('Quiz missing translations object');
-    return errors;
+  // Check that quiz has required structure (questions, settings, etc.)
+  if (!quiz.questions || typeof quiz.questions !== 'object') {
+    errors.push('Quiz missing questions object');
   }
   
+  // Validate quiz translations in the main translations object
   for (const lang of supportedLanguages) {
-    if (!quiz.translations[lang]) {
-      errors.push(`Quiz missing ${lang} translation`);
+    if (!translations[lang] || !translations[lang].quiz) {
+      errors.push(`Quiz missing ${lang} translation in main translations object`);
       continue;
     }
     
-    if (!quiz.translations[lang].title) {
+    const quizTranslation = translations[lang].quiz;
+    
+    if (!quizTranslation.title) {
       errors.push(`Quiz missing ${lang} title`);
     }
-    if (!quiz.translations[lang].description) {
+    if (!quizTranslation.description) {
       errors.push(`Quiz missing ${lang} description`);
-    }
-    if (!quiz.translations[lang].questions) {
-      errors.push(`Quiz missing ${lang} questions`);
     }
   }
   
@@ -315,31 +316,35 @@ function validateQuizTranslations(quiz, supportedLanguages) {
 }
 
 /**
- * Validates tickets translations
- * @param {Object} tickets Tickets object to validate
+ * Validates tickets translations in the main translations object
+ * @param {Object} tickets Tickets object to validate (contains offers, validUntil, etc.)
+ * @param {Object} translations Main translations object from zone data
  * @param {Array<string>} supportedLanguages List of supported languages
  * @returns {Array<string>} Array of error messages
  */
-function validateTicketsTranslations(tickets, supportedLanguages) {
+function validateTicketsTranslations(tickets, translations, supportedLanguages) {
   const errors = [];
   
   if (!tickets) return errors;
   
-  if (!tickets.translations) {
-    errors.push('Tickets missing translations object');
-    return errors;
+  // Check that tickets has required structure
+  if (!tickets.validUntil) {
+    errors.push('Tickets missing validUntil field');
   }
   
+  // Validate tickets translations in the main translations object
   for (const lang of supportedLanguages) {
-    if (!tickets.translations[lang]) {
-      errors.push(`Tickets missing ${lang} translation`);
+    if (!translations[lang] || !translations[lang].tickets) {
+      errors.push(`Tickets missing ${lang} translation in main translations object`);
       continue;
     }
     
-    if (!tickets.translations[lang].infoText) {
+    const ticketsTranslation = translations[lang].tickets;
+    
+    if (!ticketsTranslation.infoText) {
       errors.push(`Tickets missing ${lang} infoText`);
     }
-    if (!tickets.translations[lang].offers) {
+    if (!ticketsTranslation.offers) {
       errors.push(`Tickets missing ${lang} offers`);
     }
   }
@@ -555,7 +560,7 @@ async function addPartnerZone(zoneData, imagesDir) {
         poiErrors.forEach(error => console.error(`  - ${error}`));
         throw new Error(`POI validation failed: ${poiErrors.length} errors found`);
       }
-      console.log(`✅ Validated ${zoneData.pois.length} POIs`);
+      console.log(`✅ Validated ${Object.keys(zoneData.pois).length} POIs`);
     }
     
     // Validate tours if provided
@@ -568,14 +573,14 @@ async function addPartnerZone(zoneData, imagesDir) {
         tourErrors.forEach(error => console.error(`  - ${error}`));
         throw new Error(`Tour validation failed: ${tourErrors.length} errors found`);
       }
-      console.log(`✅ Validated ${zoneData.tours.length} tours`);
+      console.log(`✅ Validated ${Object.keys(zoneData.tours).length} tours`);
     }
     
     // Validate quiz if provided
     if (zoneData.quiz) {
       console.log('🧠 Validating quiz translations...');
       const supportedLanguages = Object.keys(zoneData.translations);
-      const quizErrors = validateQuizTranslations(zoneData.quiz, supportedLanguages);
+      const quizErrors = validateQuizTranslations(zoneData.quiz, zoneData.translations, supportedLanguages);
       if (quizErrors.length > 0) {
         console.error('❌ Quiz validation errors:');
         quizErrors.forEach(error => console.error(`  - ${error}`));
@@ -588,7 +593,7 @@ async function addPartnerZone(zoneData, imagesDir) {
     if (zoneData.tickets) {
       console.log('🎫 Validating ticket translations...');
       const supportedLanguages = Object.keys(zoneData.translations);
-      const ticketErrors = validateTicketsTranslations(zoneData.tickets, supportedLanguages);
+      const ticketErrors = validateTicketsTranslations(zoneData.tickets, zoneData.translations, supportedLanguages);
       if (ticketErrors.length > 0) {
         console.error('❌ Ticket validation errors:');
         ticketErrors.forEach(error => console.error(`  - ${error}`));
@@ -604,31 +609,24 @@ async function addPartnerZone(zoneData, imagesDir) {
         throw new Error('Hero image missing storageRef');
       }
       
-      // Support new translation format
-      if (zoneData.heroImage.translations) {
-        // New translation format - validate that English translation exists
-        if (!zoneData.heroImage.translations.en) {
-          throw new Error('Hero image missing English translation');
-        }
-        if (!zoneData.heroImage.translations.en.caption) {
-          throw new Error('Hero image missing English caption in translations');
-        }
-        if (!zoneData.heroImage.translations.en.alt) {
-          throw new Error('Hero image missing English alt text in translations');
-        }
-        
-        // Validate all provided language translations have required fields
-        const supportedLanguages = Object.keys(zoneData.translations);
-        for (const lang of supportedLanguages) {
-          if (zoneData.heroImage.translations[lang]) {
-            if (!zoneData.heroImage.translations[lang].caption) {
-              throw new Error(`Hero image missing ${lang} caption in translations`);
-            }
-            if (!zoneData.heroImage.translations[lang].alt) {
-              throw new Error(`Hero image missing ${lang} alt text in translations`);
-            }
+      // Hero image translations are now in the main translations object under heroImage key
+      // or the image can have a simple caption property for basic support
+      const supportedLanguages = Object.keys(zoneData.translations);
+      let hasTranslations = false;
+      
+      for (const lang of supportedLanguages) {
+        if (zoneData.translations[lang] && zoneData.translations[lang].heroImage) {
+          hasTranslations = true;
+          const heroTranslation = zoneData.translations[lang].heroImage;
+          if (!heroTranslation.caption) {
+            throw new Error(`Hero image missing ${lang} caption in main translations`);
           }
         }
+      }
+      
+      // If no translations found in main object, check for basic caption in hero image itself
+      if (!hasTranslations && !zoneData.heroImage.caption) {
+        console.warn('⚠️ Hero image has no caption in translations or root object');
       }
       
       console.log('✅ Hero image validation passed');
@@ -637,33 +635,15 @@ async function addPartnerZone(zoneData, imagesDir) {
     // Validate news icons and structure
     if (zoneData.news) {
       console.log('📰 Validating news items...');
-      if (!Array.isArray(zoneData.news)) {
-        throw new Error('News must be an array');
+      if (typeof zoneData.news !== 'object' || Array.isArray(zoneData.news)) {
+        throw new Error('News must be an object with news IDs as keys');
       }
-      for (const newsItem of zoneData.news) {
+      for (const [newsId, newsItem] of Object.entries(zoneData.news)) {
         if (newsItem.icon && !SUPPORTED_ICONS.includes(newsItem.icon)) {
-          throw new Error(`News item ${newsItem.id} has unsupported icon: ${newsItem.icon}`);
-        }
-        
-        // Validate news translations
-        if (newsItem.translations) {
-          const supportedLanguages = Object.keys(zoneData.translations);
-          for (const lang of supportedLanguages) {
-            if (newsItem.translations[lang]) {
-              if (!newsItem.translations[lang].title) {
-                throw new Error(`News item ${newsItem.id} missing ${lang} title`);
-              }
-              if (!newsItem.translations[lang].summary) {
-                throw new Error(`News item ${newsItem.id} missing ${lang} summary`);
-              }
-              if (!newsItem.translations[lang].content) {
-                throw new Error(`News item ${newsItem.id} missing ${lang} content`);
-              }
-            }
-          }
+          throw new Error(`News item ${newsId} has unsupported icon: ${newsItem.icon}`);
         }
       }
-      console.log(`✅ Validated ${zoneData.news.length} news items`);
+      console.log(`✅ Validated ${Object.keys(zoneData.news).length} news items`);
     }
     
     // Process and upload all images first
