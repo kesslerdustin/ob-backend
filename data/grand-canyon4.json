@@ -467,17 +467,7 @@
       "description": "Einer der berühmtesten Nationalparks der Welt, bekannt für seine geschichteten roten Gesteinsformationen, die Millionen Jahre geologischer Geschichte offenbaren.",
       "historicalInfo": {
         "text": "Vom Colorado River über Millionen von Jahren geformt, ist der Grand Canyon seit Jahrhunderten die Heimat amerikanischer Ureinwohner.",
-        "icon": "history_edu",
-        "images": [
-          {
-            "id": "history-1",
-            "storageRef": "partner-zones/grand-canyon/history/colorado-river-erosion.jpg"
-          },
-          {
-            "id": "history-2",
-            "storageRef": "partner-zones/grand-canyon/history/native-tribes.jpg"
-          }
-        ]
+        "icon": "history_edu"
       },
       "interestingFacts": [
         {
@@ -643,17 +633,7 @@
       "description": "Uno de los parques nacionales más famosos del mundo, conocido por sus bandas estratificadas de roca roja que revelan millones de años de historia geológica.",
       "historicalInfo": {
         "text": "Tallado por el Río Colorado durante millones de años, el Gran Cañón ha sido hogar de tribus nativas americanas durante siglos.",
-        "icon": "history_edu",
-        "images": [
-          {
-            "id": "history-1",
-            "storageRef": "partner-zones/grand-canyon/history/colorado-river-erosion.jpg"
-          },
-          {
-            "id": "history-2",
-            "storageRef": "partner-zones/grand-canyon/history/native-tribes.jpg"
-          }
-        ]
+        "icon": "history_edu"
       },
       "interestingFacts": [
         {
@@ -819,17 +799,7 @@
       "description": "L'un des parcs nationaux les plus célèbres au monde, connu pour ses bandes de roche rouge révélant des millions d'années d'histoire géologique.",
       "historicalInfo": {
         "text": "Sculpté par le fleuve Colorado pendant des millions d'années, le Grand Canyon abrite des tribus amérindiennes depuis des siècles.",
-        "icon": "history_edu",
-        "images": [
-          {
-            "id": "history-1",
-            "storageRef": "partner-zones/grand-canyon/history/colorado-river-erosion.jpg"
-          },
-          {
-            "id": "history-2",
-            "storageRef": "partner-zones/grand-canyon/history/native-tribes.jpg"
-          }
-        ]
+        "icon": "history_edu"
       },
       "interestingFacts": [
         {
@@ -995,17 +965,7 @@
       "description": "Uno dei parchi nazionali più famosi al mondo, noto per i suoi strati di roccia rossa che rivelano milioni di anni di storia geologica.",
       "historicalInfo": {
         "text": "Scolpito dal fiume Colorado nel corso di milioni di anni, il Grand Canyon è stato la casa delle tribù dei nativi americani per secoli.",
-        "icon": "history_edu",
-        "images": [
-          {
-            "id": "history-1",
-            "storageRef": "partner-zones/grand-canyon/history/colorado-river-erosion.jpg"
-          },
-          {
-            "id": "history-2",
-            "storageRef": "partner-zones/grand-canyon/history/native-tribes.jpg"
-          }
-        ]
+        "icon": "history_edu"
       },
       "interestingFacts": [
         {
@@ -1171,17 +1131,7 @@
       "description": "Um dos parques nacionais mais famosos do mundo, conhecido por suas camadas de rocha vermelha que revelam milhões de anos de história geológica.",
       "historicalInfo": {
         "text": "Esculpido pelo Rio Colorado ao longo de milhões de anos, o Grand Canyon tem sido lar de tribos nativas americanas por séculos.",
-        "icon": "history_edu",
-        "images": [
-          {
-            "id": "history-1",
-            "storageRef": "partner-zones/grand-canyon/history/colorado-river-erosion.jpg"
-          },
-          {
-            "id": "history-2",
-            "storageRef": "partner-zones/grand-canyon/history/native-tribes.jpg"
-          }
-        ]
+        "icon": "history_edu"
       },
       "interestingFacts": [
         {
@@ -1347,17 +1297,7 @@
       "description": "世界で最も有名な国立公園の1つで、何百万年もの地質学的歴史を物語る層状の赤い岩層で知られています。",
       "historicalInfo": {
         "text": "コロラド川によって何百万年もかけて形成され、グランドキャニオンは何世紀にもわたってネイティブアメリカンの部族の故郷となってきました。",
-        "icon": "history_edu",
-        "images": [
-          {
-            "id": "history-1",
-            "storageRef": "partner-zones/grand-canyon/history/colorado-river-erosion.jpg"
-          },
-          {
-            "id": "history-2",
-            "storageRef": "partner-zones/grand-canyon/history/native-tribes.jpg"
-          }
-        ]
+        "icon": "history_edu"
       },
       "interestingFacts": [
         {
