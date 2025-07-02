@@ -1,5 +1,5 @@
 {
-    "id": "grand-canyon5",
+    "id": "grand-canyon",
     "author": "Wildscope",
     "official": true,
     "active": true,
@@ -66,7 +66,7 @@
     },
     "translations": {
       "en": {
-        "name": "Graaaand Canyon National Park", "region": "Arizona, USA", "description": "One of the world's most famous national parks, known for its layered bands of red rock revealing millions of years of geological history.",
+        "name": "Grand Canyon National Park", "region": "Arizona, USA", "description": "One of the world's most famous national parks, known for its layered bands of red rock revealing millions of years of geological history.",
         "heroImage": { "caption": "Panoramic view of Grand Canyon National Park from the South Rim", "alt": "Grand Canyon panoramic landscape view" },
         "stats": {
           "age": { "label": "Age", "description": "Time since the canyon's formation began" }, "depth": { "label": "Depth", "description": "Maximum depth of the canyon" },
@@ -100,7 +100,7 @@
         "tickets": { "infoText": "As a Wildscope user, you get a 10% discount on entrance fees and guided tours!", "offers": { "park_entrance": { "name": "Park Entrance", "description": "7-day entrance pass for one private vehicle and all its passengers" } }, "terms": ["Discount valid only with Wildscope app verification", "Cannot be combined with other offers", "Subject to availability", "Advance booking recommended"] }
       },
       "de": {
-        "name": "Graaaand Canyon Nationalpark", "region": "Arizona, USA", "description": "Einer der berühmtesten Nationalparks der Welt, bekannt für seine geschichteten roten Gesteinsformationen, die Millionen Jahre geologischer Geschichte offenbaren.",
+        "name": "Grand Canyon Nationalpark", "region": "Arizona, USA", "description": "Einer der berühmtesten Nationalparks der Welt, bekannt für seine geschichteten roten Gesteinsformationen, die Millionen Jahre geologischer Geschichte offenbaren.",
         "heroImage": { "caption": "Panoramablick auf den Grand Canyon Nationalpark vom South Rim", "alt": "Grand Canyon Panorama-Landschaftsansicht" },
         "stats": { "age": { "label": "Alter", "description": "Zeit seit der Entstehung des Canyons" }, "depth": { "label": "Tiefe", "description": "Maximale Tiefe des Canyons" }, "length": { "label": "Länge", "description": "Gesamtlänge des Canyons" }, "width": { "label": "Breite", "description": "Maximale Breite des Canyons" }, "visitors": { "label": "Jährliche Besucher", "description": "Durchschnittliche Besucherzahl pro Jahr" }, "elevation": { "label": "Randhöhe", "description": "Durchschnittliche Höhe am South Rim" } },
         "interestingFacts": {
@@ -130,7 +130,7 @@
         "tickets": { "infoText": "Als Wildscope-Nutzer erhalten Sie 10% Rabatt auf Eintrittspreise und geführte Touren!", "offers": { "park_entrance": { "name": "Parkeintritt", "description": "7-Tage-Eintrittskarte für ein Privatfahrzeug und alle Insassen" } }, "terms": ["Rabatt nur gültig mit Wildscope-App-Verifizierung", "Nicht mit anderen Angeboten kombinierbar", "Vorbehaltlich der Verfügbarkeit", "Vorherige Buchung empfohlen"] }
       },
       "es": {
-        "name": "Parque Nacional del Graaan Cañón", "region": "Arizona, EE.UU.", "description": "Uno de los parques nacionales más famosos del mundo, conocido por sus bandas estratificadas de roca roja que revelan millones de años de historia geológica.",
+        "name": "Parque Nacional del Gran Cañón", "region": "Arizona, EE.UU.", "description": "Uno de los parques nacionales más famosos del mundo, conocido por sus bandas estratificadas de roca roja que revelan millones de años de historia geológica.",
         "heroImage": { "caption": "Vista panorámica del Parque Nacional del Gran Cañón desde el Borde Sur", "alt": "Vista panorámica del paisaje del Gran Cañón" },
         "stats": { "age": { "label": "Edad", "description": "Tiempo desde que comenzó la formación del cañón" }, "depth": { "label": "Profundidad", "description": "Profundidad máxima del cañón" }, "length": { "label": "Longitud", "description": "Longitud total del cañón" }, "width": { "label": "Anchura", "description": "Anchura máxima del cañón" }, "visitors": { "label": "Visitantes Anuales", "description": "Número promedio de visitantes por año" }, "elevation": { "label": "Elevación del Borde", "description": "Elevación promedio en el Borde Sur" } },
         "interestingFacts": { "geology": { "text": "Las capas de roca del Gran Cañón revelan 2 mil millones de años de historia geológica de la Tierra.", "image": { "caption": "Capas distintas de roca mostrando la línea de tiempo geológica" } }, "ecosystem": { "text": "El cañón contiene cinco de las siete zonas de vida de América del Norte y tres de los cuatro tipos de desierto.", "image": { "caption": "Ecosistemas diversos dentro del cañón" } }, "river": { "text": "El Río Colorado fluye a través del cañón a una velocidad promedio de 12,000 pies cúbicos por segundo.", "image": { "caption": "Río Colorado fluyendo a través del cañón" } }, "native_history": { "text": "Los nativos americanos han habitado continuamente la región del Gran Cañón durante más de 4,000 años.", "image": { "caption": "Antiguos asentamientos de nativos americanos" } }, "climate": { "text": "Las variaciones de temperatura entre el borde y el fondo del cañón pueden exceder los 25°C (45°F).", "image": { "caption": "Diferencias de temperatura visualizadas" } } },

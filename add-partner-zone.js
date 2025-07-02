@@ -28,40 +28,19 @@ if (!admin.apps.length) {
 const storage = admin.storage();
 const bucket = storage.bucket(process.env.FIREBASE_STORAGE_BUCKET || 'outdoor-bible.appspot.com');
 
-// Supported units for stats
-const SUPPORTED_UNITS = [
-  'km', 'm', 'miles', 'ft', 'million', 'billion', 'million_years', 'celsius', 'fahrenheit'
-];
-
-// Common Material Icons used in the app
-const SUPPORTED_ICONS = [
-  // Material Icons (md)
-  'history', 'height', 'straighten', 'expand', 'groups', 'terrain',
-  'landscape', 'eco', 'water', 'account_balance', 'thermostat',
-  'history_edu', 'mountain', 'park', 'hiking', 'photo_camera',
-  'explore', 'map', 'info', 'warning', 'local_activity',
-  
-  // Ionicons
-  'leaf-outline', 'leaf', 'paw-outline', 'paw', 'compass-outline',
-  'analytics-outline', 'walk-outline', 'eye-outline', 'flame-outline',
-  'map-outline', 'shield-outline', 'trophy-outline', 'star-outline',
-  'medal-outline', 'school-outline', 'school', 'location-outline',
-  'location', 'checkmark-circle-outline', 'layers-outline',
-  'calendar-outline', 'calendar', 'time-outline', 'time',
-  'apps-outline', 'navigate-outline', 'library-outline',
-  'share-outline', 'share', 'people', 'earth-outline',
-  'earth', 'globe-outline', 'globe', 'flower-outline',
-  'flower', 'search-outline', 'chatbubble-outline',
-  'chatbubbles-outline', 'chatbubbles', 'tree-outline',
-  'flag-outline', 'airplane-outline', 'cloud-offline-outline',
-  'download-outline', 'information-circle-outline',
-  'document-text-outline', 'resize', 'settings',
-  
-  // MaterialCommunityIcons
-  'flash', 'compass', 'search', 'book', 'map',
-  'camera', 'chatbubble', 'analytics', 'navigate',
-  'information-circle', 'document-text'
-];
+// Import partner zone constants
+const {
+  SUPPORTED_UNITS,
+  SUPPORTED_ICONS,
+  NEWS_PRIORITIES,
+  NEWS_CATEGORIES,
+  POI_TYPES,
+  POI_AMENITIES,
+  TOUR_DIFFICULTIES,
+  WAYPOINT_TYPES,
+  QUIZ_QUESTION_TYPES,
+  ValidationHelpers
+} = require('./utils/partnerZoneConstants');
 
 /**
  * Validates a stat object with nested translations
@@ -216,6 +195,12 @@ function validateTranslationCompleteness(zoneData) {
         if (newsItem.icon && !SUPPORTED_ICONS.includes(newsItem.icon)) {
           errors.push(`Root news item ${newsId} has unsupported icon: ${newsItem.icon}`);
         }
+        if (newsItem.priority && !NEWS_PRIORITIES.includes(newsItem.priority)) {
+          errors.push(`Root news item ${newsId} has unsupported priority: ${newsItem.priority}`);
+        }
+        if (newsItem.category && !NEWS_CATEGORIES.includes(newsItem.category)) {
+          errors.push(`Root news item ${newsId} has unsupported category: ${newsItem.category}`);
+        }
       }
     }
   }
@@ -240,9 +225,21 @@ function validatePOITranslations(pois, supportedLanguages) {
     // This function just validates the structure exists
     if (!poi.type) {
       errors.push(`POI ${poiId} missing type`);
+    } else if (!POI_TYPES.includes(poi.type)) {
+      errors.push(`POI ${poiId} has unsupported type: ${poi.type}`);
     }
+    
     if (!poi.coords) {
       errors.push(`POI ${poiId} missing coords`);
+    }
+    
+    // Validate amenities if present
+    if (poi.amenities && Array.isArray(poi.amenities)) {
+      for (const amenity of poi.amenities) {
+        if (!POI_AMENITIES.includes(amenity)) {
+          errors.push(`POI ${poiId} has unsupported amenity: ${amenity}`);
+        }
+      }
     }
   }
   
@@ -267,11 +264,21 @@ function validateTourTranslations(tours, supportedLanguages) {
     }
     if (!tour.difficulty) {
       errors.push(`Tour ${tourId} missing difficulty`);
+    } else if (!TOUR_DIFFICULTIES.includes(tour.difficulty)) {
+      errors.push(`Tour ${tourId} has unsupported difficulty: ${tour.difficulty}`);
     }
+    
     if (!tour.waypoints) {
       errors.push(`Tour ${tourId} missing waypoints`);
     } else if (typeof tour.waypoints !== 'object') {
       errors.push(`Tour ${tourId} waypoints must be an object`);
+    } else {
+      // Validate waypoint types if present
+      for (const [waypointId, waypoint] of Object.entries(tour.waypoints)) {
+        if (waypoint.type && !WAYPOINT_TYPES.includes(waypoint.type)) {
+          errors.push(`Tour ${tourId} waypoint ${waypointId} has unsupported type: ${waypoint.type}`);
+        }
+      }
     }
   }
   
@@ -293,6 +300,13 @@ function validateQuizTranslations(quiz, translations, supportedLanguages) {
   // Check that quiz has required structure (questions, settings, etc.)
   if (!quiz.questions || typeof quiz.questions !== 'object') {
     errors.push('Quiz missing questions object');
+  } else {
+    // Validate question types if present
+    for (const [questionId, question] of Object.entries(quiz.questions)) {
+      if (question.type && !QUIZ_QUESTION_TYPES.includes(question.type)) {
+        errors.push(`Quiz question ${questionId} has unsupported type: ${question.type}`);
+      }
+    }
   }
   
   // Validate quiz translations in the main translations object
@@ -637,7 +651,7 @@ async function addPartnerZone(zoneData, imagesDir) {
       console.log('✅ Hero image validation passed');
     }
     
-    // Validate news icons and structure
+    // Validate news icons, priorities, and categories
     if (zoneData.news) {
       console.log('📰 Validating news items...');
       if (typeof zoneData.news !== 'object' || Array.isArray(zoneData.news)) {
@@ -646,6 +660,12 @@ async function addPartnerZone(zoneData, imagesDir) {
       for (const [newsId, newsItem] of Object.entries(zoneData.news)) {
         if (newsItem.icon && !SUPPORTED_ICONS.includes(newsItem.icon)) {
           throw new Error(`News item ${newsId} has unsupported icon: ${newsItem.icon}`);
+        }
+        if (newsItem.priority && !NEWS_PRIORITIES.includes(newsItem.priority)) {
+          throw new Error(`News item ${newsId} has unsupported priority: ${newsItem.priority}`);
+        }
+        if (newsItem.category && !NEWS_CATEGORIES.includes(newsItem.category)) {
+          throw new Error(`News item ${newsId} has unsupported category: ${newsItem.category}`);
         }
       }
       console.log(`✅ Validated ${Object.keys(zoneData.news).length} news items`);
@@ -704,8 +724,22 @@ async function addPartnerZone(zoneData, imagesDir) {
     if (!zoneData.createdAt) zoneData.createdAt = now;
     if (!zoneData.updatedAt) zoneData.updatedAt = now;
     
-    // Create main zone document
-    const zoneRef = db.collection('partnerZones').doc(zoneData.id);
+    // Add convenience boolean flags for features
+    console.log('🏷️ Setting feature flags...');
+    const hasLegacyTour = !!(zoneData.tour && (zoneData.tour.waypoints || zoneData.tour.description));
+    const hasMultipleTours = !!(zoneData.tours && typeof zoneData.tours === 'object' && Object.keys(zoneData.tours).length > 0);
+    
+    zoneData.hasTour = hasLegacyTour;
+    zoneData.hasTours = hasMultipleTours;
+    zoneData.hasQuiz = !!(zoneData.quiz && (zoneData.quiz.questions || zoneData.quiz.settings));
+    zoneData.hasTickets = !!(zoneData.tickets && (zoneData.tickets.offers || zoneData.tickets.validUntil));
+    
+    console.log('✅ Feature flags set:', {
+      hasTour: zoneData.hasTour,
+      hasTours: zoneData.hasTours,
+      hasQuiz: zoneData.hasQuiz,
+      hasTickets: zoneData.hasTickets
+    });
     
     // Process POIs coordinates
     if (zoneData.pois && typeof zoneData.pois === 'object') {
@@ -755,6 +789,7 @@ async function addPartnerZone(zoneData, imagesDir) {
     }
     
     // Store everything in the main document
+    const zoneRef = db.collection('partnerZones').doc(zoneData.id);
     await zoneRef.set(zoneData);
     console.log('✅ Created complete zone document with all data');
     
@@ -778,9 +813,9 @@ async function addPartnerZone(zoneData, imagesDir) {
     console.log(`    • Historical Info: ${zoneData.translations.en.historicalInfo ? '✓' : '✗'}`);
     console.log(`    • News: ${zoneData.news ? Object.keys(zoneData.news).length : 0}`);
     console.log(`    • POIs: ${zoneData.pois ? Object.keys(zoneData.pois).length : 0}`);
-    console.log(`    • Tours: ${zoneData.tours ? Object.keys(zoneData.tours).length : (zoneData.tour ? '1 (legacy)' : '0')}`);
-    console.log(`    • Quiz: ${zoneData.quiz ? '✓' : '✗'}`);
-    console.log(`    • Tickets: ${zoneData.tickets ? '✓' : '✗'}`);
+    console.log(`    • Tours: ${zoneData.tours ? Object.keys(zoneData.tours).length : (zoneData.tour ? '1 (legacy)' : '0')} (hasTour: ${zoneData.hasTour}, hasTours: ${zoneData.hasTours})`);
+    console.log(`    • Quiz: ${zoneData.quiz ? '✓' : '✗'} (hasQuiz: ${zoneData.hasQuiz})`);
+    console.log(`    • Tickets: ${zoneData.tickets ? '✓' : '✗'} (hasTickets: ${zoneData.hasTickets})`);
     console.log(`    • Contact: ${zoneData.contact ? '✓' : '✗'}`);
     
   } catch (error) {

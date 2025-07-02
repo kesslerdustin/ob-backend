@@ -1751,7 +1751,7 @@ try {
        
        // Unwanted content types
        const unwantedContent = [
-         'reaction', 'react to', 'reacts to', 'compilation', 'tiktok', 'shorts',
+          'tiktok', 'shorts',
          'prank', 'pranks', 'funny moments', 'fails', 'fail compilation',
          'meme', 'memes', 'cringe', 'roast', 'roasting', 'drama',
          'gossip', 'celebrity', 'influencer', 'vlog', 'daily vlog',
@@ -1759,7 +1759,7 @@ try {
          'gaming', 'fortnite', 'minecraft', 'roblox', 'among us',
          'music video', 'song', 'lyrics', 'cover song', 'dance',
          'anime', 'manga', 'cartoon', 'kids', 'children',
-         'toy', 'toys', 'play', 'playground'
+         'toy', 'toys', 'play', 'playground', 'wrestling', 'match', 'fight'
        ];
        
        // Check for Asian language indicators
