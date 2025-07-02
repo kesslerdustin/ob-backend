@@ -375,7 +375,63 @@ async function addPartnerZone(zoneData, imagesDir) {
       if (zoneData.translations[lang].historicalInfo) {
         const error = validateIcons(zoneData.translations[lang].historicalInfo);
         if (error) throw new Error(`Invalid historical info icon in ${lang}: ${error}`);
+        
+        // Validate historical info images if present
+        if (zoneData.translations[lang].historicalInfo.images) {
+          for (const image of zoneData.translations[lang].historicalInfo.images) {
+            if (!image.id) throw new Error(`Historical info image missing ID in ${lang} translation`);
+            if (!image.storageRef) throw new Error(`Historical info image ${image.id} missing storageRef in ${lang} translation`);
+          }
+        }
       }
+    }
+    
+    // Validate historical info image translations (only check English for translations structure)
+    if (zoneData.translations.en.historicalInfo && zoneData.translations.en.historicalInfo.images) {
+      console.log('🖼️ Validating historical info image translations...');
+      
+      for (const image of zoneData.translations.en.historicalInfo.images) {
+        // Check if any image has translations - if one does, we need to validate the structure
+        const hasTranslations = Object.values(zoneData.translations).some(lang => 
+          lang.historicalInfo && 
+          lang.historicalInfo.images &&
+          lang.historicalInfo.images.find(img => img.id === image.id && img.translations)
+        );
+        
+        if (hasTranslations) {
+          // Find the image with translations (should be in English)
+          const imageWithTranslations = zoneData.translations.en.historicalInfo.images.find(img => 
+            img.id === image.id && img.translations
+          );
+          
+          if (imageWithTranslations && imageWithTranslations.translations) {
+            // Validate that English translation exists
+            if (!imageWithTranslations.translations.en) {
+              throw new Error(`Historical info image ${image.id} missing English translation`);
+            }
+            if (!imageWithTranslations.translations.en.caption) {
+              throw new Error(`Historical info image ${image.id} missing English caption in translations`);
+            }
+            if (!imageWithTranslations.translations.en.alt) {
+              throw new Error(`Historical info image ${image.id} missing English alt text in translations`);
+            }
+            
+            // Validate that all supported languages have translations for this image
+            for (const lang of supportedLanguages) {
+              if (imageWithTranslations.translations[lang]) {
+                if (!imageWithTranslations.translations[lang].caption) {
+                  throw new Error(`Historical info image ${image.id} missing ${lang} caption in translations`);
+                }
+                if (!imageWithTranslations.translations[lang].alt) {
+                  throw new Error(`Historical info image ${image.id} missing ${lang} alt text in translations`);
+                }
+              }
+            }
+          }
+        }
+      }
+      
+      console.log('✅ Historical info image translations validation passed');
     }
     
     // Validate news icons if provided
