@@ -452,7 +452,12 @@ async function processImages(obj, imagesDir, uploadedFiles = new Set()) {
   }
   
   if (obj.gallery && obj.gallery.storagePrefix && obj.gallery.images) {
-    for (const image of obj.gallery.images) {
+    // Handle both array format (legacy) and object format (new structure)
+    const images = Array.isArray(obj.gallery.images) 
+      ? obj.gallery.images 
+      : Object.values(obj.gallery.images);
+    
+    for (const image of images) {
       const storagePath = obj.gallery.storagePrefix + image.filename;
       const localPath = path.join(imagesDir, storagePath);
       if (fs.existsSync(localPath)) {
