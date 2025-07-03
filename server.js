@@ -15,6 +15,7 @@ const revenueCatService = require('./services/revenueCatService');
 const premiumService = require('./services/premiumService');
 const { verifyFirebaseToken, optionalAuth, requirePremium, requireAdmin } = require('./middleware/auth');
 const { createUserRateLimit, createPremiumRateLimit } = require('./middleware/userRateLimit');
+const { setupHealthEndpoint } = require('./health-endpoint');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -133,7 +134,9 @@ const verifyAppPackage = (req, res, next) => {
     '/',
     '/test-firebase',
     '/api/queue-status',
-    '/api/analytics/status'
+    '/api/analytics/status',
+    '/health',
+    '/health/detailed'
   ];
 
   if (skipVerification.some(path => req.path.startsWith(path))) {
@@ -201,6 +204,7 @@ const getAllowedOrigins = () => {
     'https://exp.host/@duselk/theoutdoorbible',
     // Your backend URL (for server-to-server communication)
     'https://wildscope-dev-9f390cc204f1.herokuapp.com',
+    'https://wildscope-eu-9561557fae32.herokuapp.com',
     // Production domain from environment variable
     process.env.CORS_PRODUCTION_DOMAIN || 'https://wildscope.com',
   );
@@ -267,6 +271,9 @@ app.use((req, res, next) => {
 
 // Apply app package verification to all routes except public ones
 app.use(verifyAppPackage);
+
+// Set up health endpoints (must be before other routes)
+setupHealthEndpoint(app);
 
 try {
   console.log('Attempting to initialize Firebase Admin SDK...');
