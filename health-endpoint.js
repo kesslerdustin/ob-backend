@@ -2,11 +2,11 @@ const rateLimit = require('express-rate-limit');
 
 // Rate limiting configuration for health endpoint
 const healthRateLimit = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute window
-  max: 100, // Allow 100 requests per minute per IP
+  windowMs: 15 * 60 * 1000, // 15 minute window (increased from 1 minute)
+  max: 200, // Allow 200 requests per 15 minutes per IP (more generous over longer period)
   message: {
     error: 'Too many health check requests',
-    retryAfter: '1 minute'
+    retryAfter: '15 minutes'
   },
   standardHeaders: true, // Return rate limit info in headers
   legacyHeaders: false,
