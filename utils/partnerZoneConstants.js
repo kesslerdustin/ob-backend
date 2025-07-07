@@ -186,7 +186,10 @@ const WAYPOINT_TYPES = [
   'water',
   'emergency',
   'photo_spot',
-  'interpretation'
+  'interpretation',
+  'village',
+  'monastery',
+  'destination'
 ];
 
 // Quiz question types
