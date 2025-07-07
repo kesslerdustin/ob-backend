@@ -724,6 +724,9 @@ async function addPartnerZone(zoneData, imagesDir) {
     if (!zoneData.createdAt) zoneData.createdAt = now;
     if (!zoneData.updatedAt) zoneData.updatedAt = now;
     
+    // Initialize likes array if not provided
+    if (!zoneData.likes) zoneData.likes = [];
+    
     // Add convenience boolean flags for features
     console.log('🏷️ Setting feature flags...');
     const hasLegacyTour = !!(zoneData.tour && (zoneData.tour.waypoints || zoneData.tour.description));
@@ -806,6 +809,7 @@ async function addPartnerZone(zoneData, imagesDir) {
     console.log(`  - Region (EN): ${zoneData.translations.en.region}`);
     console.log(`  - Available translations: ${Object.keys(zoneData.translations).join(', ')}`);
     console.log(`  - Center: ${zoneData.center.latitude}, ${zoneData.center.longitude}`);
+    console.log(`  - Likes: ${zoneData.likes.length} users`);
     console.log(`  - Features:`);
     console.log(`    • Hero Image: ${zoneData.heroImage ? '✓' : '✗'}`);
     console.log(`    • Stats: ${zoneData.translations.en.stats ? Object.keys(zoneData.translations.en.stats).length : 0}`);
@@ -855,6 +859,11 @@ async function processZoneFile(filePath, imagesDir) {
     // userid is optional, but if provided must be a string
     if (zoneData.userid !== undefined && (typeof zoneData.userid !== 'string' || zoneData.userid.trim() === '')) {
       throw new Error('Invalid userid field: if provided, must be a non-empty string');
+    }
+    
+    // likes is optional, but if provided must be an array
+    if (zoneData.likes !== undefined && !Array.isArray(zoneData.likes)) {
+      throw new Error('Invalid likes field: if provided, must be an array');
     }
     
     // Validate translations

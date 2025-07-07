@@ -1,10 +1,11 @@
 {
-    "id": "grand-canyon",
+    "id": "grand-canyon2",
     "author": "Wildscope",
     "official": true,
     "active": true,
     "searchRadius": 50,
     "priority": 1,
+    "likes": [],
     "center": [36.1069, -112.1129],
     "areaPolygon": [
       [36.2995, -112.2764],
