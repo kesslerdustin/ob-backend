@@ -38,13 +38,13 @@
     },
     "contact": { "website": "https://www.nps.gov/grca/", "phone": "+1-928-638-7888", "email": "grca_information@nps.gov", "emergencyPhone": "+1-928-638-7805" },
     "news": {
-      "winter-closure-2024": { "date": "2024-12-15T10:00:00Z", "priority": "high", "icon": "warning", "category": "closure", "image": { "storageRef": "partner-zones/grand-canyon/news/winter-closure-2024.jpg", "imageSource": "NPS Photo" } },
-      "new-trail-opening-2024": { "date": "2024-11-20T14:30:00Z", "priority": "medium", "icon": "hiking", "category": "announcement", "image": { "storageRef": "partner-zones/grand-canyon/news/new-trail-2024.jpg", "imageSource": "NPS Photo" } },
-      "centennial-celebration-2025": { "date": "2024-10-01T09:00:00Z", "priority": "high", "icon": "local_activity", "category": "event", "image": { "storageRef": "partner-zones/grand-canyon/news/centennial-2025.jpg", "imageSource": "NPS Photo" } }
+      "winter-closure-2024": { "date": "2024-12-15T10:00:00Z", "priority": "high", "icon": "warning", "category": "closure", "image": { "storageRef": "partner-zones/grand-canyon/news/winter-closure-2024.jpg", "imageSource": "" } },
+      "new-trail-opening-2024": { "date": "2024-11-20T14:30:00Z", "priority": "medium", "icon": "hiking", "category": "announcement", "image": { "storageRef": "partner-zones/grand-canyon/news/new-trail-2024.jpg", "imageSource": "" } },
+      "centennial-celebration-2025": { "date": "2024-10-01T09:00:00Z", "priority": "high", "icon": "local_activity", "category": "event", "image": { "storageRef": "partner-zones/grand-canyon/news/centennial-2025.jpg", "imageSource": "" } }
     },
     "pois": {
       "bright-angel-lodge": { "type": "lodge", "coords": [36.0544, -112.0844], "amenities": ["restaurant", "gift_shop", "restrooms"], "gallery": { "storagePrefix": "partner-zones/grand-canyon/pois/bright-angel-lodge/", "images": { "exterior": { "filename": "exterior.jpg", "type": "main", "imageSource": "Grand Canyon National Park" }, "restaurant": { "filename": "restaurant.jpg", "type": "interior", "imageSource": "GetArchive" } } } },
-      "hopi-point": { "type": "viewpoint", "coords": [36.0590, -112.1420], "amenities": ["parking", "benches"], "gallery": { "storagePrefix": "partner-zones/grand-canyon/pois/hopi-point/", "images": { "sunset-view": { "filename": "sunset-view.jpg", "type": "main", "imageSource": "NPS Photo" } } } },
+      "hopi-point": { "type": "viewpoint", "coords": [36.0590, -112.1420], "amenities": ["parking", "benches"], "gallery": { "storagePrefix": "partner-zones/grand-canyon/pois/hopi-point/", "images": { "sunset-view": { "filename": "sunset-view.jpg", "type": "main", "imageSource": "Public Domain" } } } },
       "yavapai-point": { "type": "museum", "coords": [36.0520, -112.1276], "amenities": ["museum", "gift_shop", "restrooms", "water_fountain"], "gallery": { "storagePrefix": "partner-zones/grand-canyon/pois/yavapai-point/", "images": { "museum-exterior": { "filename": "museum-exterior.jpg", "type": "main", "imageSource": "Grand Canyon National Park" } } } }
     },
     "tours": {
@@ -55,7 +55,7 @@
       "settings": { "timePerQuestion": 30, "passingScore": 70, "randomizeQuestions": true, "showExplanations": true },
       "rewards": { "bronzeScore": 60, "silverScore": 80, "goldScore": 90, "completionAchievement": "grand_canyon_expert" },
       "questions": {
-        "gc_q1": { "type": "image_based", "image": { "storageRef": "partner-zones/grand-canyon/quiz/rock-layers.jpg", "imageSource": "NPS Photo" }, "correctOption": 1, "explanation": { "image": { "storageRef": "partner-zones/grand-canyon/quiz/vishnu-rocks.jpg", "imageSource": "Public Domain" } } },
+        "gc_q1": { "type": "image_based", "image": { "storageRef": "partner-zones/grand-canyon/quiz/rock-layers.jpg", "imageSource": "Public Domain" }, "correctOption": 1, "explanation": { "image": { "storageRef": "partner-zones/grand-canyon/quiz/vishnu-rocks.jpg", "imageSource": "Public Domain" } } },
         "gc_q2": { "type": "multiple_choice", "correctOption": 0 },
         "gc_q3": { "type": "multiple_choice", "correctOption": 0 },
         "gc_q4": { "type": "multiple_choice", "correctOption": 1 }
