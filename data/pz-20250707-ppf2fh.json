@@ -172,7 +172,7 @@
   },
   "pois": {
     "yes-super": {
-      "type": "",
+      "type": "camp",
       "coords": [
         51.568427,
         6.789382
