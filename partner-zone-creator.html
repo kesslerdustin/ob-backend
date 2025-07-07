@@ -458,6 +458,42 @@
         <details><summary>Tours</summary><div class="form-section"><div id="tours-container"></div><button type="button" class="btn-add" onclick="addTour()">Add Tour</button></div></details>
         
         <details>
+            <summary>Tickets & Special Offers</summary>
+            <div class="form-section">
+                <h3>Structural Info</h3>
+                <div class="form-group">
+                    <label>Valid Until (Date)</label>
+                    <input type="date" id="tickets-validUntil">
+                    <div class="field-hint">Optional: Set expiration date for offers</div>
+                </div>
+                <div class="form-group">
+                    <label>Ticket Link (URL)</label>
+                    <input type="url" id="tickets-ticketLink" placeholder="https://example.com/tickets">
+                    <div class="field-hint">Optional: Direct link to purchase tickets</div>
+                </div>
+                <hr>
+                <h3>Translatable Content</h3>
+                <div class="form-group">
+                    <label>Info Text (EN)</label>
+                    <textarea id="en-tickets-infoText" data-translatable-key="tickets.infoText" placeholder="e.g., As a Wildscope user, you get a 10% discount on entrance fees!"></textarea>
+                    <div class="field-hint">Main promotional text about the offers</div>
+                </div>
+                <div class="form-group">
+                    <label>Terms & Conditions (EN)</label>
+                    <textarea id="en-tickets-terms" data-translatable-key="tickets.terms" placeholder="One term per line, e.g.:
+Discount valid only with app verification
+Cannot be combined with other offers
+Subject to availability" rows="4"></textarea>
+                    <div class="field-hint">Enter one term per line</div>
+                </div>
+                <hr>
+                <h3>Offers</h3>
+                <div id="tickets-offers-container"></div>
+                <button type="button" class="btn-add" onclick="addTicketOffer()">Add Offer</button>
+            </div>
+        </details>
+        
+        <details>
             <summary>Quiz</summary>
             <div class="form-section">
                 <h3>Structural Info</h3>
@@ -688,6 +724,28 @@ function set(obj, path, value) {
         }
         current = current[key];
     }
+    current[keys[keys.length - 1]] = value;
+}
+
+function setTranslationValue(obj, path, value) {
+    // Safe version that ensures string values are not iterated over character by character
+    if (typeof value !== 'string') {
+        console.warn('setTranslationValue: Expected string value, got', typeof value, value);
+        return;
+    }
+    
+    const keys = path.split('.');
+    let current = obj;
+    
+    for (let i = 0; i < keys.length - 1; i++) {
+        const key = keys[i];
+        if (!current[key] || typeof current[key] !== 'object' || Array.isArray(current[key])) {
+            current[key] = {};
+        }
+        current = current[key];
+    }
+    
+    // Set the final value as a string, not as an iterable object
     current[keys[keys.length - 1]] = value;
 }
 
@@ -1002,6 +1060,246 @@ function updateWaypointTranslatableKeys(waypointContainer) {
     }
     if (infoInput) {
         infoInput.setAttribute('data-translatable-key', `waypoints.${waypointKey}.info`);
+    }
+}
+
+function addTicketOffer() {
+    const container = document.getElementById('tickets-offers-container');
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'repeater-item ticket-offer-item expanded';
+    itemDiv.innerHTML = `
+        ${createCollapsibleHeader('Ticket Offer', container.children.length + 1)}
+        <div class="repeater-content">
+            <h5>Structural Info</h5>
+            <div class="form-group">
+                <label>Offer ID</label>
+                <input type="text" class="offer-key" value="offer-${container.children.length + 1}" readonly>
+                <div class="field-hint">ID is auto-generated from offer name</div>
+            </div>
+            <div class="grid-3">
+                <div class="form-group">
+                    <label>Normal Price</label>
+                    <input type="number" step="0.01" class="offer-normalPrice" placeholder="35.00">
+                </div>
+                <div class="form-group">
+                    <label>Discounted Price</label>
+                    <input type="number" step="0.01" class="offer-discountedPrice" placeholder="31.50">
+                </div>
+                <div class="form-group">
+                    <label>Currency</label>
+                    <select class="offer-currency">
+                        <option value="USD">USD</option>
+                        <option value="EUR">EUR</option>
+                        <option value="GBP">GBP</option>
+                        <option value="CAD">CAD</option>
+                        <option value="AUD">AUD</option>
+                        <option value="JPY">JPY</option>
+                        <option value="CHF">CHF</option>
+                        <option value="SEK">SEK</option>
+                        <option value="NOK">NOK</option>
+                        <option value="DKK">DKK</option>
+                        <option value="PLN">PLN</option>
+                        <option value="CZK">CZK</option>
+                        <option value="HUF">HUF</option>
+                        <option value="RON">RON</option>
+                        <option value="BGN">BGN</option>
+                        <option value="HRK">HRK</option>
+                        <option value="RSD">RSD</option>
+                        <option value="MKD">MKD</option>
+                        <option value="BAM">BAM</option>
+                        <option value="ALL">ALL</option>
+                        <option value="MDL">MDL</option>
+                        <option value="UAH">UAH</option>
+                        <option value="BYN">BYN</option>
+                        <option value="RUB">RUB</option>
+                        <option value="CNY">CNY</option>
+                        <option value="INR">INR</option>
+                        <option value="KRW">KRW</option>
+                        <option value="THB">THB</option>
+                        <option value="VND">VND</option>
+                        <option value="IDR">IDR</option>
+                        <option value="MYR">MYR</option>
+                        <option value="SGD">SGD</option>
+                        <option value="PHP">PHP</option>
+                        <option value="BRL">BRL</option>
+                        <option value="ARS">ARS</option>
+                        <option value="CLP">CLP</option>
+                        <option value="COP">COP</option>
+                        <option value="PEN">PEN</option>
+                        <option value="UYU">UYU</option>
+                        <option value="BOB">BOB</option>
+                        <option value="PYG">PYG</option>
+                        <option value="MXN">MXN</option>
+                        <option value="ZAR">ZAR</option>
+                        <option value="NGN">NGN</option>
+                        <option value="EGP">EGP</option>
+                        <option value="MAD">MAD</option>
+                        <option value="TND">TND</option>
+                        <option value="DZD">DZD</option>
+                        <option value="LYD">LYD</option>
+                        <option value="SDG">SDG</option>
+                        <option value="ETB">ETB</option>
+                        <option value="KES">KES</option>
+                        <option value="UGX">UGX</option>
+                        <option value="TZS">TZS</option>
+                        <option value="RWF">RWF</option>
+                        <option value="BIF">BIF</option>
+                        <option value="DJF">DJF</option>
+                        <option value="SOS">SOS</option>
+                        <option value="ERN">ERN</option>
+                        <option value="MWK">MWK</option>
+                        <option value="ZMW">ZMW</option>
+                        <option value="ZWL">ZWL</option>
+                        <option value="BWP">BWP</option>
+                        <option value="LSL">LSL</option>
+                        <option value="SZL">SZL</option>
+                        <option value="NAD">NAD</option>
+                        <option value="AOA">AOA</option>
+                        <option value="MZN">MZN</option>
+                        <option value="MGA">MGA</option>
+                        <option value="KMF">KMF</option>
+                        <option value="SCR">SCR</option>
+                        <option value="MUR">MUR</option>
+                        <option value="MVR">MVR</option>
+                        <option value="LKR">LKR</option>
+                        <option value="PKR">PKR</option>
+                        <option value="AFN">AFN</option>
+                        <option value="BDT">BDT</option>
+                        <option value="BTN">BTN</option>
+                        <option value="NPR">NPR</option>
+                        <option value="MMK">MMK</option>
+                        <option value="LAK">LAK</option>
+                        <option value="KHR">KHR</option>
+                        <option value="BND">BND</option>
+                        <option value="FJD">FJD</option>
+                        <option value="PGK">PGK</option>
+                        <option value="SBD">SBD</option>
+                        <option value="VUV">VUV</option>
+                        <option value="WST">WST</option>
+                        <option value="TOP">TOP</option>
+                        <option value="XPF">XPF</option>
+                        <option value="NZD">NZD</option>
+                        <option value="CDF">CDF</option>
+                        <option value="XOF">XOF</option>
+                        <option value="XAF">XAF</option>
+                        <option value="GMD">GMD</option>
+                        <option value="GNF">GNF</option>
+                        <option value="SLE">SLE</option>
+                        <option value="LRD">LRD</option>
+                        <option value="CVE">CVE</option>
+                        <option value="STN">STN</option>
+                        <option value="GHS">GHS</option>
+                        <option value="SLL">SLL</option>
+                        <option value="CRC">CRC</option>
+                        <option value="NIO">NIO</option>
+                        <option value="HNL">HNL</option>
+                        <option value="GTQ">GTQ</option>
+                        <option value="BZD">BZD</option>
+                        <option value="SVC">SVC</option>
+                        <option value="PAB">PAB</option>
+                        <option value="DOP">DOP</option>
+                        <option value="HTG">HTG</option>
+                        <option value="JMD">JMD</option>
+                        <option value="CUP">CUP</option>
+                        <option value="BSD">BSD</option>
+                        <option value="BBD">BBD</option>
+                        <option value="XCD">XCD</option>
+                        <option value="TTD">TTD</option>
+                        <option value="GYD">GYD</option>
+                        <option value="SRD">SRD</option>
+                        <option value="FKP">FKP</option>
+                        <option value="SHP">SHP</option>
+                        <option value="GGP">GGP</option>
+                        <option value="JEP">JEP</option>
+                        <option value="IMP">IMP</option>
+                        <option value="GIP">GIP</option>
+                        <option value="ISK">ISK</option>
+                        <option value="FO">FO</option>
+                        <option value="AED">AED</option>
+                        <option value="SAR">SAR</option>
+                        <option value="QAR">QAR</option>
+                        <option value="BHD">BHD</option>
+                        <option value="KWD">KWD</option>
+                        <option value="OMR">OMR</option>
+                        <option value="YER">YER</option>
+                        <option value="JOD">JOD</option>
+                        <option value="SYP">SYP</option>
+                        <option value="LBP">LBP</option>
+                        <option value="ILS">ILS</option>
+                        <option value="IQD">IQD</option>
+                        <option value="IRR">IRR</option>
+                        <option value="GEL">GEL</option>
+                        <option value="AMD">AMD</option>
+                        <option value="AZN">AZN</option>
+                        <option value="KZT">KZT</option>
+                        <option value="UZS">UZS</option>
+                        <option value="KGS">KGS</option>
+                        <option value="TJS">TJS</option>
+                        <option value="TMT">TMT</option>
+                        <option value="MNT">MNT</option>
+                        <option value="KPW">KPW</option>
+                        <option value="HKD">HKD</option>
+                        <option value="MOP">MOP</option>
+                        <option value="TWD">TWD</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Validity Days</label>
+                <input type="number" class="offer-validityDays" placeholder="7" min="1">
+                <div class="field-hint">Number of days the ticket is valid for</div>
+            </div>
+            <hr>
+            <h5>Translatable Content</h5>
+            <div class="form-group">
+                <label>Offer Name (EN)</label>
+                <input type="text" data-translatable-key="PLACEHOLDER.name" placeholder="e.g., Park Entrance" oninput="updateOfferAutoId(this)">
+                <div class="field-hint">Name of the offer/ticket</div>
+            </div>
+            <div class="form-group">
+                <label>Description (EN)</label>
+                <textarea data-translatable-key="PLACEHOLDER.description" placeholder="e.g., 7-day entrance pass for one private vehicle and all its passengers"></textarea>
+                <div class="field-hint">Description of what the offer includes</div>
+            </div>
+        </div>
+    `;
+    container.appendChild(itemDiv);
+    
+    // Update the translatable keys with the actual offer ID
+    updateOfferTranslatableKeys(itemDiv);
+}
+
+function updateOfferAutoId(inputElement) {
+    const offerContainer = inputElement.closest('.ticket-offer-item');
+    const keyInput = offerContainer.querySelector('.offer-key');
+    const text = inputElement.value.trim();
+    
+    if (text) {
+        const slug = generateSlug(text, 'offer-');
+        keyInput.value = slug;
+        
+        // Update translatable keys
+        updateOfferTranslatableKeys(offerContainer);
+    } else {
+        // Fallback to numbered ID if no text
+        const offerNumber = Array.from(offerContainer.parentNode.children).indexOf(offerContainer) + 1;
+        keyInput.value = 'offer-' + offerNumber;
+        updateOfferTranslatableKeys(offerContainer);
+    }
+}
+
+function updateOfferTranslatableKeys(offerContainer) {
+    const offerKey = offerContainer.querySelector('.offer-key').value;
+    
+    // Update translatable key attributes
+    const nameInput = offerContainer.querySelector('[data-translatable-key*="PLACEHOLDER.name"]');
+    const descInput = offerContainer.querySelector('[data-translatable-key*="PLACEHOLDER.description"]');
+    
+    if (nameInput) {
+        nameInput.setAttribute('data-translatable-key', `tickets.offers.${offerKey}.name`);
+    }
+    if (descInput) {
+        descInput.setAttribute('data-translatable-key', `tickets.offers.${offerKey}.description`);
     }
 }
 
@@ -2036,8 +2334,16 @@ document.getElementById('json-form').addEventListener('submit', function(e) {
     try {
         const result = { likes: [] };
 
-    // 1. Structural Data
-    document.querySelectorAll('[data-key]').forEach(el => { if (el.closest('.repeater-item') || el.hasAttribute('data-translatable-key')) return; const key = el.dataset.key; result[key] = el.type === 'checkbox' ? el.checked : (el.type === 'number' ? (el.value === '' ? null : parseFloat(el.value)) : el.value); });
+    // 1. Structural Data (exclude translatable content)
+    document.querySelectorAll('[data-key]').forEach(el => { 
+        // Skip elements that are inside repeater items or have translatable keys
+        if (el.closest('.repeater-item') || el.hasAttribute('data-translatable-key')) return; 
+        
+        const key = el.dataset.key; 
+        if (key) {
+            result[key] = el.type === 'checkbox' ? el.checked : (el.type === 'number' ? (el.value === '' ? null : parseFloat(el.value)) : el.value); 
+        }
+    });
     result.center = [getFloat('#center-lat'), getFloat('#center-lon')];
     result.areaPolygon = Array.from(document.querySelectorAll('.polygon-point')).map(item => [getFloat('input:first-child', item), getFloat('input:last-child', item)]);
     result.customStyle = { color: getValue('#customStyle-color'), icon: getValue('.customStyle-icon') };
@@ -2048,6 +2354,41 @@ document.getElementById('json-form').addEventListener('submit', function(e) {
     
     // Dynamic structural data...
     ['stats', 'interestingFacts', 'news', 'pois', 'tours'].forEach(section => result[section] = {});
+    
+    // Add tickets data if any exist
+    const ticketsValidUntil = getValue('#tickets-validUntil');
+    const ticketsLink = getValue('#tickets-ticketLink');
+    const hasTicketOffers = document.querySelectorAll('.ticket-offer-item').length > 0;
+    
+    if (ticketsValidUntil || ticketsLink || hasTicketOffers) {
+        result.tickets = {};
+        
+        if (ticketsValidUntil) {
+            const date = new Date(ticketsValidUntil);
+            if (!isNaN(date.getTime())) {
+                result.tickets.validUntil = date.toISOString();
+            }
+        }
+        
+        if (ticketsLink) {
+            result.tickets.ticketLink = ticketsLink;
+        }
+        
+        if (hasTicketOffers) {
+            result.tickets.offers = {};
+            document.querySelectorAll('.ticket-offer-item').forEach(item => {
+                const key = getValue('.offer-key', item);
+                if (key) {
+                    result.tickets.offers[key] = {
+                        normalPrice: getFloat('.offer-normalPrice', item),
+                        discountedPrice: getFloat('.offer-discountedPrice', item),
+                        currency: getValue('.offer-currency', item),
+                        validityDays: parseInt(getValue('.offer-validityDays', item)) || null
+                    };
+                }
+            });
+        }
+    }
     document.querySelectorAll('.stat-item').forEach(item => { const key = getValue('.item-key', item); if(!key) return; result.stats[key] = { icon: getValue('.item-icon', item), value: getValue('.item-value', item), unit: getValue('.item-unit', item), secondaryValue: getValue('.item-secondaryValue', item), secondaryUnit: getValue('.item-secondaryUnit', item) }; });
     document.querySelectorAll('.fact-item').forEach(item => { const key = getValue('.item-key', item); if(!key) return; result.interestingFacts[key] = { icon: getValue('.item-icon', item), image: { storageRef: getValue('.item-image-storageRef', item), imageSource: getValue('.item-image-imageSource', item) } }; });
     document.querySelectorAll('.history-image-item').forEach(item => { const key = getValue('.item-key', item); if(!key) return; result.historicalInfo.images[key] = { storageRef: getValue('.item-storageRef', item), imageSource: getValue('.item-imageSource', item) }; });
@@ -2337,13 +2678,48 @@ document.getElementById('json-form').addEventListener('submit', function(e) {
                 }
             });
             
+            // Add tickets translations if any exist
+            const ticketsInfoText = getValue('#en-tickets-infoText');
+            const ticketsTerms = getValue('#en-tickets-terms');
+            const hasTicketOffers = document.querySelectorAll('.ticket-offer-item').length > 0;
+            
+            if (ticketsInfoText || ticketsTerms || hasTicketOffers) {
+                transObj.tickets = {};
+                
+                if (ticketsInfoText) {
+                    transObj.tickets.infoText = ticketsInfoText;
+                }
+                
+                if (ticketsTerms) {
+                    // Split terms by newlines and filter out empty lines
+                    const termsArray = ticketsTerms.split('\n').map(term => term.trim()).filter(term => term !== '');
+                    if (termsArray.length > 0) {
+                        transObj.tickets.terms = termsArray;
+                    }
+                }
+                
+                if (hasTicketOffers) {
+                    transObj.tickets.offers = {};
+                    document.querySelectorAll('.ticket-offer-item').forEach(item => {
+                        const key = getValue('.offer-key', item);
+                        if (key) {
+                            transObj.tickets.offers[key] = {
+                                name: getValue(`[data-translatable-key="tickets.offers.${key}.name"]`, item),
+                                description: getValue(`[data-translatable-key="tickets.offers.${key}.description"]`, item)
+                            };
+                        }
+                    });
+                }
+            }
+            
         } else {
             // Collect other language translations from form inputs
             document.querySelectorAll(`[data-lang="${lang}"]`).forEach(input => {
                 const key = input.dataset.key;
                 const value = input.value;
-                if (key && value) {
-                    set(transObj, key, value);
+                if (key && value && typeof value === 'string') {
+                    // Ensure we're setting string values, not iterating over them
+                    setTranslationValue(transObj, key, value);
                 }
             });
         }
