@@ -12,10 +12,10 @@ const SUPPORTED_UNITS = [
   'km', 'm', 'miles', 'ft',
   
   // Quantity units
-  'million', 'billion',
+  'million', 'billion', 'summits',
   
   // Time units
-  'million_years',
+  'million_years', 'year',
   
   // Temperature units
   'celsius', 'fahrenheit'
@@ -27,7 +27,8 @@ const SUPPORTED_ICONS = [
   'history', 'height', 'straighten', 'expand', 'groups', 'terrain',
   'landscape', 'eco', 'water', 'account_balance', 'thermostat',
   'history_edu', 'mountain', 'park', 'hiking', 'photo_camera',
-  'explore', 'map', 'info', 'warning', 'local_activity',
+  'explore', 'map', 'info', 'warning', 'local_activity', 'flag',
+  'ac_unit', 'translate', 'diversity_3', 'recycling',
   
   // Ionicons
   'leaf-outline', 'leaf', 'paw-outline', 'paw', 'compass-outline',
@@ -66,7 +67,8 @@ const NEWS_CATEGORIES = [
   'weather',
   'maintenance',
   'wildlife',
-  'safety'
+  'safety',
+  'update'
 ];
 
 // POI (Point of Interest) types/categories
