@@ -91,7 +91,10 @@ const POI_TYPES = [
   'historic_site',
   'lighthouse',
   'bridge',
-  'overlook'
+  'overlook',
+  'camp',
+  'village',
+  'monastery'
 ];
 
 // Available amenities for POIs
@@ -117,7 +120,15 @@ const POI_AMENITIES = [
   'laundry',
   'fuel',
   'atm',
-  'first_aid'
+  'first_aid',
+  'tent_lodging',
+  'medical_clinic',
+  'communication',
+  'lodge',
+  'gear_shop',
+  'bakery',
+  'prayer_hall',
+  'guesthouse'
 ];
 
 // Tour difficulty levels
