@@ -1,0 +1,3039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced JSON Structure Builder</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <!-- Leaflet CSS and JS for map functionality -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --font-color: #212529;
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --border-color: #dee2e6;
+            --item-bg: #fff;
+            --danger-color: #dc3545;
+            --success-color: #28a745;
+            --info-color: #17a2b8;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--font-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: var(--item-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            backdrop-filter: blur(10px);
+        }
+        h1, h2, h3 { border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; margin-top: 0; }
+        h3 { font-size: 1.4rem; border-color: var(--secondary-color); margin-top: 1.5rem; }
+        h4 { margin-top: 0; border-bottom: 1px solid #e9ecef; padding-bottom: 5px; }
+        h5 { margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1rem; color: var(--secondary-color); text-transform: uppercase; letter-spacing: 0.5px; }
+        details { 
+            border: 1px solid #e0e7ff; 
+            border-radius: 10px; 
+            margin-bottom: 1.5rem; 
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        details:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 16px rgba(0,123,255,0.1);
+        }
+        details[open] {
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 20px rgba(0,123,255,0.15);
+        }
+        summary { 
+            font-weight: 600; 
+            font-size: 1.3rem; 
+            padding: 1.5rem; 
+            cursor: pointer; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin: 0;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+        summary:hover {
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+            transform: translateY(-1px);
+        }
+        .form-section { padding: 2rem; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { 
+            display: block; 
+            font-weight: 600; 
+            margin-bottom: 8px; 
+            color: #374151;
+            font-size: 0.95rem;
+        }
+        input[type="text"], input[type="number"], input[type="url"], input[type="email"], input[type="tel"], input[type="datetime-local"], textarea, select {
+            width: 100%; 
+            padding: 12px 16px; 
+            border: 2px solid #e5e7eb; 
+            border-radius: 8px; 
+            box-sizing: border-box; 
+            background-color: #fff; 
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+            transform: translateY(-1px);
+        }
+        select[multiple] { height: 150px; }
+        input[type="checkbox"] { margin-right: 10px; width: auto; }
+        textarea { min-height: 80px; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; }
+        button { padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem; margin-right: 10px; }
+        .btn-add { 
+            background-color: var(--success-color); 
+            color: white; 
+            border-radius: 6px;
+            padding: 12px 20px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+        }
+        .btn-add:hover { 
+            background-color: #218838; 
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+        }
+        .btn-remove { 
+            background-color: var(--danger-color); 
+            color: white; 
+            padding: 6px 12px; 
+            font-size: 0.8rem; 
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        .btn-remove:hover { 
+            background-color: #c82333; 
+            transform: translateY(-1px);
+        }
+        .btn-prepare { background-color: var(--info-color); color: white; width: 100%; margin-top: 1rem; }
+        .repeater-item { 
+            border: 1px solid #e8ecef; 
+            padding: 0; 
+            margin-top: 1rem; 
+            border-radius: 8px; 
+            background: #ffffff; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+        .repeater-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: var(--primary-color);
+        }
+        .repeater-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 15px 20px;
+            border-bottom: 1px solid #e8ecef;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            transition: background 0.2s ease;
+        }
+        .repeater-header:hover {
+            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+        }
+        .repeater-header h4 {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            color: #495057;
+        }
+        .repeater-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .toggle-icon {
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+            transition: transform 0.2s ease;
+        }
+        .repeater-content {
+            padding: 20px;
+            display: none;
+        }
+        .repeater-item.expanded .repeater-content {
+            display: block;
+        }
+        .repeater-item.expanded .toggle-icon {
+            transform: rotate(180deg);
+        }
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+        #output-container { margin-top: 2rem; }
+        #output-json { width: 100%; height: 500px; font-family: 'Courier New', Courier, monospace; background-color: #212529; color: #f8f9fa; border: 1px solid var(--border-color); border-radius: 4px; padding: 1rem; box-sizing: border-box; }
+        #generate-btn { 
+            width: 100%; 
+            padding: 18px; 
+            font-size: 1.3rem; 
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; 
+            margin-top: 2rem; 
+            border: none;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+        }
+        #generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+        .field-hint { font-size: 0.85rem; color: #6c757d; margin-top: -0.5rem; margin-bottom: 1rem; }
+        .trans-source { background: #e9ecef; border-left: 3px solid var(--info-color); padding: 5px; font-style: italic; font-size: 0.9em; margin-top: -8px; margin-bottom: 8px; border-radius: 2px; }
+        hr { border: 0; height: 1px; background-color: var(--border-color); margin: 1.5rem 0; }
+        .image-upload-area { border: 2px dashed var(--border-color); padding: 20px; text-align: center; border-radius: 8px; background-color: #f8f9fa; margin: 10px 0; }
+        .image-upload-area.dragover { border-color: var(--primary-color); background-color: #e3f2fd; }
+        .image-preview { display: inline-block; margin: 5px; position: relative; }
+        .image-preview img { max-width: 100px; max-height: 100px; border: 1px solid var(--border-color); border-radius: 4px; }
+        .image-preview .remove-image { position: absolute; top: -8px; right: -8px; background: var(--danger-color); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px; }
+        .download-section { background-color: #e3f2fd; padding: 20px; border-radius: 8px; margin-top: 20px; }
+        .btn-download { background-color: var(--success-color); color: white; padding: 15px 30px; font-size: 1.1rem; border: none; border-radius: 5px; cursor: pointer; margin: 10px; }
+        .btn-download:hover { background-color: #218838; }
+        .file-tree { font-family: monospace; background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0; border: 1px solid var(--border-color); }
+        .file-tree-item { margin: 2px 0; }
+        .file-tree-folder { font-weight: bold; color: var(--primary-color); }
+        .file-tree-file { color: var(--secondary-color); margin-left: 20px; }
+        
+        /* Map Modal Styles */
+        .map-modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
+        .map-modal-content { 
+            background-color: #fefefe; 
+            margin: 2% auto; 
+            padding: 0; 
+            border: none; 
+            border-radius: 8px; 
+            width: 90%; 
+            max-width: 900px; 
+            height: 95vh; 
+            max-height: 95vh;
+            position: relative; 
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .map-modal-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 15px 20px; 
+            border-bottom: 1px solid var(--border-color); 
+            flex-shrink: 0;
+        }
+        .map-modal-close { color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer; line-height: 1; }
+        .map-modal-close:hover { color: #000; }
+        .map-modal-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 15px 20px;
+            overflow: hidden;
+        }
+        .map-container { 
+            width: 100%; 
+            flex: 1;
+            min-height: 400px;
+            border: 1px solid var(--border-color); 
+            border-radius: 4px; 
+            margin: 10px 0;
+        }
+        .map-instructions { 
+            background: #e3f2fd; 
+            padding: 10px; 
+            border-radius: 4px; 
+            font-size: 0.9rem; 
+            flex-shrink: 0;
+        }
+        .map-coordinates { 
+            background: #f8f9fa; 
+            padding: 10px; 
+            border-radius: 4px; 
+            font-family: monospace; 
+            flex-shrink: 0;
+        }
+        .map-modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            flex-shrink: 0;
+            background: #f8f9fa;
+        }
+        .btn-map { background-color: var(--info-color); color: white; padding: 5px 10px; font-size: 0.85rem; margin-left: 10px; }
+        
+        /* Quiz-specific styles */
+        .quiz-option-item { display: flex; align-items: center; gap: 10px; margin: 8px 0; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; background: #f9fafb; }
+        .quiz-option-item.correct { border-color: var(--success-color); background: #f0f9ff; }
+        .quiz-option-item input[type="text"] { flex: 1; border: 1px solid #d1d5db; padding: 8px 12px; border-radius: 4px; }
+        .quiz-option-item input[type="radio"] { margin: 0; }
+        .quiz-option-item .btn-remove { margin: 0; font-size: 0.8rem; padding: 4px 8px; }
+        .quiz-sequence-item { border: 2px solid #e5e7eb; border-radius: 8px; padding: 15px; margin: 10px 0; background: #f9fafb; position: relative; }
+        .quiz-sequence-item .sequence-order { position: absolute; top: -10px; left: 10px; background: var(--primary-color); color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem; }
+        .quiz-sequence-container { min-height: 200px; border: 2px dashed #d1d5db; border-radius: 8px; padding: 15px; }
+        .quiz-sequence-item.dragging { opacity: 0.5; transform: rotate(2deg); }
+        .quiz-fill-blank { background: #fff3cd; border: 1px solid #ffc107; border-radius: 4px; padding: 2px 8px; font-weight: bold; color: #856404; }
+        .quiz-answers-list { background: #f8f9fa; border-radius: 8px; padding: 15px; margin: 10px 0; }
+        .quiz-answer-item { display: flex; align-items: center; gap: 10px; margin: 5px 0; }
+        .quiz-answer-item input { flex: 1; }
+    </style>
+</head>
+<body>
+
+<!-- Map Selection Modal -->
+<div id="mapModal" class="map-modal">
+    <div class="map-modal-content">
+        <div class="map-modal-header">
+            <h3 id="mapModalTitle">Select Location on Map</h3>
+            <span class="map-modal-close" onclick="closeMapModal()">&times;</span>
+        </div>
+        <div class="map-modal-body">
+            <div class="map-instructions">
+                <strong>Instructions:</strong> Click on the map to select coordinates. The selected point will be used to fill the coordinate fields.
+            </div>
+            <div id="mapContainer" class="map-container"></div>
+            <div id="mapCoordinates" class="map-coordinates">
+                Selected: <span id="selectedCoords">Click on the map to select coordinates</span>
+            </div>
+        </div>
+        <div class="map-modal-footer">
+            <button type="button" class="btn-add" onclick="confirmMapSelection()" id="confirmMapBtn" disabled>✅ Use Selected Coordinates</button>
+            <button type="button" class="btn-remove" onclick="closeMapModal()">❌ Cancel</button>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div style="text-align: center; margin-bottom: 2rem;">
+        <h1 style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 2.5rem; margin-bottom: 1rem;">
+            🗺️ Partner Zone Creator
+        </h1>
+        <p style="font-size: 1.1rem; color: #6b7280; max-width: 800px; margin: 0 auto; line-height: 1.6;">
+            Create comprehensive partner zone configurations with structural data, multi-language content, and media assets. 
+            <strong>Only required fields:</strong> Place ID, Author, Name (EN), and Description (EN).
+        </p>
+        <div style="background: linear-gradient(135deg, #fef3c7 0%, #f3e5f5 100%); padding: 1.5rem; border-radius: 10px; margin: 1.5rem 0; border-left: 4px solid #f59e0b;">
+            <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; font-size: 0.95rem;">
+                <div><strong>✅ Step 1:</strong> ID auto-generated + fill basic info</div>
+                <div><strong>📸 Step 2:</strong> Upload images (auto-generates storage refs)</div>
+                <div><strong>🎯 Step 3:</strong> Add optional sections & generate JSON</div>
+            </div>
+            <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(245, 158, 11, 0.1); border-radius: 6px; font-size: 0.85rem; color: #92400e;">
+                <strong>📝 Quick Start:</strong> A unique ID is auto-generated when you load the page. You can use it as-is or click "🎲 Generate" for a new one, or enter your own custom ID.
+            </div>
+        </div>
+    </div>
+
+    <form id="json-form">
+        <!-- Main Details (Structural Data and English Text) -->
+        <details open>
+            <summary>⚠️ STEP 1: Main Details & Base Text (EN) - REQUIRED FIRST</summary>
+            <div class="form-section">
+                <h3>Structural Info</h3>
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label>ID <span style="color: #ef4444;">*</span></label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input type="text" id="id" data-key="id" required style="flex: 1;">
+                            <button type="button" class="btn-add" onclick="generateUniqueId()" style="margin: 0; padding: 8px 12px; font-size: 0.9rem;">🎲 Generate</button>
+                        </div>
+                        <div class="field-hint" style="color: #059669; font-weight: 500;">✅ Auto-generated and ready to use! Required for image storage paths</div>
+                        <div class="field-hint">IDs are unique and URL-safe. Click "🎲 Generate" for a new one or enter your own custom ID.</div>
+                    </div>
+                    <div class="form-group"><label>Author <span style="color: #ef4444;">*</span></label><input type="text" id="author" data-key="author" required></div>
+                    <div class="form-group"><label>Priority</label><input type="number" id="priority" data-key="priority" value="1"></div>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group"><label><input type="checkbox" id="official" data-key="official" checked> Official</label></div>
+                    <div class="form-group"><label><input type="checkbox" id="active" data-key="active" checked> Active</label></div>
+                </div>
+                 <div class="form-group"><label>Search Radius (km)</label><input type="number" id="searchRadius" data-key="searchRadius" value="50"></div>
+
+                <hr>
+                <h3>Base Content (English)</h3>
+                <div class="form-group"><label for="en-name">Name (EN) <span style="color: #ef4444;">*</span></label><input type="text" id="en-name" data-translatable-key="name" required></div>
+                <div class="form-group"><label for="en-region">Region (EN)</label><input type="text" id="en-region" data-translatable-key="region"></div>
+                <div class="form-group"><label for="en-description">Description (EN) <span style="color: #ef4444;">*</span></label><textarea id="en-description" data-translatable-key="description" required></textarea></div>
+                <div class="form-group"><label for="en-hero-caption">Hero Image Caption (EN)</label><input type="text" id="en-hero-caption" data-translatable-key="heroImage.caption"></div>
+                <div class="form-group"><label for="en-hero-alt">Hero Image Alt Text (EN)</label><input type="text" id="en-hero-alt" data-translatable-key="heroImage.alt"></div>
+            </div>
+        </details>
+        
+        <details>
+            <summary>Location & Area</summary>
+            <div class="form-section">
+                <div class="form-group">
+                    <label>Center (Latitude, Longitude)</label>
+                    <div class="grid-2">
+                        <input type="number" step="any" placeholder="Latitude" id="center-lat">
+                        <input type="number" step="any" placeholder="Longitude" id="center-lon">
+                    </div>
+                    <button type="button" class="btn-map" onclick="openMapModal('center', 'place')">📍 Select on Map</button>
+                </div>
+                <div class="form-group"><label>Area Polygon</label><div id="areaPolygon-container"></div><button type="button" class="btn-add" onclick="addPolygonPoint()">Add Point</button></div>
+            </div>
+        </details>
+
+        <details>
+            <summary>Style & Hero Image (Structural)</summary>
+            <div class="form-section">
+                <div class="form-group"><label>Custom Style</label><div class="grid-2"><div class="form-group"><label>Color</label><input type="color" id="customStyle-color" value="#4A90E2"></div><div class="form-group" id="customStyle-icon-group"></div></div></div>
+                 <div class="form-group"><label>Hero Image</label><div class="grid-3"><input type="text" placeholder="Auto-generated storage reference" id="heroImage-storageRef" readonly style="background: #f8f9fa; color: #6c757d;"><div class="form-group" id="heroImage-priority-group"></div><input type="text" placeholder="Image Source" id="heroImage-imageSource"></div></div>
+                 <div class="form-group">
+                     <label>Upload Hero Image</label>
+                     <div class="image-upload-area" ondrop="handleImageDrop(event, 'hero', this)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                         <input type="file" id="hero-image-upload" accept="image/*" style="display: none;" onchange="handleImageUpload(event, 'hero')">
+                         <p>Drag & drop hero image here or <button type="button" onclick="triggerFileUpload('hero-image-upload')">Browse</button></p>
+                         <div class="image-preview-container"></div>
+                     </div>
+                 </div>
+            </div>
+        </details>
+        
+        <details><summary>Stats</summary><div class="form-section"><div id="stats-container"></div><button type="button" class="btn-add" onclick="addStat()">Add Stat</button></div></details>
+        <details><summary>Interesting Facts</summary><div class="form-section"><div id="interestingFacts-container"></div><button type="button" class="btn-add" onclick="addFact()">Add Fact</button></div></details>
+
+        <details>
+            <summary>Historical Info</summary>
+            <div class="form-section">
+                <div class="form-group" id="historicalInfo-icon-group"><label>Icon</label></div>
+                <div class="form-group"><label>Text (EN)</label><textarea class="item-text" data-translatable-key="historicalInfo.text"></textarea></div>
+                <hr>
+                <h5>Images</h5><div id="historicalInfo-images-container"></div><button type="button" class="btn-add" onclick="addHistoryImage()">Add History Image</button>
+            </div>
+        </details>
+
+        <details>
+            <summary>Contact Info</summary>
+            <div class="form-section">
+                 <h3>Structural Info</h3>
+                <div class="grid-2">
+                    <div class="form-group"><label>Website URL</label><input type="url" id="contact-website"></div>
+                    <div class="form-group"><label>Phone</label><input type="tel" id="contact-phone"></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="contact-email"></div>
+                    <div class="form-group"><label>Emergency Phone</label><input type="tel" id="contact-emergencyPhone"></div>
+                </div>
+                <hr>
+                 <h3>Labels & Text (EN)</h3>
+                 <div class="grid-2">
+                    <div class="form-group"><label>Website Label</label><input type="text" data-translatable-key="contact.websiteLabel"></div>
+                    <div class="form-group"><label>Phone Label</label><input type="text" data-translatable-key="contact.phoneLabel"></div>
+                    <div class="form-group"><label>Email Label</label><input type="text" data-translatable-key="contact.emailLabel"></div>
+                    <div class="form-group"><label>Emergency Label</label><input type="text" data-translatable-key="contact.emergencyLabel"></div>
+                    <div class="form-group"><label>Address</label><input type="text" data-translatable-key="contact.address"></div>
+                    <div class="form-group"><label>Hours</label><input type="text" data-translatable-key="contact.hours"></div>
+                </div>
+            </div>
+        </details>
+
+        <details><summary>News</summary><div class="form-section"><div id="news-container"></div><button type="button" class="btn-add" onclick="addNewsItem()">Add News Item</button></div></details>
+        <details><summary>Points of Interest (POIs)</summary><div class="form-section"><div id="pois-container"></div><button type="button" class="btn-add" onclick="addPoi()">Add POI</button></div></details>
+        <details><summary>Tours</summary><div class="form-section"><div id="tours-container"></div><button type="button" class="btn-add" onclick="addTour()">Add Tour</button></div></details>
+        
+        <details>
+            <summary>Quiz</summary>
+            <div class="form-section">
+                <h3>Structural Info</h3>
+                <div class="form-group"><label>Title (EN)</label><input type="text" id="en-quiz-title" data-translatable-key="quiz.title"></div>
+                <div class="form-group"><label>Description (EN)</label><textarea id="en-quiz-description" data-translatable-key="quiz.description"></textarea></div>
+                <hr>
+                <h5>Settings & Rewards</h5>
+                <div class="grid-2">
+                    <div class="form-group"><label>Time Per Question (s)</label><input type="number" id="quiz-settings-time" value="30"></div>
+                    <div class="form-group"><label>Passing Score (%)</label><input type="number" id="quiz-settings-passing" value="70"></div>
+                    <div class="form-group"><label>Bronze Score</label><input type="number" id="quiz-rewards-bronze" value="60"></div>
+                    <div class="form-group"><label>Silver Score</label><input type="number" id="quiz-rewards-silver" value="80"></div>
+                    <div class="form-group"><label>Gold Score</label><input type="number" id="quiz-rewards-gold" value="90"></div>
+                    <div class="form-group"><label>Completion Achievement ID</label><input type="text" id="quiz-rewards-achievement"></div>
+                    <div class="form-group"><label><input type="checkbox" id="quiz-settings-randomize" checked> Randomize Questions</label></div>
+                    <div class="form-group"><label><input type="checkbox" id="quiz-settings-showExplanations" checked> Show Explanations</label></div>
+                </div>
+                <hr>
+                <h5>Questions</h5>
+                <div id="quiz-questions-container"></div>
+                <button type="button" class="btn-add" onclick="addQuizQuestion()">Add Quiz Question</button>
+            </div>
+        </details>
+
+        <details>
+            <summary>Translations</summary>
+            <div class="form-section">
+                <p>After filling out all English text in the sections above, click this button to generate fields for other languages.</p>
+                <button type="button" class="btn-prepare" onclick="prepareTranslations()">Prepare Translations</button>
+                
+                <div class="translation-tools" style="margin: 20px 0; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6;">
+                    <h3>🤖 AI Translation Assistant</h3>
+                    <p>Speed up translation with AI: Export → Translate → Import</p>
+                    <details style="margin: 10px 0;">
+                        <summary style="cursor: pointer; color: #007bff;">📋 How it works</summary>
+                        <div style="padding: 10px; background: #f1f3f5; border-radius: 4px; margin-top: 5px;">
+                            <ol>
+                                <li>Fill out English content first</li>
+                                <li>Click "Prepare Translations" to generate fields</li>
+                                <li><strong>Choose your approach:</strong>
+                                    <ul style="margin-top: 5px;">
+                                        <li><strong>🌍 All Languages:</strong> Export all 6 languages at once for bulk translation</li>
+                                        <li><strong>Single Language:</strong> Export one language at a time</li>
+                                    </ul>
+                                </li>
+                                <li>Copy the prompt + JSON and paste to your AI (ChatGPT, Claude, etc.)</li>
+                                <li><strong>IMPORTANT:</strong> Copy ONLY the JSON response from AI (no explanations)</li>
+                                <li>Paste the clean JSON back here and click the appropriate import button</li>
+                            </ol>
+                            <div style="background: #e3f2fd; padding: 8px; border-radius: 4px; margin-top: 8px;">
+                                <strong>⚡ Super Fast:</strong> Use "All Languages" to translate all 6 languages in one AI request!<br>
+                                <strong>🔧 Clean Format:</strong> AI gets clear instructions and returns clean JSON without metadata.
+                            </div>
+                        </div>
+                    </details>
+                    <div class="grid-2">
+                        <div>
+                            <label for="export-lang-select">Export Language for Translation:</label>
+                            <select id="export-lang-select">
+                                <option value="all">🌍 All Languages (Complete Translation Pack)</option>
+                                <option value="it">Italian (it)</option>
+                                <option value="de">German (de)</option>
+                                <option value="es">Spanish (es)</option>
+                                <option value="pt">Portuguese (pt)</option>
+                                <option value="ja">Japanese (ja)</option>
+                                <option value="fr">French (fr)</option>
+                            </select>
+                            <button type="button" class="btn-add" onclick="exportTranslationJSON()">📤 Export JSON</button>
+                        </div>
+                        <div>
+                            <label for="import-lang-select">Import Translated JSON:</label>
+                            <select id="import-lang-select">
+                                <option value="it">Italian (it)</option>
+                                <option value="de">German (de)</option>
+                                <option value="es">Spanish (es)</option>
+                                <option value="pt">Portuguese (pt)</option>
+                                <option value="ja">Japanese (ja)</option>
+                                <option value="fr">French (fr)</option>
+                            </select>
+                            <button type="button" class="btn-add" onclick="importTranslationJSON()">📥 Import Single Language</button>
+                            <button type="button" class="btn-add" onclick="importAllLanguagesJSON()" style="background: #17a2b8; margin-left: 5px;">🌍 Import All Languages</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="translation-json-area">Translation Prompt & JSON:</label>
+                        <textarea id="translation-json-area" rows="10" placeholder="Export will show prompt + JSON for AI. After translation, paste back ONLY the JSON response."></textarea>
+                        <div class="field-hint">📋 <strong>Workflow:</strong> Export → Copy prompt to AI → Copy ONLY JSON response back here → Import</div>
+                    </div>
+                </div>
+                
+                <div id="translations-ui-container"></div>
+            </div>
+        </details>
+
+        <button type="submit" id="generate-btn">Generate JSON</button>
+    </form>
+    
+    <div id="output-container">
+        <h2>Generated JSON</h2>
+        <textarea id="output-json" readonly></textarea>
+    </div>
+    
+    <div class="download-section">
+        <h2>Download Partner Zone Package</h2>
+        <p>After generating the JSON, you can download a complete partner zone package that includes:</p>
+        <ul>
+            <li>The generated JSON file</li>
+            <li>All uploaded images organized in the proper folder structure</li>
+            <li>Ready to copy into your partner-zones folder</li>
+        </ul>
+        <div class="file-tree">
+            <div class="file-tree-item file-tree-folder">📁 {partner-zone-id}/</div>
+            <div class="file-tree-item file-tree-file">  📄 {partner-zone-id}.json</div>
+            <div class="file-tree-item file-tree-folder">  📁 {partner-zone-id}/</div>
+            <div class="file-tree-item file-tree-file">    📁 hero/ → hero-image.jpg</div>
+            <div class="file-tree-item file-tree-file">    📁 facts/ → fact-images.jpg</div>
+            <div class="file-tree-item file-tree-file">    📁 history/ → history-images.jpg</div>
+            <div class="file-tree-item file-tree-file">    📁 news/ → news-images.jpg</div>
+            <div class="file-tree-item file-tree-file">    📁 pois/</div>
+            <div class="file-tree-item file-tree-file">      📁 {poi-id}/ → poi-images.jpg</div>
+            <div class="file-tree-item file-tree-file">    📁 quiz/ → quiz-images.jpg</div>
+            <div class="file-tree-item file-tree-file">    📁 tour/</div>
+            <div class="file-tree-item file-tree-file">      📁 waypoints/ → waypoint-images.jpg</div>
+        </div>
+        <div style="background: #f0f8ff; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #007bff;">
+            <strong>📂 Auto-Generated Storage Reference Pattern:</strong><br>
+            Hero: <code>partner-zones/{place-id}/hero/{filename}</code><br>
+            Facts: <code>partner-zones/{place-id}/facts/{filename}</code><br>
+            History: <code>partner-zones/{place-id}/history/{filename}</code><br>
+            News: <code>partner-zones/{place-id}/news/{filename}</code><br>
+            POIs: <code>partner-zones/{place-id}/pois/{poi-id}/{filename}</code><br>
+            Quiz: <code>partner-zones/{place-id}/quiz/{filename}</code><br>
+            Waypoints: <code>partner-zones/{place-id}/tour/waypoints/{waypoint-id}/{filename}</code><br>
+            <div style="margin-top: 8px; padding: 6px; background: #e6f3ff; border-radius: 4px; font-size: 0.9em;">
+                <strong>✅ Fully Automated:</strong> Storage refs are auto-generated when you upload images. All storage reference fields are read-only - you don't need to fill them out manually!
+            </div>
+        </div>
+        <button type="button" class="btn-download" onclick="downloadPartnerZonePackage()">📦 Download Partner Zone Package</button>
+    </div>
+</div>
+
+<script>
+// --- CONSTANTS ---
+const SUPPORTED_UNITS=['km','m','miles','ft','million','billion','summits','million_years','year','celsius','fahrenheit'];
+const SUPPORTED_ICONS=['history','height','straighten','expand','groups','terrain','landscape','eco','water','account_balance','thermostat','history_edu','mountain','park','hiking','photo_camera','explore','map','info','warning','local_activity','flag','ac_unit','translate','diversity_3','recycling','leaf-outline','leaf','paw-outline','paw','compass-outline','analytics-outline','walk-outline','eye-outline','flame-outline','map-outline','shield-outline','trophy-outline','star-outline','medal-outline','school-outline','school','location-outline','location','checkmark-circle-outline','layers-outline','calendar-outline','calendar','time-outline','time','apps-outline','navigate-outline','library-outline','share-outline','share','people','earth-outline','earth','globe-outline','globe','flower-outline','flower','search-outline','chatbubble-outline','chatbubbles-outline','chatbubbles','tree-outline','flag-outline','airplane-outline','cloud-offline-outline','download-outline','information-circle-outline','document-text-outline','resize','settings','flash','compass','search','book','map','camera','chatbubble','analytics','navigate','information-circle','document-text'];
+const NEWS_PRIORITIES=['high','medium','low'];
+const NEWS_CATEGORIES=['closure','announcement','event','weather','maintenance','wildlife','safety','update'];
+const POI_TYPES=['lodge','viewpoint','museum','visitor_center','restaurant','hotel','campground','trailhead','parking','restroom','gift_shop','picnic_area','beach','waterfall','cave','historic_site','lighthouse','bridge','overlook','camp','village','monastery'];
+const POI_AMENITIES=['restaurant','gift_shop','restrooms','parking','benches','museum','water_fountain','wifi','accessibility','pet_friendly','picnic_tables','visitor_center','guided_tours','educational_programs','food_service','lodging','camping','showers','laundry','fuel','atm','first_aid','tent_lodging','medical_clinic','communication','lodge','gear_shop','bakery','prayer_hall','guesthouse'];
+const TOUR_DIFFICULTIES=['Easy','Easy to moderate','Moderate','Moderate to difficult','Difficult','Very difficult','Expert only'];
+const TOUR_DURATIONS=['30 minutes','1 hour','1-2 hours','2-3 hours','3-4 hours','4-6 hours','6-8 hours','Full day','Multi-day'];
+const TOUR_DISTANCES=['0.5 miles','1 mile','1.5 miles','2 miles','3.2 miles','5 miles','7.5 miles','10 miles','15 miles','20+ miles'];
+const WAYPOINT_TYPES=['start','end','viewpoint','museum','historic','trail','rest_area','parking','visitor_center','lodge','restaurant','restroom','water','emergency','photo_spot','interpretation','village','monastery','destination'];
+const QUIZ_QUESTION_TYPES=['multiple_choice','true_false','image_based','image_sequence','drag_drop','fill_blank'];
+const IMAGE_PRIORITIES=['high','medium','low'];
+const SUPPORTED_LANGUAGES=['en','it','de','es','pt','ja','fr'];
+
+// --- UTILITY FUNCTIONS ---
+function generateUniqueId() {
+    const now = new Date();
+    const datePart = now.getFullYear().toString() + 
+                    (now.getMonth() + 1).toString().padStart(2, '0') + 
+                    now.getDate().toString().padStart(2, '0');
+    
+    // Generate random alphanumeric string (6 characters)
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    let randomPart = '';
+    for (let i = 0; i < 6; i++) {
+        randomPart += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    
+    const uniqueId = `pz-${datePart}-${randomPart}`;
+    document.getElementById('id').value = uniqueId;
+    
+    // Show success message
+    const successMsg = document.createElement('div');
+    successMsg.style.cssText = 'background: #d4edda; color: #155724; padding: 6px; border-radius: 4px; margin: 5px 0; border: 1px solid #c3e6cb; font-size: 0.85rem;';
+    successMsg.textContent = `✅ Generated unique ID: ${uniqueId}`;
+    
+    const idField = document.getElementById('id');
+    idField.parentNode.insertBefore(successMsg, idField.parentNode.children[1]);
+    
+    // Remove success message after 3 seconds
+    setTimeout(() => {
+        if (successMsg.parentNode) {
+            successMsg.remove();
+        }
+    }, 3000);
+}
+
+function createRemoveButton() { 
+    return '<button type="button" class="btn-remove" onclick="event.stopPropagation(); this.closest(\'.repeater-item\').remove()">🗑️ Remove</button>'; 
+}
+
+function createCollapsibleHeader(title, itemNumber) {
+    return `
+        <div class="repeater-header" onclick="toggleRepeaterItem(this)">
+            <h4>
+                <span>${title} #${itemNumber}</span>
+            </h4>
+            <div class="repeater-controls">
+                ${createRemoveButton()}
+                <span class="toggle-icon">🔽</span>
+            </div>
+        </div>
+    `;
+}
+
+function toggleRepeaterItem(header) {
+    const item = header.closest('.repeater-item');
+    item.classList.toggle('expanded');
+}
+function createSelect(optionsArray, className = '', isMultiple = false, placeholder = 'Select an option') {
+    const multipleAttr = isMultiple ? 'multiple' : '';
+    let optionsHtml = !isMultiple ? `<option value="">-- ${placeholder} --</option>` : '';
+    optionsArray.sort().forEach(option => { optionsHtml += `<option value="${option}">${option}</option>`; });
+    return `<select class="${className}" ${multipleAttr}>${optionsHtml}</select>`;
+}
+function getValue(selector, context = document) { return context.querySelector(selector)?.value || ''; }
+function getFloat(selector, context = document) { return parseFloat(context.querySelector(selector)?.value) || 0; }
+function set(obj, path, value) {
+    const keys = path.split('.');
+    let current = obj;
+    for (let i = 0; i < keys.length - 1; i++) {
+        const key = keys[i];
+        if (!current[key] || typeof current[key] !== 'object' || Array.isArray(current[key])) {
+            current[key] = {};
+        }
+        current = current[key];
+    }
+    current[keys[keys.length - 1]] = value;
+}
+
+// Auto-generate slugified IDs from text
+function generateSlug(text, prefix = '', fallback = 'item') {
+    if (!text || text.trim() === '') return `${prefix}${fallback}-${Date.now()}`;
+    return text.toLowerCase()
+        .replace(/[^\w\s-]/g, '') // Remove special chars
+        .replace(/\s+/g, '-')     // Replace spaces with hyphens
+        .replace(/-+/g, '-')      // Replace multiple hyphens with single
+        .substring(0, 50);        // Limit length
+}
+
+// Counters for auto-incrementing IDs
+let itemCounters = {
+    stat: 0,
+    fact: 0,
+    historyImage: 0,
+    news: 0,
+    poi: 0,
+    tour: 0,
+    waypoint: 0,
+    quizQuestion: 0
+};
+
+// --- DYNAMIC ITEM ADDERS ---
+let pointCounter = 0;
+function addPolygonPoint() {
+    pointCounter++;
+    const container = document.getElementById('areaPolygon-container');
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'repeater-item polygon-point expanded';
+    itemDiv.innerHTML = `
+        ${createCollapsibleHeader('Polygon Point', pointCounter)}
+        <div class="repeater-content">
+            <div class="grid-2">
+                <input type="number" step="any" placeholder="Latitude" class="polygon-lat">
+                <input type="number" step="any" placeholder="Longitude" class="polygon-lon">
+            </div>
+            <button type="button" class="btn-map" onclick="openMapModal('polygon', 'point', this)">📍 Select on Map</button>
+        </div>
+    `;
+    container.appendChild(itemDiv);
+}
+
+function addStat() {
+    itemCounters.stat++;
+    const container = document.getElementById('stats-container');
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'repeater-item stat-item expanded';
+    itemDiv.innerHTML = `
+        ${createCollapsibleHeader('Stat', itemCounters.stat)}
+        <div class="repeater-content">
+            <h5>Structural Info</h5>
+            <div class="form-group"><label>Auto ID</label><input type="text" class="item-key" value="stat-${itemCounters.stat}" readonly><div class="field-hint">ID is auto-generated from label below</div></div>
+            <div class="form-group"><label>Icon</label>${createSelect(SUPPORTED_ICONS, 'item-icon')}</div>
+            <div class="grid-2">
+                <div class="form-group"><label>Value</label><input type="text" class="item-value"></div>
+                <div class="form-group"><label>Unit</label>${createSelect(SUPPORTED_UNITS, 'item-unit')}</div>
+            </div>
+            <div class="grid-2">
+                <div class="form-group"><label>Secondary Value (optional)</label><input type="text" class="item-secondaryValue"></div>
+                <div class="form-group"><label>Secondary Unit (optional)</label>${createSelect(SUPPORTED_UNITS, 'item-secondaryUnit', false, 'Select Unit')}</div>
+            </div>
+            <hr>
+            <h5>English Content</h5>
+            <div class="form-group"><label>Label (EN)</label><input type="text" data-translatable-key="label" oninput="updateAutoId(this, 'stat')"></div>
+            <div class="form-group"><label>Description (EN)</label><textarea data-translatable-key="description"></textarea></div>
+        </div>
+    `;
+    container.appendChild(itemDiv);
+}
+
+function addFact() {
+    itemCounters.fact++;
+    const container = document.getElementById('interestingFacts-container');
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'repeater-item fact-item expanded';
+    itemDiv.innerHTML = `
+        ${createCollapsibleHeader('Fact', itemCounters.fact)}
+        <div class="repeater-content">
+            <h5>Structural Info</h5>
+            <div class="form-group"><label>Auto ID</label><input type="text" class="item-key" value="fact-${itemCounters.fact}" readonly><div class="field-hint">ID is auto-generated from first few words of text</div></div>
+            <div class="form-group"><label>Icon</label>${createSelect(SUPPORTED_ICONS, 'item-icon')}</div>
+            <div class="form-group"><label>Image</label><div class="grid-2"><input type="text" class="item-image-storageRef" placeholder="Auto-generated storage ref" readonly style="background: #f8f9fa; color: #6c757d;"><input type="text" class="item-image-imageSource" placeholder="Image Source"></div></div>
+            <div class="form-group">
+                <label>Upload Fact Image</label>
+                <div class="image-upload-area" ondrop="handleImageDrop(event, 'fact', this)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                    <input type="file" accept="image/*" style="display: none;" onchange="handleImageUpload(event, 'fact')">
+                    <p>Drag & drop fact image here or <button type="button" onclick="triggerSiblingFileUpload(this)">Browse</button></p>
+                    <div class="image-preview-container"></div>
+                </div>
+            </div>
+            <hr>
+            <h5>English Content</h5>
+            <div class="form-group"><label>Text (EN)</label><textarea data-translatable-key="text" oninput="updateAutoId(this, 'fact')"></textarea></div>
+            <div class="form-group"><label>Image Caption (EN)</label><input type="text" data-translatable-key="image.caption"></div>
+        </div>
+    `;
+    container.appendChild(itemDiv);
+}
+
+function addHistoryImage() {
+    itemCounters.historyImage++;
+    const container = document.getElementById('historicalInfo-images-container');
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'repeater-item history-image-item expanded';
+    itemDiv.innerHTML = `
+        ${createCollapsibleHeader('History Image', itemCounters.historyImage)}
+        <div class="repeater-content">
+            <h5>Structural Info</h5>
+            <div class="form-group"><label>Auto ID</label><input type="text" class="item-key" value="history-img-${itemCounters.historyImage}" readonly><div class="field-hint">ID is auto-generated from caption</div></div>
+            <div class="grid-2"><input type="text" class="item-storageRef" placeholder="Auto-generated storage ref" readonly style="background: #f8f9fa; color: #6c757d;"><input type="text" class="item-imageSource" placeholder="Image Source"></div>
+            <div class="form-group">
+                <label>Upload History Image</label>
+                <div class="image-upload-area" ondrop="handleImageDrop(event, 'history', this)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                    <input type="file" accept="image/*" style="display: none;" onchange="handleImageUpload(event, 'history')">
+                    <p>Drag & drop history image here or <button type="button" onclick="triggerSiblingFileUpload(this)">Browse</button></p>
+                    <div class="image-preview-container"></div>
+                </div>
+            </div>
+            <hr>
+            <h5>English Content</h5>
+            <div class="form-group"><label>Caption (EN)</label><input type="text" data-translatable-key="caption" oninput="updateAutoId(this, 'history-img')"></div>
+            <div class="form-group"><label>Alt Text (EN)</label><input type="text" data-translatable-key="alt"></div>
+        </div>
+    `;
+    container.appendChild(itemDiv);
+}
+
+function addNewsItem() {
+    itemCounters.news++;
+    const container = document.getElementById('news-container');
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'repeater-item news-item expanded';
+    itemDiv.innerHTML = `
+        ${createCollapsibleHeader('News Item', itemCounters.news)}
+        <div class="repeater-content">
+            <h5>Structural Info</h5>
+            <div class="form-group"><label>Auto ID</label><input type="text" class="item-key" value="news-${itemCounters.news}" readonly><div class="field-hint">ID is auto-generated from title</div></div>
+            <div class="grid-3">
+                 <div class="form-group"><label>Date</label><input type="datetime-local" class="item-date"></div>
+                 <div class="form-group"><label>Priority</label>${createSelect(NEWS_PRIORITIES, 'item-priority')}</div>
+                 <div class="form-group"><label>Icon</label>${createSelect(SUPPORTED_ICONS, 'item-icon')}</div>
+            </div>
+            <div class="form-group"><label>Category</label>${createSelect(NEWS_CATEGORIES, 'item-category')}</div>
+            <div class="form-group"><label>Image</label><div class="grid-2"><input type="text" class="item-image-storageRef" placeholder="Auto-generated storage ref" readonly style="background: #f8f9fa; color: #6c757d;"><input type="text" class="item-image-imageSource" placeholder="Image Source"></div></div>
+            <div class="form-group">
+                <label>Upload News Image</label>
+                <div class="image-upload-area" ondrop="handleImageDrop(event, 'news', this)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                    <input type="file" accept="image/*" style="display: none;" onchange="handleImageUpload(event, 'news')">
+                    <p>Drag & drop news image here or <button type="button" onclick="triggerSiblingFileUpload(this)">Browse</button></p>
+                    <div class="image-preview-container"></div>
+                </div>
+            </div>
+            <hr>
+            <h5>English Content</h5>
+            <div class="form-group"><label>Title (EN)</label><input type="text" data-translatable-key="title" oninput="updateAutoId(this, 'news')"></div>
+            <div class="form-group"><label>Summary (EN)</label><textarea data-translatable-key="summary"></textarea></div>
+            <div class="form-group"><label>Content (EN)</label><textarea data-translatable-key="content"></textarea></div>
+            <div class="form-group"><label>Image Caption (EN)</label><input type="text" data-translatable-key="image.caption"></div>
+        </div>
+    `;
+    container.appendChild(itemDiv);
+}
+
+function addPoi() {
+    itemCounters.poi++;
+    const container = document.getElementById('pois-container');
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'repeater-item poi-item expanded';
+    itemDiv.innerHTML = `
+        ${createCollapsibleHeader('POI', itemCounters.poi)}
+        <div class="repeater-content">
+            <h5>Structural Info</h5>
+            <div class="form-group"><label>Auto ID</label><input type="text" class="item-key" value="poi-${itemCounters.poi}" readonly><div class="field-hint">ID is auto-generated from title</div></div>
+            <div class="form-group"><label>Type</label>${createSelect(POI_TYPES, 'item-type')}</div>
+            <div class="form-group">
+                <label>Coordinates (Lat, Lon)</label>
+                <div class="grid-2">
+                    <input type="number" step="any" class="item-coord-lat">
+                    <input type="number" step="any" class="item-coord-lon">
+                </div>
+                <button type="button" class="btn-map" onclick="openMapModal('poi', 'coordinates', this)">📍 Select on Map</button>
+            </div>
+            <div class="form-group"><label>Amenities (Ctrl/Cmd + Click to select multiple)</label>${createSelect(POI_AMENITIES, 'item-amenities', true)}</div>
+            <div class="form-group"><label>Gallery Storage Prefix (Auto-filled)</label><input type="text" class="item-gallery-prefix" readonly style="background: #f8f9fa;"></div>
+            <div class="form-group"><label>Gallery Images (Simplified Structure)</label><textarea class="item-gallery-images" placeholder='{ "main-view": { "filename": "main-view.jpg", "type": "main", "imageSource": "..." } }'></textarea></div>
+            <div class="form-group">
+                <label>Upload POI Gallery Images</label>
+                <div class="image-upload-area" ondrop="handleImageDrop(event, 'poi', this)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                    <input type="file" accept="image/*" multiple style="display: none;" onchange="handleImageUpload(event, 'poi')">
+                    <p>Drag & drop POI gallery images here or <button type="button" onclick="triggerSiblingFileUpload(this)">Browse</button></p>
+                    <div class="image-preview-container"></div>
+                </div>
+                <div class="field-hint">📁 POI images are organized in subfolders: <code>partner-zones/{place-id}/pois/{poi-id}/</code><br>The gallery prefix is auto-generated when you upload images. You can then reference the images in the Gallery Images JSON above.</div>
+            </div>
+            <hr>
+            <h5>English Content</h5>
+            <div class="form-group"><label>Title (EN)</label><input type="text" data-translatable-key="title" oninput="updateAutoId(this, 'poi')"></div>
+            <div class="form-group"><label>Description (EN)</label><textarea data-translatable-key="description"></textarea></div>
+            <div class="form-group"><label>Opening Hours (EN)</label><input type="text" data-translatable-key="openingHours"></div>
+            <div class="form-group"><label>Accessibility (EN)</label><input type="text" data-translatable-key="accessibility"></div>
+            <div class="form-group"><label>Best Time to Visit (EN)</label><input type="text" data-translatable-key="bestTimeToVisit"></div>
+            <div class="field-hint">Note: Gallery image captions are translated within the gallery object JSON above.</div>
+        </div>
+    `;
+    container.appendChild(itemDiv);
+}
+
+function addTour() {
+    itemCounters.tour++;
+    const container = document.getElementById('tours-container');
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'repeater-item tour-item expanded';
+    itemDiv.innerHTML = `
+        ${createCollapsibleHeader('Tour', itemCounters.tour)}
+        <div class="repeater-content">
+            <h5>Structural Info</h5>
+            <div class="form-group"><label>Auto ID</label><input type="text" class="item-key" value="tour-${itemCounters.tour}" readonly><div class="field-hint">ID is auto-generated from name</div></div>
+            <div class="grid-3">
+                 <div class="form-group"><label>Duration</label>${createSelect(TOUR_DURATIONS, 'item-duration')}</div>
+                 <div class="form-group"><label>Difficulty</label>${createSelect(TOUR_DIFFICULTIES, 'item-difficulty')}</div>
+                 <div class="form-group"><label>Distance</label>${createSelect(TOUR_DISTANCES, 'item-distance')}</div>
+            </div>
+            <h5>Waypoints</h5>
+            <div class="waypoints-container"></div>
+            <button type="button" class="btn-add" onclick="addWaypoint(this)">Add Waypoint</button>
+            <div class="field-hint">Valid waypoint types: ${WAYPOINT_TYPES.join(', ')}</div>
+            <hr>
+            <h5>English Content</h5>
+            <div class="form-group"><label>Name (EN)</label><input type="text" data-translatable-key="name" oninput="updateAutoId(this, 'tour')"></div>
+            <div class="form-group"><label>Description (EN)</label><textarea data-translatable-key="description"></textarea></div>
+            <div class="field-hint">Note: Waypoint titles and info are translated within the waypoint forms below.</div>
+        </div>
+    `;
+    container.appendChild(itemDiv);
+}
+
+function addWaypoint(button) {
+    itemCounters.waypoint++;
+    const container = button.parentElement.querySelector('.waypoints-container');
+    const waypointDiv = document.createElement('div');
+    waypointDiv.className = 'repeater-item waypoint-item expanded';
+    waypointDiv.innerHTML = `
+        ${createCollapsibleHeader('Waypoint', itemCounters.waypoint)}
+        <div class="repeater-content">
+            <h5>Structural Info</h5>
+            <div class="form-group"><label>Auto ID</label><input type="text" class="waypoint-key" value="waypoint-${itemCounters.waypoint}" readonly><div class="field-hint">ID is auto-generated from title</div></div>
+            <div class="form-group">
+                <label>Coordinates (Lat, Lon)</label>
+                <div class="grid-2">
+                    <input type="number" step="any" class="waypoint-coord-lat" placeholder="Latitude">
+                    <input type="number" step="any" class="waypoint-coord-lon" placeholder="Longitude">
+                </div>
+                <button type="button" class="btn-map" onclick="openMapModal('waypoint', 'coordinates', this)">📍 Select on Map</button>
+            </div>
+            <div class="grid-2">
+                <div class="form-group"><label>Estimated Time (minutes)</label><input type="number" class="waypoint-estimatedTime" value="0" min="0"></div>
+                <div class="form-group"><label>Type</label>${createSelect(WAYPOINT_TYPES, 'waypoint-type')}</div>
+            </div>
+            <hr>
+            <h5>Waypoint Images</h5>
+            <div class="form-group">
+                <label>Upload Waypoint Images</label>
+                <div class="image-upload-area" ondrop="handleImageDrop(event, 'waypoint', this)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                    <input type="file" accept="image/*" multiple style="display: none;" onchange="handleImageUpload(event, 'waypoint')">
+                    <p>Drag & drop waypoint images here or <button type="button" onclick="triggerSiblingFileUpload(this)">Browse</button></p>
+                    <div class="image-preview-container"></div>
+                </div>
+                <div class="field-hint">📁 Waypoint images will be stored at: <code>partner-zones/{place-id}/tour/waypoints/{waypoint-id}/</code><br>These images will be accessible in the mobile app for this specific waypoint.</div>
+            </div>
+            <hr>
+            <h5>English Content</h5>
+            <div class="form-group"><label>Title (EN)</label><input type="text" data-translatable-key="waypoints.PLACEHOLDER.title" oninput="updateWaypointAutoId(this)"></div>
+            <div class="form-group"><label>Info (EN)</label><textarea data-translatable-key="waypoints.PLACEHOLDER.info"></textarea></div>
+        </div>
+    `;
+    container.appendChild(waypointDiv);
+    
+    // Update the translatable keys with the actual waypoint ID
+    updateWaypointTranslatableKeys(waypointDiv);
+}
+
+function updateWaypointAutoId(inputElement) {
+    const waypointContainer = inputElement.closest('.waypoint-item');
+    const keyInput = waypointContainer.querySelector('.waypoint-key');
+    const text = inputElement.value.trim();
+    
+    if (text) {
+        const slug = generateSlug(text, 'wp-');
+        keyInput.value = slug;
+        
+        // Update translatable keys
+        updateWaypointTranslatableKeys(waypointContainer);
+    } else {
+        // Fallback to numbered ID if no text
+        keyInput.value = 'waypoint-' + itemCounters.waypoint;
+        updateWaypointTranslatableKeys(waypointContainer);
+    }
+}
+
+function updateWaypointTranslatableKeys(waypointContainer) {
+    const waypointKey = waypointContainer.querySelector('.waypoint-key').value;
+    
+    // Update translatable key attributes
+    const titleInput = waypointContainer.querySelector('[data-translatable-key*="waypoints.PLACEHOLDER.title"]');
+    const infoInput = waypointContainer.querySelector('[data-translatable-key*="waypoints.PLACEHOLDER.info"]');
+    
+    if (titleInput) {
+        titleInput.setAttribute('data-translatable-key', `waypoints.${waypointKey}.title`);
+    }
+    if (infoInput) {
+        infoInput.setAttribute('data-translatable-key', `waypoints.${waypointKey}.info`);
+    }
+}
+
+function addQuizQuestion() {
+    itemCounters.quizQuestion++;
+    const container = document.getElementById('quiz-questions-container');
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'repeater-item quiz-question-item expanded';
+    itemDiv.innerHTML = `
+        ${createCollapsibleHeader('Quiz Question', itemCounters.quizQuestion)}
+        <div class="repeater-content">
+            <h5>Question Setup</h5>
+            <div class="form-group">
+                <label>Auto ID</label>
+                <input type="text" class="item-key" value="q${itemCounters.quizQuestion}" readonly>
+                <div class="field-hint">ID is auto-generated from question text</div>
+            </div>
+            <div class="form-group">
+                <label>Question Type</label>
+                ${createSelect(QUIZ_QUESTION_TYPES, 'item-type quiz-type-selector', false, 'Select question type')}
+                <div class="field-hint">
+                    <strong>Quiz Types:</strong><br>
+                    • <strong>multiple_choice:</strong> 2-5 options, select one correct<br>
+                    • <strong>true_false:</strong> Simple true/false question<br>
+                    • <strong>image_based:</strong> Question with image, multiple choice<br>
+                    • <strong>image_sequence:</strong> Put images in correct order<br>
+                    • <strong>drag_drop:</strong> Drag items to correct locations<br>
+                    • <strong>fill_blank:</strong> Fill in missing words/phrases
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Question Text (EN)</label>
+                <input type="text" data-translatable-key="question" oninput="updateAutoId(this, 'q')" placeholder="Enter your question here">
+            </div>
+            
+            <!-- Dynamic content area that changes based on question type -->
+            <div class="quiz-type-content">
+                <div class="field-hint">👆 Please select a question type above to see relevant options</div>
+            </div>
+            
+            <hr>
+            <h5>Explanation (Optional)</h5>
+            <div class="form-group">
+                <label>Explanation Text (EN)</label>
+                <textarea data-translatable-key="explanation.text" placeholder="Explain why this is the correct answer"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Upload Explanation Image (Optional)</label>
+                <div class="image-upload-area explanation-image" ondrop="handleImageDrop(event, 'quiz', this)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                    <input type="file" accept="image/*" style="display: none;" onchange="handleImageUpload(event, 'quiz')">
+                    <p>Drag & drop explanation image here or <button type="button" onclick="triggerSiblingFileUpload(this)">Browse</button></p>
+                    <div class="image-preview-container"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Explanation Image Caption (EN)</label>
+                <input type="text" data-translatable-key="explanation.image.caption" placeholder="Caption for explanation image">
+            </div>
+        </div>
+    `;
+    container.appendChild(itemDiv);
+    
+    // Add event listener for quiz type changes
+    const typeSelector = itemDiv.querySelector('.quiz-type-selector');
+    typeSelector.addEventListener('change', function() {
+        updateQuizTypeContent(this);
+    });
+}
+
+// Function to update auto-generated IDs based on user input
+function updateAutoId(inputElement, prefix) {
+    const itemContainer = inputElement.closest('.repeater-item');
+    const keyInput = itemContainer.querySelector('.item-key');
+    const text = inputElement.value.trim();
+    
+    if (text) {
+        const slug = generateSlug(text, prefix + '-');
+        keyInput.value = slug;
+    } else {
+        // Fallback to numbered ID if no text
+        const itemNumber = prefix === 'q' ? itemCounters.quizQuestion : 
+                          prefix === 'stat' ? itemCounters.stat :
+                          prefix === 'fact' ? itemCounters.fact :
+                          prefix === 'history-img' ? itemCounters.historyImage :
+                          prefix === 'news' ? itemCounters.news :
+                          prefix === 'poi' ? itemCounters.poi :
+                          prefix === 'tour' ? itemCounters.tour : 1;
+        keyInput.value = prefix + '-' + itemNumber;
+    }
+}
+
+// --- TRANSLATION PREPARATION ---
+function prepareTranslations() {
+    const container = document.getElementById('translations-ui-container');
+    container.innerHTML = ''; // Clear previous
+    const sourceData = collectSourceData();
+
+    SUPPORTED_LANGUAGES.forEach(lang => {
+        if (lang === 'en') return;
+
+        let langHtml = `<details><summary>Translate to: ${lang.toUpperCase()}</summary><div class="form-section">`;
+        
+        function createTranslationInput(lang, key, label, sourceValue, type = 'input') {
+            const id = `trans-${lang}-${key.replace(/[.\[\]]/g, '-')}`;
+            const sourceInfo = `<div class="trans-source"><strong>EN:</strong> ${sourceValue || '<em>(empty)</em>'}</div>`;
+            if (type === 'textarea') {
+                return `<div class="form-group"><label for="${id}">${label}</label>${sourceInfo}<textarea id="${id}" data-lang="${lang}" data-key="${key}">${sourceValue}</textarea></div>`;
+            }
+            return `<div class="form-group"><label for="${id}">${label}</label>${sourceInfo}<input type="text" id="${id}" value="${sourceValue || ''}" data-lang="${lang}" data-key="${key}"></div>`;
+        }
+        
+        // Main details
+        langHtml += `<h3>Main Content</h3>`;
+        langHtml += createTranslationInput(lang, 'name', 'Name', sourceData.name);
+        langHtml += createTranslationInput(lang, 'region', 'Region', sourceData.region);
+        langHtml += createTranslationInput(lang, 'description', 'Description', sourceData.description, 'textarea');
+        langHtml += createTranslationInput(lang, 'heroImage.caption', 'Hero Image Caption', sourceData.heroImage.caption);
+        langHtml += createTranslationInput(lang, 'heroImage.alt', 'Hero Image Alt Text', sourceData.heroImage.alt);
+
+        // Stats, Facts, History, News, POIs, Tours, Quiz, Contact...
+        for (const section in sourceData) {
+            if (['name', 'region', 'description', 'heroImage'].includes(section)) continue;
+            if (Object.keys(sourceData[section]).length > 0) langHtml += `<h3>${section.charAt(0).toUpperCase() + section.slice(1)}</h3>`;
+
+            for (const key in sourceData[section]) {
+                langHtml += `<h4>${section.slice(0, -1)}: ${key}</h4>`;
+                for (const prop in sourceData[section][key]) {
+                    if (prop === 'waypoints' && typeof sourceData[section][key][prop] === 'object') {
+                        // Handle waypoints specially
+                        langHtml += `<h5>Waypoints</h5>`;
+                        for (const waypointKey in sourceData[section][key][prop]) {
+                            const waypoint = sourceData[section][key][prop][waypointKey];
+                            langHtml += `<h6>Waypoint: ${waypointKey}</h6>`;
+                            langHtml += createTranslationInput(lang, `${section}.${key}.waypoints.${waypointKey}.title`, 'Title', waypoint.title);
+                            langHtml += createTranslationInput(lang, `${section}.${key}.waypoints.${waypointKey}.info`, 'Info', waypoint.info, 'textarea');
+                        }
+                    } else if (prop.includes('.')) { // Nested property like image.caption
+                        const [p1, p2] = prop.split('.');
+                        langHtml += createTranslationInput(lang, `${section}.${key}.${prop}`, `${p1} ${p2}`, sourceData[section][key][prop]);
+                    } else {
+                        langHtml += createTranslationInput(lang, `${section}.${key}.${prop}`, prop, sourceData[section][key][prop], prop.match(/description|content|text|summary/) ? 'textarea' : 'input');
+                    }
+                }
+            }
+        }
+        
+        langHtml += `</div></details>`;
+        container.innerHTML += langHtml;
+    });
+}
+
+function collectSourceData() {
+    const data = {
+        name: getValue('#en-name'),
+        region: getValue('#en-region'),
+        description: getValue('#en-description'),
+        heroImage: { 
+            caption: getValue('#en-hero-caption'), 
+            alt: getValue('#en-hero-alt') 
+        },
+        stats: {},
+        interestingFacts: {},
+        historicalInfo: { 
+            text: getValue('[data-translatable-key="historicalInfo.text"]'), 
+            images: {} 
+        },
+        contact: {
+            websiteLabel: getValue('[data-translatable-key="contact.websiteLabel"]'),
+            phoneLabel: getValue('[data-translatable-key="contact.phoneLabel"]'),
+            emailLabel: getValue('[data-translatable-key="contact.emailLabel"]'),
+            emergencyLabel: getValue('[data-translatable-key="contact.emergencyLabel"]'),
+            address: getValue('[data-translatable-key="contact.address"]'),
+            hours: getValue('[data-translatable-key="contact.hours"]')
+        },
+        news: {}, 
+        pois: {}, 
+        tours: {}, 
+        quiz: { 
+            title: getValue('#en-quiz-title'), 
+            description: getValue('#en-quiz-description'), 
+            questions: {} 
+        }
+    };
+    
+    // Collect stats
+    document.querySelectorAll('.stat-item').forEach(item => { 
+        const key = getValue('.item-key', item); 
+        if(key) {
+            data.stats[key] = { 
+                label: getValue('[data-translatable-key="label"]', item), 
+                description: getValue('[data-translatable-key="description"]', item) 
+            };
+        }
+    });
+    
+    // Collect facts
+    document.querySelectorAll('.fact-item').forEach(item => { 
+        const key = getValue('.item-key', item); 
+        if(key) {
+            data.interestingFacts[key] = { 
+                text: getValue('[data-translatable-key="text"]', item), 
+                image: {
+                    caption: getValue('[data-translatable-key="image.caption"]', item)
+                }
+            };
+        }
+    });
+    
+    // Collect history images
+    document.querySelectorAll('.history-image-item').forEach(item => { 
+        const key = getValue('.item-key', item); 
+        if(key) {
+            data.historicalInfo.images[key] = { 
+                caption: getValue('[data-translatable-key="caption"]', item), 
+                alt: getValue('[data-translatable-key="alt"]', item) 
+            };
+        }
+    });
+    
+    // Collect news
+    document.querySelectorAll('.news-item').forEach(item => { 
+        const key = getValue('.item-key', item); 
+        if(key) {
+            data.news[key] = { 
+                title: getValue('[data-translatable-key="title"]', item), 
+                summary: getValue('[data-translatable-key="summary"]', item), 
+                content: getValue('[data-translatable-key="content"]', item), 
+                image: {
+                    caption: getValue('[data-translatable-key="image.caption"]', item)
+                }
+            };
+        }
+    });
+    
+    // Collect POIs
+    document.querySelectorAll('.poi-item').forEach(item => { 
+        const key = getValue('.item-key', item); 
+        if(key) {
+            data.pois[key] = { 
+                title: getValue('[data-translatable-key="title"]', item), 
+                description: getValue('[data-translatable-key="description"]', item), 
+                openingHours: getValue('[data-translatable-key="openingHours"]', item), 
+                accessibility: getValue('[data-translatable-key="accessibility"]', item), 
+                bestTimeToVisit: getValue('[data-translatable-key="bestTimeToVisit"]', item) 
+            };
+        }
+    });
+    
+    // Collect tours
+    document.querySelectorAll('.tour-item').forEach(item => { 
+        const key = getValue('.item-key', item); 
+        if(key) {
+            const tourData = { 
+                name: getValue('[data-translatable-key="name"]', item), 
+                description: getValue('[data-translatable-key="description"]', item),
+                waypoints: {}
+            };
+            
+            // Collect waypoint translations
+            item.querySelectorAll('.waypoint-item').forEach(waypointItem => {
+                const waypointKey = getValue('.waypoint-key', waypointItem);
+                if (waypointKey) {
+                    tourData.waypoints[waypointKey] = {
+                        title: getValue(`[data-translatable-key="waypoints.${waypointKey}.title"]`, waypointItem),
+                        info: getValue(`[data-translatable-key="waypoints.${waypointKey}.info"]`, waypointItem)
+                    };
+                }
+            });
+            
+            data.tours[key] = tourData;
+        } 
+    });
+    
+    // Collect quiz questions
+    document.querySelectorAll('.quiz-question-item').forEach(item => { 
+        const key = getValue('.item-key', item); 
+        if(key) {
+            const questionData = { 
+                question: getValue('[data-translatable-key="question"]', item),
+                explanation: {
+                    text: getValue('[data-translatable-key="explanation.text"]', item),
+                    image: {
+                        caption: getValue('[data-translatable-key="explanation.image.caption"]', item)
+                    }
+                }
+            };
+            
+            // Only add options if they exist (for multiple choice and image based questions)
+            const options = getValue('[data-translatable-key="options"]', item);
+            if (options && options.trim() !== '') {
+                questionData.options = options;
+            }
+            
+            data.quiz.questions[key] = questionData;
+        } 
+    });
+
+    return data;
+}
+
+// --- TRANSLATION JSON EXPORT/IMPORT ---
+function exportTranslationJSON() {
+    const selectedLang = document.getElementById('export-lang-select').value;
+    const sourceData = collectSourceData();
+    
+    let promptText = '';
+    let jsonData = '';
+    
+    if (selectedLang === 'all') {
+        // Export all languages at once
+        const allLanguages = ['it', 'de', 'es', 'pt', 'ja', 'fr'];
+        promptText = `Please translate the following JSON content from English to ALL of these languages: ${allLanguages.join(', ')}.
+
+IMPORTANT: Return ONLY a JSON object with this exact format (no explanations, no markdown, just the JSON):
+
+{
+  "it": { translated content in Italian },
+  "de": { translated content in German },
+  "es": { translated content in Spanish },
+  "pt": { translated content in Portuguese },
+  "ja": { translated content in Japanese },
+  "fr": { translated content in French }
+}
+
+Rules:
+- Keep the exact same structure as the source
+- Only translate text values, never keys
+- Do NOT include English ("en") in your response
+- Return nothing but the JSON object
+
+Source content to translate:`;
+        
+        jsonData = JSON.stringify(sourceData, null, 2);
+    } else {
+        // Export single language
+        promptText = `Please translate the following JSON content from English to ${selectedLang}.
+
+IMPORTANT: Return ONLY the translated JSON object with the same structure (no explanations, no markdown, just the JSON).
+
+Rules:
+- Keep the exact same structure as the source
+- Only translate text values, never keys
+- Return nothing but the translated JSON object
+
+Source content to translate:`;
+        
+        jsonData = JSON.stringify(sourceData, null, 2);
+    }
+    
+    const fullExport = promptText + '\n\n' + jsonData;
+    
+    // Display in textarea
+    const jsonArea = document.getElementById('translation-json-area');
+    jsonArea.value = fullExport;
+    
+    // Also copy to clipboard
+    navigator.clipboard.writeText(fullExport).then(() => {
+        if (selectedLang === 'all') {
+            alert(`✅ Complete Translation Pack exported and copied to clipboard!\n\n📋 Instructions for AI:\n1. Paste the prompt + JSON to your AI\n2. Copy ONLY the JSON response (not explanations)\n3. Use "Import All Languages" button\n\n🌍 Will translate: Italian, German, Spanish, Portuguese, Japanese, French`);
+        } else {
+            alert(`✅ Translation prompt for ${selectedLang} exported and copied to clipboard!\n\n📋 Instructions for AI:\n1. Paste the prompt + JSON to your AI\n2. Copy ONLY the JSON response (not explanations)\n3. Use "Import Single Language" button`);
+        }
+    }).catch(err => {
+        if (selectedLang === 'all') {
+            alert(`✅ Complete Translation Pack exported to textarea below.\n\n📋 Instructions for AI:\n1. Copy the prompt + JSON from textarea\n2. Paste to your AI\n3. Copy ONLY the JSON response\n4. Use "Import All Languages" button`);
+        } else {
+            alert(`✅ Translation prompt for ${selectedLang} exported to textarea below.\n\n📋 Instructions for AI:\n1. Copy the prompt + JSON from textarea\n2. Paste to your AI\n3. Copy ONLY the JSON response\n4. Use "Import Single Language" button`);
+        }
+    });
+}
+
+function importTranslationJSON() {
+    const selectedLang = document.getElementById('import-lang-select').value;
+    const jsonArea = document.getElementById('translation-json-area');
+    
+    try {
+        const translatedContent = JSON.parse(jsonArea.value);
+        
+        // For single language, we expect the translated content directly (not wrapped)
+        // Validate that it looks like content (has expected fields like name, description, etc.)
+        if (typeof translatedContent !== 'object' || translatedContent === null) {
+            throw new Error('Invalid format: Expected a JSON object with translated content');
+        }
+        
+        // Ensure translations UI is prepared
+        if (!document.querySelector(`[data-lang="${selectedLang}"]`)) {
+            alert('Please prepare translations first by clicking "Prepare Translations" button');
+            return;
+        }
+        
+        // Import the translated content directly
+        importTranslatedContent(translatedContent, selectedLang);
+        
+        // Count successfully imported fields
+        let importedCount = 0;
+        const allInputs = document.querySelectorAll(`[data-lang="${selectedLang}"]`);
+        allInputs.forEach(input => {
+            if (input.value && input.value.trim() !== '') {
+                importedCount++;
+            }
+        });
+        
+        alert(`✅ Successfully imported ${selectedLang} translations!\n\n${importedCount} fields have been populated.\n\nCheck the console (F12) for any missing field warnings.`);
+        
+    } catch (error) {
+        alert(`❌ Error importing translations: ${error.message}\n\nPlease ensure you copied ONLY the JSON response from AI (no explanations or markdown).`);
+    }
+}
+
+function importAllLanguagesJSON() {
+    const jsonArea = document.getElementById('translation-json-area');
+    
+    try {
+        const allTranslations = JSON.parse(jsonArea.value);
+        
+        // This should be a direct object with language codes as keys (no wrapper)
+        // Expected format: { "it": {...}, "de": {...}, "es": {...}, "pt": {...}, "ja": {...}, "fr": {...} }
+        const supportedLanguages = ['it', 'de', 'es', 'pt', 'ja', 'fr'];
+        const foundLanguages = [];
+        
+        // Check what languages are present in the JSON
+        for (const lang of supportedLanguages) {
+            if (allTranslations[lang] && typeof allTranslations[lang] === 'object') {
+                foundLanguages.push(lang);
+            }
+        }
+        
+        if (foundLanguages.length === 0) {
+            throw new Error('No valid language translations found. Expected format: { "it": {...}, "de": {...}, ... }\n\nMake sure you copied ONLY the JSON response from AI.');
+        }
+        
+        // Check if English was included (it shouldn't be)
+        if (allTranslations['en']) {
+            console.warn('English was included in translation response but will be ignored (we already have English)');
+        }
+        
+        // Ensure translations UI is prepared
+        if (!document.querySelector(`[data-lang="${foundLanguages[0]}"]`)) {
+            alert('Please prepare translations first by clicking "Prepare Translations" button');
+            return;
+        }
+        
+        // Import all found languages
+        let totalImported = 0;
+        const importResults = [];
+        
+        for (const lang of foundLanguages) {
+            try {
+                importTranslatedContent(allTranslations[lang], lang);
+                
+                // Count successfully imported fields for this language
+                let importedCount = 0;
+                const langInputs = document.querySelectorAll(`[data-lang="${lang}"]`);
+                langInputs.forEach(input => {
+                    if (input.value && input.value.trim() !== '') {
+                        importedCount++;
+                    }
+                });
+                
+                importResults.push(`${lang.toUpperCase()}: ${importedCount} fields`);
+                totalImported += importedCount;
+                
+            } catch (error) {
+                console.error(`Error importing ${lang}:`, error);
+                importResults.push(`${lang.toUpperCase()}: ERROR - ${error.message}`);
+            }
+        }
+        
+        alert(`✅ Successfully imported ${foundLanguages.length} languages!\n\nTotal fields imported: ${totalImported}\n\nBreakdown:\n${importResults.join('\n')}\n\n💡 English content remains unchanged (as expected).\n\nCheck the console (F12) for any missing field warnings.`);
+        
+    } catch (error) {
+        alert(`❌ Error importing all languages: ${error.message}\n\nPlease ensure you copied ONLY the JSON response from AI (no explanations or markdown).\n\nExpected format:\n{\n  "it": { "name": "Italian translation", ... },\n  "de": { "name": "German translation", ... },\n  ...\n}`);
+    }
+}
+
+function importTranslatedContent(content, targetLang) {
+    // Import main content
+    if (content.name) {
+        const input = document.getElementById(`trans-${targetLang}-name`);
+        if (input) input.value = content.name;
+    }
+    
+    if (content.region) {
+        const input = document.getElementById(`trans-${targetLang}-region`);
+        if (input) input.value = content.region;
+    }
+    
+    if (content.description) {
+        const input = document.getElementById(`trans-${targetLang}-description`);
+        if (input) input.value = content.description;
+    }
+    
+    if (content.heroImage) {
+        if (content.heroImage.caption) {
+            const input = document.getElementById(`trans-${targetLang}-heroImage-caption`);
+            if (input) input.value = content.heroImage.caption;
+        }
+        if (content.heroImage.alt) {
+            const input = document.getElementById(`trans-${targetLang}-heroImage-alt`);
+            if (input) input.value = content.heroImage.alt;
+        }
+    }
+    
+    // Import stats  
+    if (content.stats) {
+        for (const [key, stat] of Object.entries(content.stats)) {
+            if (stat.label) {
+                const input = document.getElementById(`trans-${targetLang}-stats-${key}-label`);
+                if (input) {
+                    input.value = stat.label;
+                } else {
+                    console.warn(`Stats label input not found: trans-${targetLang}-stats-${key}-label`);
+                }
+            }
+            if (stat.description) {
+                const input = document.getElementById(`trans-${targetLang}-stats-${key}-description`);
+                if (input) {
+                    input.value = stat.description;
+                } else {
+                    console.warn(`Stats description input not found: trans-${targetLang}-stats-${key}-description`);
+                }
+            }
+        }
+    }
+    
+    // Import interesting facts
+    if (content.interestingFacts) {
+        for (const [key, fact] of Object.entries(content.interestingFacts)) {
+            if (fact.text) {
+                const input = document.getElementById(`trans-${targetLang}-interestingFacts-${key}-text`);
+                if (input) input.value = fact.text;
+            }
+            if (fact.image && fact.image.caption) {
+                const input = document.getElementById(`trans-${targetLang}-interestingFacts-${key}-image-caption`);
+                if (input) input.value = fact.image.caption;
+            }
+        }
+    }
+    
+    // Import historical info
+    if (content.historicalInfo) {
+        if (content.historicalInfo.text) {
+            const input = document.getElementById(`trans-${targetLang}-historicalInfo-text`);
+            if (input) input.value = content.historicalInfo.text;
+        }
+        if (content.historicalInfo.images) {
+            for (const [key, image] of Object.entries(content.historicalInfo.images)) {
+                if (image.caption) {
+                    const input = document.getElementById(`trans-${targetLang}-historicalInfo-images-${key}-caption`);
+                    if (input) input.value = image.caption;
+                }
+                if (image.alt) {
+                    const input = document.getElementById(`trans-${targetLang}-historicalInfo-images-${key}-alt`);
+                    if (input) input.value = image.alt;
+                }
+            }
+        }
+    }
+    
+    // Import news
+    if (content.news) {
+        for (const [key, newsItem] of Object.entries(content.news)) {
+            if (newsItem.title) {
+                const input = document.getElementById(`trans-${targetLang}-news-${key}-title`);
+                if (input) input.value = newsItem.title;
+            }
+            if (newsItem.summary) {
+                const input = document.getElementById(`trans-${targetLang}-news-${key}-summary`);
+                if (input) input.value = newsItem.summary;
+            }
+            if (newsItem.content) {
+                const input = document.getElementById(`trans-${targetLang}-news-${key}-content`);
+                if (input) input.value = newsItem.content;
+            }
+            if (newsItem.image && newsItem.image.caption) {
+                const input = document.getElementById(`trans-${targetLang}-news-${key}-image-caption`);
+                if (input) input.value = newsItem.image.caption;
+            }
+        }
+    }
+    
+    // Import POIs
+    if (content.pois) {
+        for (const [key, poi] of Object.entries(content.pois)) {
+            if (poi.title) {
+                const input = document.getElementById(`trans-${targetLang}-pois-${key}-title`);
+                if (input) input.value = poi.title;
+            }
+            if (poi.description) {
+                const input = document.getElementById(`trans-${targetLang}-pois-${key}-description`);
+                if (input) input.value = poi.description;
+            }
+            if (poi.openingHours) {
+                const input = document.getElementById(`trans-${targetLang}-pois-${key}-openingHours`);
+                if (input) input.value = poi.openingHours;
+            }
+            if (poi.accessibility) {
+                const input = document.getElementById(`trans-${targetLang}-pois-${key}-accessibility`);
+                if (input) input.value = poi.accessibility;
+            }
+            if (poi.bestTimeToVisit) {
+                const input = document.getElementById(`trans-${targetLang}-pois-${key}-bestTimeToVisit`);
+                if (input) input.value = poi.bestTimeToVisit;
+            }
+        }
+    }
+    
+    // Import tours
+    if (content.tours) {
+        for (const [key, tour] of Object.entries(content.tours)) {
+            if (tour.name) {
+                const input = document.getElementById(`trans-${targetLang}-tours-${key}-name`);
+                if (input) input.value = tour.name;
+            }
+            if (tour.description) {
+                const input = document.getElementById(`trans-${targetLang}-tours-${key}-description`);
+                if (input) input.value = tour.description;
+            }
+            // Import waypoints
+            if (tour.waypoints) {
+                for (const [waypointKey, waypoint] of Object.entries(tour.waypoints)) {
+                    if (waypoint.title) {
+                        const input = document.getElementById(`trans-${targetLang}-tours-${key}-waypoints-${waypointKey}-title`);
+                        if (input) input.value = waypoint.title;
+                    }
+                    if (waypoint.info) {
+                        const input = document.getElementById(`trans-${targetLang}-tours-${key}-waypoints-${waypointKey}-info`);
+                        if (input) input.value = waypoint.info;
+                    }
+                }
+            }
+        }
+    }
+    
+    // Import quiz
+    if (content.quiz) {
+        if (content.quiz.title) {
+            const input = document.getElementById(`trans-${targetLang}-quiz-title`);
+            if (input) input.value = content.quiz.title;
+        }
+        if (content.quiz.description) {
+            const input = document.getElementById(`trans-${targetLang}-quiz-description`);
+            if (input) input.value = content.quiz.description;
+        }
+        if (content.quiz.questions) {
+            for (const [key, question] of Object.entries(content.quiz.questions)) {
+                if (question.question) {
+                    const input = document.getElementById(`trans-${targetLang}-quiz-questions-${key}-question`);
+                    if (input) input.value = question.question;
+                }
+                if (question.options) {
+                    const input = document.getElementById(`trans-${targetLang}-quiz-questions-${key}-options`);
+                    if (input) input.value = question.options;
+                }
+                if (question.explanation && question.explanation.text) {
+                    const input = document.getElementById(`trans-${targetLang}-quiz-questions-${key}-explanation-text`);
+                    if (input) input.value = question.explanation.text;
+                }
+                if (question.explanation && question.explanation.image && question.explanation.image.caption) {
+                    const input = document.getElementById(`trans-${targetLang}-quiz-questions-${key}-explanation-image-caption`);
+                    if (input) input.value = question.explanation.image.caption;
+                }
+            }
+        }
+    }
+    
+    // Import contact
+    if (content.contact) {
+        const contactFields = ['websiteLabel', 'phoneLabel', 'emailLabel', 'emergencyLabel', 'address', 'hours'];
+        contactFields.forEach(field => {
+            if (content.contact[field]) {
+                const input = document.getElementById(`trans-${targetLang}-contact-${field}`);
+                if (input) input.value = content.contact[field];
+            }
+        });
+    }
+}
+
+// --- QUIZ TYPE CONTENT MANAGEMENT ---
+function updateQuizTypeContent(selectElement) {
+    const questionType = selectElement.value;
+    const questionItem = selectElement.closest('.quiz-question-item');
+    const contentArea = questionItem.querySelector('.quiz-type-content');
+    
+    if (!questionType) {
+        contentArea.innerHTML = '<div class="field-hint">👆 Please select a question type above to see relevant options</div>';
+        return;
+    }
+    
+    let content = '';
+    
+    switch (questionType) {
+        case 'multiple_choice':
+            content = createMultipleChoiceContent();
+            break;
+        case 'true_false':
+            content = createTrueFalseContent();
+            break;
+        case 'image_based':
+            content = createImageBasedContent();
+            break;
+        case 'image_sequence':
+            content = createImageSequenceContent();
+            break;
+        case 'drag_drop':
+            content = createDragDropContent();
+            break;
+        case 'fill_blank':
+            content = createFillBlankContent();
+            break;
+        default:
+            content = '<div class="field-hint">Unknown question type selected</div>';
+    }
+    
+    contentArea.innerHTML = content;
+    
+    // Add event listeners after content is added
+    setTimeout(() => {
+        addQuizEventListeners(questionItem, questionType);
+    }, 100);
+}
+
+function createMultipleChoiceContent() {
+    return `
+        <h5>Multiple Choice Options</h5>
+        <div class="field-hint">Add 2-5 options and select the correct one</div>
+        <div class="quiz-options-container">
+            <!-- Options will be added here -->
+        </div>
+        <button type="button" class="btn-add" onclick="addQuizOption(this)">Add Option</button>
+        <div class="form-group">
+            <label>Hidden data (auto-generated)</label>
+            <input type="text" class="item-correctOption" readonly placeholder="Correct option index (auto-set)">
+            <input type="hidden" data-translatable-key="options" class="quiz-options-translatable">
+            <textarea class="item-structural-data" readonly placeholder="Options data (auto-generated)"></textarea>
+        </div>
+    `;
+}
+
+function createTrueFalseContent() {
+    const uniqueId = Date.now();
+    return `
+        <h5>True/False Answer</h5>
+        <div class="form-group">
+            <label>Correct Answer</label>
+            <div class="quiz-option-item">
+                <input type="radio" name="tf-answer-${uniqueId}" value="true" onchange="updateTrueFalseAnswer(this)"> True
+            </div>
+            <div class="quiz-option-item">
+                <input type="radio" name="tf-answer-${uniqueId}" value="false" onchange="updateTrueFalseAnswer(this)"> False
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Hidden data (auto-generated)</label>
+            <input type="text" class="item-correctOption" readonly placeholder="Correct answer (auto-set)">
+            <textarea class="item-structural-data" readonly placeholder="No additional data needed"></textarea>
+        </div>
+    `;
+}
+
+function createImageBasedContent() {
+    return `
+        <h5>Question Image</h5>
+        <div class="form-group">
+            <label>Upload Question Image</label>
+            <div class="image-upload-area question-image" ondrop="handleImageDrop(event, 'quiz', this)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                <input type="file" accept="image/*" style="display: none;" onchange="handleImageUpload(event, 'quiz')">
+                <p>Drag & drop question image here or <button type="button" onclick="triggerSiblingFileUpload(this)">Browse</button></p>
+                <div class="image-preview-container"></div>
+            </div>
+        </div>
+        <h5>Multiple Choice Options</h5>
+        <div class="field-hint">Add 2-5 options and select the correct one</div>
+        <div class="quiz-options-container">
+            <!-- Options will be added here -->
+        </div>
+        <button type="button" class="btn-add" onclick="addQuizOption(this)">Add Option</button>
+                 <div class="form-group">
+             <label>Hidden data (auto-generated)</label>
+             <input type="text" class="item-correctOption" readonly placeholder="Correct option index (auto-set)">
+             <input type="hidden" data-translatable-key="options" class="quiz-options-translatable">
+             <textarea class="item-structural-data" readonly placeholder="Image and options data (auto-generated)"></textarea>
+         </div>
+    `;
+}
+
+function createImageSequenceContent() {
+    return `
+        <h5>Image Sequence</h5>
+        <div class="field-hint">Upload images and drag them to set the correct order</div>
+        <div class="form-group">
+            <label>Upload Sequence Images</label>
+            <div class="image-upload-area sequence-images" ondrop="handleImageDrop(event, 'quiz', this)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                <input type="file" accept="image/*" multiple style="display: none;" onchange="handleImageUpload(event, 'quiz')">
+                <p>Drag & drop sequence images here or <button type="button" onclick="triggerSiblingFileUpload(this)">Browse</button></p>
+                <div class="image-preview-container"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Correct Sequence Order</label>
+            <div class="field-hint">Drag the items below to set the correct order</div>
+            <div class="quiz-sequence-container">
+                <div class="field-hint">Upload images first, then drag them to arrange in correct order</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Hidden data (auto-generated)</label>
+            <input type="text" class="item-correctOption" readonly placeholder="Correct sequence (auto-set)">
+            <textarea class="item-structural-data" readonly placeholder="Images and sequence data (auto-generated)"></textarea>
+        </div>
+    `;
+}
+
+function createDragDropContent() {
+    return `
+        <h5>Drag & Drop Items</h5>
+        <div class="field-hint">Create items and set their correct positions</div>
+        <div class="quiz-items-container">
+            <!-- Drag/drop items will be added here -->
+        </div>
+        <button type="button" class="btn-add" onclick="addDragDropItem(this)">Add Drag/Drop Item</button>
+        <div class="form-group">
+            <label>Hidden data (auto-generated)</label>
+            <input type="text" class="item-correctOption" readonly placeholder="Correct sequence (auto-set)">
+            <textarea class="item-structural-data" readonly placeholder="Items and positions data (auto-generated)"></textarea>
+        </div>
+    `;
+}
+
+function createFillBlankContent() {
+    return `
+        <h5>Fill in the Blank</h5>
+        <div class="field-hint">
+            In your question above, use <span class="quiz-fill-blank">_____</span> to mark blanks.<br>
+            Example: "The highest mountain is <span class="quiz-fill-blank">_____</span> meters tall."
+        </div>
+        <div class="quiz-answers-list">
+            <label>Possible Correct Answers (one per line)</label>
+            <div class="field-hint">Add multiple acceptable answers (case-insensitive matching)</div>
+            <div class="quiz-fill-answers-container">
+                <!-- Fill-in answers will be added here -->
+            </div>
+            <button type="button" class="btn-add" onclick="addFillBlankAnswer(this)">Add Answer</button>
+        </div>
+        <div class="form-group">
+            <label>Hidden data (auto-generated)</label>
+            <input type="text" class="item-correctOption" readonly placeholder="Correct answers (auto-set)">
+            <textarea class="item-structural-data" readonly placeholder="Answer variations (auto-generated)"></textarea>
+        </div>
+    `;
+}
+
+function addQuizEventListeners(questionItem, questionType) {
+    // Add initial options/items based on type
+    if (questionType === 'multiple_choice' || questionType === 'image_based') {
+        // Add 2 default options
+        const addButton = questionItem.querySelector('.btn-add');
+        if (addButton && addButton.textContent.includes('Add Option')) {
+            addQuizOption(addButton);
+            addQuizOption(addButton);
+        }
+    } else if (questionType === 'fill_blank') {
+        // Add 1 default answer
+        const addButton = questionItem.querySelector('.btn-add');
+        if (addButton && addButton.textContent.includes('Add Answer')) {
+            addFillBlankAnswer(addButton);
+        }
+    } else if (questionType === 'drag_drop') {
+        // Add 2 default items
+        const addButton = questionItem.querySelector('.btn-add');
+        if (addButton && addButton.textContent.includes('Add Drag/Drop Item')) {
+            addDragDropItem(addButton);
+            addDragDropItem(addButton);
+        }
+    }
+}
+
+// Quiz option management
+function addQuizOption(button) {
+    const container = button.parentElement.querySelector('.quiz-options-container');
+    const optionIndex = container.children.length;
+    
+    const optionDiv = document.createElement('div');
+    optionDiv.className = 'quiz-option-item';
+    optionDiv.innerHTML = `
+        <input type="radio" name="quiz-correct-${Date.now()}" value="${optionIndex}" onchange="updateCorrectOption(this)">
+        <input type="text" placeholder="Option ${optionIndex + 1}" onchange="updateQuizOptions(this)">
+        <button type="button" class="btn-remove" onclick="removeQuizOption(this)">Remove</button>
+    `;
+    
+    container.appendChild(optionDiv);
+    updateQuizOptions(optionDiv.querySelector('input[type="text"]'));
+}
+
+function removeQuizOption(button) {
+    const optionItem = button.closest('.quiz-option-item');
+    const container = optionItem.parentElement;
+    optionItem.remove();
+    
+    // Re-index options
+    const options = container.querySelectorAll('.quiz-option-item');
+    options.forEach((option, index) => {
+        const radio = option.querySelector('input[type="radio"]');
+        const text = option.querySelector('input[type="text"]');
+        radio.value = index;
+        text.placeholder = `Option ${index + 1}`;
+    });
+    
+    updateQuizOptions(container);
+}
+
+function updateCorrectOption(radio) {
+    const questionItem = radio.closest('.quiz-question-item');
+    const correctOptionField = questionItem.querySelector('.item-correctOption');
+    correctOptionField.value = radio.value;
+    
+    // Update visual indication
+    const allOptions = questionItem.querySelectorAll('.quiz-option-item');
+    allOptions.forEach(opt => opt.classList.remove('correct'));
+    radio.closest('.quiz-option-item').classList.add('correct');
+}
+
+function updateQuizOptions(input) {
+    const questionItem = input.closest('.quiz-question-item');
+    const container = questionItem.querySelector('.quiz-options-container');
+    const options = Array.from(container.querySelectorAll('input[type="text"]')).map(inp => inp.value);
+    
+    // Update translatable options field for translations
+    const translatableOptions = questionItem.querySelector('.quiz-options-translatable');
+    if (translatableOptions) {
+        translatableOptions.value = options.join(', ');
+    }
+    
+    // Update structural data
+    const structuralData = questionItem.querySelector('.item-structural-data');
+    if (structuralData) {
+        structuralData.value = JSON.stringify({ options: options }, null, 2);
+    }
+}
+
+function updateTrueFalseAnswer(radio) {
+    const questionItem = radio.closest('.quiz-question-item');
+    const correctOptionField = questionItem.querySelector('.item-correctOption');
+    correctOptionField.value = radio.value === 'true' ? 'true' : 'false';
+    
+    // Update visual indication
+    const allOptions = questionItem.querySelectorAll('.quiz-option-item');
+    allOptions.forEach(opt => opt.classList.remove('correct'));
+    radio.closest('.quiz-option-item').classList.add('correct');
+}
+
+function addFillBlankAnswer(button) {
+    const container = button.parentElement.querySelector('.quiz-fill-answers-container');
+    
+    const answerDiv = document.createElement('div');
+    answerDiv.className = 'quiz-answer-item';
+    answerDiv.innerHTML = `
+        <input type="text" placeholder="Acceptable answer" onchange="updateFillBlankAnswers(this)">
+        <button type="button" class="btn-remove" onclick="removeFillBlankAnswer(this)">Remove</button>
+    `;
+    
+    container.appendChild(answerDiv);
+}
+
+function removeFillBlankAnswer(button) {
+    const answerItem = button.closest('.quiz-answer-item');
+    answerItem.remove();
+    updateFillBlankAnswers(button);
+}
+
+function updateFillBlankAnswers(input) {
+    const questionItem = input.closest('.quiz-question-item');
+    const container = questionItem.querySelector('.quiz-fill-answers-container');
+    const answers = Array.from(container.querySelectorAll('input[type="text"]')).map(inp => inp.value).filter(val => val.trim());
+    
+    // Update hidden fields
+    const correctOptionField = questionItem.querySelector('.item-correctOption');
+    const structuralData = questionItem.querySelector('.item-structural-data');
+    
+    correctOptionField.value = JSON.stringify(answers);
+    structuralData.value = JSON.stringify({ correctAnswers: answers }, null, 2);
+}
+
+function addDragDropItem(button) {
+    const container = button.parentElement.querySelector('.quiz-items-container');
+    const itemIndex = container.children.length;
+    
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'quiz-sequence-item';
+    itemDiv.draggable = true;
+    itemDiv.innerHTML = `
+        <div class="sequence-order">${itemIndex + 1}</div>
+        <input type="text" placeholder="Drag/Drop item ${itemIndex + 1}" onchange="updateDragDropItems(this)">
+        <button type="button" class="btn-remove" onclick="removeDragDropItem(this)">Remove</button>
+    `;
+    
+    container.appendChild(itemDiv);
+    updateDragDropItems(itemDiv.querySelector('input'));
+}
+
+function removeDragDropItem(button) {
+    const item = button.closest('.quiz-sequence-item');
+    item.remove();
+    updateDragDropItems(button);
+}
+
+function updateDragDropItems(input) {
+    const questionItem = input.closest('.quiz-question-item');
+    const container = questionItem.querySelector('.quiz-items-container');
+    const items = Array.from(container.querySelectorAll('input[type="text"]')).map(inp => inp.value);
+    
+    // Update sequence numbers
+    const sequenceItems = container.querySelectorAll('.quiz-sequence-item');
+    sequenceItems.forEach((item, index) => {
+        const orderDiv = item.querySelector('.sequence-order');
+        orderDiv.textContent = index + 1;
+    });
+    
+    // Update hidden fields
+    const correctOptionField = questionItem.querySelector('.item-correctOption');
+    const structuralData = questionItem.querySelector('.item-structural-data');
+    
+    correctOptionField.value = JSON.stringify(items);
+    structuralData.value = JSON.stringify({ correctSequence: items }, null, 2);
+}
+
+// --- FORM SUBMISSION & JSON GENERATION ---
+document.getElementById('json-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    try {
+        const result = { likes: [] };
+
+    // 1. Structural Data
+    document.querySelectorAll('[data-key]').forEach(el => { if (el.closest('.repeater-item') || el.hasAttribute('data-translatable-key')) return; const key = el.dataset.key; result[key] = el.type === 'checkbox' ? el.checked : (el.type === 'number' ? (el.value === '' ? null : parseFloat(el.value)) : el.value); });
+    result.center = [getFloat('#center-lat'), getFloat('#center-lon')];
+    result.areaPolygon = Array.from(document.querySelectorAll('.polygon-point')).map(item => [getFloat('input:first-child', item), getFloat('input:last-child', item)]);
+    result.customStyle = { color: getValue('#customStyle-color'), icon: getValue('.customStyle-icon') };
+    result.heroImage = { storageRef: getValue('#heroImage-storageRef'), priority: getValue('.heroImage-priority'), imageSource: getValue('#heroImage-imageSource') };
+    result.contact = { website: getValue('#contact-website'), phone: getValue('#contact-phone'), email: getValue('#contact-email'), emergencyPhone: getValue('#contact-emergencyPhone') };
+    result.historicalInfo = { icon: getValue('.historicalInfo-icon'), images: {} };
+    result.quiz = { settings: { timePerQuestion: getFloat('#quiz-settings-time'), passingScore: getFloat('#quiz-settings-passing'), randomizeQuestions: document.getElementById('quiz-settings-randomize').checked, showExplanations: document.getElementById('quiz-settings-showExplanations').checked }, rewards: { bronzeScore: getFloat('#quiz-rewards-bronze'), silverScore: getFloat('#quiz-rewards-silver'), goldScore: getFloat('#quiz-rewards-gold'), completionAchievement: getValue('#quiz-rewards-achievement') }, questions: {} };
+    
+    // Dynamic structural data...
+    ['stats', 'interestingFacts', 'news', 'pois', 'tours'].forEach(section => result[section] = {});
+    document.querySelectorAll('.stat-item').forEach(item => { const key = getValue('.item-key', item); if(!key) return; result.stats[key] = { icon: getValue('.item-icon', item), value: getValue('.item-value', item), unit: getValue('.item-unit', item), secondaryValue: getValue('.item-secondaryValue', item), secondaryUnit: getValue('.item-secondaryUnit', item) }; });
+    document.querySelectorAll('.fact-item').forEach(item => { const key = getValue('.item-key', item); if(!key) return; result.interestingFacts[key] = { icon: getValue('.item-icon', item), image: { storageRef: getValue('.item-image-storageRef', item), imageSource: getValue('.item-image-imageSource', item) } }; });
+    document.querySelectorAll('.history-image-item').forEach(item => { const key = getValue('.item-key', item); if(!key) return; result.historicalInfo.images[key] = { storageRef: getValue('.item-storageRef', item), imageSource: getValue('.item-imageSource', item) }; });
+    document.querySelectorAll('.news-item').forEach(item => { 
+        const key = getValue('.item-key', item); 
+        if(!key) return; 
+        
+        const dateValue = getValue('.item-date', item);
+        let isoDate = null;
+        if (dateValue && dateValue.trim() !== '') {
+            const date = new Date(dateValue);
+            if (!isNaN(date.getTime())) {
+                isoDate = date.toISOString();
+            }
+        }
+        
+        result.news[key] = { 
+            date: isoDate, 
+            priority: getValue('.item-priority', item), 
+            icon: getValue('.item-icon', item), 
+            category: getValue('.item-category', item), 
+            image: { 
+                storageRef: getValue('.item-image-storageRef', item), 
+                imageSource: getValue('.item-image-imageSource', item) 
+            }
+        }; 
+    });
+    document.querySelectorAll('.poi-item').forEach(item => { 
+        const key = getValue('.item-key', item); 
+        if(!key) return; 
+        try { 
+            const galleryImagesText = getValue('.item-gallery-images', item);
+            let galleryImages = {};
+            if (galleryImagesText && galleryImagesText.trim() !== '') {
+                galleryImages = JSON.parse(galleryImagesText);
+            }
+            
+            result.pois[key] = { 
+                type: getValue('.item-type', item), 
+                coords: [getFloat('.item-coord-lat', item), getFloat('.item-coord-lon', item)], 
+                amenities: [...(item.querySelector('.item-amenities')?.options || [])].filter(o => o.selected).map(o => o.value), 
+                gallery: { 
+                    storagePrefix: getValue('.item-gallery-prefix', item), 
+                    images: galleryImages 
+                }
+            }; 
+        } catch(err) { 
+            console.error(`Error parsing POI gallery JSON for '${key}':`, err);
+            alert(`Error parsing POI gallery JSON for '${key}'. Please check format: ${err.message}`); 
+        } 
+    });
+    document.querySelectorAll('.tour-item').forEach(item => { 
+        const key = getValue('.item-key', item); 
+        if(!key) return; 
+        
+        // Collect waypoints from individual waypoint items
+        const waypoints = {};
+        item.querySelectorAll('.waypoint-item').forEach(waypointItem => {
+            const waypointKey = getValue('.waypoint-key', waypointItem);
+            if (waypointKey) {
+                const waypointData = {
+                    coords: [getFloat('.waypoint-coord-lat', waypointItem), getFloat('.waypoint-coord-lon', waypointItem)],
+                    estimatedTime: getFloat('.waypoint-estimatedTime', waypointItem),
+                    type: getValue('.waypoint-type', waypointItem)
+                };
+                
+                // Add waypoint images if any were uploaded
+                const waypointImages = uploadedImages.waypoint?.filter(img => img.itemKey === waypointKey) || [];
+                if (waypointImages.length > 0) {
+                    const placeId = document.getElementById('id').value || 'partner-zone';
+                    
+                    if (waypointImages.length === 1) {
+                        // Single image: add as 'image' property (direct storageRef string for mobile app compatibility)
+                        const img = waypointImages[0];
+                        const cleanFileName = sanitizeFileName(img.name);
+                        waypointData.image = `partner-zones/${placeId}/tour/waypoints/${waypointKey}/${cleanFileName}`;
+                    } else {
+                        // Multiple images: add as 'images' array (array of direct storageRef strings)
+                        waypointData.images = waypointImages.map(img => {
+                            const cleanFileName = sanitizeFileName(img.name);
+                            return `partner-zones/${placeId}/tour/waypoints/${waypointKey}/${cleanFileName}`;
+                        });
+                    }
+                }
+                
+                waypoints[waypointKey] = waypointData;
+            }
+        });
+        
+        result.tours[key] = { 
+            duration: getValue('.item-duration', item), 
+            difficulty: getValue('.item-difficulty', item), 
+            distance: getValue('.item-distance', item), 
+            waypoints: waypoints
+        }; 
+    });
+    document.querySelectorAll('.quiz-question-item').forEach(item => { 
+        const key = getValue('.item-key', item); 
+        if(!key) return; 
+        
+        const questionType = getValue('.item-type', item);
+        let correctAnswer = getValue('.item-correctOption', item);
+        
+        try { 
+            const structuralText = getValue('.item-structural-data', item);
+            let structural = {};
+            if (structuralText && structuralText.trim() !== '') {
+                structural = JSON.parse(structuralText);
+            }
+            
+            const questionData = { 
+                type: questionType,
+                ...structural 
+            };
+            
+            // Handle different answer formats based on question type
+            if (questionType === 'multiple_choice' || questionType === 'image_based') {
+                // correctOption should be an integer index
+                if (!isNaN(correctAnswer) && correctAnswer.trim() !== '') {
+                    questionData.correctOption = parseInt(correctAnswer);
+                }
+            } else if (questionType === 'true_false') {
+                // correctAnswer should be a boolean
+                questionData.correctAnswer = correctAnswer === 'true';
+            } else if (questionType === 'image_sequence' || questionType === 'drag_drop') {
+                // correctSequence should be an array
+                try {
+                    if (correctAnswer && correctAnswer.trim() !== '') {
+                        questionData.correctSequence = JSON.parse(correctAnswer);
+                    }
+                } catch (e) {
+                    console.warn(`Could not parse correctSequence for ${key}:`, correctAnswer);
+                }
+            } else if (questionType === 'fill_blank') {
+                // correctAnswers should be an array
+                try {
+                    if (correctAnswer && correctAnswer.trim() !== '') {
+                        questionData.correctAnswers = JSON.parse(correctAnswer);
+                    }
+                } catch (e) {
+                    console.warn(`Could not parse correctAnswers for ${key}:`, correctAnswer);
+                }
+            }
+            
+            result.quiz.questions[key] = questionData; 
+        } catch (err) { 
+            console.error(`Error parsing Quiz data for '${key}':`, err);
+            alert(`Error parsing Quiz data for '${key}'. Please check format: ${err.message}`); 
+        } 
+    });
+
+    // 2. Translations Object
+    result.translations = {};
+    
+    SUPPORTED_LANGUAGES.forEach(lang => {
+        const transObj = {};
+        
+        if (lang === 'en') {
+            // Collect English content directly from form
+            transObj.name = getValue('#en-name');
+            transObj.region = getValue('#en-region');
+            transObj.description = getValue('#en-description');
+            transObj.heroImage = {
+                caption: getValue('#en-hero-caption'),
+                alt: getValue('#en-hero-alt')
+            };
+            
+            // Collect English content from repeater items
+            transObj.stats = {};
+            document.querySelectorAll('.stat-item').forEach(item => {
+                const key = getValue('.item-key', item);
+                if (key) {
+                    transObj.stats[key] = {
+                        label: getValue('[data-translatable-key="label"]', item),
+                        description: getValue('[data-translatable-key="description"]', item)
+                    };
+                }
+            });
+            
+            transObj.interestingFacts = {};
+            document.querySelectorAll('.fact-item').forEach(item => {
+                const key = getValue('.item-key', item);
+                if (key) {
+                    transObj.interestingFacts[key] = {
+                        text: getValue('[data-translatable-key="text"]', item),
+                        image: {
+                            caption: getValue('[data-translatable-key="image.caption"]', item)
+                        }
+                    };
+                }
+            });
+            
+            transObj.historicalInfo = {
+                text: getValue('[data-translatable-key="historicalInfo.text"]'),
+                images: {}
+            };
+            document.querySelectorAll('.history-image-item').forEach(item => {
+                const key = getValue('.item-key', item);
+                if (key) {
+                    transObj.historicalInfo.images[key] = {
+                        caption: getValue('[data-translatable-key="caption"]', item),
+                        alt: getValue('[data-translatable-key="alt"]', item)
+                    };
+                }
+            });
+            
+            transObj.contact = {
+                websiteLabel: getValue('[data-translatable-key="contact.websiteLabel"]'),
+                phoneLabel: getValue('[data-translatable-key="contact.phoneLabel"]'),
+                emailLabel: getValue('[data-translatable-key="contact.emailLabel"]'),
+                emergencyLabel: getValue('[data-translatable-key="contact.emergencyLabel"]'),
+                address: getValue('[data-translatable-key="contact.address"]'),
+                hours: getValue('[data-translatable-key="contact.hours"]')
+            };
+            
+            transObj.news = {};
+            document.querySelectorAll('.news-item').forEach(item => {
+                const key = getValue('.item-key', item);
+                if (key) {
+                    transObj.news[key] = {
+                        title: getValue('[data-translatable-key="title"]', item),
+                        summary: getValue('[data-translatable-key="summary"]', item),
+                        content: getValue('[data-translatable-key="content"]', item),
+                        image: {
+                            caption: getValue('[data-translatable-key="image.caption"]', item)
+                        }
+                    };
+                }
+            });
+            
+            transObj.pois = {};
+            document.querySelectorAll('.poi-item').forEach(item => {
+                const key = getValue('.item-key', item);
+                if (key) {
+                    transObj.pois[key] = {
+                        title: getValue('[data-translatable-key="title"]', item),
+                        description: getValue('[data-translatable-key="description"]', item),
+                        openingHours: getValue('[data-translatable-key="openingHours"]', item),
+                        accessibility: getValue('[data-translatable-key="accessibility"]', item),
+                        bestTimeToVisit: getValue('[data-translatable-key="bestTimeToVisit"]', item)
+                    };
+                }
+            });
+            
+            transObj.tours = {};
+            document.querySelectorAll('.tour-item').forEach(item => {
+                const key = getValue('.item-key', item);
+                if (key) {
+                    const tourData = {
+                        name: getValue('[data-translatable-key="name"]', item),
+                        description: getValue('[data-translatable-key="description"]', item),
+                        waypoints: {}
+                    };
+                    
+                    // Collect waypoint translations
+                    item.querySelectorAll('.waypoint-item').forEach(waypointItem => {
+                        const waypointKey = getValue('.waypoint-key', waypointItem);
+                        if (waypointKey) {
+                            tourData.waypoints[waypointKey] = {
+                                title: getValue(`[data-translatable-key="waypoints.${waypointKey}.title"]`, waypointItem),
+                                info: getValue(`[data-translatable-key="waypoints.${waypointKey}.info"]`, waypointItem)
+                            };
+                        }
+                    });
+                    
+                    transObj.tours[key] = tourData;
+                }
+            });
+            
+            transObj.quiz = {
+                title: getValue('#en-quiz-title'),
+                description: getValue('#en-quiz-description'),
+                questions: {}
+            };
+            document.querySelectorAll('.quiz-question-item').forEach(item => {
+                const key = getValue('.item-key', item);
+                if (key) {
+                    transObj.quiz.questions[key] = {
+                        question: getValue('[data-translatable-key="question"]', item),
+                        explanation: {
+                            text: getValue('[data-translatable-key="explanation.text"]', item),
+                            image: {
+                                caption: getValue('[data-translatable-key="explanation.image.caption"]', item)
+                            }
+                        }
+                    };
+                }
+            });
+            
+        } else {
+            // Collect other language translations from form inputs
+            document.querySelectorAll(`[data-lang="${lang}"]`).forEach(input => {
+                const key = input.dataset.key;
+                const value = input.value;
+                if (key && value) {
+                    set(transObj, key, value);
+                }
+            });
+        }
+        
+        result.translations[lang] = transObj;
+    });
+
+        // Final Output
+        const outputEl = document.getElementById('output-json');
+        outputEl.value = JSON.stringify(result, null, 2);
+        outputEl.scrollIntoView({ behavior: 'smooth' });
+        
+    } catch (error) {
+        console.error('Error generating JSON:', error);
+        alert(`Error generating JSON: ${error.message}\n\nPlease check your form data and try again. If the problem persists, try filling in required fields or contact support.`);
+    }
+});
+
+// --- IMAGE UPLOAD FUNCTIONALITY ---
+let uploadedImages = {
+    hero: [],
+    facts: [],
+    fact: [],     // Legacy support for both 'fact' and 'facts'
+    history: [],
+    news: [],
+    poi: [],      // Match the category used in HTML form
+    quiz: [],
+    waypoint: []  // Individual waypoint images
+};
+
+function triggerFileUpload(inputId) {
+    try {
+        const input = document.getElementById(inputId);
+        if (input && typeof input.click === 'function') {
+            input.click();
+        } else {
+            console.error('File input not found or click method unavailable:', inputId);
+            alert('Error: Could not open file browser. Please try drag & drop instead.');
+        }
+    } catch (error) {
+        console.error('Error triggering file upload:', error);
+        alert('Error: Could not open file browser. Please try drag & drop instead.');
+    }
+}
+
+function triggerSiblingFileUpload(button) {
+    try {
+        const input = button.parentElement.previousElementSibling;
+        if (input && input.tagName === 'INPUT' && input.type === 'file' && typeof input.click === 'function') {
+            input.click();
+        } else {
+            console.error('File input sibling not found or invalid');
+            alert('Error: Could not open file browser. Please try drag & drop instead.');
+        }
+    } catch (error) {
+        console.error('Error triggering sibling file upload:', error);
+        alert('Error: Could not open file browser. Please try drag & drop instead.');
+    }
+}
+
+function handleDragOver(event) {
+    event.preventDefault();
+    event.currentTarget.classList.add('dragover');
+}
+
+function handleDragLeave(event) {
+    event.currentTarget.classList.remove('dragover');
+}
+
+function handleImageDrop(event, category, container) {
+    event.preventDefault();
+    event.currentTarget.classList.remove('dragover');
+    
+    const files = Array.from(event.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+    processImageFiles(files, category, container);
+}
+
+function handleImageUpload(event, category) {
+    const inputElement = event.target;
+    const files = Array.from(inputElement.files);
+    
+    // Use .closest() to find the nearest ancestor with the .image-upload-area class
+    const uploadAreaContainer = inputElement.closest('.image-upload-area'); 
+    
+    if (uploadAreaContainer) {
+        processImageFiles(files, category, uploadAreaContainer);
+    } else {
+        console.error('Could not find the parent ".image-upload-area" for the input.');
+        alert('A critical error occurred. The upload area container is missing.');
+    }
+}
+
+function processImageFiles(files, category, container) {
+    // Check if Place ID is filled out first
+    const placeId = document.getElementById('id').value;
+    if (!placeId || placeId.trim() === '') {
+        alert('⚠️ Please fill out the Place ID in the "Main Details" section first!\n\nThe Place ID is required to generate proper storage references for your images.');
+        return;
+    }
+    
+    if (!container) {
+        console.error('Container is undefined for category:', category);
+        alert('Error: Upload container not found. Please try refreshing the page.');
+        return;
+    }
+    
+    if (typeof container.querySelector !== 'function') {
+        console.error('Container does not have querySelector method for category:', category);
+        alert('Error: Invalid container element. Please try refreshing the page.');
+        return;
+    }
+    
+    const previewContainer = container.querySelector('.image-preview-container');
+    
+    if (!previewContainer) {
+        console.error('Preview container not found for category:', category);
+        console.log('Container HTML:', container.innerHTML);
+        alert('Error: Preview container not found. Please try refreshing the page.');
+        return;
+    }
+    
+    let uploadedCount = 0;
+    
+    files.forEach((file, index) => {
+        if (!file.type.startsWith('image/')) {
+            console.warn('Skipping non-image file:', file.name);
+            return;
+        }
+        
+        // Create preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.createElement('div');
+            preview.className = 'image-preview';
+            preview.innerHTML = `
+                <img src="${e.target.result}" alt="${file.name}" title="${file.name}">
+                <button type="button" class="remove-image" onclick="removeImage(this, '${category}', '${file.name}')">×</button>
+            `;
+            previewContainer.appendChild(preview);
+            uploadedCount++;
+            
+            // Auto-generate storage ref after image is loaded
+            generateStorageRef(file, category, container);
+            
+            // Show success message after last file
+            if (uploadedCount === files.filter(f => f.type.startsWith('image/')).length) {
+                showUploadSuccess(previewContainer, uploadedCount, category);
+            }
+        };
+        
+        reader.onerror = function(e) {
+            console.error('FileReader error for:', file.name, e);
+            alert(`Error reading file: ${file.name}`);
+        };
+        
+        reader.readAsDataURL(file);
+        
+        // Store file data
+        const itemContainer = container.closest('.repeater-item');
+        let itemKey = 'default';
+        
+        if (category === 'hero') {
+            itemKey = 'hero';
+        } else if (itemContainer) {
+            const keyInput = itemContainer.querySelector('.item-key');
+            itemKey = keyInput ? keyInput.value : 'default';
+        }
+        
+        if (!uploadedImages[category]) uploadedImages[category] = [];
+        uploadedImages[category].push({
+            file: file,
+            name: file.name,
+            itemKey: itemKey,
+            size: file.size,
+            type: file.type
+        });
+    });
+}
+
+// Auto-generate storage refs based on partner zone structure
+function generateStorageRef(file, category, container) {
+    const placeId = document.getElementById('id').value || 'partner-zone';
+    const cleanFileName = sanitizeFileName(file.name);
+    const itemContainer = container.closest('.repeater-item');
+    
+    let storageRef = '';
+    let storageRefField = null;
+    
+    switch (category) {
+        case 'hero':
+            storageRef = `partner-zones/${placeId}/hero/${cleanFileName}`;
+            storageRefField = document.getElementById('heroImage-storageRef');
+            break;
+            
+        case 'fact':
+        case 'facts':
+            if (itemContainer) {
+                storageRef = `partner-zones/${placeId}/facts/${cleanFileName}`;
+                storageRefField = itemContainer.querySelector('.item-image-storageRef');
+            }
+            break;
+            
+        case 'history':
+            if (itemContainer) {
+                storageRef = `partner-zones/${placeId}/history/${cleanFileName}`;
+                storageRefField = itemContainer.querySelector('.item-storageRef');
+            }
+            break;
+            
+        case 'news':
+            if (itemContainer) {
+                storageRef = `partner-zones/${placeId}/news/${cleanFileName}`;
+                storageRefField = itemContainer.querySelector('.item-image-storageRef');
+            }
+            break;
+            
+        case 'poi':
+        case 'pois':
+            if (itemContainer) {
+                const poiKey = itemContainer.querySelector('.item-key')?.value || 'default-poi';
+                storageRef = `partner-zones/${placeId}/pois/${poiKey}/${cleanFileName}`;
+                // For POIs, we need to handle the gallery prefix
+                const galleryPrefixField = itemContainer.querySelector('.item-gallery-prefix');
+                if (galleryPrefixField) {
+                    galleryPrefixField.value = `partner-zones/${placeId}/pois/${poiKey}/`;
+                }
+            }
+            break;
+            
+        case 'quiz':
+            if (itemContainer) {
+                storageRef = `partner-zones/${placeId}/quiz/${cleanFileName}`;
+                // Quiz images might be in different contexts (question vs explanation)
+                // Check if this is a question image or explanation image
+                if (container.classList.contains('question-image')) {
+                    // This is a question image - we need to update the structural data
+                    updateQuizImageData(itemContainer, 'question', storageRef);
+                } else if (container.classList.contains('explanation-image')) {
+                    // This is an explanation image - update explanation image field
+                    updateQuizImageData(itemContainer, 'explanation', storageRef);
+                }
+            }
+            break;
+            
+        case 'waypoint':
+            if (itemContainer) {
+                const waypointKey = itemContainer.querySelector('.waypoint-key')?.value || 'default-waypoint';
+                storageRef = `partner-zones/${placeId}/tour/waypoints/${waypointKey}/${cleanFileName}`;
+                // Waypoint images are stored in individual waypoint folders
+                // This matches what the mobile app expects for waypoint-specific images
+            }
+            break;
+    }
+    
+    // Update the storage ref field if found
+    if (storageRefField && storageRef) {
+        storageRefField.value = storageRef;
+        
+        // Also trigger any change events to update related fields
+        storageRefField.dispatchEvent(new Event('change'));
+        
+        // Show success message
+        const successMsg = document.createElement('div');
+        successMsg.style.cssText = 'background: #e8f5e8; color: #2d5a2d; padding: 5px; border-radius: 3px; margin: 3px 0; font-size: 0.85rem; border: 1px solid #a8d8a8;';
+        successMsg.textContent = `✅ Auto-generated: ${storageRef}`;
+        container.insertBefore(successMsg, container.firstChild);
+        
+        // Remove success message after 3 seconds
+        setTimeout(() => {
+            if (successMsg.parentNode) {
+                successMsg.remove();
+            }
+        }, 3000);
+    }
+}
+
+// Handle quiz image data updates
+function updateQuizImageData(questionContainer, imageType, storageRef) {
+    const structuralDataField = questionContainer.querySelector('.item-structural-data');
+    
+    if (structuralDataField) {
+        try {
+            let structuralData = {};
+            if (structuralDataField.value && structuralDataField.value.trim() !== '') {
+                structuralData = JSON.parse(structuralDataField.value);
+            }
+            
+            if (imageType === 'question') {
+                structuralData.image = { storageRef: storageRef, imageSource: "" };
+            } else if (imageType === 'explanation') {
+                if (!structuralData.explanation) structuralData.explanation = {};
+                if (!structuralData.explanation.image) structuralData.explanation.image = {};
+                structuralData.explanation.image.storageRef = storageRef;
+                structuralData.explanation.image.imageSource = "";
+            }
+            
+            structuralDataField.value = JSON.stringify(structuralData, null, 2);
+        } catch (error) {
+            console.warn('Could not update quiz structural data:', error);
+        }
+    }
+}
+
+// Sanitize filename for storage refs (remove special chars, spaces, etc.)
+function sanitizeFileName(filename) {
+    // Get file extension
+    const parts = filename.split('.');
+    const extension = parts.length > 1 ? '.' + parts.pop() : '';
+    const name = parts.join('.');
+    
+    // Sanitize the name part
+    const sanitizedName = name
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, '-')  // Replace non-alphanumeric with hyphens
+        .replace(/-+/g, '-')         // Replace multiple hyphens with single
+        .replace(/^-|-$/g, '')       // Remove leading/trailing hyphens
+        .substring(0, 50);           // Limit length
+    
+    return sanitizedName + extension;
+}
+
+function showUploadSuccess(container, count, category) {
+    const successMsg = document.createElement('div');
+    successMsg.style.cssText = 'background: #d4edda; color: #155724; padding: 8px; border-radius: 4px; margin: 5px 0; border: 1px solid #c3e6cb; font-size: 0.9rem;';
+    successMsg.textContent = `✅ Successfully uploaded ${count} image(s) for ${category}`;
+    container.insertBefore(successMsg, container.firstChild);
+    
+    // Remove success message after 3 seconds
+    setTimeout(() => {
+        if (successMsg.parentNode) {
+            successMsg.remove();
+        }
+    }, 3000);
+}
+
+function removeImage(button, category, filename) {
+    // Remove from uploaded images
+    uploadedImages[category] = uploadedImages[category].filter(img => img.name !== filename);
+    
+    // Remove preview
+    button.parentElement.remove();
+}
+
+// --- DOWNLOAD FUNCTIONALITY ---
+async function downloadPartnerZonePackage() {
+    const partnerId = document.getElementById('id').value;
+    if (!partnerId) {
+        alert('Please enter a Partner Zone ID first');
+        return;
+    }
+    
+    const jsonData = document.getElementById('output-json').value;
+    if (!jsonData) {
+        alert('Please generate the JSON first');
+        return;
+    }
+    
+    try {
+        // Use JSZip to create the package that matches storage ref structure
+        const zip = new JSZip();
+        
+        // Create main partner zone folder
+        const partnerZoneFolder = zip.folder(partnerId);
+        
+        // Add JSON file in the main folder
+        partnerZoneFolder.file(`${partnerId}.json`, jsonData);
+        
+        // Create partner zone ID folder inside main partner zone folder (to match storage ref structure)
+        const imagesFolder = partnerZoneFolder.folder(partnerId);
+        
+        // Add hero images
+        if (uploadedImages.hero && uploadedImages.hero.length > 0) {
+            const heroFolder = imagesFolder.folder('hero');
+            uploadedImages.hero.forEach(img => {
+                const cleanFileName = sanitizeFileName(img.name);
+                heroFolder.file(cleanFileName, img.file);
+            });
+        }
+        
+        // Add fact images
+        if (uploadedImages.facts && uploadedImages.facts.length > 0) {
+            const factsFolder = imagesFolder.folder('facts');
+            uploadedImages.facts.forEach(img => {
+                const cleanFileName = sanitizeFileName(img.name);
+                factsFolder.file(cleanFileName, img.file);
+            });
+        }
+        
+        // Handle both 'facts' and 'fact' categories (legacy support)
+        if (uploadedImages.fact && uploadedImages.fact.length > 0) {
+            const factsFolder = imagesFolder.folder('facts');
+            uploadedImages.fact.forEach(img => {
+                const cleanFileName = sanitizeFileName(img.name);
+                factsFolder.file(cleanFileName, img.file);
+            });
+        }
+        
+        // Add history images
+        if (uploadedImages.history && uploadedImages.history.length > 0) {
+            const historyFolder = imagesFolder.folder('history');
+            uploadedImages.history.forEach(img => {
+                const cleanFileName = sanitizeFileName(img.name);
+                historyFolder.file(cleanFileName, img.file);
+            });
+        }
+        
+        // Add news images
+        if (uploadedImages.news && uploadedImages.news.length > 0) {
+            const newsFolder = imagesFolder.folder('news');
+            uploadedImages.news.forEach(img => {
+                const cleanFileName = sanitizeFileName(img.name);
+                newsFolder.file(cleanFileName, img.file);
+            });
+        }
+        
+        // Add POI images (organized by POI ID in subfolders)
+        const poiImages = uploadedImages.pois || uploadedImages.poi || [];
+        let poisByKey = {};
+        if (poiImages.length > 0) {
+            const poisFolder = imagesFolder.folder('pois');
+            
+            poiImages.forEach(img => {
+                const poiKey = img.itemKey || 'default-poi';
+                if (!poisByKey[poiKey]) poisByKey[poiKey] = [];
+                poisByKey[poiKey].push(img);
+            });
+            
+            Object.keys(poisByKey).forEach(poiKey => {
+                const poiFolder = poisFolder.folder(poiKey);
+                poisByKey[poiKey].forEach(img => {
+                    const cleanFileName = sanitizeFileName(img.name);
+                    poiFolder.file(cleanFileName, img.file);
+                });
+            });
+        }
+        
+        // Add quiz images
+        if (uploadedImages.quiz && uploadedImages.quiz.length > 0) {
+            const quizFolder = imagesFolder.folder('quiz');
+            uploadedImages.quiz.forEach(img => {
+                const cleanFileName = sanitizeFileName(img.name);
+                quizFolder.file(cleanFileName, img.file);
+            });
+        }
+        
+        // Add waypoint images (organized by waypoint ID in subfolders)
+        const waypointImages = uploadedImages.waypoint || [];
+        let waypointsByKey = {};
+        if (waypointImages.length > 0) {
+            const tourFolder = imagesFolder.folder('tour');
+            const waypointsFolder = tourFolder.folder('waypoints');
+            
+            waypointImages.forEach(img => {
+                const waypointKey = img.itemKey || 'default-waypoint';
+                if (!waypointsByKey[waypointKey]) waypointsByKey[waypointKey] = [];
+                waypointsByKey[waypointKey].push(img);
+            });
+            
+            Object.keys(waypointsByKey).forEach(waypointKey => {
+                const waypointFolder = waypointsFolder.folder(waypointKey);
+                waypointsByKey[waypointKey].forEach(img => {
+                    const cleanFileName = sanitizeFileName(img.name);
+                    waypointFolder.file(cleanFileName, img.file);
+                });
+            });
+        }
+        
+        // Generate and download zip
+        const blob = await zip.generateAsync({type: 'blob'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${partnerId}-partner-zone.zip`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        console.log('Partner zone package created with structure:');
+        console.log(`${partnerId}/`);
+        console.log(`├── ${partnerId}.json`);
+        console.log(`└── ${partnerId}/`);
+        console.log(`    ├── hero/ (${uploadedImages.hero?.length || 0} files)`);
+        console.log(`    ├── facts/ (${(uploadedImages.facts?.length || 0) + (uploadedImages.fact?.length || 0)} files)`);
+        console.log(`    ├── history/ (${uploadedImages.history?.length || 0} files)`);
+        console.log(`    ├── news/ (${uploadedImages.news?.length || 0} files)`);
+        console.log(`    ├── pois/ (${Object.keys(poisByKey || {}).length} subfolders)`);
+        console.log(`    ├── quiz/ (${uploadedImages.quiz?.length || 0} files)`);
+        console.log(`    └── tour/`);
+        console.log(`        └── waypoints/ (${Object.keys(waypointsByKey || {}).length} subfolders)`);
+        
+        // Debug: Show what images we have by category
+        console.log('\n📸 Debug: Uploaded images by category:');
+        Object.entries(uploadedImages).forEach(([category, images]) => {
+          if (images && images.length > 0) {
+            console.log(`${category}: ${images.length} files`);
+            images.forEach((img, index) => {
+              console.log(`  ${index + 1}. ${img.name} (itemKey: ${img.itemKey})`);
+            });
+          }
+        });
+        
+    } catch (error) {
+        console.error('Error creating package:', error);
+        alert('Error creating download package. Please try again.');
+    }
+}
+
+// --- MAP FUNCTIONALITY ---
+let currentMap = null;
+let currentMarker = null;
+let selectedCoordinates = null;
+let mapTargetType = null;
+let mapTargetElement = null;
+
+function openMapModal(targetType, subType, buttonElement = null) {
+    mapTargetType = targetType;
+    mapTargetElement = buttonElement;
+    
+    document.getElementById('mapModal').style.display = 'block';
+    document.getElementById('mapModalTitle').textContent = getMapModalTitle(targetType, subType);
+    document.getElementById('selectedCoords').textContent = 'Click on the map to select coordinates';
+    document.getElementById('confirmMapBtn').disabled = true;
+    
+    // Initialize map after modal is fully rendered
+    setTimeout(() => {
+        initializeMap();
+        // Ensure map resizes properly to fit container
+        setTimeout(() => {
+            if (currentMap) {
+                currentMap.invalidateSize();
+            }
+        }, 100);
+    }, 200);
+}
+
+function getMapModalTitle(targetType, subType) {
+    const titles = {
+        'center': 'Select Place Center Location',
+        'polygon': 'Select Polygon Point',
+        'poi': 'Select POI Location',
+        'tour': 'Select Tour Waypoint',
+        'waypoint': 'Select Waypoint Location'
+    };
+    return titles[targetType] || 'Select Location on Map';
+}
+
+function closeMapModal() {
+    document.getElementById('mapModal').style.display = 'none';
+    if (currentMap) {
+        currentMap.remove();
+        currentMap = null;
+    }
+    currentMarker = null;
+    selectedCoordinates = null;
+    mapTargetType = null;
+    mapTargetElement = null;
+}
+
+function initializeMap() {
+    // Get place center coordinates if available to focus the map
+    const centerLat = document.getElementById('center-lat').value;
+    const centerLon = document.getElementById('center-lon').value;
+    
+    let mapCenter = [51.505, -0.09]; // Default to London
+    if (centerLat && centerLon) {
+        mapCenter = [parseFloat(centerLat), parseFloat(centerLon)];
+    }
+    
+    // Create map
+    currentMap = L.map('mapContainer').setView(mapCenter, 13);
+    
+    // Add tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(currentMap);
+    
+    // Add click handler
+    currentMap.on('click', function(e) {
+        const lat = e.latlng.lat;
+        const lng = e.latlng.lng;
+        
+        // Remove existing marker
+        if (currentMarker) {
+            currentMap.removeLayer(currentMarker);
+        }
+        
+        // Add new marker
+        currentMarker = L.marker([lat, lng]).addTo(currentMap);
+        
+        // Update coordinates display
+        selectedCoordinates = { lat, lng };
+        document.getElementById('selectedCoords').textContent = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+        document.getElementById('confirmMapBtn').disabled = false;
+    });
+    
+    // Show existing location marker if editing
+    if (mapTargetType === 'center' && centerLat && centerLon) {
+        currentMarker = L.marker([parseFloat(centerLat), parseFloat(centerLon)]).addTo(currentMap);
+        selectedCoordinates = { lat: parseFloat(centerLat), lng: parseFloat(centerLon) };
+        document.getElementById('selectedCoords').textContent = `${centerLat}, ${centerLon}`;
+        document.getElementById('confirmMapBtn').disabled = false;
+    }
+}
+
+function confirmMapSelection() {
+    if (!selectedCoordinates) {
+        alert('Please select a location on the map first');
+        return;
+    }
+    
+    const lat = selectedCoordinates.lat.toFixed(6);
+    const lng = selectedCoordinates.lng.toFixed(6);
+    
+    // Update the appropriate input fields based on target type
+    switch (mapTargetType) {
+        case 'center':
+            document.getElementById('center-lat').value = lat;
+            document.getElementById('center-lon').value = lng;
+            break;
+            
+        case 'polygon':
+            if (mapTargetElement) {
+                const item = mapTargetElement.closest('.polygon-point');
+                const latInput = item.querySelector('.polygon-lat');
+                const lonInput = item.querySelector('.polygon-lon');
+                if (latInput && lonInput) {
+                    latInput.value = lat;
+                    lonInput.value = lng;
+                }
+            }
+            break;
+            
+        case 'poi':
+            if (mapTargetElement) {
+                const item = mapTargetElement.closest('.poi-item');
+                const latInput = item.querySelector('.item-coord-lat');
+                const lonInput = item.querySelector('.item-coord-lon');
+                if (latInput && lonInput) {
+                    latInput.value = lat;
+                    lonInput.value = lng;
+                }
+            }
+            break;
+            
+        case 'waypoint':
+            if (mapTargetElement) {
+                const item = mapTargetElement.closest('.waypoint-item');
+                const latInput = item.querySelector('.waypoint-coord-lat');
+                const lonInput = item.querySelector('.waypoint-coord-lon');
+                if (latInput && lonInput) {
+                    latInput.value = lat;
+                    lonInput.value = lng;
+                }
+            }
+            break;
+    }
+    
+    closeMapModal();
+}
+
+// --- Initialize Form ---
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('customStyle-icon-group').innerHTML = `<label>Icon</label>${createSelect(SUPPORTED_ICONS, 'customStyle-icon')}`;
+    document.getElementById('heroImage-priority-group').innerHTML = `<label>Priority</label>${createSelect(IMAGE_PRIORITIES, 'heroImage-priority')}`;
+    document.getElementById('historicalInfo-icon-group').insertAdjacentHTML('beforeend', createSelect(SUPPORTED_ICONS, 'historicalInfo-icon'));
+    
+    // Auto-generate an ID when the page loads if none exists
+    const idField = document.getElementById('id');
+    if (!idField.value || idField.value.trim() === '') {
+        generateUniqueId();
+    }
+    
+    // Form starts empty - users add items as needed
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.getElementById('mapModal').style.display === 'block') {
+        closeMapModal();
+    }
+});
+
+// Close modal when clicking outside of it
+document.getElementById('mapModal').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('mapModal')) {
+        closeMapModal();
+    }
+});
+
+</script>
+</body>
+</html>
