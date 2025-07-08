@@ -1,0 +1,714 @@
+{
+  "likes": [],
+  "id": "pz-20250708-s47fdf",
+  "author": "Dustin",
+  "priority": 1,
+  "official": false,
+  "active": true,
+  "searchRadius": 30,
+  "center": [
+    51.569117,
+    6.781826
+  ],
+  "areaPolygon": [],
+  "customStyle": {
+    "color": "#4a90e2",
+    "icon": ""
+  },
+  "heroImage": {
+    "storageRef": "partner-zones/pz-20250708-s47fdf/hero/pexels-lp-studio-90-312591590-13565551.jpg",
+    "priority": "low",
+    "imageSource": ""
+  },
+  "contact": {
+    "website": "http://www.wildscope.app",
+    "phone": "378937",
+    "email": "",
+    "emergencyPhone": ""
+  },
+  "historicalInfo": {
+    "icon": "book",
+    "images": {
+      "burgers-yummy": {
+        "storageRef": "partner-zones/pz-20250708-s47fdf/history/whatsapp-image-2025-04-17-at-19-54-36.jpeg",
+        "imageSource": ""
+      }
+    }
+  },
+  "quiz": {
+    "settings": {
+      "timePerQuestion": 30,
+      "passingScore": 70,
+      "randomizeQuestions": true,
+      "showExplanations": true
+    },
+    "rewards": {
+      "bronzeScore": 60,
+      "silverScore": 80,
+      "goldScore": 90,
+      "completionAchievement": ""
+    },
+    "questions": {
+      "a-or-b": {
+        "type": "multiple_choice",
+        "options": [
+          "A",
+          "B"
+        ],
+        "correctOption": 0
+      }
+    }
+  },
+  "stats": {
+    "one-way-round-trip": {
+      "icon": "checkmark-circle-outline",
+      "value": "5",
+      "unit": "miles",
+      "secondaryValue": "",
+      "secondaryUnit": ""
+    }
+  },
+  "interestingFacts": {
+    "this-is-a-fact": {
+      "icon": "chatbubbles",
+      "image": {
+        "storageRef": "partner-zones/pz-20250708-s47fdf/facts/neues-projekt-33.png",
+        "imageSource": ""
+      }
+    }
+  },
+  "news": {
+    "this-is-some-news": {
+      "date": "1992-12-15T11:12:00.000Z",
+      "priority": "low",
+      "icon": "chatbubbles",
+      "category": "event",
+      "image": {
+        "storageRef": "partner-zones/pz-20250708-s47fdf/news/screenshot-2025-06-18-135304.png",
+        "imageSource": ""
+      }
+    }
+  },
+  "pois": {
+    "this-is-the-hiesfeld-poi": {
+      "type": "overlook",
+      "coords": [
+        51.57305,
+        6.783714
+      ],
+      "amenities": [
+        "bakery",
+        "benches",
+        "communication"
+      ],
+      "gallery": {
+        "storagePrefix": "partner-zones/pz-20250708-s47fdf/pois/poi-1/",
+        "images": {}
+      }
+    }
+  },
+  "tours": {
+    "hiesfelder-tour": {
+      "duration": "1-2 hours",
+      "difficulty": "Easy to moderate",
+      "distance": "1.5 miles",
+      "waypoints": {
+        "this-is-the-first-point": {
+          "coords": [
+            51.571983,
+            6.781483
+          ],
+          "estimatedTime": 30,
+          "type": "viewpoint"
+        }
+      }
+    }
+  },
+  "tickets": {
+    "validUntil": "2026-12-12T00:00:00.000Z",
+    "offers": {
+      "best-offer": {
+        "normalPrice": 12,
+        "discountedPrice": 14,
+        "currency": "USD",
+        "validityDays": 1
+      }
+    }
+  },
+  "translations": {
+    "en": {
+      "name": "Hiesfeld",
+      "region": "Germany, Northrine Westphalia",
+      "description": "Hiesfeld is a small neighbourhood in Dinslaken.",
+      "heroImage": {
+        "caption": "The Rotbach lake",
+        "alt": ""
+      },
+      "stats": {
+        "one-way-round-trip": {
+          "label": "One way round trip",
+          "description": ""
+        }
+      },
+      "interestingFacts": {
+        "this-is-a-fact": {
+          "text": "This is a fact",
+          "image": {
+            "caption": "An interesting one"
+          }
+        }
+      },
+      "historicalInfo": {
+        "text": "This is a great history lesson about Hiesfeld",
+        "images": {
+          "burgers-yummy": {
+            "caption": "Burgers, yummy",
+            "alt": "What else? "
+          }
+        }
+      },
+      "contact": {
+        "websiteLabel": "website",
+        "phoneLabel": "",
+        "emailLabel": "",
+        "emergencyLabel": "",
+        "address": "",
+        "hours": ""
+      },
+      "news": {
+        "this-is-some-news": {
+          "title": "This is some news",
+          "summary": "about some information",
+          "content": "with no content",
+          "image": {
+            "caption": "and heres a picture"
+          }
+        }
+      },
+      "pois": {
+        "this-is-the-hiesfeld-poi": {
+          "title": "This is the Hiesfeld POI",
+          "description": "theres noting to say",
+          "openingHours": "always",
+          "accessibility": "yes"
+        }
+      },
+      "tours": {
+        "hiesfelder-tour": {
+          "name": "Hiesfelder Tour",
+          "description": "Do it",
+          "waypoints": {
+            "this-is-the-first-point": {
+              "title": "",
+              "info": ""
+            }
+          }
+        }
+      },
+      "quiz": {
+        "title": "Easy Quiz",
+        "description": "You should do it",
+        "questions": {
+          "a-or-b": {
+            "question": "A or B",
+            "explanation": {
+              "text": "A is always right",
+              "image": {
+                "caption": ""
+              }
+            },
+            "options": [
+              "A, B"
+            ]
+          }
+        }
+      },
+      "tickets": {
+        "infoText": "This is a offer",
+        "terms": [
+          "terms apply"
+        ],
+        "offers": {
+          "best-offer": {
+            "name": "",
+            "description": ""
+          }
+        }
+      }
+    },
+    "it": {
+      "name": "Hiesfeld",
+      "region": "Germania, Renania Settentrionale-Vestfalia",
+      "description": "Hiesfeld è un piccolo quartiere di Dinslaken.",
+      "heroImage": {
+        "caption": "Il lago Rotbach"
+      },
+      "stats": {
+        "one-way-round-trip": {
+          "label": "Andata e ritorno"
+        }
+      },
+      "interestingFacts": {
+        "this-is-a-fact": {
+          "text": "Questo è un fatto",
+          "image": {
+            "caption": "Uno interessante"
+          }
+        }
+      },
+      "historicalInfo": {
+        "text": "Questa è una grande lezione di storia su Hiesfeld",
+        "images": {
+          "burgers-yummy": {
+            "caption": "Hamburger, che buoni",
+            "alt": "Cos'altro? "
+          }
+        }
+      },
+      "contact": {
+        "websiteLabel": "sito web"
+      },
+      "news": {
+        "this-is-some-news": {
+          "title": "Queste sono alcune notizie",
+          "summary": "riguardo alcune informazioni",
+          "content": "senza contenuto",
+          "image": {
+            "caption": "ecco una foto"
+          }
+        }
+      },
+      "pois": {
+        "this-is-the-hiesfeld-poi": {
+          "title": "Questo è il PDI di Hiesfeld",
+          "description": "non c'è niente da dire",
+          "openingHours": "sempre",
+          "accessibility": "sì",
+          "bestTimeToVisit": "sempre"
+        }
+      },
+      "tours": {
+        "hiesfelder-tour": {
+          "name": "Tour di Hiesfeld",
+          "description": "Fallo"
+        }
+      },
+      "quiz": {
+        "title": "Quiz Facile",
+        "description": "Dovresti farlo",
+        "questions": {
+          "a-or-b": {
+            "question": "A o B",
+            "options": [
+              "A, B"
+            ],
+            "explanation": {
+              "text": "A è sempre giusto"
+            }
+          }
+        }
+      },
+      "tickets": {
+        "infoText": "Questa è un'offerta",
+        "terms": [
+          "si applicano i termini"
+        ]
+      }
+    },
+    "de": {
+      "name": "Hiesfeld",
+      "region": "Deutschland, Nordrhein-Westfalen",
+      "description": "Hiesfeld ist ein kleiner Stadtteil von Dinslaken.",
+      "heroImage": {
+        "caption": "Der Rotbachsee"
+      },
+      "stats": {
+        "one-way-round-trip": {
+          "label": "Hin- und Rückfahrt"
+        }
+      },
+      "interestingFacts": {
+        "this-is-a-fact": {
+          "text": "Das ist eine Tatsache",
+          "image": {
+            "caption": "Eine interessante"
+          }
+        }
+      },
+      "historicalInfo": {
+        "text": "Dies ist eine großartige Geschichtsstunde über Hiesfeld",
+        "images": {
+          "burgers-yummy": {
+            "caption": "Burger, lecker",
+            "alt": "Was sonst? "
+          }
+        }
+      },
+      "contact": {
+        "websiteLabel": "Webseite"
+      },
+      "news": {
+        "this-is-some-news": {
+          "title": "Das sind Neuigkeiten",
+          "summary": "über einige Informationen",
+          "content": "ohne Inhalt",
+          "image": {
+            "caption": "und hier ist ein Bild"
+          }
+        }
+      },
+      "pois": {
+        "this-is-the-hiesfeld-poi": {
+          "title": "Das ist der Hiesfeld POI",
+          "description": "es gibt nichts zu sagen",
+          "openingHours": "immer",
+          "accessibility": "ja",
+          "bestTimeToVisit": "immer"
+        }
+      },
+      "tours": {
+        "hiesfelder-tour": {
+          "name": "Hiesfelder Tour",
+          "description": "Mach es"
+        }
+      },
+      "quiz": {
+        "title": "Einfaches Quiz",
+        "description": "Du solltest es machen",
+        "questions": {
+          "a-or-b": {
+            "question": "A oder B",
+            "options": [
+              "A, B"
+            ],
+            "explanation": {
+              "text": "A ist immer richtig"
+            }
+          }
+        }
+      },
+      "tickets": {
+        "infoText": "Das ist ein Angebot",
+        "terms": [
+          "es gelten die Bedingungen"
+        ]
+      }
+    },
+    "es": {
+      "name": "Hiesfeld",
+      "region": "Alemania, Renania del Norte-Westfalia",
+      "description": "Hiesfeld es un pequeño barrio de Dinslaken.",
+      "heroImage": {
+        "caption": "El lago Rotbach"
+      },
+      "stats": {
+        "one-way-round-trip": {
+          "label": "Viaje de ida y vuelta"
+        }
+      },
+      "interestingFacts": {
+        "this-is-a-fact": {
+          "text": "Esto es un hecho",
+          "image": {
+            "caption": "Uno interesante"
+          }
+        }
+      },
+      "historicalInfo": {
+        "text": "Esta es una gran lección de historia sobre Hiesfeld",
+        "images": {
+          "burgers-yummy": {
+            "caption": "Hamburguesas, qué rico",
+            "alt": "¿Qué más? "
+          }
+        }
+      },
+      "contact": {
+        "websiteLabel": "sitio web"
+      },
+      "news": {
+        "this-is-some-news": {
+          "title": "Estas son algunas noticias",
+          "summary": "sobre alguna información",
+          "content": "sin contenido",
+          "image": {
+            "caption": "y aquí hay una foto"
+          }
+        }
+      },
+      "pois": {
+        "this-is-the-hiesfeld-poi": {
+          "title": "Este es el PDI de Hiesfeld",
+          "description": "no hay nada que decir",
+          "openingHours": "siempre",
+          "accessibility": "sí",
+          "bestTimeToVisit": "siempre"
+        }
+      },
+      "tours": {
+        "hiesfelder-tour": {
+          "name": "Tour de Hiesfeld",
+          "description": "Hazlo"
+        }
+      },
+      "quiz": {
+        "title": "Cuestionario Fácil",
+        "description": "Deberías hacerlo",
+        "questions": {
+          "a-or-b": {
+            "question": "A o B",
+            "options": [
+              "A, B"
+            ],
+            "explanation": {
+              "text": "A siempre es correcto"
+            }
+          }
+        }
+      },
+      "tickets": {
+        "infoText": "Esta es una oferta",
+        "terms": [
+          "se aplican términos"
+        ]
+      }
+    },
+    "pt": {
+      "name": "Hiesfeld",
+      "region": "Alemanha, Renânia do Norte-Vestfália",
+      "description": "Hiesfeld é um pequeno bairro em Dinslaken.",
+      "heroImage": {
+        "caption": "O lago Rotbach"
+      },
+      "stats": {
+        "one-way-round-trip": {
+          "label": "Viagem de ida e volta"
+        }
+      },
+      "interestingFacts": {
+        "this-is-a-fact": {
+          "text": "Isto é um facto",
+          "image": {
+            "caption": "Um interessante"
+          }
+        }
+      },
+      "historicalInfo": {
+        "text": "Esta é uma ótima lição de história sobre Hiesfeld",
+        "images": {
+          "burgers-yummy": {
+            "caption": "Hambúrgueres, que delícia",
+            "alt": "O que mais? "
+          }
+        }
+      },
+      "contact": {
+        "websiteLabel": "site"
+      },
+      "news": {
+        "this-is-some-news": {
+          "title": "Isto são notícias",
+          "summary": "sobre algumas informações",
+          "content": "sem conteúdo",
+          "image": {
+            "caption": "e aqui está uma foto"
+          }
+        }
+      },
+      "pois": {
+        "this-is-the-hiesfeld-poi": {
+          "title": "Este é o PDI de Hiesfeld",
+          "description": "não há nada a dizer",
+          "openingHours": "sempre",
+          "accessibility": "sim",
+          "bestTimeToVisit": "sempre"
+        }
+      },
+      "tours": {
+        "hiesfelder-tour": {
+          "name": "Tour de Hiesfeld",
+          "description": "Faça-o"
+        }
+      },
+      "quiz": {
+        "title": "Quiz Fácil",
+        "description": "Você deveria fazer",
+        "questions": {
+          "a-or-b": {
+            "question": "A ou B",
+            "options": [
+              "A, B"
+            ],
+            "explanation": {
+              "text": "A está sempre certo"
+            }
+          }
+        }
+      },
+      "tickets": {
+        "infoText": "Esta é uma oferta",
+        "terms": [
+          "aplicam-se os termos"
+        ]
+      }
+    },
+    "ja": {
+      "name": "Hiesfeld",
+      "region": "ドイツ、ノルトライン＝ヴェストファーレン州",
+      "description": "ヒースフェルトはディンスラーケンにある小さな地区です。",
+      "heroImage": {
+        "caption": "ロートバッハ湖"
+      },
+      "stats": {
+        "one-way-round-trip": {
+          "label": "往復"
+        }
+      },
+      "interestingFacts": {
+        "this-is-a-fact": {
+          "text": "これは事実です",
+          "image": {
+            "caption": "興味深いものです"
+          }
+        }
+      },
+      "historicalInfo": {
+        "text": "これはヒースフェルトに関する素晴らしい歴史の授業です",
+        "images": {
+          "burgers-yummy": {
+            "caption": "ハンバーガー、おいしい",
+            "alt": "他に何か？ "
+          }
+        }
+      },
+      "contact": {
+        "websiteLabel": "ウェブサイト"
+      },
+      "news": {
+        "this-is-some-news": {
+          "title": "これはニュースです",
+          "summary": "いくつかの情報について",
+          "content": "コンテンツなし",
+          "image": {
+            "caption": "そして、こちらが写真です"
+          }
+        }
+      },
+      "pois": {
+        "this-is-the-hiesfeld-poi": {
+          "title": "これがヒースフェルトのPOIです",
+          "description": "特筆すべきことはありません",
+          "openingHours": "常時",
+          "accessibility": "はい",
+          "bestTimeToVisit": "常時"
+        }
+      },
+      "tours": {
+        "hiesfelder-tour": {
+          "name": "ヒースフェルダーツアー",
+          "description": "やってみよう"
+        }
+      },
+      "quiz": {
+        "title": "簡単クイズ",
+        "description": "ぜひやってみてください",
+        "questions": {
+          "a-or-b": {
+            "question": "AかBか",
+            "options": [
+              "A, B"
+            ],
+            "explanation": {
+              "text": "Aは常に正しい"
+            }
+          }
+        }
+      },
+      "tickets": {
+        "infoText": "これはオファーです",
+        "terms": [
+          "利用規約が適用されます"
+        ]
+      }
+    },
+    "fr": {
+      "name": "Hiesfeld",
+      "region": "Allemagne, Rhénanie-du-Nord-Westphalie",
+      "description": "Hiesfeld est un petit quartier de Dinslaken.",
+      "heroImage": {
+        "caption": "Le lac Rotbach"
+      },
+      "stats": {
+        "one-way-round-trip": {
+          "label": "Aller-retour"
+        }
+      },
+      "interestingFacts": {
+        "this-is-a-fact": {
+          "text": "Ceci est un fait",
+          "image": {
+            "caption": "Un fait intéressant"
+          }
+        }
+      },
+      "historicalInfo": {
+        "text": "Ceci est une excellente leçon d'histoire sur Hiesfeld",
+        "images": {
+          "burgers-yummy": {
+            "caption": "Burgers, miam",
+            "alt": "Quoi d'autre ? "
+          }
+        }
+      },
+      "contact": {
+        "websiteLabel": "site web"
+      },
+      "news": {
+        "this-is-some-news": {
+          "title": "Voici quelques nouvelles",
+          "summary": "à propos de certaines informations",
+          "content": "sans contenu",
+          "image": {
+            "caption": "et voici une photo"
+          }
+        }
+      },
+      "pois": {
+        "this-is-the-hiesfeld-poi": {
+          "title": "Ceci est le PI de Hiesfeld",
+          "description": "il n'y a rien à dire",
+          "openingHours": "toujours",
+          "accessibility": "oui",
+          "bestTimeToVisit": "toujours"
+        }
+      },
+      "tours": {
+        "hiesfelder-tour": {
+          "name": "Tour de Hiesfeld",
+          "description": "Faites-le"
+        }
+      },
+      "quiz": {
+        "title": "Quiz Facile",
+        "description": "Vous devriez le faire",
+        "questions": {
+          "a-or-b": {
+            "question": "A ou B",
+            "options": [
+              "A, B"
+            ],
+            "explanation": {
+              "text": "A est toujours juste"
+            }
+          }
+        }
+      },
+      "tickets": {
+        "infoText": "Ceci est une offre",
+        "terms": [
+          "des conditions s'appliquent"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,1239 @@
+{
+    "id": "template-id",
+    "author": "mock-author",
+    "official": true,
+    "active": true,
+    "searchRadius": 50,
+    "priority": 1,
+    "center": [
+      0.0,
+      0.0
+    ],
+    "areaPolygon": [
+      [
+        0.0,
+        0.0
+      ],
+      [
+        1.0,
+        1.0
+      ],
+      [
+        0.0,
+        1.0
+      ]
+    ],
+    "customStyle": {
+      "color": "#000000",
+      "icon": "mock-icon"
+    },
+    "heroImage": {
+      "storageRef": "path/to/hero/image.jpg",
+      "priority": "high",
+      "imageSource": "Mock Source"
+    },
+    "stats": {
+      "stat_key_1": {
+        "icon": "icon_name",
+        "value": "100",
+        "unit": "unit_name",
+        "secondaryValue": "10",
+        "secondaryUnit": "secondary_unit_name"
+      }
+    },
+    "interestingFacts": {
+      "fact_key_1": {
+        "icon": "icon_name",
+        "image": {
+          "storageRef": "path/to/facts/image.jpg",
+          "imageSource": "Mock Source"
+        }
+      }
+    },
+    "historicalInfo": {
+      "icon": "history_icon",
+      "images": {
+        "history_image_1": {
+          "storageRef": "path/to/history/image.jpg",
+          "imageSource": "Mock Source"
+        }
+      }
+    },
+    "contact": {
+      "website": "https://example.com",
+      "phone": "+1-123-456-7890",
+      "email": "mock@example.com",
+      "emergencyPhone": "911"
+    },
+    "news": {
+      "news_item_1": {
+        "date": "2025-01-01T00:00:00Z",
+        "priority": "medium",
+        "icon": "news_icon",
+        "category": "announcement",
+        "image": {
+          "storageRef": "path/to/news/image.jpg",
+          "imageSource": "Mock Source"
+        }
+      }
+    },
+    "pois": {
+      "poi_1": {
+        "type": "viewpoint",
+        "coords": [
+          0.0,
+          0.0
+        ],
+        "amenities": [
+          "amenity1",
+          "amenity2"
+        ],
+        "gallery": {
+          "storagePrefix": "path/to/pois/poi_1/",
+          "images": {
+            "poi_image_1": {
+              "filename": "image.jpg",
+              "type": "main",
+              "imageSource": "Mock Source"
+            }
+          }
+        }
+      }
+    },
+    "tours": {
+      "tour_1": {
+        "duration": "1 hour",
+        "difficulty": "Easy",
+        "distance": "1 mile",
+        "waypoints": {
+          "waypoint_1": {
+            "coords": [
+              0.0,
+              0.0
+            ],
+            "estimatedTime": 30,
+            "type": "start",
+            "images": [
+              "path/to/tours/tour_1/waypoints/waypoint_1/main.jpg",
+              "path/to/tours/tour_1/waypoints/waypoint_1/view1.jpg",
+              "path/to/tours/tour_1/waypoints/waypoint_1/view2.jpg"
+            ]
+          },
+          "waypoint_2": {
+            "coords": [
+              0.1,
+              0.1
+            ],
+            "estimatedTime": 45,
+            "type": "viewpoint",
+            "images": [
+              "path/to/tours/tour_1/waypoints/waypoint_2/main.jpg"
+            ]
+          }
+        }
+      }
+    },
+    "quiz": {
+      "settings": {
+        "timePerQuestion": 30,
+        "passingScore": 70,
+        "randomizeQuestions": true,
+        "showExplanations": true
+      },
+      "rewards": {
+        "bronzeScore": 60,
+        "silverScore": 80,
+        "goldScore": 90,
+        "completionAchievement": "mock_achievement_id"
+      },
+      "questions": {
+        "q_image_based_1": {
+          "type": "image_based",
+          "image": {
+            "storageRef": "path/to/quiz/image.jpg",
+            "imageSource": "Mock Source"
+          },
+          "correctOption": 1,
+          "explanation": {
+            "image": {
+              "storageRef": "path/to/quiz/explanation.jpg",
+              "imageSource": "Mock Source"
+            }
+          }
+        },
+        "q_image_sequence_1": {
+          "type": "image_sequence",
+          "correctSequence": [
+            "seq1",
+            "seq2"
+          ],
+          "images": {
+            "seq1": {
+              "storageRef": "path/to/quiz/seq1.jpg",
+              "imageSource": "Mock Source"
+            },
+            "seq2": {
+              "storageRef": "path/to/quiz/seq2.jpg",
+              "imageSource": "Mock Source"
+            }
+          },
+          "explanation": {
+            "image": {
+              "storageRef": "path/to/quiz/seq_explanation.jpg",
+              "imageSource": "Mock Source"
+            }
+          }
+        }
+      }
+    },
+    "tickets": {
+      "validUntil": "2025-12-31T23:59:59Z",
+      "ticketLink": "https://example.com/tickets",
+      "offers": {
+        "offer_1": {
+          "normalPrice": 20,
+          "discountedPrice": 18,
+          "currency": "USD",
+          "validityDays": 1
+        }
+      }
+    },
+    "translations": {
+      "en": {
+        "name": "Mock Park Name",
+        "region": "Mock Region, Country",
+        "description": "This is a short mock description of the park.",
+        "heroImage": {
+          "caption": "Mock hero image caption.",
+          "alt": "Mock hero image alt text."
+        },
+        "stats": {
+          "stat_key_1": {
+            "label": "Mock Stat Label",
+            "description": "Mock stat description."
+          }
+        },
+        "interestingFacts": {
+          "fact_key_1": {
+            "text": "This is a mock interesting fact text.",
+            "image": {
+              "caption": "Mock fact image caption."
+            }
+          }
+        },
+        "historicalInfo": {
+          "text": "This is a mock historical info text.",
+          "images": {
+            "history_image_1": {
+              "caption": "Mock history image caption.",
+              "alt": "Mock history image alt text."
+            }
+          }
+        },
+        "contact": {
+          "websiteLabel": "Website",
+          "phoneLabel": "Phone",
+          "emailLabel": "Email",
+          "emergencyLabel": "Emergency",
+          "address": "123 Mock Street, Mockville",
+          "hours": "9:00 AM - 5:00 PM"
+        },
+        "news": {
+          "news_item_1": {
+            "title": "Mock News Title",
+            "summary": "This is a short summary of the mock news.",
+            "content": "This is the full content of the mock news item.",
+            "image": {
+              "caption": "Mock news image caption."
+            }
+          }
+        },
+        "pois": {
+          "poi_1": {
+            "title": "Mock POI Title",
+            "description": "Mock POI description.",
+            "openingHours": "Open 24/7",
+            "accessibility": "Fully accessible.",
+            "bestTimeToVisit": "Sunset",
+            "gallery": {
+              "images": {
+                "poi_image_1": {
+                  "caption": "Mock POI image caption."
+                }
+              }
+            }
+          }
+        },
+        "tours": {
+          "tour_1": {
+            "name": "Mock Tour Name",
+            "description": "Mock tour description.",
+            "waypoints": {
+              "waypoint_1": {
+                "title": "Mock Waypoint Title",
+                "info": "Mock waypoint info.",
+                "images": {
+                  "image_0": {
+                    "caption": "Main view of waypoint 1"
+                  },
+                  "image_1": {
+                    "caption": "First view of waypoint 1"
+                  },
+                  "image_2": {
+                    "caption": "Second view of waypoint 1"
+                  }
+                }
+              },
+              "waypoint_2": {
+                "title": "Mock Waypoint 2 Title",
+                "info": "Mock waypoint 2 info.",
+                "images": {
+                  "image_0": {
+                    "caption": "Main view of waypoint 2"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "quiz": {
+          "title": "Mock Quiz Title",
+          "description": "Mock quiz description.",
+          "questions": {
+            "q_image_based_1": {
+              "question": "This is a mock question?",
+              "options": [
+                "Option A",
+                "Option B",
+                "Option C"
+              ],
+              "explanation": {
+                "text": "This is the mock explanation text.",
+                "image": {
+                  "caption": "Mock explanation image caption."
+                }
+              }
+            },
+            "q_image_sequence_1": {
+              "question": "Mock sequence question.",
+              "images": {
+                "seq1": {
+                  "caption": "Sequence Item 1"
+                },
+                "seq2": {
+                  "caption": "Sequence Item 2"
+                }
+              },
+              "explanation": {
+                "text": "Mock sequence explanation text.",
+                "image": {
+                  "caption": "Mock sequence explanation image."
+                }
+              }
+            }
+          }
+        },
+        "tickets": {
+          "infoText": "This is a mock info text for tickets.",
+          "offers": {
+            "offer_1": {
+              "name": "Mock Offer Name",
+              "description": "Mock offer description."
+            }
+          },
+          "terms": [
+            "Mock term 1.",
+            "Mock term 2."
+          ]
+        }
+      },
+      "de": {
+        "name": "Beispielpark Name",
+        "region": "Beispielregion, Land",
+        "description": "Dies ist eine kurze Beispielbeschreibung des Parks.",
+        "heroImage": {
+          "caption": "Beispielbild-Beschriftung.",
+          "alt": "Beispielbild-Alternativtext."
+        },
+        "stats": {
+          "stat_key_1": {
+            "label": "Beispiel-Statistik",
+            "description": "Beispiel-Statistik-Beschreibung."
+          }
+        },
+        "interestingFacts": {
+          "fact_key_1": {
+            "text": "Dies ist ein interessanter Beispielfakt.",
+            "image": {
+              "caption": "Beispiel-Fakt-Bildbeschriftung."
+            }
+          }
+        },
+        "historicalInfo": {
+          "text": "Dies ist ein historischer Beispieltext.",
+          "images": {
+            "history_image_1": {
+              "caption": "Beispiel-Verlaufsbild-Beschriftung.",
+              "alt": "Beispiel-Verlaufsbild-Alternativtext."
+            }
+          }
+        },
+        "contact": {
+          "websiteLabel": "Webseite",
+          "phoneLabel": "Telefon",
+          "emailLabel": "Email",
+          "emergencyLabel": "Notfall",
+          "address": "Beispielstraße 123, Musterstadt",
+          "hours": "9:00 - 17:00 Uhr"
+        },
+        "news": {
+          "news_item_1": {
+            "title": "Beispiel-Nachrichtentitel",
+            "summary": "Dies ist eine kurze Zusammenfassung der Beispielnachricht.",
+            "content": "Dies ist der vollständige Inhalt des Beispielnachrichtenartikels.",
+            "image": {
+              "caption": "Beispiel-Nachrichtenbild-Beschriftung."
+            }
+          }
+        },
+        "pois": {
+          "poi_1": {
+            "title": "Beispiel-POI-Titel",
+            "description": "Beispiel-POI-Beschreibung.",
+            "openingHours": "24/7 geöffnet",
+            "accessibility": "Voll zugänglich.",
+            "bestTimeToVisit": "Sonnenuntergang",
+            "gallery": {
+              "images": {
+                "poi_image_1": {
+                  "caption": "Beispiel-POI-Bildbeschriftung."
+                }
+              }
+            }
+          }
+        },
+        "tours": {
+          "tour_1": {
+            "name": "Beispiel-Tour-Name",
+            "description": "Beispiel-Tour-Beschreibung.",
+            "waypoints": {
+              "waypoint_1": {
+                "title": "Beispiel-Wegpunkt-Titel",
+                "info": "Beispiel-Wegpunkt-Informationen.",
+                "images": {
+                  "image_0": {
+                    "caption": "Hauptansicht von Wegpunkt 1"
+                  },
+                  "image_1": {
+                    "caption": "Erste Ansicht von Wegpunkt 1"
+                  },
+                  "image_2": {
+                    "caption": "Zweite Ansicht von Wegpunkt 1"
+                  }
+                }
+              },
+              "waypoint_2": {
+                "title": "Beispiel-Wegpunkt 2 Titel",
+                "info": "Beispiel-Wegpunkt 2 Informationen.",
+                "images": {
+                  "image_0": {
+                    "caption": "Hauptansicht von Wegpunkt 2"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "quiz": {
+          "title": "Beispiel-Quiz-Titel",
+          "description": "Beispiel-Quiz-Beschreibung.",
+          "questions": {
+            "q_image_based_1": {
+              "question": "Dies ist eine Beispielfrage?",
+              "options": [
+                "Option A",
+                "Option B",
+                "Option C"
+              ],
+              "explanation": {
+                "text": "Dies ist der Beispiel-Erklärungstext.",
+                "image": {
+                  "caption": "Beispiel-Erklärungsbild-Beschriftung."
+                }
+              }
+            },
+            "q_image_sequence_1": {
+              "question": "Beispiel-Sequenzfrage.",
+              "images": {
+                "seq1": {
+                  "caption": "Sequenzelement 1"
+                },
+                "seq2": {
+                  "caption": "Sequenzelement 2"
+                }
+              },
+              "explanation": {
+                "text": "Beispiel-Sequenzerklärungstext.",
+                "image": {
+                  "caption": "Beispiel-Sequenzerklärungsbild."
+                }
+              }
+            }
+          }
+        },
+        "tickets": {
+          "infoText": "Dies ist ein Beispiel-Infotext für Tickets.",
+          "offers": {
+            "offer_1": {
+              "name": "Beispiel-Angebot",
+              "description": "Beispiel-Angebotsbeschreibung."
+            }
+          },
+          "terms": [
+            "Beispielbedingung 1.",
+            "Beispielbedingung 2."
+          ]
+        }
+      },
+      "ja": {
+        "name": "Mock Park Name",
+        "region": "Mock Region, Country",
+        "description": "This is a short mock description of the park.",
+        "heroImage": {
+          "caption": "Mock hero image caption.",
+          "alt": "Mock hero image alt text."
+        },
+        "stats": {
+          "stat_key_1": {
+            "label": "Mock Stat Label",
+            "description": "Mock stat description."
+          }
+        },
+        "interestingFacts": {
+          "fact_key_1": {
+            "text": "This is a mock interesting fact text.",
+            "image": {
+              "caption": "Mock fact image caption."
+            }
+          }
+        },
+        "historicalInfo": {
+          "text": "This is a mock historical info text.",
+          "images": {
+            "history_image_1": {
+              "caption": "Mock history image caption.",
+              "alt": "Mock history image alt text."
+            }
+          }
+        },
+        "contact": {
+          "websiteLabel": "Website",
+          "phoneLabel": "Phone",
+          "emailLabel": "Email",
+          "emergencyLabel": "Emergency",
+          "address": "123 Mock Street, Mockville",
+          "hours": "9:00 AM - 5:00 PM"
+        },
+        "news": {
+          "news_item_1": {
+            "title": "Mock News Title",
+            "summary": "This is a short summary of the mock news.",
+            "content": "This is the full content of the mock news item.",
+            "image": {
+              "caption": "Mock news image caption."
+            }
+          }
+        },
+        "pois": {
+          "poi_1": {
+            "title": "Mock POI Title",
+            "description": "Mock POI description.",
+            "openingHours": "Open 24/7",
+            "accessibility": "Fully accessible.",
+            "bestTimeToVisit": "Sunset",
+            "gallery": {
+              "images": {
+                "poi_image_1": {
+                  "caption": "Mock POI image caption."
+                }
+              }
+            }
+          }
+        },
+        "tours": {
+          "tour_1": {
+            "name": "Mock Tour Name",
+            "description": "Mock tour description.",
+            "waypoints": {
+              "waypoint_1": {
+                "title": "Mock Waypoint Title",
+                "info": "Mock waypoint info.",
+                "images": {
+                  "image_0": {
+                    "caption": "Main view of waypoint 1"
+                  },
+                  "image_1": {
+                    "caption": "First view of waypoint 1"
+                  },
+                  "image_2": {
+                    "caption": "Second view of waypoint 1"
+                  }
+                }
+              },
+              "waypoint_2": {
+                "title": "Mock Waypoint 2 Title",
+                "info": "Mock waypoint 2 info.",
+                "images": {
+                  "image_0": {
+                    "caption": "Main view of waypoint 2"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "quiz": {
+          "title": "Mock Quiz Title",
+          "description": "Mock quiz description.",
+          "questions": {
+            "q_image_based_1": {
+              "question": "This is a mock question?",
+              "options": [
+                "Option A",
+                "Option B",
+                "Option C"
+              ],
+              "explanation": {
+                "text": "This is the mock explanation text.",
+                "image": {
+                  "caption": "Mock explanation image caption."
+                }
+              }
+            },
+            "q_image_sequence_1": {
+              "question": "Mock sequence question.",
+              "images": {
+                "seq1": {
+                  "caption": "Sequence Item 1"
+                },
+                "seq2": {
+                  "caption": "Sequence Item 2"
+                }
+              },
+              "explanation": {
+                "text": "Mock sequence explanation text.",
+                "image": {
+                  "caption": "Mock sequence explanation image."
+                }
+              }
+            }
+          }
+        },
+        "tickets": {
+          "infoText": "This is a mock info text for tickets.",
+          "offers": {
+            "offer_1": {
+              "name": "Mock Offer Name",
+              "description": "Mock offer description."
+            }
+          },
+          "terms": [
+            "Mock term 1.",
+            "Mock term 2."
+          ]
+        }
+      },
+      "pt": {
+        "name": "Mock Park Name",
+        "region": "Mock Region, Country",
+        "description": "This is a short mock description of the park.",
+        "heroImage": {
+          "caption": "Mock hero image caption.",
+          "alt": "Mock hero image alt text."
+        },
+        "stats": {
+          "stat_key_1": {
+            "label": "Mock Stat Label",
+            "description": "Mock stat description."
+          }
+        },
+        "interestingFacts": {
+          "fact_key_1": {
+            "text": "This is a mock interesting fact text.",
+            "image": {
+              "caption": "Mock fact image caption."
+            }
+          }
+        },
+        "historicalInfo": {
+          "text": "This is a mock historical info text.",
+          "images": {
+            "history_image_1": {
+              "caption": "Mock history image caption.",
+              "alt": "Mock history image alt text."
+            }
+          }
+        },
+        "contact": {
+          "websiteLabel": "Website",
+          "phoneLabel": "Phone",
+          "emailLabel": "Email",
+          "emergencyLabel": "Emergency",
+          "address": "123 Mock Street, Mockville",
+          "hours": "9:00 AM - 5:00 PM"
+        },
+        "news": {
+          "news_item_1": {
+            "title": "Mock News Title",
+            "summary": "This is a short summary of the mock news.",
+            "content": "This is the full content of the mock news item.",
+            "image": {
+              "caption": "Mock news image caption."
+            }
+          }
+        },
+        "pois": {
+          "poi_1": {
+            "title": "Mock POI Title",
+            "description": "Mock POI description.",
+            "openingHours": "Open 24/7",
+            "accessibility": "Fully accessible.",
+            "bestTimeToVisit": "Sunset",
+            "gallery": {
+              "images": {
+                "poi_image_1": {
+                  "caption": "Mock POI image caption."
+                }
+              }
+            }
+          }
+        },
+        "tours": {
+          "tour_1": {
+            "name": "Mock Tour Name",
+            "description": "Mock tour description.",
+            "waypoints": {
+              "waypoint_1": {
+                "title": "Mock Waypoint Title",
+                "info": "Mock waypoint info.",
+                "images": {
+                  "image_0": {
+                    "caption": "Main view of waypoint 1"
+                  },
+                  "image_1": {
+                    "caption": "First view of waypoint 1"
+                  },
+                  "image_2": {
+                    "caption": "Second view of waypoint 1"
+                  }
+                }
+              },
+              "waypoint_2": {
+                "title": "Mock Waypoint 2 Title",
+                "info": "Mock waypoint 2 info.",
+                "images": {
+                  "image_0": {
+                    "caption": "Main view of waypoint 2"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "quiz": {
+          "title": "Mock Quiz Title",
+          "description": "Mock quiz description.",
+          "questions": {
+            "q_image_based_1": {
+              "question": "This is a mock question?",
+              "options": [
+                "Option A",
+                "Option B",
+                "Option C"
+              ],
+              "explanation": {
+                "text": "This is the mock explanation text.",
+                "image": {
+                  "caption": "Mock explanation image caption."
+                }
+              }
+            },
+            "q_image_sequence_1": {
+              "question": "Mock sequence question.",
+              "images": {
+                "seq1": {
+                  "caption": "Sequence Item 1"
+                },
+                "seq2": {
+                  "caption": "Sequence Item 2"
+                }
+              },
+              "explanation": {
+                "text": "Mock sequence explanation text.",
+                "image": {
+                  "caption": "Mock sequence explanation image."
+                }
+              }
+            }
+          }
+        },
+        "tickets": {
+          "infoText": "This is a mock info text for tickets.",
+          "offers": {
+            "offer_1": {
+              "name": "Mock Offer Name",
+              "description": "Mock offer description."
+            }
+          },
+          "terms": [
+            "Mock term 1.",
+            "Mock term 2."
+          ]
+        }
+      },
+      "es": {
+        "name": "Mock Park Name",
+        "region": "Mock Region, Country",
+        "description": "This is a short mock description of the park.",
+        "heroImage": {
+          "caption": "Mock hero image caption.",
+          "alt": "Mock hero image alt text."
+        },
+        "stats": {
+          "stat_key_1": {
+            "label": "Mock Stat Label",
+            "description": "Mock stat description."
+          }
+        },
+        "interestingFacts": {
+          "fact_key_1": {
+            "text": "This is a mock interesting fact text.",
+            "image": {
+              "caption": "Mock fact image caption."
+            }
+          }
+        },
+        "historicalInfo": {
+          "text": "This is a mock historical info text.",
+          "images": {
+            "history_image_1": {
+              "caption": "Mock history image caption.",
+              "alt": "Mock history image alt text."
+            }
+          }
+        },
+        "contact": {
+          "websiteLabel": "Website",
+          "phoneLabel": "Phone",
+          "emailLabel": "Email",
+          "emergencyLabel": "Emergency",
+          "address": "123 Mock Street, Mockville",
+          "hours": "9:00 AM - 5:00 PM"
+        },
+        "news": {
+          "news_item_1": {
+            "title": "Mock News Title",
+            "summary": "This is a short summary of the mock news.",
+            "content": "This is the full content of the mock news item.",
+            "image": {
+              "caption": "Mock news image caption."
+            }
+          }
+        },
+        "pois": {
+          "poi_1": {
+            "title": "Mock POI Title",
+            "description": "Mock POI description.",
+            "openingHours": "Open 24/7",
+            "accessibility": "Fully accessible.",
+            "bestTimeToVisit": "Sunset",
+            "gallery": {
+              "images": {
+                "poi_image_1": {
+                  "caption": "Mock POI image caption."
+                }
+              }
+            }
+          }
+        },
+        "tours": {
+          "tour_1": {
+            "name": "Mock Tour Name",
+            "description": "Mock tour description.",
+            "waypoints": {
+              "waypoint_1": {
+                "title": "Mock Waypoint Title",
+                "info": "Mock waypoint info.",
+                "images": {
+                  "image_0": {
+                    "caption": "Main view of waypoint 1"
+                  },
+                  "image_1": {
+                    "caption": "First view of waypoint 1"
+                  },
+                  "image_2": {
+                    "caption": "Second view of waypoint 1"
+                  }
+                }
+              },
+              "waypoint_2": {
+                "title": "Mock Waypoint 2 Title",
+                "info": "Mock waypoint 2 info.",
+                "images": {
+                  "image_0": {
+                    "caption": "Main view of waypoint 2"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "quiz": {
+          "title": "Mock Quiz Title",
+          "description": "Mock quiz description.",
+          "questions": {
+            "q_image_based_1": {
+              "question": "This is a mock question?",
+              "options": [
+                "Option A",
+                "Option B",
+                "Option C"
+              ],
+              "explanation": {
+                "text": "This is the mock explanation text.",
+                "image": {
+                  "caption": "Mock explanation image caption."
+                }
+              }
+            },
+            "q_image_sequence_1": {
+              "question": "Mock sequence question.",
+              "images": {
+                "seq1": {
+                  "caption": "Sequence Item 1"
+                },
+                "seq2": {
+                  "caption": "Sequence Item 2"
+                }
+              },
+              "explanation": {
+                "text": "Mock sequence explanation text.",
+                "image": {
+                  "caption": "Mock sequence explanation image."
+                }
+              }
+            }
+          }
+        },
+        "tickets": {
+          "infoText": "This is a mock info text for tickets.",
+          "offers": {
+            "offer_1": {
+              "name": "Mock Offer Name",
+              "description": "Mock offer description."
+            }
+          },
+          "terms": [
+            "Mock term 1.",
+            "Mock term 2."
+          ]
+        }
+      },
+      "it": {
+        "name": "Mock Park Name",
+        "region": "Mock Region, Country",
+        "description": "This is a short mock description of the park.",
+        "heroImage": {
+          "caption": "Mock hero image caption.",
+          "alt": "Mock hero image alt text."
+        },
+        "stats": {
+          "stat_key_1": {
+            "label": "Mock Stat Label",
+            "description": "Mock stat description."
+          }
+        },
+        "interestingFacts": {
+          "fact_key_1": {
+            "text": "This is a mock interesting fact text.",
+            "image": {
+              "caption": "Mock fact image caption."
+            }
+          }
+        },
+        "historicalInfo": {
+          "text": "This is a mock historical info text.",
+          "images": {
+            "history_image_1": {
+              "caption": "Mock history image caption.",
+              "alt": "Mock history image alt text."
+            }
+          }
+        },
+        "contact": {
+          "websiteLabel": "Website",
+          "phoneLabel": "Phone",
+          "emailLabel": "Email",
+          "emergencyLabel": "Emergency",
+          "address": "123 Mock Street, Mockville",
+          "hours": "9:00 AM - 5:00 PM"
+        },
+        "news": {
+          "news_item_1": {
+            "title": "Mock News Title",
+            "summary": "This is a short summary of the mock news.",
+            "content": "This is the full content of the mock news item.",
+            "image": {
+              "caption": "Mock news image caption."
+            }
+          }
+        },
+        "pois": {
+          "poi_1": {
+            "title": "Mock POI Title",
+            "description": "Mock POI description.",
+            "openingHours": "Open 24/7",
+            "accessibility": "Fully accessible.",
+            "bestTimeToVisit": "Sunset",
+            "gallery": {
+              "images": {
+                "poi_image_1": {
+                  "caption": "Mock POI image caption."
+                }
+              }
+            }
+          }
+        },
+        "tours": {
+          "tour_1": {
+            "name": "Mock Tour Name",
+            "description": "Mock tour description.",
+            "waypoints": {
+              "waypoint_1": {
+                "title": "Mock Waypoint Title",
+                "info": "Mock waypoint info.",
+                "images": {
+                  "image_0": {
+                    "caption": "Main view of waypoint 1"
+                  },
+                  "image_1": {
+                    "caption": "First view of waypoint 1"
+                  },
+                  "image_2": {
+                    "caption": "Second view of waypoint 1"
+                  }
+                }
+              },
+              "waypoint_2": {
+                "title": "Mock Waypoint 2 Title",
+                "info": "Mock waypoint 2 info.",
+                "images": {
+                  "image_0": {
+                    "caption": "Main view of waypoint 2"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "quiz": {
+          "title": "Mock Quiz Title",
+          "description": "Mock quiz description.",
+          "questions": {
+            "q_image_based_1": {
+              "question": "This is a mock question?",
+              "options": [
+                "Option A",
+                "Option B",
+                "Option C"
+              ],
+              "explanation": {
+                "text": "This is the mock explanation text.",
+                "image": {
+                  "caption": "Mock explanation image caption."
+                }
+              }
+            },
+            "q_image_sequence_1": {
+              "question": "Mock sequence question.",
+              "images": {
+                "seq1": {
+                  "caption": "Sequence Item 1"
+                },
+                "seq2": {
+                  "caption": "Sequence Item 2"
+                }
+              },
+              "explanation": {
+                "text": "Mock sequence explanation text.",
+                "image": {
+                  "caption": "Mock sequence explanation image."
+                }
+              }
+            }
+          }
+        },
+        "tickets": {
+          "infoText": "This is a mock info text for tickets.",
+          "offers": {
+            "offer_1": {
+              "name": "Mock Offer Name",
+              "description": "Mock offer description."
+            }
+          },
+          "terms": [
+            "Mock term 1.",
+            "Mock term 2."
+          ]
+        }
+      },
+      "fr": {
+        "name": "Mock Park Name",
+        "region": "Mock Region, Country",
+        "description": "This is a short mock description of the park.",
+        "heroImage": {
+          "caption": "Mock hero image caption.",
+          "alt": "Mock hero image alt text."
+        },
+        "stats": {
+          "stat_key_1": {
+            "label": "Mock Stat Label",
+            "description": "Mock stat description."
+          }
+        },
+        "interestingFacts": {
+          "fact_key_1": {
+            "text": "This is a mock interesting fact text.",
+            "image": {
+              "caption": "Mock fact image caption."
+            }
+          }
+        },
+        "historicalInfo": {
+          "text": "This is a mock historical info text.",
+          "images": {
+            "history_image_1": {
+              "caption": "Mock history image caption.",
+              "alt": "Mock history image alt text."
+            }
+          }
+        },
+        "contact": {
+          "websiteLabel": "Website",
+          "phoneLabel": "Phone",
+          "emailLabel": "Email",
+          "emergencyLabel": "Emergency",
+          "address": "123 Mock Street, Mockville",
+          "hours": "9:00 AM - 5:00 PM"
+        },
+        "news": {
+          "news_item_1": {
+            "title": "Mock News Title",
+            "summary": "This is a short summary of the mock news.",
+            "content": "This is the full content of the mock news item.",
+            "image": {
+              "caption": "Mock news image caption."
+            }
+          }
+        },
+        "pois": {
+          "poi_1": {
+            "title": "Mock POI Title",
+            "description": "Mock POI description.",
+            "openingHours": "Open 24/7",
+            "accessibility": "Fully accessible.",
+            "bestTimeToVisit": "Sunset",
+            "gallery": {
+              "images": {
+                "poi_image_1": {
+                  "caption": "Mock POI image caption."
+                }
+              }
+            }
+          }
+        },
+        "tours": {
+          "tour_1": {
+            "name": "Mock Tour Name",
+            "description": "Mock tour description.",
+            "waypoints": {
+              "waypoint_1": {
+                "title": "Mock Waypoint Title",
+                "info": "Mock waypoint info.",
+                "images": {
+                  "image_0": {
+                    "caption": "Main view of waypoint 1"
+                  },
+                  "image_1": {
+                    "caption": "First view of waypoint 1"
+                  },
+                  "image_2": {
+                    "caption": "Second view of waypoint 1"
+                  }
+                }
+              },
+              "waypoint_2": {
+                "title": "Mock Waypoint 2 Title",
+                "info": "Mock waypoint 2 info.",
+                "images": {
+                  "image_0": {
+                    "caption": "Main view of waypoint 2"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "quiz": {
+          "title": "Mock Quiz Title",
+          "description": "Mock quiz description.",
+          "questions": {
+            "q_image_based_1": {
+              "question": "This is a mock question?",
+              "options": [
+                "Option A",
+                "Option B",
+                "Option C"
+              ],
+              "explanation": {
+                "text": "This is the mock explanation text.",
+                "image": {
+                  "caption": "Mock explanation image caption."
+                }
+              }
+            },
+            "q_image_sequence_1": {
+              "question": "Mock sequence question.",
+              "images": {
+                "seq1": {
+                  "caption": "Sequence Item 1"
+                },
+                "seq2": {
+                  "caption": "Sequence Item 2"
+                }
+              },
+              "explanation": {
+                "text": "Mock sequence explanation text.",
+                "image": {
+                  "caption": "Mock sequence explanation image."
+                }
+              }
+            }
+          }
+        },
+        "tickets": {
+          "infoText": "This is a mock info text for tickets.",
+          "offers": {
+            "offer_1": {
+              "name": "Mock Offer Name",
+              "description": "Mock offer description."
+            }
+          },
+          "terms": [
+            "Mock term 1.",
+            "Mock term 2."
+          ]
+        }
+      }
+    }
+  }
