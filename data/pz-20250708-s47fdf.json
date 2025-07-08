@@ -147,7 +147,7 @@
       "stats": {
         "one-way-round-trip": {
           "label": "One way round trip",
-          "description": ""
+          "description": "do it.. once"
         }
       },
       "interestingFacts": {
@@ -245,7 +245,8 @@
       },
       "stats": {
         "one-way-round-trip": {
-          "label": "Andata e ritorno"
+          "label": "Andata e ritorno",
+          "description": "fallo.. una volta"
         }
       },
       "interestingFacts": {
@@ -324,7 +325,8 @@
       },
       "stats": {
         "one-way-round-trip": {
-          "label": "Hin- und Rückfahrt"
+          "label": "Hin- und Rückfahrt",
+          "description": "mach es.. einmal"
         }
       },
       "interestingFacts": {
@@ -403,7 +405,8 @@
       },
       "stats": {
         "one-way-round-trip": {
-          "label": "Viaje de ida y vuelta"
+          "label": "Viaje de ida y vuelta",
+          "description": "hazlo.. una vez"
         }
       },
       "interestingFacts": {
@@ -482,7 +485,8 @@
       },
       "stats": {
         "one-way-round-trip": {
-          "label": "Viagem de ida e volta"
+          "label": "Viagem de ida e volta",
+          "description": "faça-o.. uma vez"
         }
       },
       "interestingFacts": {
@@ -561,7 +565,8 @@
       },
       "stats": {
         "one-way-round-trip": {
-          "label": "往復"
+          "label": "往復",
+          "description": "一度やってみて"
         }
       },
       "interestingFacts": {
@@ -640,7 +645,8 @@
       },
       "stats": {
         "one-way-round-trip": {
-          "label": "Aller-retour"
+          "label": "Aller-retour",
+          "description": "fais-le.. une fois"
         }
       },
       "interestingFacts": {
