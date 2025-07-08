@@ -712,9 +712,41 @@ function createSelect(optionsArray, className = '', isMultiple = false, placehol
     optionsArray.sort().forEach(option => { optionsHtml += `<option value="${option}">${option}</option>`; });
     return `<select class="${className}" ${multipleAttr}>${optionsHtml}</select>`;
 }
-function getValue(selector, context = document) { return context.querySelector(selector)?.value || ''; }
+function getValue(selector, context = document) { 
+    const element = context.querySelector(selector);
+    const value = element ? element.value : '';
+    
+    // Critical safety check: ensure we're returning a string, not an object
+    if (value && typeof value !== 'string') {
+        console.error('🚨 getValue: Non-string value detected!', selector, typeof value, value);
+        
+        // Try to convert to string safely
+        if (typeof value === 'object' && value !== null) {
+            // Check if it's a character-by-character object
+            const keys = Object.keys(value);
+            const isCharacterObject = keys.length > 0 && keys.every(key => {
+                const num = parseInt(key);
+                return !isNaN(num) && num >= 0;
+            });
+            
+            if (isCharacterObject) {
+                const reconstructed = keys.sort((a, b) => parseInt(a) - parseInt(b)).map(key => value[key]).join('');
+                console.warn('🔧 getValue: Fixed character-by-character object:', selector, reconstructed);
+                return reconstructed;
+            }
+        }
+        
+        return String(value);
+    }
+    
+    return value;
+}
 function getFloat(selector, context = document) { return parseFloat(context.querySelector(selector)?.value) || 0; }
 function set(obj, path, value) {
+    // IMPORTANT: This function should NEVER be used for translation data
+    // Use setTranslationValue() instead for any translatable content
+    console.warn('set() function called - ensure this is not for translation data:', path, typeof value);
+    
     const keys = path.split('.');
     let current = obj;
     for (let i = 0; i < keys.length - 1; i++) {
@@ -724,29 +756,91 @@ function set(obj, path, value) {
         }
         current = current[key];
     }
-    current[keys[keys.length - 1]] = value;
+    
+    // Safety check: Don't iterate over strings character by character
+    if (typeof value === 'string') {
+        current[keys[keys.length - 1]] = value;
+    } else {
+        current[keys[keys.length - 1]] = value;
+    }
+}
+
+function fixCharacterByCharacterObjects(obj, path = '') {
+    if (obj === null || obj === undefined) return obj;
+    
+    if (typeof obj === 'object' && !Array.isArray(obj)) {
+        const keys = Object.keys(obj);
+        
+        // Check if this looks like a character-by-character object
+        const isCharacterObject = keys.length > 0 && keys.every(key => {
+            const num = parseInt(key);
+            return !isNaN(num) && num >= 0 && num < 1000; // Reasonable character limit
+        }) && keys.every(key => typeof obj[key] === 'string' && obj[key].length <= 1);
+        
+        if (isCharacterObject) {
+            // Reconstruct the original string
+            const reconstructed = keys.sort((a, b) => parseInt(a) - parseInt(b)).map(key => obj[key]).join('');
+            console.warn(`🔧 FIXED: Character-by-character object at ${path} -> "${reconstructed.substring(0, 50)}..."`);
+            return reconstructed;
+        }
+        
+        // Recursively fix nested objects
+        const fixedObj = {};
+        for (const [key, value] of Object.entries(obj)) {
+            fixedObj[key] = fixCharacterByCharacterObjects(value, `${path}.${key}`);
+        }
+        return fixedObj;
+    }
+    
+    return obj;
 }
 
 function setTranslationValue(obj, path, value) {
     // Safe version that ensures string values are not iterated over character by character
     if (typeof value !== 'string') {
-        console.warn('setTranslationValue: Expected string value, got', typeof value, value);
-        return;
+        console.error('setTranslationValue: Expected string value, got', typeof value, 'for path:', path, 'value:', value);
+        return false;
+    }
+    
+    // Additional safety check: ensure the value is not accidentally an object
+    if (value && typeof value === 'object') {
+        console.error('setTranslationValue: Detected object value being passed as string for path:', path, 'value:', value);
+        return false;
+    }
+    
+    // Debug logging for problematic paths
+    if (path.includes('.0') || path.includes('.1') || path.includes('.2')) {
+        console.warn('🚨 setTranslationValue: Suspicious path detected:', path, 'value:', value);
+        console.warn('🚨 This might indicate character-by-character iteration!');
     }
     
     const keys = path.split('.');
     let current = obj;
     
-    for (let i = 0; i < keys.length - 1; i++) {
-        const key = keys[i];
-        if (!current[key] || typeof current[key] !== 'object' || Array.isArray(current[key])) {
-            current[key] = {};
+    try {
+        for (let i = 0; i < keys.length - 1; i++) {
+            const key = keys[i];
+            if (!current[key] || typeof current[key] !== 'object' || Array.isArray(current[key])) {
+                current[key] = {};
+            }
+            current = current[key];
         }
-        current = current[key];
+        
+        // Set the final value as a string, not as an iterable object
+        const finalKey = keys[keys.length - 1];
+        current[finalKey] = value;
+        
+        // Verify the assignment worked correctly
+        if (current[finalKey] !== value) {
+            console.error('setTranslationValue: Assignment verification failed for path:', path);
+            return false;
+        }
+        
+        return true;
+    } catch (error) {
+        console.error('setTranslationValue: Error setting path:', path, 'error:', error);
+        return false;
     }
-    
-    // Set the final value as a string, not as an iterable object
-    current[keys[keys.length - 1]] = value;
 }
 
 // Auto-generate slugified IDs from text
@@ -1407,9 +1501,9 @@ function prepareTranslations() {
             const id = `trans-${lang}-${key.replace(/[.\[\]]/g, '-')}`;
             const sourceInfo = `<div class="trans-source"><strong>EN:</strong> ${sourceValue || '<em>(empty)</em>'}</div>`;
             if (type === 'textarea') {
-                return `<div class="form-group"><label for="${id}">${label}</label>${sourceInfo}<textarea id="${id}" data-lang="${lang}" data-key="${key}">${sourceValue}</textarea></div>`;
+                return `<div class="form-group"><label for="${id}">${label}</label>${sourceInfo}<textarea id="${id}" data-lang="${lang}" data-translation-key="${key}">${sourceValue}</textarea></div>`;
             }
-            return `<div class="form-group"><label for="${id}">${label}</label>${sourceInfo}<input type="text" id="${id}" value="${sourceValue || ''}" data-lang="${lang}" data-key="${key}"></div>`;
+            return `<div class="form-group"><label for="${id}">${label}</label>${sourceInfo}<input type="text" id="${id}" value="${sourceValue || ''}" data-lang="${lang}" data-translation-key="${key}"></div>`;
         }
         
         // Main details
@@ -1591,12 +1685,57 @@ function collectSourceData() {
             // Only add options if they exist (for multiple choice and image based questions)
             const options = getValue('[data-translatable-key="options"]', item);
             if (options && options.trim() !== '') {
-                questionData.options = options;
+                try {
+                    // Parse as JSON array first, if that fails, split by newlines
+                    if (options.startsWith('[') && options.endsWith(']')) {
+                        questionData.options = JSON.parse(options);
+                    } else {
+                        // Split by newlines and filter out empty lines
+                        questionData.options = options.split('\n').map(opt => opt.trim()).filter(opt => opt !== '');
+                    }
+                } catch (e) {
+                    // Fallback: split by newlines
+                    questionData.options = options.split('\n').map(opt => opt.trim()).filter(opt => opt !== '');
+                }
             }
             
             data.quiz.questions[key] = questionData;
         } 
     });
+
+    // Collect tickets data if any exist
+    const ticketsInfoText = getValue('#en-tickets-infoText');
+    const ticketsTerms = getValue('#en-tickets-terms');
+    const hasTicketOffers = document.querySelectorAll('.ticket-offer-item').length > 0;
+    
+    if (ticketsInfoText || ticketsTerms || hasTicketOffers) {
+        data.tickets = {};
+        
+        if (ticketsInfoText) {
+            data.tickets.infoText = ticketsInfoText;
+        }
+        
+        if (ticketsTerms) {
+            // Split terms by newlines and filter out empty lines
+            const termsArray = ticketsTerms.split('\n').map(term => term.trim()).filter(term => term !== '');
+            if (termsArray.length > 0) {
+                data.tickets.terms = termsArray;
+            }
+        }
+        
+        if (hasTicketOffers) {
+            data.tickets.offers = {};
+            document.querySelectorAll('.ticket-offer-item').forEach(item => {
+                const key = getValue('.offer-key', item);
+                if (key) {
+                    data.tickets.offers[key] = {
+                        name: getValue(`[data-translatable-key="tickets.offers.${key}.name"]`, item),
+                        description: getValue(`[data-translatable-key="tickets.offers.${key}.description"]`, item)
+                    };
+                }
+            });
+        }
+    }
 
     return data;
 }
@@ -1977,6 +2116,38 @@ function importTranslatedContent(content, targetLang) {
             }
         });
     }
+    
+    // Import tickets
+    if (content.tickets) {
+        if (content.tickets.infoText) {
+            const input = document.getElementById(`trans-${targetLang}-tickets-infoText`);
+            if (input) input.value = content.tickets.infoText;
+        }
+        
+        if (content.tickets.terms) {
+            const input = document.getElementById(`trans-${targetLang}-tickets-terms`);
+            if (input) {
+                // Convert array back to newline-separated string
+                const termsText = Array.isArray(content.tickets.terms) 
+                    ? content.tickets.terms.join('\n') 
+                    : content.tickets.terms;
+                input.value = termsText;
+            }
+        }
+        
+        if (content.tickets.offers) {
+            for (const [key, offer] of Object.entries(content.tickets.offers)) {
+                if (offer.name) {
+                    const input = document.getElementById(`trans-${targetLang}-tickets-offers-${key}-name`);
+                    if (input) input.value = offer.name;
+                }
+                if (offer.description) {
+                    const input = document.getElementById(`trans-${targetLang}-tickets-offers-${key}-description`);
+                    if (input) input.value = offer.description;
+                }
+            }
+        }
+    }
 }
 
 // --- QUIZ TYPE CONTENT MANAGEMENT ---
@@ -2334,15 +2505,26 @@ document.getElementById('json-form').addEventListener('submit', function(e) {
     try {
         const result = { likes: [] };
 
-    // 1. Structural Data (exclude translatable content)
+    // 1. Structural Data (ONLY root-level properties, exclude translatable content)
+    
+    // CRITICAL: Only collect legitimate root-level structural data
+    const rootLevelFields = ['id', 'author', 'official', 'active', 'searchRadius', 'priority'];
+    
     document.querySelectorAll('[data-key]').forEach(el => { 
         // Skip elements that are inside repeater items or have translatable keys
         if (el.closest('.repeater-item') || el.hasAttribute('data-translatable-key')) return; 
         
         const key = el.dataset.key; 
-        if (key) {
+        
+        // CRITICAL: Only allow legitimate root-level fields
+        if (key && rootLevelFields.includes(key)) {
             result[key] = el.type === 'checkbox' ? el.checked : (el.type === 'number' ? (el.value === '' ? null : parseFloat(el.value)) : el.value); 
-        }
+            console.log(`✅ Collected root field: ${key} = ${result[key]}`);
+                 } else if (key) {
+             console.warn(`🚨 BLOCKED: Suspicious data-key field: ${key} (should probably be data-translatable-key)`);
+             console.warn(`🚨 BLOCKED: Element:`, el);
+             console.warn(`🚨 BLOCKED: Value:`, el.value);
+         }
     });
     result.center = [getFloat('#center-lat'), getFloat('#center-lon')];
     result.areaPolygon = Array.from(document.querySelectorAll('.polygon-point')).map(item => [getFloat('input:first-child', item), getFloat('input:last-child', item)]);
@@ -2542,6 +2724,7 @@ document.getElementById('json-form').addEventListener('submit', function(e) {
 
     // 2. Translations Object
     result.translations = {};
+    let translationWarnings = [];
     
     SUPPORTED_LANGUAGES.forEach(lang => {
         const transObj = {};
@@ -2561,9 +2744,13 @@ document.getElementById('json-form').addEventListener('submit', function(e) {
             document.querySelectorAll('.stat-item').forEach(item => {
                 const key = getValue('.item-key', item);
                 if (key) {
+                    const label = getValue('[data-translatable-key="label"]', item);
+                    const description = getValue('[data-translatable-key="description"]', item);
+                    
+                    // Ensure we're getting strings, not objects
                     transObj.stats[key] = {
-                        label: getValue('[data-translatable-key="label"]', item),
-                        description: getValue('[data-translatable-key="description"]', item)
+                        label: (typeof label === 'string') ? label : (label || ''),
+                        description: (typeof description === 'string') ? description : (description || '')
                     };
                 }
             });
@@ -2572,17 +2759,23 @@ document.getElementById('json-form').addEventListener('submit', function(e) {
             document.querySelectorAll('.fact-item').forEach(item => {
                 const key = getValue('.item-key', item);
                 if (key) {
+                    const text = getValue('[data-translatable-key="text"]', item);
+                    const imageCaption = getValue('[data-translatable-key="image.caption"]', item);
+                    
+                    // Ensure we're getting strings, not objects
                     transObj.interestingFacts[key] = {
-                        text: getValue('[data-translatable-key="text"]', item),
+                        text: (typeof text === 'string') ? text : (text || ''),
                         image: {
-                            caption: getValue('[data-translatable-key="image.caption"]', item)
+                            caption: (typeof imageCaption === 'string') ? imageCaption : (imageCaption || '')
                         }
                     };
                 }
             });
             
+            const historicalText = getValue('[data-translatable-key="historicalInfo.text"]');
+            
             transObj.historicalInfo = {
-                text: getValue('[data-translatable-key="historicalInfo.text"]'),
+                text: (typeof historicalText === 'string') ? historicalText : (historicalText || ''),
                 images: {}
             };
             document.querySelectorAll('.history-image-item').forEach(item => {
@@ -2623,13 +2816,36 @@ document.getElementById('json-form').addEventListener('submit', function(e) {
             document.querySelectorAll('.poi-item').forEach(item => {
                 const key = getValue('.item-key', item);
                 if (key) {
-                    transObj.pois[key] = {
+                    const poiData = {
                         title: getValue('[data-translatable-key="title"]', item),
                         description: getValue('[data-translatable-key="description"]', item),
                         openingHours: getValue('[data-translatable-key="openingHours"]', item),
-                        accessibility: getValue('[data-translatable-key="accessibility"]', item),
-                        bestTimeToVisit: getValue('[data-translatable-key="bestTimeToVisit"]', item)
+                        accessibility: getValue('[data-translatable-key="accessibility"]', item)
                     };
+                    
+                    // Add gallery images translations if they exist
+                    const galleryImagesText = getValue('.item-gallery-images', item);
+                    if (galleryImagesText && galleryImagesText.trim() !== '') {
+                        try {
+                            const galleryImages = JSON.parse(galleryImagesText);
+                            if (galleryImages && typeof galleryImages === 'object') {
+                                poiData.gallery = {
+                                    images: {}
+                                };
+                                
+                                // Convert gallery images to caption structure
+                                Object.keys(galleryImages).forEach(imageId => {
+                                    poiData.gallery.images[imageId] = {
+                                        caption: getValue(`[data-translatable-key="gallery.images.${imageId}.caption"]`, item) || ''
+                                    };
+                                });
+                            }
+                        } catch (e) {
+                            console.warn(`Could not parse gallery images for POI ${key}`);
+                        }
+                    }
+                    
+                    transObj.pois[key] = poiData;
                 }
             });
             
@@ -2666,15 +2882,61 @@ document.getElementById('json-form').addEventListener('submit', function(e) {
             document.querySelectorAll('.quiz-question-item').forEach(item => {
                 const key = getValue('.item-key', item);
                 if (key) {
-                    transObj.quiz.questions[key] = {
-                        question: getValue('[data-translatable-key="question"]', item),
+                    const questionText = getValue('[data-translatable-key="question"]', item);
+                    const explanationText = getValue('[data-translatable-key="explanation.text"]', item);
+                    const explanationCaption = getValue('[data-translatable-key="explanation.image.caption"]', item);
+                    
+                    const questionData = {
+                        question: (typeof questionText === 'string') ? questionText : (questionText || ''),
                         explanation: {
-                            text: getValue('[data-translatable-key="explanation.text"]', item),
+                            text: (typeof explanationText === 'string') ? explanationText : (explanationText || ''),
                             image: {
-                                caption: getValue('[data-translatable-key="explanation.image.caption"]', item)
+                                caption: (typeof explanationCaption === 'string') ? explanationCaption : (explanationCaption || '')
                             }
                         }
                     };
+                    
+                            // Add options as array if they exist (for multiple choice questions)
+                    const options = getValue('[data-translatable-key="options"]', item);
+                    if (options && options.trim() !== '' && typeof options === 'string') {
+                        try {
+                            // Parse as JSON array first, if that fails, split by newlines
+                            if (options.startsWith('[') && options.endsWith(']')) {
+                                questionData.options = JSON.parse(options);
+                            } else {
+                                // Split by newlines and filter out empty lines
+                                questionData.options = options.split('\n').map(opt => opt.trim()).filter(opt => opt !== '');
+                            }
+                        } catch (e) {
+                            // Fallback: split by newlines
+                            questionData.options = options.split('\n').map(opt => opt.trim()).filter(opt => opt !== '');
+                        }
+                    } else if (options && typeof options !== 'string') {
+                        console.error('🚨 Quiz options is not a string:', typeof options, options);
+                        questionData.options = [];
+                    }
+                    
+                    // Add image quiz question structure for image-based questions
+                    const questionType = getValue('.item-type', item);
+                    if (questionType === 'image_sequence') {
+                        // For image sequence questions, collect images object
+                        const imageKeys = getValue('[data-translatable-key="imageKeys"]', item);
+                        if (imageKeys) {
+                            questionData.images = {};
+                            try {
+                                const keys = JSON.parse(imageKeys);
+                                keys.forEach(imageKey => {
+                                    questionData.images[imageKey] = {
+                                        caption: getValue(`[data-translatable-key="images.${imageKey}.caption"]`, item)
+                                    };
+                                });
+                            } catch (e) {
+                                console.warn(`Could not parse image keys for quiz question ${key}:`, imageKeys);
+                            }
+                        }
+                    }
+                    
+                    transObj.quiz.questions[key] = questionData;
                 }
             });
             
@@ -2712,24 +2974,297 @@ document.getElementById('json-form').addEventListener('submit', function(e) {
                 }
             }
             
+            // Apply character-by-character object fix to English translations
+            const fixedEnglishTransObj = fixCharacterByCharacterObjects(transObj, 'en');
+            
+            // Replace the original object with the fixed one
+            Object.keys(transObj).forEach(key => delete transObj[key]);
+            Object.assign(transObj, fixedEnglishTransObj);
+            
+            console.log('🔧 DEBUG: Post-processed English translations - fixed character objects');
+            
         } else {
             // Collect other language translations from form inputs
+            let translationCount = 0;
+            
+            console.log(`🔍 DEBUG: Collecting translations for ${lang}...`);
+            console.log(`🔍 DEBUG: Found ${document.querySelectorAll(`[data-lang="${lang}"]`).length} translation inputs for ${lang}`);
+            
             document.querySelectorAll(`[data-lang="${lang}"]`).forEach(input => {
-                const key = input.dataset.key;
+                const key = input.dataset.translationKey;
                 const value = input.value;
-                if (key && value && typeof value === 'string') {
-                    // Ensure we're setting string values, not iterating over them
-                    setTranslationValue(transObj, key, value);
+                
+                // Strict validation: only process valid string values
+                if (key && value && typeof value === 'string' && value.trim() !== '') {
+                    try {
+                        // Double-check that we're not getting an object somehow
+                        if (typeof value === 'string') {
+                            // Debug suspicious keys
+                            if (key.includes('.0') || key.includes('.1') || key.includes('.2')) {
+                                console.warn(`🚨 DEBUG: Suspicious translation key detected: ${key} = "${value}"`);
+                            }
+                            
+                            const success = setTranslationValue(transObj, key, value);
+                            if (success) {
+                                translationCount++;
+                                console.log(`✅ Set translation ${lang}.${key}: "${value.substring(0, 30)}..."`);
+                            } else {
+                                console.error(`❌ Failed to set translation ${lang}.${key}: ${value}`);
+                            }
+                        } else {
+                            console.warn(`Skipping non-string value for ${lang}.${key}:`, typeof value, value);
+                        }
+                    } catch (error) {
+                        console.error(`Error setting translation ${lang}.${key}:`, error);
+                    }
+                } else if (key && value) {
+                    // Debug what's being skipped
+                    console.log(`🔍 DEBUG: Skipping ${lang}.${key} - type: ${typeof value}, length: ${value?.length || 'N/A'}, value: "${value.substring(0, 50)}..."`);
+                } else if (key) {
+                    // Debug empty values
+                    console.log(`🔍 DEBUG: Empty value for ${lang}.${key}`);
+                } else {
+                    // Debug elements without keys
+                    console.log(`🔍 DEBUG: Translation element without key for ${lang}:`, input);
+                }
+            });
+            
+                    // If no translations were found, don't include this language
+        if (translationCount === 0) {
+            console.log(`No translations found for ${lang}, skipping language`);
+            translationWarnings.push(`No translations found for ${lang.toUpperCase()} - this language will be excluded from the JSON`);
+            return; // Skip this language entirely
+        } else {
+            console.log(`Collected ${translationCount} translations for ${lang}`);
+        }
+        
+        // Post-process translations to ensure arrays are properly formatted
+        if (transObj.quiz && transObj.quiz.questions) {
+            Object.keys(transObj.quiz.questions).forEach(questionKey => {
+                const question = transObj.quiz.questions[questionKey];
+                
+                // Ensure options is an array if it exists
+                if (question.options && typeof question.options === 'string') {
+                    try {
+                        if (question.options.startsWith('[') && question.options.endsWith(']')) {
+                            question.options = JSON.parse(question.options);
+                        } else {
+                            question.options = question.options.split('\n').map(opt => opt.trim()).filter(opt => opt !== '');
+                        }
+                    } catch (e) {
+                        question.options = question.options.split('\n').map(opt => opt.trim()).filter(opt => opt !== '');
+                    }
                 }
             });
         }
         
+        // Ensure tickets terms is an array if it exists
+        if (transObj.tickets && transObj.tickets.terms && typeof transObj.tickets.terms === 'string') {
+            transObj.tickets.terms = transObj.tickets.terms.split('\n').map(term => term.trim()).filter(term => term !== '');
+        }
+        
+        // Use the shared character-by-character fix function
+        
+        // Apply the fix to the entire translation object
+        const fixedTransObj = fixCharacterByCharacterObjects(transObj, lang);
+        
+        // Replace the original object with the fixed one
+        Object.keys(transObj).forEach(key => delete transObj[key]);
+        Object.assign(transObj, fixedTransObj);
+        
+        console.log(`🔧 DEBUG: Post-processed translations for ${lang} - fixed character objects`);
+        
+        // Final verification: ensure tickets terms is still an array after fixing
+        if (transObj.tickets && transObj.tickets.terms && !Array.isArray(transObj.tickets.terms)) {
+            if (typeof transObj.tickets.terms === 'string') {
+                transObj.tickets.terms = transObj.tickets.terms.split('\n').map(term => term.trim()).filter(term => term !== '');
+            } else {
+                console.warn(`🚨 Tickets terms is not a string or array for ${lang}:`, typeof transObj.tickets.terms);
+                transObj.tickets.terms = [];
+            }
+        }
+        }
+        
         result.translations[lang] = transObj;
     });
+    
+    // Show translation warnings if any
+    if (translationWarnings.length > 0) {
+        const warningMessage = `⚠️ Translation Warnings:\n\n${translationWarnings.join('\n')}\n\n💡 To include all languages:\n1. Click "Prepare Translations" first\n2. Fill out the translation fields or use the AI translation feature\n3. Then generate JSON again`;
+        
+        // Show warning but don't block JSON generation
+        setTimeout(() => {
+            alert(warningMessage);
+        }, 500);
+    }
 
-        // Final Output
+        // Final validation check: detect character-by-character objects
+        const jsonString = JSON.stringify(result, null, 2);
         const outputEl = document.getElementById('output-json');
-        outputEl.value = JSON.stringify(result, null, 2);
+        
+        // Debug logging to help identify issues
+        console.log('🔍 DEBUG: Generated JSON size:', jsonString.length);
+        console.log('🔍 DEBUG: Translation languages included:', Object.keys(result.translations || {}));
+        
+        // Sample some potentially problematic sections for debugging
+        if (result.translations && result.translations.en && result.translations.en.historicalInfo) {
+            console.log('🔍 DEBUG: Sample historicalInfo.text:', typeof result.translations.en.historicalInfo.text, result.translations.en.historicalInfo.text?.substring(0, 100) + '...');
+        }
+        
+        if (result.translations && result.translations.en && result.translations.en.stats) {
+            const statsKeys = Object.keys(result.translations.en.stats);
+            if (statsKeys.length > 0) {
+                const firstStatKey = statsKeys[0];
+                console.log('🔍 DEBUG: Sample stats label:', typeof result.translations.en.stats[firstStatKey]?.label, result.translations.en.stats[firstStatKey]?.label);
+            }
+        }
+        
+        // Check for suspicious patterns that indicate character-by-character issues
+        const suspiciousPatterns = [
+            /"0":\s*"[a-zA-Z]",\s*"1":\s*"[a-zA-Z]"/g,  // Pattern like "0": "T", "1": "h"
+            /"text":\s*{\s*"0":/g,  // Text field with numbered keys
+            /"label":\s*{\s*"0":/g,  // Label field with numbered keys
+            /"description":\s*{\s*"0":/g  // Description field with numbered keys
+        ];
+        
+        // Additional validation: Check JSON structure matches specification
+        const structureValidation = [];
+        
+        // Check root level required fields
+        const requiredRootFields = ['id', 'author', 'official', 'active', 'searchRadius', 'priority', 'center', 'areaPolygon', 'customStyle', 'heroImage', 'stats', 'interestingFacts', 'historicalInfo', 'contact', 'news', 'pois', 'tours', 'quiz', 'translations'];
+        const missingRootFields = requiredRootFields.filter(field => !(field in result));
+        if (missingRootFields.length > 0) {
+            structureValidation.push(`Missing root fields: ${missingRootFields.join(', ')}`);
+        }
+        
+        // Check quiz structure
+        if (result.quiz && result.quiz.questions) {
+            Object.keys(result.quiz.questions).forEach(questionKey => {
+                const question = result.quiz.questions[questionKey];
+                
+                // Check if options is an array when it exists
+                if (question.options && !Array.isArray(question.options)) {
+                    structureValidation.push(`Quiz question '${questionKey}' has options as non-array (${typeof question.options})`);
+                }
+                
+                // Check if correctSequence is an array when it exists
+                if (question.correctSequence && !Array.isArray(question.correctSequence)) {
+                    structureValidation.push(`Quiz question '${questionKey}' has correctSequence as non-array (${typeof question.correctSequence})`);
+                }
+            });
+        }
+        
+        // Check translations structure
+        if (result.translations) {
+            Object.keys(result.translations).forEach(langCode => {
+                const translation = result.translations[langCode];
+                
+                // Check if quiz question options in translations are arrays
+                if (translation.quiz && translation.quiz.questions) {
+                    Object.keys(translation.quiz.questions).forEach(questionKey => {
+                        const question = translation.quiz.questions[questionKey];
+                        if (question.options && !Array.isArray(question.options)) {
+                            structureValidation.push(`Translation ${langCode} quiz question '${questionKey}' has options as non-array (${typeof question.options})`);
+                        }
+                    });
+                }
+                
+                // Check if tickets terms is an array
+                if (translation.tickets && translation.tickets.terms && !Array.isArray(translation.tickets.terms)) {
+                    structureValidation.push(`Translation ${langCode} tickets terms is not an array (${typeof translation.tickets.terms})`);
+                }
+            });
+        }
+        
+        // Check tickets structure
+        if (result.tickets && result.tickets.terms && !Array.isArray(result.tickets.terms)) {
+            structureValidation.push(`Tickets terms is not an array (${typeof result.tickets.terms})`);
+        }
+        
+        // Log structure validation results
+        if (structureValidation.length > 0) {
+            console.warn('⚠️ Structure validation warnings:', structureValidation);
+            console.warn('⚠️ Detailed structure issues:');
+            structureValidation.forEach((issue, index) => {
+                console.warn(`${index + 1}. ${issue}`);
+            });
+        } else {
+            console.log('✅ JSON structure validation passed');
+        }
+        
+        let hasIssues = false;
+        const detectedIssues = [];
+        
+        suspiciousPatterns.forEach((pattern, index) => {
+            const matches = jsonString.match(pattern);
+            if (matches) {
+                hasIssues = true;
+                const patternName = [
+                    'Sequential character keys ("0": "T", "1": "h")',
+                    'Text field with numbered keys',
+                    'Label field with numbered keys',
+                    'Description field with numbered keys'
+                ][index];
+                detectedIssues.push(`Character-by-character object detected: ${patternName}`);
+                console.error(`🚨 Pattern ${index + 1} detected:`, patternName);
+                console.error('Sample matches:', matches.slice(0, 3)); // Show first 3 matches
+            }
+        });
+        
+        if (hasIssues || structureValidation.length > 0) {
+            console.error('🚨 VALIDATION ISSUES DETECTED in generated JSON!');
+            if (hasIssues) {
+                console.error('Character-by-character issues:', detectedIssues);
+                console.error('📝 DEBUG: This usually means translation data is being processed incorrectly.');
+                console.error('📝 DEBUG: Check if you used "Prepare Translations" before generating JSON.');
+            }
+            if (structureValidation.length > 0) {
+                console.error('Structure validation issues:', structureValidation);
+                console.error('📝 DEBUG: This means the JSON structure doesn\'t match the expected format.');
+            }
+            
+            let alertMessage = '🚨 VALIDATION ISSUES DETECTED!\n\n';
+            
+            if (hasIssues) {
+                alertMessage += '❌ CRITICAL: Character-by-character objects detected!\n';
+                alertMessage += detectedIssues.join('\n') + '\n\n';
+                alertMessage += '❌ DO NOT USE THIS JSON - it will cause errors in your app!\n\n';
+            }
+            
+            if (structureValidation.length > 0) {
+                alertMessage += '⚠️ Structure validation warnings:\n';
+                alertMessage += structureValidation.join('\n') + '\n\n';
+            }
+            
+            alertMessage += '🔧 Please:\n';
+            alertMessage += '1. Check the console (F12) for detailed error information\n';
+            alertMessage += '2. Ensure all form fields are filled correctly\n';
+            alertMessage += '3. Use only English fields for main content\n';
+            alertMessage += '4. Use the translation system properly\n';
+            if (hasIssues) {
+                alertMessage += '5. If character errors persist, refresh the page and try again\n';
+            }
+            alertMessage += '6. Contact support if issues continue';
+            
+            alert(alertMessage);
+            
+            // Still show the JSON for debugging, but with warnings
+            let warningComment = '/*\n';
+            if (hasIssues) {
+                warningComment += '🚨 CRITICAL: This JSON contains character-by-character errors and should NOT be used!\n';
+            }
+            if (structureValidation.length > 0) {
+                warningComment += '⚠️ Structure validation warnings detected - please review.\n';
+            }
+            warningComment += 'Please fix the issues and regenerate the JSON.\n';
+            warningComment += '*/\n\n';
+            outputEl.value = warningComment + jsonString;
+        } else {
+            // JSON looks good
+            outputEl.value = jsonString;
+            console.log('✅ JSON validation passed - structure and character validation successful');
+        }
+        
         outputEl.scrollIntoView({ behavior: 'smooth' });
         
     } catch (error) {
@@ -2846,6 +3381,7 @@ function processImageFiles(files, category, container) {
     files.forEach((file, index) => {
         if (!file.type.startsWith('image/')) {
             console.warn('Skipping non-image file:', file.name);
+            console.log('💡 TIP: Only standard image formats (JPG, PNG, GIF, WebP) are supported. HEIC files need to be converted first.');
             return;
         }
         
