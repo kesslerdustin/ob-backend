@@ -1373,15 +1373,39 @@ function updateOfferAutoId(inputElement) {
 function updateOfferTranslatableKeys(offerContainer) {
     const offerKey = offerContainer.querySelector('.offer-key').value;
     
-    // Update translatable key attributes
-    const nameInput = offerContainer.querySelector('[data-translatable-key*="PLACEHOLDER.name"]');
-    const descInput = offerContainer.querySelector('[data-translatable-key*="PLACEHOLDER.description"]');
+    // Update translatable key attributes - handle both placeholder keys and already-updated keys
+    let nameInput = offerContainer.querySelector('[data-translatable-key*="PLACEHOLDER.name"]') || 
+                    offerContainer.querySelector('[data-translatable-key*="tickets.offers."][data-translatable-key*=".name"]');
+    let descInput = offerContainer.querySelector('[data-translatable-key*="PLACEHOLDER.description"]') || 
+                    offerContainer.querySelector('[data-translatable-key*="tickets.offers."][data-translatable-key*=".description"]');
+    
+    // Fallback approach: find by label text if attribute selectors fail
+    if (!nameInput) {
+        const nameLabel = Array.from(offerContainer.querySelectorAll('label')).find(label => 
+            label.textContent.includes('Offer Name'));
+        if (nameLabel) {
+            nameInput = nameLabel.parentElement.querySelector('input[type="text"]');
+        }
+    }
+    if (!descInput) {
+        const descLabel = Array.from(offerContainer.querySelectorAll('label')).find(label => 
+            label.textContent.includes('Description'));
+        if (descLabel) {
+            descInput = descLabel.parentElement.querySelector('textarea');
+        }
+    }
     
     if (nameInput) {
         nameInput.setAttribute('data-translatable-key', `tickets.offers.${offerKey}.name`);
+        console.log(`✅ Updated offer name key: tickets.offers.${offerKey}.name`);
+    } else {
+        console.warn('❌ Could not find offer name input element');
     }
     if (descInput) {
         descInput.setAttribute('data-translatable-key', `tickets.offers.${offerKey}.description`);
+        console.log(`✅ Updated offer description key: tickets.offers.${offerKey}.description`);
+    } else {
+        console.warn('❌ Could not find offer description input element');
     }
 }
 
@@ -3547,6 +3571,15 @@ document.getElementById('json-form').addEventListener('submit', function(e) {
         const transObj = {};
         
         if (lang === 'en') {
+            // CRITICAL FIX: Ensure all translatable keys are updated before collecting English translations
+            // This fixes the issue where ticket offer names/descriptions end up empty in final JSON
+            document.querySelectorAll('.ticket-offer-item').forEach(item => {
+                updateOfferTranslatableKeys(item);
+            });
+            document.querySelectorAll('.waypoint-item').forEach(item => {
+                updateWaypointTranslatableKeys(item);
+            });
+            
             // Collect English content directly from form
             transObj.name = getValue('#en-name');
             transObj.region = getValue('#en-region');

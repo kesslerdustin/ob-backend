@@ -1736,6 +1736,17 @@ try {
       const description = video.description?.toLowerCase() || '';
       const channelTitle = video.channelTitle?.toLowerCase() || '';
       
+      // Debug logging for suspicious sports videos
+      const isSuspiciousSports = title.includes('vs') && 
+        (title.includes('game') || title.includes('highlight') || 
+         title.includes('baseball') || title.includes('mlb') ||
+         title.includes('red sox') || title.includes('nationals') ||
+         title.includes('yankees') || title.includes('dodgers'));
+      
+      if (isSuspiciousSports) {
+        console.log(`🔍 Checking suspicious sports video: "${video.title}"`);
+      }
+      
       // Filter out Asian languages and unwanted content
       const asianLanguageIndicators = [
         // Chinese characters and terms
@@ -1769,7 +1780,10 @@ try {
          'toy', 'toys', 'play', 'playground', 'wrestling', 'match', 'fight', 
          'game highlight', 'game highlights', 'game review', 'full game highlights',
          'baseball', 'football', 'basketball', 'soccer', 'hockey', 'sports highlights',
-         'nfl', 'nba', 'mlb', 'premier league', 'champions league'
+         'nfl', 'nba', 'mlb', 'premier league', 'champions league',
+         'red sox', 'nationals', 'yankees', 'dodgers', 'rangers', 'angels', 'brewers',
+         'patriots', 'giants', 'cowboys', 'eagles', 'steelers', 'packers', 'bears',
+         'lakers', 'warriors', 'celtics', 'bulls', 'heat', 'knicks', 'nets'
        ];
        
        // Check for Asian language indicators
@@ -1780,11 +1794,19 @@ try {
        );
        
        // Check for unwanted content
-       const hasUnwantedContent = unwantedContent.some(unwanted => 
-         title.includes(unwanted) || 
-         description.includes(unwanted) || 
-         channelTitle.includes(unwanted)
-       );
+       const hasUnwantedContent = unwantedContent.some(unwanted => {
+         const matchesTitle = title.includes(unwanted);
+         const matchesDescription = description.includes(unwanted);
+         const matchesChannel = channelTitle.includes(unwanted);
+         
+         // Debug logging for suspicious sports videos
+         if (isSuspiciousSports && (matchesTitle || matchesDescription || matchesChannel)) {
+           console.log(`🚫 Filtering out "${video.title}" due to unwanted content: "${unwanted}"`);
+           console.log(`   Title match: ${matchesTitle}, Description match: ${matchesDescription}, Channel match: ${matchesChannel}`);
+         }
+         
+         return matchesTitle || matchesDescription || matchesChannel;
+       });
        
        // Check for non-Latin characters (additional Asian language detection)
        const hasNonLatinChars = /[^\x00-\x7F\u00C0-\u017F\u0100-\u024F]/.test(title + description + channelTitle);
@@ -1800,6 +1822,11 @@ try {
          if (nonLatinRatio > 0.3) { // More than 30% non-Latin characters
            return false;
          }
+       }
+       
+       // Debug logging for suspicious sports videos that make it through
+       if (isSuspiciousSports) {
+         console.log(`⚠️ Suspicious sports video made it through filtering: "${video.title}"`);
        }
        
        return true;
@@ -1917,6 +1944,27 @@ try {
                         filtered: !filteredVideos.some(fv => fv.id === v.id)
                       })));
                   }
+                  
+                  // Debug: Check if any videos contain sports terms that should be filtered
+                  const sportsTerms = ['red sox', 'nationals', 'yankees', 'dodgers', 'rangers', 'angels', 'brewers'];
+                  const sportsVideos = videos.filter(v => 
+                    sportsTerms.some(term => v.title.toLowerCase().includes(term))
+                  );
+                  if (sportsVideos.length > 0) {
+                    console.log(`⚾ Found ${sportsVideos.length} sports-related videos:`, 
+                      sportsVideos.map(v => ({
+                        title: v.title,
+                        filtered: !filteredVideos.some(fv => fv.id === v.id),
+                        reason: 'Contains sports team name'
+                      })));
+                  }
+                  
+                  // Debug: Log ALL videos that make it through filtering
+                  console.log(`✅ Videos that made it through filtering:`, 
+                    filteredVideos.map(v => ({
+                      title: v.title.substring(0, 60) + '...',
+                      channel: v.channelTitle
+                    })));
                 }
                 
                 allCategoryVideos.push(...filteredVideos);
