@@ -265,24 +265,24 @@
       },
       "stats": {
         "one-way-round-trip": {
-          "label": "Viaggio di andata e ritorno",
-          "description": "fallo... una volta"
+          "label": "Andata e ritorno",
+          "description": "fallo.. una volta"
         }
       },
       "interestingFacts": {
         "this-is-a-fact": {
-          "text": "Questo è un dato di fatto",
+          "text": "Questo è un fatto",
           "image": {
             "caption": "Uno interessante"
           }
         }
       },
       "historicalInfo": {
-        "text": "Questa è un'ottima lezione di storia su Hiesfeld",
+        "text": "Questa è una fantastica lezione di storia su Hiesfeld",
         "images": {
           "burgers-yummy": {
             "caption": "Hamburger, che buoni",
-            "alt": "Cos'altro? "
+            "alt": "Cos'altro?"
           }
         }
       },
@@ -292,16 +292,16 @@
       "news": {
         "this-is-some-news": {
           "title": "Queste sono alcune notizie",
-          "summary": "riguardo alcune informazioni",
+          "summary": "su alcune informazioni",
           "content": "senza contenuto",
           "image": {
-            "caption": "ed ecco un'immagine"
+            "caption": "ed ecco una foto"
           }
         }
       },
       "pois": {
         "this-is-the-hiesfeld-poi": {
-          "title": "Questo è il PDI di Hiesfeld",
+          "title": "Questo è il POI di Hiesfeld",
           "description": "non c'è niente da dire",
           "openingHours": "sempre",
           "accessibility": "sì",
@@ -322,7 +322,7 @@
           "waypoints": {
             "this-is-the-first-point": {
               "title": "Questo è il primo punto!",
-              "info": "e l'ultimo..."
+              "info": "e l'ultimo.."
             }
           }
         }
@@ -338,7 +338,7 @@
               "B"
             ],
             "explanation": {
-              "text": "A è sempre quella giusta"
+              "text": "A è sempre giusto"
             }
           }
         }
@@ -346,7 +346,7 @@
       "tickets": {
         "infoText": "Questa è un'offerta",
         "terms": [
-          "si applicano i termini"
+          "si applicano termini e condizioni"
         ],
         "offers": {
           "best-offer": {
@@ -366,24 +366,24 @@
       },
       "stats": {
         "one-way-round-trip": {
-          "label": "Hin- und Rückfahrt",
-          "description": "mach es... einmal"
+          "label": "Einfache Rundfahrt",
+          "description": "mach es.. einmal"
         }
       },
       "interestingFacts": {
         "this-is-a-fact": {
-          "text": "Das ist eine Tatsache",
+          "text": "Dies ist eine Tatsache",
           "image": {
             "caption": "Eine interessante"
           }
         }
       },
       "historicalInfo": {
-        "text": "Das ist eine großartige Geschichtsstunde über Hiesfeld",
+        "text": "Dies ist eine großartige Geschichtsstunde über Hiesfeld",
         "images": {
           "burgers-yummy": {
             "caption": "Burger, lecker",
-            "alt": "Was sonst? "
+            "alt": "Was sonst?"
           }
         }
       },
@@ -392,7 +392,7 @@
       },
       "news": {
         "this-is-some-news": {
-          "title": "Das sind Neuigkeiten",
+          "title": "Das sind einige Neuigkeiten",
           "summary": "über einige Informationen",
           "content": "ohne Inhalt",
           "image": {
@@ -410,7 +410,7 @@
           "gallery": {
             "images": {
               "img-3599": {
-                "caption": "Was ist das"
+                "caption": "was ist das"
               }
             }
           }
@@ -422,15 +422,15 @@
           "description": "Mach es",
           "waypoints": {
             "this-is-the-first-point": {
-              "title": "Das ist der erste Punkt!",
-              "info": "und der letzte..."
+              "title": "Dies ist der erste Punkt!",
+              "info": "und der letzte.."
             }
           }
         }
       },
       "quiz": {
         "title": "Einfaches Quiz",
-        "description": "Du solltest es machen",
+        "description": "Du solltest es tun",
         "questions": {
           "a-or-b": {
             "question": "A oder B",
@@ -445,9 +445,9 @@
         }
       },
       "tickets": {
-        "infoText": "Das ist ein Angebot",
+        "infoText": "Dies ist ein Angebot",
         "terms": [
-          "Bedingungen gelten"
+          "es gelten die Bedingungen"
         ],
         "offers": {
           "best-offer": {
@@ -468,7 +468,7 @@
       "stats": {
         "one-way-round-trip": {
           "label": "Viaje de ida y vuelta",
-          "description": "hazlo... una vez"
+          "description": "hazlo.. una vez"
         }
       },
       "interestingFacts": {
@@ -484,7 +484,7 @@
         "images": {
           "burgers-yummy": {
             "caption": "Hamburguesas, qué ricas",
-            "alt": "¿Qué más? "
+            "alt": "¿Qué más?"
           }
         }
       },
@@ -511,7 +511,7 @@
           "gallery": {
             "images": {
               "img-3599": {
-                "caption": "¿qué es esto?"
+                "caption": "qué es esto"
               }
             }
           }
@@ -524,7 +524,7 @@
           "waypoints": {
             "this-is-the-first-point": {
               "title": "¡Este es el primer punto!",
-              "info": "y el último..."
+              "info": "y el último.."
             }
           }
         }
@@ -540,7 +540,7 @@
               "B"
             ],
             "explanation": {
-              "text": "A siempre es la correcta"
+              "text": "A siempre es correcto"
             }
           }
         }
@@ -564,17 +564,17 @@
       "description": "Hiesfeld é um pequeno bairro em Dinslaken.",
       "heroImage": {
         "caption": "O lago Rotbach",
-        "alt": "Legal, né?"
+        "alt": "Legal, hein?"
       },
       "stats": {
         "one-way-round-trip": {
           "label": "Viagem de ida e volta",
-          "description": "faça... uma vez"
+          "description": "faça.. uma vez"
         }
       },
       "interestingFacts": {
         "this-is-a-fact": {
-          "text": "Isto é um fato",
+          "text": "Isto é um facto",
           "image": {
             "caption": "Um interessante"
           }
@@ -585,7 +585,7 @@
         "images": {
           "burgers-yummy": {
             "caption": "Hambúrgueres, que delícia",
-            "alt": "O que mais? "
+            "alt": "O que mais?"
           }
         }
       },
@@ -594,7 +594,7 @@
       },
       "news": {
         "this-is-some-news": {
-          "title": "Isto são algumas notícias",
+          "title": "Estas são algumas notícias",
           "summary": "sobre algumas informações",
           "content": "sem conteúdo",
           "image": {
@@ -621,17 +621,17 @@
       "tours": {
         "hiesfelder-tour": {
           "name": "Hiesfelder Tour",
-          "description": "Faça",
+          "description": "Faça-o",
           "waypoints": {
             "this-is-the-first-point": {
               "title": "Este é o primeiro ponto!",
-              "info": "e o último..."
+              "info": "e o último.."
             }
           }
         }
       },
       "quiz": {
-        "title": "Quiz fácil",
+        "title": "Quiz Fácil",
         "description": "Você deveria fazer",
         "questions": {
           "a-or-b": {
@@ -649,7 +649,7 @@
       "tickets": {
         "infoText": "Esta é uma oferta",
         "terms": [
-          "aplicam-se os termos"
+          "aplicam-se termos"
         ],
         "offers": {
           "best-offer": {
@@ -665,19 +665,19 @@
       "description": "ヒースフェルトはディンスラーケンにある小さな地区です。",
       "heroImage": {
         "caption": "ロートバッハ湖",
-        "alt": "かっこいいでしょう？"
+        "alt": "かっこいいでしょ？"
       },
       "stats": {
         "one-way-round-trip": {
-          "label": "片道往復",
-          "description": "一度だけ…やってみて"
+          "label": "片道周遊",
+          "description": "一度やってみて"
         }
       },
       "interestingFacts": {
         "this-is-a-fact": {
           "text": "これは事実です",
           "image": {
-            "caption": "興味深いものです"
+            "caption": "興味深い事実"
           }
         }
       },
@@ -686,7 +686,7 @@
         "images": {
           "burgers-yummy": {
             "caption": "ハンバーガー、おいしい",
-            "alt": "他に何か？ "
+            "alt": "他に何が？"
           }
         }
       },
@@ -699,17 +699,17 @@
           "summary": "いくつかの情報について",
           "content": "内容なし",
           "image": {
-            "caption": "そして、こちらが写真です"
+            "caption": "そして、これが写真です"
           }
         }
       },
       "pois": {
         "this-is-the-hiesfeld-poi": {
           "title": "これがヒースフェルトのPOIです",
-          "description": "特筆すべきことはありません",
-          "openingHours": "常時",
+          "description": "言うことは何もありません",
+          "openingHours": "いつでも",
           "accessibility": "はい",
-          "bestTimeToVisit": "常時",
+          "bestTimeToVisit": "いつでも",
           "gallery": {
             "images": {
               "img-3599": {
@@ -722,17 +722,17 @@
       "tours": {
         "hiesfelder-tour": {
           "name": "Hiesfelder Tour",
-          "description": "やってみて",
+          "description": "やってみよう",
           "waypoints": {
             "this-is-the-first-point": {
               "title": "これが最初のポイントです！",
-              "info": "そして最後の…"
+              "info": "そして最後..."
             }
           }
         }
       },
       "quiz": {
-        "title": "かんたんクイズ",
+        "title": "簡単クイズ",
         "description": "やるべきです",
         "questions": {
           "a-or-b": {
@@ -755,7 +755,7 @@
         "offers": {
           "best-offer": {
             "name": "ベストオファー",
-            "description": "無料"
+            "description": "無料で"
           }
         }
       }
@@ -771,7 +771,7 @@
       "stats": {
         "one-way-round-trip": {
           "label": "Aller-retour simple",
-          "description": "faites-le... une fois"
+          "description": "faites-le.. une fois"
         }
       },
       "interestingFacts": {
@@ -787,7 +787,7 @@
         "images": {
           "burgers-yummy": {
             "caption": "Burgers, miam",
-            "alt": "Quoi d'autre ? "
+            "alt": "Quoi d'autre ?"
           }
         }
       },
@@ -827,7 +827,7 @@
           "waypoints": {
             "this-is-the-first-point": {
               "title": "C'est le premier point !",
-              "info": "et le dernier..."
+              "info": "et le dernier.."
             }
           }
         }
@@ -843,7 +843,7 @@
               "B"
             ],
             "explanation": {
-              "text": "A est toujours la bonne réponse"
+              "text": "A est toujours correct"
             }
           }
         }
