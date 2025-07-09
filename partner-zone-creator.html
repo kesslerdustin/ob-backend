@@ -1005,7 +1005,6 @@ function addPoi() {
             </div>
             <div class="form-group"><label>Amenities (Ctrl/Cmd + Click to select multiple)</label>${createSelect(POI_AMENITIES, 'item-amenities', true)}</div>
             <div class="form-group"><label>Gallery Storage Prefix (Auto-filled)</label><input type="text" class="item-gallery-prefix" readonly style="background: #f8f9fa;"></div>
-            <div class="form-group"><label>Gallery Images (Simplified Structure)</label><textarea class="item-gallery-images" placeholder='{ "main-view": { "filename": "main-view.jpg", "type": "main", "imageSource": "..." } }'></textarea></div>
             <div class="form-group">
                 <label>Upload POI Gallery Images</label>
                 <div class="image-upload-area" ondrop="handleImageDrop(event, 'poi', this)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
@@ -1013,7 +1012,10 @@ function addPoi() {
                     <p>Drag & drop POI gallery images here or <button type="button" onclick="triggerSiblingFileUpload(this)">Browse</button></p>
                     <div class="image-preview-container"></div>
                 </div>
-                <div class="field-hint">📁 POI images are organized in subfolders: <code>partner-zones/{place-id}/pois/{poi-id}/</code><br>The gallery prefix is auto-generated when you upload images. You can then reference the images in the Gallery Images JSON above.</div>
+                <div class="field-hint">📁 POI images are organized in subfolders: <code>partner-zones/{place-id}/pois/{poi-id}/</code><br>After uploading images, caption fields will appear below for each image.</div>
+            </div>
+            <div class="poi-gallery-captions-container" style="margin-top: 15px;">
+                <!-- Image caption fields will be dynamically added here after image upload -->
             </div>
             <hr>
             <h5>English Content</h5>
@@ -1022,7 +1024,8 @@ function addPoi() {
             <div class="form-group"><label>Opening Hours (EN)</label><input type="text" data-translatable-key="openingHours"></div>
             <div class="form-group"><label>Accessibility (EN)</label><input type="text" data-translatable-key="accessibility"></div>
             <div class="form-group"><label>Best Time to Visit (EN)</label><input type="text" data-translatable-key="bestTimeToVisit"></div>
-            <div class="field-hint">Note: Gallery image captions are translated within the gallery object JSON above.</div>
+            <div class="form-group"><label>Address (EN)</label><input type="text" data-translatable-key="address"></div>
+            <div class="form-group"><label>Phone (EN)</label><input type="text" data-translatable-key="phone"></div>
         </div>
     `;
     container.appendChild(itemDiv);
@@ -1066,18 +1069,18 @@ function addWaypoint(button) {
         ${createCollapsibleHeader('Waypoint', itemCounters.waypoint)}
         <div class="repeater-content">
             <h5>Structural Info</h5>
-            <div class="form-group"><label>Auto ID</label><input type="text" class="waypoint-key" value="waypoint-${itemCounters.waypoint}" readonly><div class="field-hint">ID is auto-generated from title</div></div>
+            <div class="form-group"><label>Auto ID</label><input type="text" class="waypoint-key" data-key="waypoint-key" value="waypoint-${itemCounters.waypoint}" readonly><div class="field-hint">ID is auto-generated from title</div></div>
             <div class="form-group">
                 <label>Coordinates (Lat, Lon)</label>
                 <div class="grid-2">
-                    <input type="number" step="any" class="waypoint-coord-lat" placeholder="Latitude">
-                    <input type="number" step="any" class="waypoint-coord-lon" placeholder="Longitude">
+                    <input type="number" step="any" class="waypoint-coord-lat" data-key="coord-lat" placeholder="Latitude">
+                    <input type="number" step="any" class="waypoint-coord-lon" data-key="coord-lon" placeholder="Longitude">
                 </div>
                 <button type="button" class="btn-map" onclick="openMapModal('waypoint', 'coordinates', this)">📍 Select on Map</button>
             </div>
             <div class="grid-2">
-                <div class="form-group"><label>Estimated Time (minutes)</label><input type="number" class="waypoint-estimatedTime" value="0" min="0"></div>
-                <div class="form-group"><label>Type</label>${createSelect(WAYPOINT_TYPES, 'waypoint-type')}</div>
+                <div class="form-group"><label>Estimated Time (minutes)</label><input type="number" class="waypoint-estimatedTime" data-key="estimated-time" value="0" min="0"></div>
+                <div class="form-group"><label>Type</label><select class="waypoint-type" data-key="waypoint-type"><option value="">-- Select waypoint type --</option>${WAYPOINT_TYPES.sort().map(type => `<option value="${type}">${type}</option>`).join('')}</select></div>
             </div>
             <hr>
             <h5>Waypoint Images</h5>
@@ -1123,9 +1126,16 @@ function updateWaypointAutoId(inputElement) {
 function updateWaypointTranslatableKeys(waypointContainer) {
     const waypointKey = waypointContainer.querySelector('.waypoint-key').value;
     
-    // Update translatable key attributes
-    const titleInput = waypointContainer.querySelector('[data-translatable-key*="waypoints.PLACEHOLDER.title"]');
-    const infoInput = waypointContainer.querySelector('[data-translatable-key*="waypoints.PLACEHOLDER.info"]');
+    // Update translatable key attributes - look for both PLACEHOLDER and existing waypoint keys
+    let titleInput = waypointContainer.querySelector('[data-translatable-key*="waypoints.PLACEHOLDER.title"]');
+    if (!titleInput) {
+        titleInput = waypointContainer.querySelector('[data-translatable-key*="waypoints."][data-translatable-key$=".title"]');
+    }
+    
+    let infoInput = waypointContainer.querySelector('[data-translatable-key*="waypoints.PLACEHOLDER.info"]');
+    if (!infoInput) {
+        infoInput = waypointContainer.querySelector('[data-translatable-key*="waypoints."][data-translatable-key$=".info"]');
+    }
     
     if (titleInput) {
         titleInput.setAttribute('data-translatable-key', `waypoints.${waypointKey}.title`);
@@ -1145,21 +1155,21 @@ function addTicketOffer() {
             <h5>Structural Info</h5>
             <div class="form-group">
                 <label>Offer ID</label>
-                <input type="text" class="offer-key" value="offer-${container.children.length + 1}" readonly>
+                <input type="text" class="offer-key" data-key="offer-key" value="offer-${container.children.length + 1}" readonly>
                 <div class="field-hint">ID is auto-generated from offer name</div>
             </div>
             <div class="grid-3">
                 <div class="form-group">
                     <label>Normal Price</label>
-                    <input type="number" step="0.01" class="offer-normalPrice" placeholder="35.00">
+                    <input type="number" step="0.01" class="offer-normalPrice" data-key="normal-price" placeholder="35.00">
                 </div>
                 <div class="form-group">
                     <label>Discounted Price</label>
-                    <input type="number" step="0.01" class="offer-discountedPrice" placeholder="31.50">
+                    <input type="number" step="0.01" class="offer-discountedPrice" data-key="discounted-price" placeholder="31.50">
                 </div>
                 <div class="form-group">
                     <label>Currency</label>
-                    <select class="offer-currency">
+                    <select class="offer-currency" data-key="currency">
                         <option value="USD">USD</option>
                         <option value="EUR">EUR</option>
                         <option value="GBP">GBP</option>
@@ -1318,7 +1328,7 @@ function addTicketOffer() {
             </div>
             <div class="form-group">
                 <label>Validity Days</label>
-                <input type="number" class="offer-validityDays" placeholder="7" min="1">
+                <input type="number" class="offer-validityDays" data-key="validity-days" placeholder="7" min="1">
                 <div class="field-hint">Number of days the ticket is valid for</div>
             </div>
             <hr>
@@ -1468,6 +1478,16 @@ function updateAutoId(inputElement, prefix) {
 function prepareTranslations() {
     const container = document.getElementById('translations-ui-container');
     container.innerHTML = ''; // Clear previous
+    
+    // CRITICAL FIX: Ensure all translatable keys are updated before collecting data
+    // This fixes issues where user filled out forms but the oninput events didn't trigger properly
+    document.querySelectorAll('.ticket-offer-item').forEach(item => {
+        updateOfferTranslatableKeys(item);
+    });
+    document.querySelectorAll('.waypoint-item').forEach(item => {
+        updateWaypointTranslatableKeys(item);
+    });
+    
     const sourceData = collectSourceData();
 
     SUPPORTED_LANGUAGES.forEach(lang => {
@@ -1623,6 +1643,15 @@ function prepareTranslations() {
                         if (value.caption) {
                             langHtml += createTranslationInput(lang, `${section}.${key}.image.caption`, 'Image Caption', value.caption);
                         }
+                    } else if (prop === 'gallery' && typeof value === 'object' && value.images) {
+                        // Handle POI gallery images specially
+                        langHtml += `<h5>Gallery Images</h5>`;
+                        for (const imageKey in value.images) {
+                            const imageData = value.images[imageKey];
+                            if (imageData && imageData.caption) {
+                                langHtml += createTranslationInput(lang, `${section}.${key}.gallery.images.${imageKey}.caption`, `Caption for "${imageKey}"`, imageData.caption);
+                            }
+                        }
                     } else if (typeof value === 'string') {
                         // Only process string values, not objects
                         const inputType = prop.match(/description|content|text|summary/) ? 'textarea' : 'input';
@@ -1636,7 +1665,6 @@ function prepareTranslations() {
         container.innerHTML += langHtml;
     });
 }
-
 function collectSourceData() {
     const data = {
         name: getValue('#en-name'),
@@ -1652,14 +1680,7 @@ function collectSourceData() {
             text: getValue('[data-translatable-key="historicalInfo.text"]'), 
             images: {} 
         },
-        contact: {
-            websiteLabel: getValue('[data-translatable-key="contact.websiteLabel"]'),
-            phoneLabel: getValue('[data-translatable-key="contact.phoneLabel"]'),
-            emailLabel: getValue('[data-translatable-key="contact.emailLabel"]'),
-            emergencyLabel: getValue('[data-translatable-key="contact.emergencyLabel"]'),
-            address: getValue('[data-translatable-key="contact.address"]'),
-            hours: getValue('[data-translatable-key="contact.hours"]')
-        },
+        contact: {},
         news: {}, 
         pois: {}, 
         tours: {}, 
@@ -1685,12 +1706,18 @@ function collectSourceData() {
     document.querySelectorAll('.fact-item').forEach(item => { 
         const key = getValue('.item-key', item); 
         if(key) {
-            data.interestingFacts[key] = { 
-                text: getValue('[data-translatable-key="text"]', item), 
-                image: {
-                    caption: getValue('[data-translatable-key="image.caption"]', item)
-                }
-            };
+            const factText = getValue('[data-translatable-key="text"]', item);
+            const imageCaption = getValue('[data-translatable-key="image.caption"]', item);
+            
+            const factData = {};
+            if (factText && factText.trim() !== '') factData.text = factText;
+            
+            // Only include image object if caption exists
+            if (imageCaption && imageCaption.trim() !== '') {
+                factData.image = { caption: imageCaption };
+            }
+            
+            data.interestingFacts[key] = factData;
         }
     });
     
@@ -1698,10 +1725,15 @@ function collectSourceData() {
     document.querySelectorAll('.history-image-item').forEach(item => { 
         const key = getValue('.item-key', item); 
         if(key) {
-            data.historicalInfo.images[key] = { 
-                caption: getValue('[data-translatable-key="caption"]', item), 
-                alt: getValue('[data-translatable-key="alt"]', item) 
-            };
+                    const caption = getValue('[data-translatable-key="caption"]', item);
+        const alt = getValue('[data-translatable-key="alt"]', item);
+        
+        // Only include caption and alt if they have values
+        const imageData = {};
+        if (caption && caption.trim() !== '') imageData.caption = caption;
+        if (alt && alt.trim() !== '') imageData.alt = alt;
+        
+        data.historicalInfo.images[key] = imageData;
         }
     });
     
@@ -1709,14 +1741,19 @@ function collectSourceData() {
     document.querySelectorAll('.news-item').forEach(item => { 
         const key = getValue('.item-key', item); 
         if(key) {
-            data.news[key] = { 
+            const newsData = {
                 title: getValue('[data-translatable-key="title"]', item), 
                 summary: getValue('[data-translatable-key="summary"]', item), 
-                content: getValue('[data-translatable-key="content"]', item), 
-                image: {
-                    caption: getValue('[data-translatable-key="image.caption"]', item)
-                }
+                content: getValue('[data-translatable-key="content"]', item)
             };
+            
+            // Only include image object if caption exists
+            const imageCaption = getValue('[data-translatable-key="image.caption"]', item);
+            if (imageCaption && imageCaption.trim() !== '') {
+                newsData.image = { caption: imageCaption };
+            }
+            
+            data.news[key] = newsData;
         }
     });
     
@@ -1724,13 +1761,35 @@ function collectSourceData() {
     document.querySelectorAll('.poi-item').forEach(item => { 
         const key = getValue('.item-key', item); 
         if(key) {
-            data.pois[key] = { 
+            const poiData = { 
                 title: getValue('[data-translatable-key="title"]', item), 
                 description: getValue('[data-translatable-key="description"]', item), 
                 openingHours: getValue('[data-translatable-key="openingHours"]', item), 
                 accessibility: getValue('[data-translatable-key="accessibility"]', item), 
-                bestTimeToVisit: getValue('[data-translatable-key="bestTimeToVisit"]', item) 
+                bestTimeToVisit: getValue('[data-translatable-key="bestTimeToVisit"]', item),
+                address: getValue('[data-translatable-key="address"]', item),
+                phone: getValue('[data-translatable-key="phone"]', item)
             };
+            
+            // Collect POI gallery image captions
+            const poiImages = uploadedImages.poi?.filter(img => img.itemKey === key) || [];
+            if (poiImages.length > 0) {
+                poiData.gallery = {
+                    images: {}
+                };
+                
+                poiImages.forEach(img => {
+                    const imageKey = sanitizeFileName(img.name).replace(/\.[^/.]+$/, "");
+                    const caption = getValue(`[data-translatable-key="gallery.images.${imageKey}.caption"]`, item);
+                    if (caption && caption.trim() !== '') {
+                        poiData.gallery.images[imageKey] = {
+                            caption: caption
+                        };
+                    }
+                });
+            }
+            
+            data.pois[key] = poiData;
         }
     });
     
@@ -1744,14 +1803,43 @@ function collectSourceData() {
                 waypoints: {}
             };
             
-            // Collect waypoint translations
+            // Collect waypoint translations AND structural data - only include waypoints with content
             item.querySelectorAll('.waypoint-item').forEach(waypointItem => {
                 const waypointKey = getValue('.waypoint-key', waypointItem);
                 if (waypointKey) {
-                    tourData.waypoints[waypointKey] = {
-                        title: getValue(`[data-translatable-key="waypoints.${waypointKey}.title"]`, waypointItem),
-                        info: getValue(`[data-translatable-key="waypoints.${waypointKey}.info"]`, waypointItem)
-                    };
+                    // Try to get the waypoint title and info using the proper key first, then fallback to PLACEHOLDER
+                    const waypointTitle = getValue(`[data-translatable-key="waypoints.${waypointKey}.title"]`, waypointItem);
+                    const waypointInfo = getValue(`[data-translatable-key="waypoints.${waypointKey}.info"]`, waypointItem);
+                    
+                    const waypointLat = getValue('[data-key="coord-lat"]', waypointItem);
+                    const waypointLon = getValue('[data-key="coord-lon"]', waypointItem);
+                    const estimatedTime = getValue('[data-key="estimated-time"]', waypointItem);
+                    const waypointType = getValue('[data-key="waypoint-type"]', waypointItem);
+                    
+                    // Only include waypoints that have at least a title, info, or coordinates
+                    if ((waypointTitle && waypointTitle.trim() !== '') || 
+                        (waypointInfo && waypointInfo.trim() !== '') ||
+                        (waypointLat && waypointLat.trim() !== '') ||
+                        (waypointLon && waypointLon.trim() !== '')) {
+                        
+                        const waypointData = {
+                            title: waypointTitle || '',
+                            info: waypointInfo || ''
+                        };
+                        
+                        // Add structural data if present
+                        if (waypointLat && waypointLon) {
+                            waypointData.coords = [parseFloat(waypointLat) || 0, parseFloat(waypointLon) || 0];
+                        }
+                        if (estimatedTime && estimatedTime.trim() !== '') {
+                            waypointData.estimatedTime = parseInt(estimatedTime) || 0;
+                        }
+                        if (waypointType && waypointType.trim() !== '') {
+                            waypointData.type = waypointType;
+                        }
+                        
+                        tourData.waypoints[waypointKey] = waypointData;
+                    }
                 }
             });
             
@@ -1766,12 +1854,15 @@ function collectSourceData() {
             const questionData = { 
                 question: getValue('[data-translatable-key="question"]', item),
                 explanation: {
-                    text: getValue('[data-translatable-key="explanation.text"]', item),
-                    image: {
-                        caption: getValue('[data-translatable-key="explanation.image.caption"]', item)
-                    }
+                    text: getValue('[data-translatable-key="explanation.text"]', item)
                 }
             };
+            
+            // Only include explanation image if caption exists
+            const explanationImageCaption = getValue('[data-translatable-key="explanation.image.caption"]', item);
+            if (explanationImageCaption && explanationImageCaption.trim() !== '') {
+                questionData.explanation.image = { caption: explanationImageCaption };
+            }
             
             // Only add options if they exist (for multiple choice and image based questions)
             const options = getValue('[data-translatable-key="options"]', item);
@@ -1794,46 +1885,104 @@ function collectSourceData() {
         } 
     });
 
-    // Collect tickets data if any exist
-    const ticketsInfoText = getValue('#en-tickets-infoText');
-    const ticketsTerms = getValue('#en-tickets-terms');
-    const hasTicketOffers = document.querySelectorAll('.ticket-offer-item').length > 0;
+    // Collect contact data - only include fields with actual values
+    const contactFields = {
+        websiteLabel: getValue('[data-translatable-key="contact.websiteLabel"]'),
+        phoneLabel: getValue('[data-translatable-key="contact.phoneLabel"]'),
+        emailLabel: getValue('[data-translatable-key="contact.emailLabel"]'),
+        emergencyLabel: getValue('[data-translatable-key="contact.emergencyLabel"]'),
+        address: getValue('[data-translatable-key="contact.address"]'),
+        hours: getValue('[data-translatable-key="contact.hours"]')
+    };
     
-    if (ticketsInfoText || ticketsTerms || hasTicketOffers) {
-        data.tickets = {};
-        
-        if (ticketsInfoText) {
-            data.tickets.infoText = ticketsInfoText;
+    Object.keys(contactFields).forEach(key => {
+        if (contactFields[key] && contactFields[key].trim() !== '') {
+            data.contact[key] = contactFields[key];
         }
+    });
+
+            // Collect tickets data if any exist
+        const ticketsInfoText = getValue('#en-tickets-infoText');
+        const ticketsTerms = getValue('#en-tickets-terms');
+        const hasTicketOffers = document.querySelectorAll('.ticket-offer-item').length > 0;
         
-        if (ticketsTerms) {
-            // Split terms by newlines and filter out empty lines
-            const termsArray = ticketsTerms.split('\n').map(term => term.trim()).filter(term => term !== '');
-            if (termsArray.length > 0) {
-                data.tickets.terms = termsArray;
+        if (ticketsInfoText || ticketsTerms || hasTicketOffers) {
+            data.tickets = {};
+            
+            if (ticketsInfoText) {
+                data.tickets.infoText = ticketsInfoText;
+            }
+            
+            if (ticketsTerms) {
+                // Split terms by newlines and filter out empty lines
+                const termsArray = ticketsTerms.split('\n').map(term => term.trim()).filter(term => term !== '');
+                if (termsArray.length > 0) {
+                    data.tickets.terms = termsArray;
+                }
+            }
+            
+            // Always create offers object to match template structure
+            data.tickets.offers = {};
+            if (hasTicketOffers) {
+                document.querySelectorAll('.ticket-offer-item').forEach(item => {
+                    const key = getValue('.offer-key', item);
+                    if (key) {
+                        // Try to get the offer name and description using the proper key first, then fallback to PLACEHOLDER
+                        const offerName = getValue(`[data-translatable-key*="name"]`, item);
+                        const offerDescription = getValue(`[data-translatable-key*="description"]`, item);
+                        
+                        const normalPrice = getValue('[data-key="normal-price"]', item);
+                        const discountedPrice = getValue('[data-key="discounted-price"]', item);
+                        const currency = getValue('[data-key="currency"]', item);
+                        const validityDays = getValue('[data-key="validity-days"]', item);
+                        
+                        // Only include offers that have at least a name, description, or pricing data
+                        if ((offerName && offerName.trim() !== '') || 
+                            (offerDescription && offerDescription.trim() !== '') ||
+                            (normalPrice && normalPrice.trim() !== '') ||
+                            (currency && currency.trim() !== '')) {
+                        
+                                const offerData = {
+                                    name: offerName || '',
+                                    description: offerDescription || ''
+                                };
+                                
+                                // Add structural data if present
+                                if (normalPrice && normalPrice.trim() !== '') {
+                                    offerData.normalPrice = parseFloat(normalPrice) || 0;
+                                }
+                                if (discountedPrice && discountedPrice.trim() !== '') {
+                                    offerData.discountedPrice = parseFloat(discountedPrice) || 0;
+                                }
+                                if (currency && currency.trim() !== '') {
+                                    offerData.currency = currency;
+                                }
+                                if (validityDays && validityDays.trim() !== '') {
+                                    offerData.validityDays = parseInt(validityDays) || null;
+                                }
+                                
+                                data.tickets.offers[key] = offerData;
+                        }
+                    }
+                });
             }
         }
-        
-        if (hasTicketOffers) {
-            data.tickets.offers = {};
-            document.querySelectorAll('.ticket-offer-item').forEach(item => {
-                const key = getValue('.offer-key', item);
-                if (key) {
-                    data.tickets.offers[key] = {
-                        name: getValue(`[data-translatable-key="tickets.offers.${key}.name"]`, item),
-                        description: getValue(`[data-translatable-key="tickets.offers.${key}.description"]`, item)
-                    };
-                }
-            });
-        }
-    }
 
     return data;
 }
-
 // --- TRANSLATION JSON EXPORT/IMPORT ---
 function exportTranslationJSON() {
     const selectedLang = document.getElementById('export-lang-select').value;
+    
+    // CRITICAL FIX: Ensure all translatable keys are updated before collecting data
+    // This fixes issues where user filled out forms but the oninput events didn't trigger properly
+    document.querySelectorAll('.ticket-offer-item').forEach(item => {
+        updateOfferTranslatableKeys(item);
+    });
+    document.querySelectorAll('.waypoint-item').forEach(item => {
+        updateWaypointTranslatableKeys(item);
+    });
+    
     const sourceData = collectSourceData();
     
     let promptText = '';
@@ -2134,6 +2283,24 @@ function importTranslatedContent(content, targetLang) {
             if (poi.bestTimeToVisit) {
                 const input = document.getElementById(`trans-${targetLang}-pois-${key}-bestTimeToVisit`);
                 if (input) input.value = poi.bestTimeToVisit;
+            }
+            if (poi.address) {
+                const input = document.getElementById(`trans-${targetLang}-pois-${key}-address`);
+                if (input) input.value = poi.address;
+            }
+            if (poi.phone) {
+                const input = document.getElementById(`trans-${targetLang}-pois-${key}-phone`);
+                if (input) input.value = poi.phone;
+            }
+            
+            // Import POI gallery image captions
+            if (poi.gallery && poi.gallery.images) {
+                for (const [imageKey, imageData] of Object.entries(poi.gallery.images)) {
+                    if (imageData.caption) {
+                        const input = document.getElementById(`trans-${targetLang}-pois-${key}-gallery-images-${imageKey}-caption`);
+                        if (input) input.value = imageData.caption;
+                    }
+                }
             }
         }
     }
@@ -2488,12 +2655,12 @@ function updateCorrectOption(radio) {
 function updateQuizOptions(input) {
     const questionItem = input.closest('.quiz-question-item');
     const container = questionItem.querySelector('.quiz-options-container');
-    const options = Array.from(container.querySelectorAll('input[type="text"]')).map(inp => inp.value);
+    const options = Array.from(container.querySelectorAll('input[type="text"]')).map(inp => inp.value).filter(val => val.trim() !== '');
     
-    // Update translatable options field for translations
+    // Update translatable options field for translations - store as JSON array for proper export
     const translatableOptions = questionItem.querySelector('.quiz-options-translatable');
     if (translatableOptions) {
-        translatableOptions.value = options.join(', ');
+        translatableOptions.value = JSON.stringify(options);
     }
     
     // Update structural data
@@ -2589,12 +2756,212 @@ function updateDragDropItems(input) {
     structuralData.value = JSON.stringify({ correctSequence: items }, null, 2);
 }
 
+// --- FORM VALIDATION ---
+function validateForm() {
+    const errors = [];
+    const warnings = [];
+    
+    // Validate required fields
+    const requiredFields = [
+        { id: 'id', name: 'Partner Zone ID' },
+        { id: 'en-name', name: 'Name (English)' },
+        { id: 'en-region', name: 'Region (English)' },
+        { id: 'center-lat', name: 'Center Latitude' },
+        { id: 'center-lon', name: 'Center Longitude' }
+    ];
+    
+    requiredFields.forEach(field => {
+        const element = document.getElementById(field.id);
+        if (!element || !element.value || element.value.trim() === '') {
+            errors.push(`${field.name} is required`);
+        }
+    });
+    
+    // Validate coordinates
+    const lat = parseFloat(document.getElementById('center-lat')?.value);
+    const lon = parseFloat(document.getElementById('center-lon')?.value);
+    if (isNaN(lat) || lat < -90 || lat > 90) {
+        errors.push('Center Latitude must be between -90 and 90');
+    }
+    if (isNaN(lon) || lon < -180 || lon > 180) {
+        errors.push('Center Longitude must be between -180 and 180');
+    }
+    
+    // Validate polygon points
+    const polygonPoints = document.querySelectorAll('.polygon-point');
+    if (polygonPoints.length < 3) {
+        warnings.push('At least 3 polygon points are recommended for proper area definition');
+    }
+    
+    // Validate waypoints
+    document.querySelectorAll('.waypoint-item').forEach((item, index) => {
+        const waypointKey = getValue('.waypoint-key', item);
+        const title = getValue('[data-translatable-key*="title"]', item);
+        const lat = getValue('[data-key="coord-lat"]', item);
+        const lon = getValue('[data-key="coord-lon"]', item);
+        
+        if (!title || title.trim() === '') {
+            warnings.push(`Waypoint ${index + 1} (${waypointKey}) is missing a title`);
+        }
+        
+        if (lat && lon) {
+            const latNum = parseFloat(lat);
+            const lonNum = parseFloat(lon);
+            if (isNaN(latNum) || latNum < -90 || latNum > 90) {
+                errors.push(`Waypoint ${index + 1} (${waypointKey}) has invalid latitude: ${lat}`);
+            }
+            if (isNaN(lonNum) || lonNum < -180 || lonNum > 180) {
+                errors.push(`Waypoint ${index + 1} (${waypointKey}) has invalid longitude: ${lon}`);
+            }
+        }
+    });
+    
+    // Validate ticket offers
+    document.querySelectorAll('.ticket-offer-item').forEach((item, index) => {
+        const offerKey = getValue('.offer-key', item);
+        const name = getValue(`[data-translatable-key*="name"]`, item);
+        const normalPrice = getValue('[data-key="normal-price"]', item);
+        const currency = getValue('[data-key="currency"]', item);
+        
+        if (!name || name.trim() === '') {
+            warnings.push(`Ticket Offer ${index + 1} (${offerKey}) is missing a name`);
+        }
+        
+        if (normalPrice && normalPrice.trim() !== '') {
+            const priceNum = parseFloat(normalPrice);
+            if (isNaN(priceNum) || priceNum < 0) {
+                errors.push(`Ticket Offer ${index + 1} (${offerKey}) has invalid normal price: ${normalPrice}`);
+            }
+        }
+        
+        if (normalPrice && normalPrice.trim() !== '' && (!currency || currency.trim() === '')) {
+            errors.push(`Ticket Offer ${index + 1} (${offerKey}) has a price but no currency specified`);
+        }
+    });
+    
+    return { errors, warnings };
+}
+
+function displayValidationResults(errors, warnings) {
+    // Remove existing validation messages
+    document.querySelectorAll('.validation-message').forEach(el => el.remove());
+    
+    if (errors.length > 0 || warnings.length > 0) {
+        const container = document.querySelector('.container');
+        const validationDiv = document.createElement('div');
+        validationDiv.className = 'validation-message';
+        validationDiv.style.cssText = `
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid;
+        `;
+        
+        let content = '';
+        
+        if (errors.length > 0) {
+            validationDiv.style.backgroundColor = '#f8d7da';
+            validationDiv.style.borderColor = '#dc3545';
+            validationDiv.style.color = '#721c24';
+            content += `<h4 style="margin-top: 0; color: #721c24;">❌ Validation Errors (${errors.length})</h4>`;
+            content += '<ul>' + errors.map(error => `<li>${error}</li>`).join('') + '</ul>';
+        }
+        
+        if (warnings.length > 0) {
+            if (errors.length === 0) {
+                validationDiv.style.backgroundColor = '#fff3cd';
+                validationDiv.style.borderColor = '#ffc107';
+                validationDiv.style.color = '#856404';
+            }
+            content += `<h4 style="color: #856404;">⚠️ Warnings (${warnings.length})</h4>`;
+            content += '<ul>' + warnings.map(warning => `<li>${warning}</li>`).join('') + '</ul>';
+        }
+        
+        validationDiv.innerHTML = content;
+        container.insertBefore(validationDiv, container.firstChild);
+        
+        // Scroll to top to show validation results
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        return errors.length === 0; // Only allow submission if no errors
+    }
+    
+    return true;
+}
+
+function showSuccessMessage(title, message) {
+    // Remove existing messages
+    document.querySelectorAll('.success-message').forEach(el => el.remove());
+    
+    const container = document.querySelector('.container');
+    const successDiv = document.createElement('div');
+    successDiv.className = 'success-message';
+    successDiv.style.cssText = `
+        margin: 20px 0;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 4px solid #28a745;
+        background-color: #d4edda;
+        color: #155724;
+    `;
+    
+    successDiv.innerHTML = `
+        <h4 style="margin-top: 0; color: #155724;">✅ ${title}</h4>
+        <p style="margin-bottom: 0;">${message}</p>
+    `;
+    
+    container.insertBefore(successDiv, container.firstChild);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => successDiv.remove(), 5000);
+}
+
+function showErrorMessage(title, message) {
+    // Remove existing messages
+    document.querySelectorAll('.error-message').forEach(el => el.remove());
+    
+    const container = document.querySelector('.container');
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.style.cssText = `
+        margin: 20px 0;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 4px solid #dc3545;
+        background-color: #f8d7da;
+        color: #721c24;
+    `;
+    
+    errorDiv.innerHTML = `
+        <h4 style="margin-top: 0; color: #721c24;">❌ ${title}</h4>
+        <p style="margin-bottom: 0;">${message}</p>
+    `;
+    
+    container.insertBefore(errorDiv, container.firstChild);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 // --- FORM SUBMISSION & JSON GENERATION ---
 document.getElementById('json-form').addEventListener('submit', function(e) {
     e.preventDefault();
     
+    // Validate form before processing
+    const validationResult = validateForm();
+    const canSubmit = displayValidationResults(validationResult.errors, validationResult.warnings);
+    
+    if (!canSubmit) {
+        console.log('❌ Form submission blocked due to validation errors');
+        return;
+    }
+    
     try {
         const result = { likes: [] };
+        
+        // Debug logging
+        console.log('🔄 Starting JSON generation...');
+        console.log('📊 Waypoint items found:', document.querySelectorAll('.waypoint-item').length);
+        console.log('🎫 Ticket offer items found:', document.querySelectorAll('.ticket-offer-item').length);
 
     // 1. Structural Data (ONLY root-level properties, exclude translatable content)
     
@@ -2647,17 +3014,21 @@ document.getElementById('json-form').addEventListener('submit', function(e) {
             result.tickets.ticketLink = ticketsLink;
         }
         
+        // Always create offers object to match template structure
+        result.tickets.offers = {};
         if (hasTicketOffers) {
-            result.tickets.offers = {};
             document.querySelectorAll('.ticket-offer-item').forEach(item => {
                 const key = getValue('.offer-key', item);
                 if (key) {
-                    result.tickets.offers[key] = {
+                    const offerData = {
                         normalPrice: getFloat('.offer-normalPrice', item),
                         discountedPrice: getFloat('.offer-discountedPrice', item),
                         currency: getValue('.offer-currency', item),
                         validityDays: parseInt(getValue('.offer-validityDays', item)) || null
                     };
+                    
+                    console.log(`🎫 Collecting ticket offer: ${key}`, offerData);
+                    result.tickets.offers[key] = offerData;
                 }
             });
         }
@@ -2692,26 +3063,31 @@ document.getElementById('json-form').addEventListener('submit', function(e) {
     document.querySelectorAll('.poi-item').forEach(item => { 
         const key = getValue('.item-key', item); 
         if(!key) return; 
-        try { 
-            const galleryImagesText = getValue('.item-gallery-images', item);
-            let galleryImages = {};
-            if (galleryImagesText && galleryImagesText.trim() !== '') {
-                galleryImages = JSON.parse(galleryImagesText);
-            }
+        
+        // Build gallery images from uploaded files
+        let galleryImages = {};
+        const poiImages = uploadedImages.poi?.filter(img => img.itemKey === key) || [];
+        
+        poiImages.forEach(img => {
+            const imageKey = sanitizeFileName(img.name).replace(/\.[^/.]+$/, ""); // Remove extension for key
+            const cleanFileName = sanitizeFileName(img.name);
             
-            result.pois[key] = { 
-                type: getValue('.item-type', item), 
-                coords: [getFloat('.item-coord-lat', item), getFloat('.item-coord-lon', item)], 
-                amenities: [...(item.querySelector('.item-amenities')?.options || [])].filter(o => o.selected).map(o => o.value), 
-                gallery: { 
-                    storagePrefix: getValue('.item-gallery-prefix', item), 
-                    images: galleryImages 
-                }
-            }; 
-        } catch(err) { 
-            console.error(`Error parsing POI gallery JSON for '${key}':`, err);
-            alert(`Error parsing POI gallery JSON for '${key}'. Please check format: ${err.message}`); 
-        } 
+            galleryImages[imageKey] = {
+                filename: cleanFileName,
+                type: imageKey.includes('main') || imageKey.includes('exterior') || imageKey.includes('hero') ? 'main' : 'secondary',
+                imageSource: img.imageSource || ''
+            };
+        });
+        
+        result.pois[key] = { 
+            type: getValue('.item-type', item), 
+            coords: [getFloat('.item-coord-lat', item), getFloat('.item-coord-lon', item)], 
+            amenities: [...(item.querySelector('.item-amenities')?.options || [])].filter(o => o.selected).map(o => o.value), 
+            gallery: { 
+                storagePrefix: getValue('.item-gallery-prefix', item), 
+                images: galleryImages 
+            }
+        }; 
     });
     document.querySelectorAll('.tour-item').forEach(item => { 
         const key = getValue('.item-key', item); 
@@ -2728,8 +3104,11 @@ document.getElementById('json-form').addEventListener('submit', function(e) {
                     type: getValue('.waypoint-type', waypointItem)
                 };
                 
+                console.log(`📍 Collecting waypoint: ${waypointKey}`, waypointData);
+                
                 // Add waypoint images if any were uploaded
                 const waypointImages = uploadedImages.waypoint?.filter(img => img.itemKey === waypointKey) || [];
+                waypointData.images = []; // Always initialize images array to ensure it exists
                 if (waypointImages.length > 0) {
                     const placeId = document.getElementById('id').value || 'partner-zone';
                     
@@ -2766,9 +3145,11 @@ document.getElementById('json-form').addEventListener('submit', function(e) {
             }
             
             // Build question data properly based on type
-            const questionData = { type: questionType };
+            // Fix: Ensure questionType is not empty - default to 'multiple_choice' if empty
+            const finalQuestionType = questionType && questionType.trim() !== '' ? questionType : 'multiple_choice';
+            const questionData = { type: finalQuestionType };
             
-            // Add structural data fields but validate them
+            // Fix: Add structural data fields with proper validation and defaults
             if (structural.image) {
                 questionData.image = structural.image;
             }
@@ -2778,20 +3159,25 @@ document.getElementById('json-form').addEventListener('submit', function(e) {
             if (structural.explanation) {
                 questionData.explanation = structural.explanation;
             }
+            
+            // Ensure options exist for multiple choice questions
             if (structural.options) {
                 questionData.options = structural.options;
+            } else if (finalQuestionType === 'multiple_choice' && (!structural.options || !Array.isArray(structural.options))) {
+                // Provide default options if none exist for multiple choice
+                questionData.options = ["Option A", "Option B", "Option C", "Option D"];
             }
             
             // Handle different answer formats based on question type
-            if (questionType === 'multiple_choice' || questionType === 'image_based') {
+            if (finalQuestionType === 'multiple_choice' || finalQuestionType === 'image_based') {
                 // correctOption should be an integer index
                 if (!isNaN(correctAnswer) && correctAnswer.trim() !== '') {
                     questionData.correctOption = parseInt(correctAnswer);
                 }
-            } else if (questionType === 'true_false') {
+            } else if (finalQuestionType === 'true_false') {
                 // correctAnswer should be a boolean
                 questionData.correctAnswer = correctAnswer === 'true';
-            } else if (questionType === 'image_sequence' || questionType === 'drag_drop') {
+            } else if (finalQuestionType === 'image_sequence' || finalQuestionType === 'drag_drop') {
                 // correctSequence should be an array - validate it's actually an array
                 try {
                     if (correctAnswer && correctAnswer.trim() !== '') {
@@ -2805,7 +3191,7 @@ document.getElementById('json-form').addEventListener('submit', function(e) {
                 } catch (e) {
                     console.warn(`Could not parse correctSequence for ${key}:`, correctAnswer);
                 }
-            } else if (questionType === 'fill_blank') {
+            } else if (finalQuestionType === 'fill_blank') {
                 // correctAnswers should be an array
                 try {
                     if (correctAnswer && correctAnswer.trim() !== '') {
@@ -2926,29 +3312,27 @@ document.getElementById('json-form').addEventListener('submit', function(e) {
                         title: getValue('[data-translatable-key="title"]', item),
                         description: getValue('[data-translatable-key="description"]', item),
                         openingHours: getValue('[data-translatable-key="openingHours"]', item),
-                        accessibility: getValue('[data-translatable-key="accessibility"]', item)
+                        accessibility: getValue('[data-translatable-key="accessibility"]', item),
+                        bestTimeToVisit: getValue('[data-translatable-key="bestTimeToVisit"]', item),
+                        address: getValue('[data-translatable-key="address"]', item),
+                        phone: getValue('[data-translatable-key="phone"]', item)
                     };
                     
-                    // Add gallery images translations if they exist
-                    const galleryImagesText = getValue('.item-gallery-images', item);
-                    if (galleryImagesText && galleryImagesText.trim() !== '') {
-                        try {
-                            const galleryImages = JSON.parse(galleryImagesText);
-                            if (galleryImages && typeof galleryImages === 'object') {
-                                poiData.gallery = {
-                                    images: {}
-                                };
-                                
-                                // Convert gallery images to caption structure
-                                Object.keys(galleryImages).forEach(imageId => {
-                                    poiData.gallery.images[imageId] = {
-                                        caption: getValue(`[data-translatable-key="gallery.images.${imageId}.caption"]`, item) || ''
-                                    };
-                                });
-                            }
-                        } catch (e) {
-                            console.warn(`Could not parse gallery images for POI ${key}`);
-                        }
+                    // Add gallery images translations to match template structure
+                    const poiImages = uploadedImages.poi?.filter(img => img.itemKey === key) || [];
+                    if (poiImages.length > 0) {
+                        poiData.gallery = {
+                            images: {}
+                        };
+                        
+                        // Get captions for each uploaded image
+                        poiImages.forEach(img => {
+                            const imageKey = sanitizeFileName(img.name).replace(/\.[^/.]+$/, "");
+                            const caption = getValue(`[data-translatable-key="gallery.images.${imageKey}.caption"]`, item);
+                            poiData.gallery.images[imageKey] = {
+                                caption: caption && caption.trim() !== '' ? caption : `${imageKey.replace(/-/g, ' ')} view`
+                            };
+                        });
                     }
                     
                     transObj.pois[key] = poiData;
@@ -2969,21 +3353,17 @@ document.getElementById('json-form').addEventListener('submit', function(e) {
                     item.querySelectorAll('.waypoint-item').forEach(waypointItem => {
                         const waypointKey = getValue('.waypoint-key', waypointItem);
                         if (waypointKey) {
+                            // Fix: Ensure waypoint titles and info have fallback values if empty
+                            const waypointTitle = getValue(`[data-translatable-key="waypoints.${waypointKey}.title"]`, waypointItem);
+                            const waypointInfo = getValue(`[data-translatable-key="waypoints.${waypointKey}.info"]`, waypointItem);
+                            
                             const waypointData = {
-                                title: getValue(`[data-translatable-key="waypoints.${waypointKey}.title"]`, waypointItem),
-                                info: getValue(`[data-translatable-key="waypoints.${waypointKey}.info"]`, waypointItem)
+                                title: waypointTitle,
+                                info: waypointInfo
                             };
                             
-                            // Add image captions if waypoint has images
-                            const waypointImages = uploadedImages.waypoint?.filter(img => img.itemKey === waypointKey) || [];
-                            if (waypointImages.length > 0) {
-                                waypointData.images = {};
-                                waypointImages.forEach((img, index) => {
-                                    waypointData.images[`image_${index}`] = {
-                                        caption: getValue(`[data-translatable-key="waypoints.${waypointKey}.images.image_${index}.caption"]`, waypointItem) || `Image ${index + 1} of ${waypointKey}`
-                                    };
-                                });
-                            }
+                                                    // Note: Waypoint images are simple arrays of URLs, no captions needed
+                        // This is different from POI gallery images which have complex caption structures
                             
                             tourData.waypoints[waypointKey] = waypointData;
                         }
@@ -3082,8 +3462,9 @@ document.getElementById('json-form').addEventListener('submit', function(e) {
                     }
                 }
                 
+                // Always create offers object to match template structure
+                transObj.tickets.offers = {};
                 if (hasTicketOffers) {
-                    transObj.tickets.offers = {};
                     document.querySelectorAll('.ticket-offer-item').forEach(item => {
                         const key = getValue('.offer-key', item);
                         if (key) {
@@ -3193,6 +3574,11 @@ document.getElementById('json-form').addEventListener('submit', function(e) {
         // Ensure tickets terms is an array if it exists (only if not already processed)
         if (transObj.tickets && transObj.tickets.terms && typeof transObj.tickets.terms === 'string') {
             transObj.tickets.terms = transObj.tickets.terms.split('\n').map(term => term.trim()).filter(term => term !== '');
+        }
+        
+        // Ensure tickets offers object always exists to match template structure
+        if (transObj.tickets && !transObj.tickets.offers) {
+            transObj.tickets.offers = {};
         }
         
         // Apply safe string validation instead of character-by-character fix
@@ -3387,20 +3773,8 @@ document.getElementById('json-form').addEventListener('submit', function(e) {
                     structureValidation.push(`Translation ${langCode} historicalInfo.text must be a string`);
                 }
                 
-                // Validate waypoint image captions structure
-                if (translation.tours) {
-                    Object.keys(translation.tours).forEach(tourKey => {
-                        const tour = translation.tours[tourKey];
-                        if (tour.waypoints) {
-                            Object.keys(tour.waypoints).forEach(waypointKey => {
-                                const waypoint = tour.waypoints[waypointKey];
-                                if (waypoint.images && typeof waypoint.images !== 'object') {
-                                    structureValidation.push(`Translation ${langCode} waypoint '${waypointKey}' images must be object with image caption structure`);
-                                }
-                            });
-                        }
-                    });
-                }
+                // Note: Waypoint images don't have translation captions (they're just arrays of URLs in structural data)
+                // Only POI gallery images have caption translations - no validation needed for waypoint images
             });
         }
         
@@ -3474,7 +3848,10 @@ document.getElementById('json-form').addEventListener('submit', function(e) {
             }
             alertMessage += '6. Contact support if issues continue';
             
-            alert(alertMessage);
+            showErrorMessage(
+                'JSON Validation Issues Detected',
+                alertMessage.replace(/\n/g, '<br>')
+            );
             
             // Still show the JSON for debugging, but with warnings
             let warningComment = '/*\n';
@@ -3491,13 +3868,26 @@ document.getElementById('json-form').addEventListener('submit', function(e) {
             // JSON looks good
             outputEl.value = jsonString;
             console.log('✅ JSON validation passed - structure and character validation successful');
+            
+            // Show success message
+            const waypointCount = document.querySelectorAll('.waypoint-item').length;
+            const offerCount = document.querySelectorAll('.ticket-offer-item').length;
+            const langCount = Object.keys(result.translations).length;
+            
+            showSuccessMessage(
+                'JSON Generated Successfully!',
+                `✅ Partner zone JSON generated with ${langCount} languages, ${waypointCount} waypoints, and ${offerCount} ticket offers. You can now copy the JSON from the output area below.`
+            );
         }
         
         outputEl.scrollIntoView({ behavior: 'smooth' });
         
     } catch (error) {
         console.error('Error generating JSON:', error);
-        alert(`Error generating JSON: ${error.message}\n\nPlease check your form data and try again. If the problem persists, try filling in required fields or contact support.`);
+        showErrorMessage(
+            'JSON Generation Failed',
+            `Error details: ${error.message}\n\nPlease check your form data and try again. If the problem persists, try filling in required fields or contact support.`
+        );
     }
 });
 
@@ -3512,6 +3902,9 @@ let uploadedImages = {
     quiz: [],
     waypoint: []  // Individual waypoint images
 };
+
+// Initialize global reference for save functionality
+window.uploadedImages = uploadedImages;
 
 function triggerFileUpload(inputId) {
     try {
@@ -3648,7 +4041,10 @@ function processImageFiles(files, category, container) {
         if (category === 'hero') {
             itemKey = 'hero';
         } else if (itemContainer) {
-            const keyInput = itemContainer.querySelector('.item-key');
+            // For waypoints, use waypoint-key, otherwise use item-key
+            const keyInput = category === 'waypoint' 
+                ? itemContainer.querySelector('.waypoint-key') 
+                : itemContainer.querySelector('.item-key');
             itemKey = keyInput ? keyInput.value : 'default';
         }
         
@@ -3660,6 +4056,9 @@ function processImageFiles(files, category, container) {
             size: file.size,
             type: file.type
         });
+        
+        // Sync to global scope so save function can access it
+        window.uploadedImages = uploadedImages;
     });
 }
 
@@ -3710,6 +4109,10 @@ function generateStorageRef(file, category, container) {
                 if (galleryPrefixField) {
                     galleryPrefixField.value = `partner-zones/${placeId}/pois/${poiKey}/`;
                 }
+                
+                // Create caption fields for POI images
+                const poiImages = uploadedImages.poi?.filter(img => img.itemKey === poiKey) || [];
+                createPOIGalleryCaptionFields(itemContainer, poiImages);
             }
             break;
             
@@ -3787,6 +4190,43 @@ function updateQuizImageData(questionContainer, imageType, storageRef) {
     }
 }
 
+// Handle POI gallery image caption fields creation
+function createPOIGalleryCaptionFields(poiContainer, uploadedFiles) {
+    const captionsContainer = poiContainer.querySelector('.poi-gallery-captions-container');
+    if (!captionsContainer) return;
+    
+    // Clear existing caption fields
+    captionsContainer.innerHTML = '';
+    
+    if (uploadedFiles.length === 0) {
+        captionsContainer.innerHTML = '<div class="field-hint">Upload images above to add captions</div>';
+        return;
+    }
+    
+    // Add header
+    const header = document.createElement('h5');
+    header.textContent = 'Image Captions (English)';
+    captionsContainer.appendChild(header);
+    
+    // Create caption field for each uploaded image
+    uploadedFiles.forEach(file => {
+        const imageKey = sanitizeFileName(file.name).replace(/\.[^/.]+$/, ""); // Remove extension for key
+        const fieldGroup = document.createElement('div');
+        fieldGroup.className = 'form-group';
+        
+        fieldGroup.innerHTML = `
+            <label>Caption for "${file.name}"</label>
+            <input type="text" 
+                   data-translatable-key="gallery.images.${imageKey}.caption" 
+                   placeholder="Enter caption for this image"
+                   class="poi-image-caption">
+            <div class="field-hint">Image Key: <code>${imageKey}</code></div>
+        `;
+        
+        captionsContainer.appendChild(fieldGroup);
+    });
+}
+
 // Sanitize filename for storage refs (remove special chars, spaces, etc.)
 function sanitizeFileName(filename) {
     // Get file extension
@@ -3822,6 +4262,9 @@ function showUploadSuccess(container, count, category) {
 function removeImage(button, category, filename) {
     // Remove from uploaded images
     uploadedImages[category] = uploadedImages[category].filter(img => img.name !== filename);
+    
+    // Sync to global scope so save function can access updated state
+    window.uploadedImages = uploadedImages;
     
     // Remove preview
     button.parentElement.remove();
@@ -4149,7 +4592,7 @@ function confirmMapSelection() {
 const AUTO_SAVE_KEY = 'partner-zone-creator-state';
 const AUTO_SAVE_INTERVAL = 5000; // Auto-save every 5 seconds
 
-function saveFormState() {
+async function saveFormState() {
     try {
         const formData = {
             // Basic info
@@ -4170,7 +4613,10 @@ function saveFormState() {
             
             // Style
             customStyleColor: getValue('#customStyle-color'),
-            customStyleIcon: getValue('#customStyle-icon'),
+            customStyleIcon: getValue('.customStyle-icon'),
+            heroImageStorageRef: getValue('#heroImage-storageRef'),
+            heroImagePriority: getValue('#heroImage-priority-group .item-priority'),
+            heroImageImageSource: getValue('#heroImage-imageSource'),
             
             // Basic English content
             enName: getValue('#en-name'),
@@ -4178,11 +4624,12 @@ function saveFormState() {
             enDescription: getValue('#en-description'),
             enHeroCaption: getValue('#en-hero-caption'),
             enHeroAlt: getValue('#en-hero-alt'),
-            heroImagePriority: getValue('#heroImage-priority'),
+            heroImagePriority: getValue('.heroImage-priority'),
             heroImageSource: getValue('#heroImage-imageSource'),
+            heroImageStorageRef: getValue('#heroImage-storageRef'),
             
             // Historical info
-            historicalInfoIcon: getValue('#historicalInfo-icon'),
+            historicalInfoIcon: getValue('.historicalInfo-icon'),
             historicalInfoText: getValue('[data-translatable-key="historicalInfo.text"]'),
             
             // Contact
@@ -4222,9 +4669,6 @@ function saveFormState() {
             // Dynamic items (stats, facts, news, etc.)
             dynamicItems: collectDynamicItems(),
             
-            // Uploaded images info
-            uploadedImages: window.uploadedImages || {},
-            
             // Timestamp
             savedAt: new Date().toISOString()
         };
@@ -4236,6 +4680,8 @@ function saveFormState() {
         showStatusMessage('❌ Save failed', 'error', 3000);
     }
 }
+
+
 
 function collectDynamicItems() {
     const items = {};
@@ -4292,7 +4738,7 @@ function collectDynamicItems() {
         type: getValue('.item-type', item),
         lat: getValue('.item-coord-lat', item),
         lon: getValue('.item-coord-lon', item),
-        amenities: getValue('.item-amenities', item),
+        amenities: Array.from(item.querySelector('.item-amenities').selectedOptions).map(opt => opt.value),
         title: getValue('[data-translatable-key="title"]', item),
         description: getValue('[data-translatable-key="description"]', item),
         openingHours: getValue('[data-translatable-key="openingHours"]', item),
@@ -4347,18 +4793,19 @@ function collectDynamicItems() {
 }
 
 function restoreFormState() {
+    // ... (at the beginning of your function)
+    const savedState = localStorage.getItem(AUTO_SAVE_KEY);
+    if (!savedState) return false;
+    const formData = JSON.parse(savedState);
+    // ... (confirmation prompt)
+
+    // Show restore confirmation
+    const timeSaved = new Date(formData.savedAt).toLocaleString();
+    if (!confirm(`Found saved form data from ${timeSaved}.\n\nRestore previous work?`)) {
+        return false;
+    }
+    
     try {
-        const savedState = localStorage.getItem(AUTO_SAVE_KEY);
-        if (!savedState) return false;
-        
-        const formData = JSON.parse(savedState);
-        
-        // Show restore confirmation
-        const timeSaved = new Date(formData.savedAt).toLocaleString();
-        if (!confirm(`Found saved form data from ${timeSaved}.\n\nRestore previous work?`)) {
-            return false;
-        }
-        
         // Restore basic fields
         setValue('#id', formData.id);
         setValue('#author', formData.author);
@@ -4386,7 +4833,10 @@ function restoreFormState() {
         
         // Restore style
         setValue('#customStyle-color', formData.customStyleColor);
-        setValue('#customStyle-icon', formData.customStyleIcon);
+        // Icon dropdown - restore with a small delay to ensure it's initialized
+        setTimeout(() => {
+            setValue('.customStyle-icon', formData.customStyleIcon);
+        }, 100);
         
         // Restore English content
         setValue('#en-name', formData.enName);
@@ -4394,11 +4844,18 @@ function restoreFormState() {
         setValue('#en-description', formData.enDescription);
         setValue('#en-hero-caption', formData.enHeroCaption);
         setValue('#en-hero-alt', formData.enHeroAlt);
-        setValue('#heroImage-priority', formData.heroImagePriority);
-        setValue('#heroImage-imageSource', formData.heroImageSource);
+        // Priority dropdown - restore with a small delay to ensure it's initialized
+        setTimeout(() => {
+            setValue('.heroImage-priority', formData.heroImagePriority);
+        }, 100);
+        setValue('#heroImage-imageSource', formData.heroImageImageSource);
+        setValue('#heroImage-storageRef', formData.heroImageStorageRef);
         
         // Restore historical info
-        setValue('#historicalInfo-icon', formData.historicalInfoIcon);
+        // Icon dropdown - restore with a small delay to ensure it's initialized
+        setTimeout(() => {
+            setValue('.historicalInfo-icon', formData.historicalInfoIcon);
+        }, 100);
         setValue('[data-translatable-key="historicalInfo.text"]', formData.historicalInfoText);
         
         // Restore contact
@@ -4437,12 +4894,7 @@ function restoreFormState() {
         
         // Restore dynamic items
         restoreDynamicItems(formData.dynamicItems);
-        
-        // Restore uploaded images
-        if (formData.uploadedImages) {
-            window.uploadedImages = formData.uploadedImages;
-        }
-        
+
         showStatusMessage('✅ Form restored successfully!', 'success', 4000);
         return true;
         
@@ -4529,7 +4981,14 @@ function restoreDynamicItems(items) {
         setValue('.item-type', poi.type, item);
         setValue('.item-coord-lat', poi.lat, item);
         setValue('.item-coord-lon', poi.lon, item);
-        setValue('.item-amenities', poi.amenities, item);
+        const amenitiesSelect = item.querySelector('.item-amenities');
+        if (amenitiesSelect && Array.isArray(poi.amenities)) {
+            Array.from(amenitiesSelect.options).forEach(option => {
+                if (poi.amenities.includes(option.value)) {
+                    option.selected = true;
+                }
+            });
+        }
         setValue('[data-translatable-key="title"]', poi.title, item);
         setValue('[data-translatable-key="description"]', poi.description, item);
         setValue('[data-translatable-key="openingHours"]', poi.openingHours, item);
@@ -4672,13 +5131,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 500);
     
     // Set up auto-save interval
-    setInterval(saveFormState, AUTO_SAVE_INTERVAL);
+    setInterval(() => saveFormState().catch(console.error), AUTO_SAVE_INTERVAL);
     
     // Add manual save/clear buttons to the top of the form
     const topControls = document.createElement('div');
     topControls.style.cssText = 'position: fixed; top: 10px; left: 10px; z-index: 1000; display: flex; gap: 8px; background: rgba(255,255,255,0.95); padding: 8px; border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);';
     topControls.innerHTML = `
-        <button type="button" onclick="saveFormState()" style="background: #28a745; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;">💾 Save</button>
+        <button type="button" onclick="saveFormState().catch(console.error)" style="background: #28a745; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;">💾 Save</button>
         <button type="button" onclick="restoreFormState()" style="background: #17a2b8; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;">📂 Restore</button>
         <button type="button" onclick="clearSavedState()" style="background: #dc3545; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;">🗑️ Clear</button>
     `;
@@ -4689,7 +5148,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target.matches('input, textarea, select')) {
             // Debounced auto-save on input
             clearTimeout(window.autoSaveTimeout);
-            window.autoSaveTimeout = setTimeout(saveFormState, 2000);
+            window.autoSaveTimeout = setTimeout(() => saveFormState().catch(console.error), 2000);
         }
     });
     

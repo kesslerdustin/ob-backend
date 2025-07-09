@@ -12,12 +12,12 @@
   ],
   "areaPolygon": [],
   "customStyle": {
-    "color": "#4a90e2",
-    "icon": ""
+    "color": "#6a8aaf",
+    "icon": "compass"
   },
   "heroImage": {
-    "storageRef": "partner-zones/pz-20250708-s47fdf/hero/pexels-lp-studio-90-312591590-13565551.jpg",
-    "priority": "low",
+    "storageRef": "partner-zones/pz-20250708-s47fdf/hero/whatsapp-image-2025-07-06-at-19-04-37.jpeg",
+    "priority": "high",
     "imageSource": ""
   },
   "contact": {
@@ -27,10 +27,10 @@
     "emergencyPhone": ""
   },
   "historicalInfo": {
-    "icon": "book",
+    "icon": "apps-outline",
     "images": {
       "burgers-yummy": {
-        "storageRef": "partner-zones/pz-20250708-s47fdf/history/whatsapp-image-2025-04-17-at-19-54-36.jpeg",
+        "storageRef": "partner-zones/pz-20250708-s47fdf/history/pexels-lp-studio-90-312591590-13565551.jpg",
         "imageSource": ""
       }
     }
@@ -52,10 +52,11 @@
       "a-or-b": {
         "type": "multiple_choice",
         "options": [
-          "A",
-          "B"
-        ],
-        "correctOption": 0
+          "Option A",
+          "Option B",
+          "Option C",
+          "Option D"
+        ]
       }
     }
   },
@@ -72,8 +73,8 @@
     "this-is-a-fact": {
       "icon": "chatbubbles",
       "image": {
-        "storageRef": "partner-zones/pz-20250708-s47fdf/facts/neues-projekt-33.png",
-        "imageSource": ""
+        "storageRef": "partner-zones/pz-20250708-s47fdf/facts/chatgpt-image-7-juli-2025-11-23-36.png",
+        "imageSource": "Dustin"
       }
     }
   },
@@ -84,7 +85,7 @@
       "icon": "chatbubbles",
       "category": "event",
       "image": {
-        "storageRef": "partner-zones/pz-20250708-s47fdf/news/screenshot-2025-06-18-135304.png",
+        "storageRef": "partner-zones/pz-20250708-s47fdf/news/main-image.png",
         "imageSource": ""
       }
     }
@@ -98,12 +99,17 @@
       ],
       "amenities": [
         "bakery",
-        "benches",
-        "communication"
+        "camping"
       ],
       "gallery": {
-        "storagePrefix": "partner-zones/pz-20250708-s47fdf/pois/poi-1/",
-        "images": {}
+        "storagePrefix": "partner-zones/pz-20250708-s47fdf/pois/this-is-the-hiesfeld-poi/",
+        "images": {
+          "page-4-1": {
+            "filename": "page-4-1.png",
+            "type": "secondary",
+            "imageSource": ""
+          }
+        }
       }
     }
   },
@@ -119,7 +125,10 @@
             6.781483
           ],
           "estimatedTime": 30,
-          "type": "viewpoint"
+          "type": "viewpoint",
+          "images": [
+            "partner-zones/pz-20250708-s47fdf/tour/waypoints/this-is-the-first-point/screenshot-2025-06-05-092351.png"
+          ]
         }
       }
     }
@@ -142,7 +151,7 @@
       "description": "Hiesfeld is a small neighbourhood in Dinslaken.",
       "heroImage": {
         "caption": "The Rotbach lake",
-        "alt": ""
+        "alt": "Cool huh?"
       },
       "stats": {
         "one-way-round-trip": {
@@ -190,7 +199,17 @@
           "title": "This is the Hiesfeld POI",
           "description": "theres noting to say",
           "openingHours": "always",
-          "accessibility": "yes"
+          "accessibility": "yes",
+          "bestTimeToVisit": "always",
+          "address": "",
+          "phone": "",
+          "gallery": {
+            "images": {
+              "page-4-1": {
+                "caption": "page 4 1 view"
+              }
+            }
+          }
         }
       },
       "tours": {
@@ -199,8 +218,8 @@
           "description": "Do it",
           "waypoints": {
             "this-is-the-first-point": {
-              "title": "",
-              "info": ""
+              "title": "This is the first point!",
+              "info": "and the last.."
             }
           }
         }
@@ -216,10 +235,7 @@
               "image": {
                 "caption": ""
               }
-            },
-            "options": [
-              "A, B"
-            ]
+            }
           }
         }
       },
@@ -241,24 +257,25 @@
       "region": "Germania, Renania Settentrionale-Vestfalia",
       "description": "Hiesfeld è un piccolo quartiere di Dinslaken.",
       "heroImage": {
-        "caption": "Il lago Rotbach"
+        "caption": "Il lago Rotbach",
+        "alt": "Forte, eh?"
       },
       "stats": {
         "one-way-round-trip": {
-          "label": "Andata e ritorno",
-          "description": "fallo.. una volta"
+          "label": "Viaggio di andata e ritorno",
+          "description": "fallo... una volta"
         }
       },
       "interestingFacts": {
         "this-is-a-fact": {
-          "text": "Questo è un fatto",
+          "text": "Questo è un dato di fatto",
           "image": {
             "caption": "Uno interessante"
           }
         }
       },
       "historicalInfo": {
-        "text": "Questa è una grande lezione di storia su Hiesfeld",
+        "text": "Questa è un'ottima lezione di storia su Hiesfeld",
         "images": {
           "burgers-yummy": {
             "caption": "Hamburger, che buoni",
@@ -275,7 +292,7 @@
           "summary": "riguardo alcune informazioni",
           "content": "senza contenuto",
           "image": {
-            "caption": "ecco una foto"
+            "caption": "ed ecco un'immagine"
           }
         }
       },
@@ -290,21 +307,24 @@
       },
       "tours": {
         "hiesfelder-tour": {
-          "name": "Tour di Hiesfeld",
-          "description": "Fallo"
+          "name": "Hiesfelder Tour",
+          "description": "Fallo",
+          "waypoints": {
+            "this-is-the-first-point": {
+              "title": "Questo è il primo punto!",
+              "info": "e l'ultimo..."
+            }
+          }
         }
       },
       "quiz": {
-        "title": "Quiz Facile",
+        "title": "Quiz facile",
         "description": "Dovresti farlo",
         "questions": {
           "a-or-b": {
             "question": "A o B",
-            "options": [
-              "A, B"
-            ],
             "explanation": {
-              "text": "A è sempre giusto"
+              "text": "A è sempre quella giusta"
             }
           }
         }
@@ -313,7 +333,13 @@
         "infoText": "Questa è un'offerta",
         "terms": [
           "si applicano i termini"
-        ]
+        ],
+        "offers": {
+          "best-offer": {
+            "name": "Migliore offerta",
+            "description": "gratis"
+          }
+        }
       }
     },
     "de": {
@@ -321,12 +347,13 @@
       "region": "Deutschland, Nordrhein-Westfalen",
       "description": "Hiesfeld ist ein kleiner Stadtteil von Dinslaken.",
       "heroImage": {
-        "caption": "Der Rotbachsee"
+        "caption": "Der Rotbachsee",
+        "alt": "Cool, oder?"
       },
       "stats": {
         "one-way-round-trip": {
           "label": "Hin- und Rückfahrt",
-          "description": "mach es.. einmal"
+          "description": "mach es... einmal"
         }
       },
       "interestingFacts": {
@@ -338,7 +365,7 @@
         }
       },
       "historicalInfo": {
-        "text": "Dies ist eine großartige Geschichtsstunde über Hiesfeld",
+        "text": "Das ist eine großartige Geschichtsstunde über Hiesfeld",
         "images": {
           "burgers-yummy": {
             "caption": "Burger, lecker",
@@ -361,7 +388,7 @@
       },
       "pois": {
         "this-is-the-hiesfeld-poi": {
-          "title": "Das ist der Hiesfeld POI",
+          "title": "Dies ist der Hiesfeld POI",
           "description": "es gibt nichts zu sagen",
           "openingHours": "immer",
           "accessibility": "ja",
@@ -371,7 +398,13 @@
       "tours": {
         "hiesfelder-tour": {
           "name": "Hiesfelder Tour",
-          "description": "Mach es"
+          "description": "Mach es",
+          "waypoints": {
+            "this-is-the-first-point": {
+              "title": "Das ist der erste Punkt!",
+              "info": "und der letzte..."
+            }
+          }
         }
       },
       "quiz": {
@@ -380,9 +413,6 @@
         "questions": {
           "a-or-b": {
             "question": "A oder B",
-            "options": [
-              "A, B"
-            ],
             "explanation": {
               "text": "A ist immer richtig"
             }
@@ -392,8 +422,14 @@
       "tickets": {
         "infoText": "Das ist ein Angebot",
         "terms": [
-          "es gelten die Bedingungen"
-        ]
+          "Bedingungen gelten"
+        ],
+        "offers": {
+          "best-offer": {
+            "name": "Bestes Angebot",
+            "description": "kostenlos"
+          }
+        }
       }
     },
     "es": {
@@ -401,12 +437,13 @@
       "region": "Alemania, Renania del Norte-Westfalia",
       "description": "Hiesfeld es un pequeño barrio de Dinslaken.",
       "heroImage": {
-        "caption": "El lago Rotbach"
+        "caption": "El lago Rotbach",
+        "alt": "¿Genial, eh?"
       },
       "stats": {
         "one-way-round-trip": {
           "label": "Viaje de ida y vuelta",
-          "description": "hazlo.. una vez"
+          "description": "hazlo... una vez"
         }
       },
       "interestingFacts": {
@@ -421,7 +458,7 @@
         "text": "Esta es una gran lección de historia sobre Hiesfeld",
         "images": {
           "burgers-yummy": {
-            "caption": "Hamburguesas, qué rico",
+            "caption": "Hamburguesas, qué ricas",
             "alt": "¿Qué más? "
           }
         }
@@ -450,21 +487,24 @@
       },
       "tours": {
         "hiesfelder-tour": {
-          "name": "Tour de Hiesfeld",
-          "description": "Hazlo"
+          "name": "Hiesfelder Tour",
+          "description": "Hazlo",
+          "waypoints": {
+            "this-is-the-first-point": {
+              "title": "¡Este es el primer punto!",
+              "info": "y el último..."
+            }
+          }
         }
       },
       "quiz": {
-        "title": "Cuestionario Fácil",
+        "title": "Cuestionario fácil",
         "description": "Deberías hacerlo",
         "questions": {
           "a-or-b": {
             "question": "A o B",
-            "options": [
-              "A, B"
-            ],
             "explanation": {
-              "text": "A siempre es correcto"
+              "text": "A siempre es la correcta"
             }
           }
         }
@@ -473,7 +513,13 @@
         "infoText": "Esta es una oferta",
         "terms": [
           "se aplican términos"
-        ]
+        ],
+        "offers": {
+          "best-offer": {
+            "name": "Mejor oferta",
+            "description": "gratis"
+          }
+        }
       }
     },
     "pt": {
@@ -481,17 +527,18 @@
       "region": "Alemanha, Renânia do Norte-Vestfália",
       "description": "Hiesfeld é um pequeno bairro em Dinslaken.",
       "heroImage": {
-        "caption": "O lago Rotbach"
+        "caption": "O lago Rotbach",
+        "alt": "Legal, né?"
       },
       "stats": {
         "one-way-round-trip": {
           "label": "Viagem de ida e volta",
-          "description": "faça-o.. uma vez"
+          "description": "faça... uma vez"
         }
       },
       "interestingFacts": {
         "this-is-a-fact": {
-          "text": "Isto é um facto",
+          "text": "Isto é um fato",
           "image": {
             "caption": "Um interessante"
           }
@@ -511,7 +558,7 @@
       },
       "news": {
         "this-is-some-news": {
-          "title": "Isto são notícias",
+          "title": "Isto são algumas notícias",
           "summary": "sobre algumas informações",
           "content": "sem conteúdo",
           "image": {
@@ -530,19 +577,22 @@
       },
       "tours": {
         "hiesfelder-tour": {
-          "name": "Tour de Hiesfeld",
-          "description": "Faça-o"
+          "name": "Hiesfelder Tour",
+          "description": "Faça",
+          "waypoints": {
+            "this-is-the-first-point": {
+              "title": "Este é o primeiro ponto!",
+              "info": "e o último..."
+            }
+          }
         }
       },
       "quiz": {
-        "title": "Quiz Fácil",
+        "title": "Quiz fácil",
         "description": "Você deveria fazer",
         "questions": {
           "a-or-b": {
             "question": "A ou B",
-            "options": [
-              "A, B"
-            ],
             "explanation": {
               "text": "A está sempre certo"
             }
@@ -553,7 +603,13 @@
         "infoText": "Esta é uma oferta",
         "terms": [
           "aplicam-se os termos"
-        ]
+        ],
+        "offers": {
+          "best-offer": {
+            "name": "Melhor oferta",
+            "description": "de graça"
+          }
+        }
       }
     },
     "ja": {
@@ -561,12 +617,13 @@
       "region": "ドイツ、ノルトライン＝ヴェストファーレン州",
       "description": "ヒースフェルトはディンスラーケンにある小さな地区です。",
       "heroImage": {
-        "caption": "ロートバッハ湖"
+        "caption": "ロートバッハ湖",
+        "alt": "かっこいいでしょう？"
       },
       "stats": {
         "one-way-round-trip": {
-          "label": "往復",
-          "description": "一度やってみて"
+          "label": "片道往復",
+          "description": "一度だけ…やってみて"
         }
       },
       "interestingFacts": {
@@ -593,7 +650,7 @@
         "this-is-some-news": {
           "title": "これはニュースです",
           "summary": "いくつかの情報について",
-          "content": "コンテンツなし",
+          "content": "内容なし",
           "image": {
             "caption": "そして、こちらが写真です"
           }
@@ -610,19 +667,22 @@
       },
       "tours": {
         "hiesfelder-tour": {
-          "name": "ヒースフェルダーツアー",
-          "description": "やってみよう"
+          "name": "Hiesfelder Tour",
+          "description": "やってみて",
+          "waypoints": {
+            "this-is-the-first-point": {
+              "title": "これが最初のポイントです！",
+              "info": "そして最後の…"
+            }
+          }
         }
       },
       "quiz": {
-        "title": "簡単クイズ",
-        "description": "ぜひやってみてください",
+        "title": "かんたんクイズ",
+        "description": "やるべきです",
         "questions": {
           "a-or-b": {
             "question": "AかBか",
-            "options": [
-              "A, B"
-            ],
             "explanation": {
               "text": "Aは常に正しい"
             }
@@ -633,7 +693,13 @@
         "infoText": "これはオファーです",
         "terms": [
           "利用規約が適用されます"
-        ]
+        ],
+        "offers": {
+          "best-offer": {
+            "name": "ベストオファー",
+            "description": "無料"
+          }
+        }
       }
     },
     "fr": {
@@ -641,28 +707,29 @@
       "region": "Allemagne, Rhénanie-du-Nord-Westphalie",
       "description": "Hiesfeld est un petit quartier de Dinslaken.",
       "heroImage": {
-        "caption": "Le lac Rotbach"
+        "caption": "Le lac Rotbach",
+        "alt": "Cool, hein ?"
       },
       "stats": {
         "one-way-round-trip": {
-          "label": "Aller-retour",
-          "description": "fais-le.. une fois"
+          "label": "Aller-retour simple",
+          "description": "faites-le... une fois"
         }
       },
       "interestingFacts": {
         "this-is-a-fact": {
-          "text": "Ceci est un fait",
+          "text": "C'est un fait",
           "image": {
             "caption": "Un fait intéressant"
           }
         }
       },
       "historicalInfo": {
-        "text": "Ceci est une excellente leçon d'histoire sur Hiesfeld",
+        "text": "C'est une excellente leçon d'histoire sur Hiesfeld",
         "images": {
           "burgers-yummy": {
             "caption": "Burgers, miam",
-            "alt": "Quoi d'autre ? "
+            "alt": "Quoi d'autre ? "
           }
         }
       },
@@ -681,7 +748,7 @@
       },
       "pois": {
         "this-is-the-hiesfeld-poi": {
-          "title": "Ceci est le PI de Hiesfeld",
+          "title": "Ceci est le POI de Hiesfeld",
           "description": "il n'y a rien à dire",
           "openingHours": "toujours",
           "accessibility": "oui",
@@ -690,21 +757,24 @@
       },
       "tours": {
         "hiesfelder-tour": {
-          "name": "Tour de Hiesfeld",
-          "description": "Faites-le"
+          "name": "Hiesfelder Tour",
+          "description": "Faites-le",
+          "waypoints": {
+            "this-is-the-first-point": {
+              "title": "C'est le premier point !",
+              "info": "et le dernier..."
+            }
+          }
         }
       },
       "quiz": {
-        "title": "Quiz Facile",
+        "title": "Quiz facile",
         "description": "Vous devriez le faire",
         "questions": {
           "a-or-b": {
             "question": "A ou B",
-            "options": [
-              "A, B"
-            ],
             "explanation": {
-              "text": "A est toujours juste"
+              "text": "A est toujours la bonne réponse"
             }
           }
         }
@@ -713,7 +783,13 @@
         "infoText": "Ceci est une offre",
         "terms": [
           "des conditions s'appliquent"
-        ]
+        ],
+        "offers": {
+          "best-offer": {
+            "name": "Meilleure offre",
+            "description": "gratuit"
+          }
+        }
       }
     }
   }
