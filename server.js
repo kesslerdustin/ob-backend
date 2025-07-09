@@ -1766,7 +1766,7 @@ try {
          'gaming', 'fortnite', 'minecraft', 'roblox', 'among us',
          'music video', 'song', 'lyrics', 'cover song', 'dance',
          'anime', 'manga', 'cartoon', 'kids', 'children',
-         'toy', 'toys', 'play', 'playground', 'wrestling', 'match', 'fight'
+         'toy', 'toys', 'play', 'playground', 'wrestling', 'match', 'fight', 'game highlight', 'game highlights', 'game review'
        ];
        
        // Check for Asian language indicators
