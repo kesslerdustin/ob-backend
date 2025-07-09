@@ -1,6 +1,6 @@
 {
   "likes": [],
-  "id": "pz-20250708-s47fdf2",
+  "id": "pz-20250708-s47fdf",
   "author": "Dustin",
   "priority": 1,
   "official": false,
@@ -30,7 +30,7 @@
     "icon": "apps-outline",
     "images": {
       "burgers-yummy": {
-        "storageRef": "partner-zones/pz-20250708-s47fdf/history/pexels-lp-studio-90-312591590-13565551.jpg",
+        "storageRef": "partner-zones/pz-20250708-s47fdf/history/main-image.png",
         "imageSource": ""
       }
     }
@@ -52,11 +52,10 @@
       "a-or-b": {
         "type": "multiple_choice",
         "options": [
-          "Option A",
-          "Option B",
-          "Option C",
-          "Option D"
-        ]
+          "A",
+          "B"
+        ],
+        "correctOption": 0
       }
     }
   },
@@ -73,7 +72,7 @@
     "this-is-a-fact": {
       "icon": "chatbubbles",
       "image": {
-        "storageRef": "partner-zones/pz-20250708-s47fdf/facts/chatgpt-image-7-juli-2025-11-23-36.png",
+        "storageRef": "partner-zones/pz-20250708-s47fdf/facts/page-4-1.png",
         "imageSource": "Dustin"
       }
     }
@@ -85,7 +84,7 @@
       "icon": "chatbubbles",
       "category": "event",
       "image": {
-        "storageRef": "partner-zones/pz-20250708-s47fdf/news/main-image.png",
+        "storageRef": "partner-zones/pz-20250708-s47fdf/news/winter-closure-2024.jpeg",
         "imageSource": ""
       }
     }
@@ -104,8 +103,8 @@
       "gallery": {
         "storagePrefix": "partner-zones/pz-20250708-s47fdf/pois/this-is-the-hiesfeld-poi/",
         "images": {
-          "page-4-1": {
-            "filename": "page-4-1.png",
+          "img-3599": {
+            "filename": "img-3599.PNG",
             "type": "secondary",
             "imageSource": ""
           }
@@ -127,7 +126,7 @@
           "estimatedTime": 30,
           "type": "viewpoint",
           "images": [
-            "partner-zones/pz-20250708-s47fdf/tour/waypoints/this-is-the-first-point/screenshot-2025-06-05-092351.png"
+            "partner-zones/pz-20250708-s47fdf/tour/waypoints/this-is-the-first-point/whatsapp-image-2025-04-17-at-19-54-36-1.jpeg"
           ]
         }
       }
@@ -205,8 +204,8 @@
           "phone": "",
           "gallery": {
             "images": {
-              "page-4-1": {
-                "caption": "page 4 1 view"
+              "img-3599": {
+                "caption": "whats this"
               }
             }
           }
@@ -235,7 +234,11 @@
               "image": {
                 "caption": ""
               }
-            }
+            },
+            "options": [
+              "A",
+              "B"
+            ]
           }
         }
       },
@@ -302,7 +305,14 @@
           "description": "non c'è niente da dire",
           "openingHours": "sempre",
           "accessibility": "sì",
-          "bestTimeToVisit": "sempre"
+          "bestTimeToVisit": "sempre",
+          "gallery": {
+            "images": {
+              "img-3599": {
+                "caption": "cos'è questo"
+              }
+            }
+          }
         }
       },
       "tours": {
@@ -323,6 +333,10 @@
         "questions": {
           "a-or-b": {
             "question": "A o B",
+            "options": [
+              "A",
+              "B"
+            ],
             "explanation": {
               "text": "A è sempre quella giusta"
             }
@@ -392,7 +406,14 @@
           "description": "es gibt nichts zu sagen",
           "openingHours": "immer",
           "accessibility": "ja",
-          "bestTimeToVisit": "immer"
+          "bestTimeToVisit": "immer",
+          "gallery": {
+            "images": {
+              "img-3599": {
+                "caption": "Was ist das"
+              }
+            }
+          }
         }
       },
       "tours": {
@@ -413,6 +434,10 @@
         "questions": {
           "a-or-b": {
             "question": "A oder B",
+            "options": [
+              "A",
+              "B"
+            ],
             "explanation": {
               "text": "A ist immer richtig"
             }
@@ -482,7 +507,14 @@
           "description": "no hay nada que decir",
           "openingHours": "siempre",
           "accessibility": "sí",
-          "bestTimeToVisit": "siempre"
+          "bestTimeToVisit": "siempre",
+          "gallery": {
+            "images": {
+              "img-3599": {
+                "caption": "¿qué es esto?"
+              }
+            }
+          }
         }
       },
       "tours": {
@@ -503,6 +535,10 @@
         "questions": {
           "a-or-b": {
             "question": "A o B",
+            "options": [
+              "A",
+              "B"
+            ],
             "explanation": {
               "text": "A siempre es la correcta"
             }
@@ -572,7 +608,14 @@
           "description": "não há nada a dizer",
           "openingHours": "sempre",
           "accessibility": "sim",
-          "bestTimeToVisit": "sempre"
+          "bestTimeToVisit": "sempre",
+          "gallery": {
+            "images": {
+              "img-3599": {
+                "caption": "o que é isto"
+              }
+            }
+          }
         }
       },
       "tours": {
@@ -593,6 +636,10 @@
         "questions": {
           "a-or-b": {
             "question": "A ou B",
+            "options": [
+              "A",
+              "B"
+            ],
             "explanation": {
               "text": "A está sempre certo"
             }
@@ -662,7 +709,14 @@
           "description": "特筆すべきことはありません",
           "openingHours": "常時",
           "accessibility": "はい",
-          "bestTimeToVisit": "常時"
+          "bestTimeToVisit": "常時",
+          "gallery": {
+            "images": {
+              "img-3599": {
+                "caption": "これは何"
+              }
+            }
+          }
         }
       },
       "tours": {
@@ -683,6 +737,10 @@
         "questions": {
           "a-or-b": {
             "question": "AかBか",
+            "options": [
+              "A",
+              "B"
+            ],
             "explanation": {
               "text": "Aは常に正しい"
             }
@@ -752,7 +810,14 @@
           "description": "il n'y a rien à dire",
           "openingHours": "toujours",
           "accessibility": "oui",
-          "bestTimeToVisit": "toujours"
+          "bestTimeToVisit": "toujours",
+          "gallery": {
+            "images": {
+              "img-3599": {
+                "caption": "qu'est-ce que c'est"
+              }
+            }
+          }
         }
       },
       "tours": {
@@ -773,6 +838,10 @@
         "questions": {
           "a-or-b": {
             "question": "A ou B",
+            "options": [
+              "A",
+              "B"
+            ],
             "explanation": {
               "text": "A est toujours la bonne réponse"
             }
