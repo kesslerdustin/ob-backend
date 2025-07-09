@@ -1559,11 +1559,32 @@ function prepareTranslations() {
                 // Handle quiz questions
                 for (const questionKey in sourceData.quiz.questions) {
                     const question = sourceData.quiz.questions[questionKey];
-                    langHtml += `<h4>Quiz Question: ${questionKey}</h4>`;
+                    const questionType = question.type || 'multiple_choice';
+                    
+                    langHtml += `<h4>Quiz Question: ${questionKey} (${questionType})</h4>`;
                     langHtml += createTranslationInput(lang, `quiz.questions.${questionKey}.question`, 'Question', question.question, 'textarea');
-                    if (question.options && Array.isArray(question.options)) {
+                    
+                    // Only show options for question types that use them
+                    if ((questionType === 'multiple_choice' || questionType === 'image_based') && question.options && Array.isArray(question.options)) {
                         langHtml += createTranslationInput(lang, `quiz.questions.${questionKey}.options`, 'Options (one per line)', question.options.join('\n'), 'textarea');
                     }
+                    
+                    // Handle image captions for image_sequence questions
+                    if (questionType === 'image_sequence' && question.images) {
+                        for (const imageKey in question.images) {
+                            const imageData = question.images[imageKey];
+                            if (imageData.caption) {
+                                langHtml += createTranslationInput(lang, `quiz.questions.${questionKey}.images.${imageKey}.caption`, `Image Caption (${imageKey})`, imageData.caption);
+                            }
+                        }
+                    }
+                    
+                    // Handle image caption for image_based questions
+                    if (questionType === 'image_based' && question.image && question.image.caption) {
+                        langHtml += createTranslationInput(lang, `quiz.questions.${questionKey}.image.caption`, 'Question Image Caption', question.image.caption);
+                    }
+                    
+                    // Handle explanation
                     if (question.explanation && question.explanation.text) {
                         langHtml += createTranslationInput(lang, `quiz.questions.${questionKey}.explanation.text`, 'Explanation', question.explanation.text, 'textarea');
                     }
@@ -1851,7 +1872,11 @@ function collectSourceData() {
     document.querySelectorAll('.quiz-question-item').forEach(item => { 
         const key = getValue('.item-key', item); 
         if(key) {
+            const questionType = getValue('.quiz-type-selector', item);
+            
+            // Base question data
             const questionData = { 
+                type: questionType,
                 question: getValue('[data-translatable-key="question"]', item),
                 explanation: {
                     text: getValue('[data-translatable-key="explanation.text"]', item)
@@ -1864,21 +1889,94 @@ function collectSourceData() {
                 questionData.explanation.image = { caption: explanationImageCaption };
             }
             
-            // Only add options if they exist (for multiple choice and image based questions)
-            const options = getValue('[data-translatable-key="options"]', item);
-            if (options && options.trim() !== '') {
-                try {
-                    // Parse as JSON array first, if that fails, split by newlines
-                    if (options.startsWith('[') && options.endsWith(']')) {
-                        questionData.options = JSON.parse(options);
-                    } else {
-                        // Split by newlines and filter out empty lines
-                        questionData.options = options.split('\n').map(opt => opt.trim()).filter(opt => opt !== '');
+            // Add type-specific structural data
+            switch (questionType) {
+                case 'multiple_choice':
+                case 'image_based':
+                    // Get options from the hidden translatable field
+                    const options = getValue('[data-translatable-key="options"]', item);
+                    if (options && options.trim() !== '') {
+                        try {
+                            // Parse as JSON array first, if that fails, split by newlines
+                            if (options.startsWith('[') && options.endsWith(']')) {
+                                questionData.options = JSON.parse(options);
+                            } else {
+                                // Split by newlines and filter out empty lines
+                                questionData.options = options.split('\n').map(opt => opt.trim()).filter(opt => opt !== '');
+                            }
+                        } catch (e) {
+                            // Fallback: split by newlines
+                            questionData.options = options.split('\n').map(opt => opt.trim()).filter(opt => opt !== '');
+                        }
                     }
-                } catch (e) {
-                    // Fallback: split by newlines
-                    questionData.options = options.split('\n').map(opt => opt.trim()).filter(opt => opt !== '');
-                }
+                    
+                    // Get correct option index
+                    const correctOption = getValue('.item-correctOption', item);
+                    if (correctOption && correctOption.trim() !== '') {
+                        questionData.correctOption = parseInt(correctOption);
+                    }
+                    
+                    // For image_based, add image data
+                    if (questionType === 'image_based') {
+                        const structuralData = getValue('.item-structural-data', item);
+                        if (structuralData && structuralData.trim() !== '') {
+                            try {
+                                const parsed = JSON.parse(structuralData);
+                                if (parsed.image) {
+                                    questionData.image = parsed.image;
+                                }
+                            } catch (e) {
+                                console.warn('Could not parse image_based structural data:', e);
+                            }
+                        }
+                    }
+                    break;
+                    
+                case 'true_false':
+                    const correctAnswer = getValue('.item-correctOption', item);
+                    if (correctAnswer && correctAnswer.trim() !== '') {
+                        questionData.correctAnswer = correctAnswer === 'true';
+                    }
+                    break;
+                    
+                case 'image_sequence':
+                case 'drag_drop':
+                    const correctSequence = getValue('.item-correctOption', item);
+                    if (correctSequence && correctSequence.trim() !== '') {
+                        try {
+                            questionData.correctSequence = JSON.parse(correctSequence);
+                        } catch (e) {
+                            console.warn('Could not parse correctSequence:', e);
+                        }
+                    }
+                    
+                    // Add images data for image_sequence
+                    if (questionType === 'image_sequence') {
+                        const structuralData = getValue('.item-structural-data', item);
+                        if (structuralData && structuralData.trim() !== '') {
+                            try {
+                                const parsed = JSON.parse(structuralData);
+                                if (parsed.images) {
+                                    questionData.images = parsed.images;
+                                }
+                            } catch (e) {
+                                console.warn('Could not parse image_sequence structural data:', e);
+                            }
+                        }
+                    }
+                    break;
+                    
+                case 'fill_blank':
+                    const correctAnswers = getValue('.item-correctOption', item);
+                    if (correctAnswers && correctAnswers.trim() !== '') {
+                        try {
+                            questionData.correctAnswers = JSON.parse(correctAnswers);
+                        } catch (e) {
+                            // Fallback: split by comma
+                            questionData.correctAnswers = correctAnswers.split(',').map(ans => ans.trim());
+                        }
+                    }
+                    break;
             }
             
             data.quiz.questions[key] = questionData;
@@ -2332,37 +2430,64 @@ function importTranslatedContent(content, targetLang) {
         }
     }
     
-    // Import quiz
-    if (content.quiz) {
-        if (content.quiz.title) {
-            const input = document.getElementById(`trans-${targetLang}-quiz-title`);
-            if (input) input.value = content.quiz.title;
-        }
-        if (content.quiz.description) {
-            const input = document.getElementById(`trans-${targetLang}-quiz-description`);
-            if (input) input.value = content.quiz.description;
-        }
-        if (content.quiz.questions) {
-            for (const [key, question] of Object.entries(content.quiz.questions)) {
-                if (question.question) {
-                    const input = document.getElementById(`trans-${targetLang}-quiz-questions-${key}-question`);
-                    if (input) input.value = question.question;
-                }
-                if (question.options) {
-                    const input = document.getElementById(`trans-${targetLang}-quiz-questions-${key}-options`);
-                    if (input) input.value = question.options;
-                }
-                if (question.explanation && question.explanation.text) {
-                    const input = document.getElementById(`trans-${targetLang}-quiz-questions-${key}-explanation-text`);
-                    if (input) input.value = question.explanation.text;
-                }
-                if (question.explanation && question.explanation.image && question.explanation.image.caption) {
-                    const input = document.getElementById(`trans-${targetLang}-quiz-questions-${key}-explanation-image-caption`);
-                    if (input) input.value = question.explanation.image.caption;
+            // Import quiz
+        if (content.quiz) {
+            if (content.quiz.title) {
+                const input = document.getElementById(`trans-${targetLang}-quiz-title`);
+                if (input) input.value = content.quiz.title;
+            }
+            if (content.quiz.description) {
+                const input = document.getElementById(`trans-${targetLang}-quiz-description`);
+                if (input) input.value = content.quiz.description;
+            }
+            if (content.quiz.questions) {
+                for (const [key, question] of Object.entries(content.quiz.questions)) {
+                    if (question.question) {
+                        const input = document.getElementById(`trans-${targetLang}-quiz-questions-${key}-question`);
+                        if (input) input.value = question.question;
+                    }
+                    
+                    // Handle options for multiple_choice and image_based questions
+                    if (question.options) {
+                        const input = document.getElementById(`trans-${targetLang}-quiz-questions-${key}-options`);
+                        if (input) {
+                            // Handle both array and string formats
+                            if (Array.isArray(question.options)) {
+                                input.value = question.options.join('\n');
+                            } else {
+                                input.value = question.options;
+                            }
+                        }
+                    }
+                    
+                    // Handle image captions for image_sequence questions
+                    if (question.images) {
+                        for (const [imageKey, imageData] of Object.entries(question.images)) {
+                            if (imageData.caption) {
+                                const input = document.getElementById(`trans-${targetLang}-quiz-questions-${key}-images-${imageKey}-caption`);
+                                if (input) input.value = imageData.caption;
+                            }
+                        }
+                    }
+                    
+                    // Handle image caption for image_based questions
+                    if (question.image && question.image.caption) {
+                        const input = document.getElementById(`trans-${targetLang}-quiz-questions-${key}-image-caption`);
+                        if (input) input.value = question.image.caption;
+                    }
+                    
+                    // Handle explanation
+                    if (question.explanation && question.explanation.text) {
+                        const input = document.getElementById(`trans-${targetLang}-quiz-questions-${key}-explanation-text`);
+                        if (input) input.value = question.explanation.text;
+                    }
+                    if (question.explanation && question.explanation.image && question.explanation.image.caption) {
+                        const input = document.getElementById(`trans-${targetLang}-quiz-questions-${key}-explanation-image-caption`);
+                        if (input) input.value = question.explanation.image.caption;
+                    }
                 }
             }
         }
-    }
     
     // Import contact
     if (content.contact) {
@@ -2604,6 +2729,197 @@ function addQuizEventListeners(questionItem, questionType) {
             addDragDropItem(addButton);
             addDragDropItem(addButton);
         }
+    }
+}
+
+// Quiz option management functions
+function addQuizOption(button) {
+    const container = button.parentElement.querySelector('.quiz-options-container');
+    const questionItem = button.closest('.quiz-question-item');
+    const questionKey = questionItem.querySelector('.item-key').value || 'question';
+    const optionDiv = document.createElement('div');
+    optionDiv.className = 'quiz-option-item';
+    
+    optionDiv.innerHTML = `
+        <input type="radio" name="correct-option-${questionKey}" onchange="updateCorrectOption(this)">
+        <input type="text" placeholder="Option text" oninput="updateQuizOptions(this)">
+        <button type="button" class="btn-remove" onclick="removeQuizOption(this)">Remove</button>
+    `;
+    
+    container.appendChild(optionDiv);
+    updateQuizOptions(optionDiv.querySelector('input[type="text"]'));
+}
+
+function removeQuizOption(button) {
+    const optionDiv = button.parentElement;
+    const container = optionDiv.parentElement;
+    optionDiv.remove();
+    
+    // Update all options after removal
+    const firstTextInput = container.querySelector('input[type="text"]');
+    if (firstTextInput) {
+        updateQuizOptions(firstTextInput);
+    }
+}
+
+function updateQuizOptions(textInput) {
+    const questionItem = textInput.closest('.quiz-question-item');
+    const container = textInput.closest('.quiz-options-container');
+    const options = [];
+    
+    container.querySelectorAll('input[type="text"]').forEach(input => {
+        if (input.value.trim() !== '') {
+            options.push(input.value.trim());
+        }
+    });
+    
+    // Update the hidden translatable field
+    const translatableInput = questionItem.querySelector('.quiz-options-translatable');
+    if (translatableInput) {
+        translatableInput.value = JSON.stringify(options);
+    }
+    
+    // Update structural data field
+    const structuralData = questionItem.querySelector('.item-structural-data');
+    if (structuralData) {
+        structuralData.value = JSON.stringify({ options: options });
+    }
+}
+
+function updateCorrectOption(radioInput) {
+    const questionItem = radioInput.closest('.quiz-question-item');
+    const container = radioInput.closest('.quiz-options-container');
+    const correctOptionField = questionItem.querySelector('.item-correctOption');
+    
+    // Find which option is selected
+    const allRadios = container.querySelectorAll('input[type="radio"]');
+    let selectedIndex = -1;
+    
+    allRadios.forEach((radio, index) => {
+        if (radio.checked) {
+            selectedIndex = index;
+        }
+    });
+    
+    if (correctOptionField && selectedIndex >= 0) {
+        correctOptionField.value = selectedIndex.toString();
+    }
+}
+
+function updateTrueFalseAnswer(radioInput) {
+    const questionItem = radioInput.closest('.quiz-question-item');
+    const correctOptionField = questionItem.querySelector('.item-correctOption');
+    
+    if (correctOptionField) {
+        correctOptionField.value = radioInput.value;
+    }
+}
+
+function addFillBlankAnswer(button) {
+    const container = button.parentElement.querySelector('.quiz-fill-answers-container');
+    const answerDiv = document.createElement('div');
+    answerDiv.className = 'quiz-answer-item';
+    
+    answerDiv.innerHTML = `
+        <input type="text" placeholder="Acceptable answer" oninput="updateFillBlankAnswers(this)">
+        <button type="button" class="btn-remove" onclick="removeFillBlankAnswer(this)">Remove</button>
+    `;
+    
+    container.appendChild(answerDiv);
+}
+
+function removeFillBlankAnswer(button) {
+    const answerDiv = button.parentElement;
+    const container = answerDiv.parentElement;
+    answerDiv.remove();
+    
+    // Update answers after removal
+    const firstInput = container.querySelector('input[type="text"]');
+    if (firstInput) {
+        updateFillBlankAnswers(firstInput);
+    }
+}
+
+function updateFillBlankAnswers(textInput) {
+    const questionItem = textInput.closest('.quiz-question-item');
+    const container = textInput.closest('.quiz-fill-answers-container');
+    const answers = [];
+    
+    container.querySelectorAll('input[type="text"]').forEach(input => {
+        if (input.value.trim() !== '') {
+            answers.push(input.value.trim());
+        }
+    });
+    
+    // Update correct option field
+    const correctOptionField = questionItem.querySelector('.item-correctOption');
+    if (correctOptionField) {
+        correctOptionField.value = JSON.stringify(answers);
+    }
+    
+    // Update structural data
+    const structuralData = questionItem.querySelector('.item-structural-data');
+    if (structuralData) {
+        structuralData.value = JSON.stringify({ correctAnswers: answers });
+    }
+}
+
+function addDragDropItem(button) {
+    const container = button.parentElement.querySelector('.quiz-items-container');
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'quiz-sequence-item';
+    
+    itemDiv.innerHTML = `
+        <div class="sequence-order">${container.children.length + 1}</div>
+        <input type="text" placeholder="Item text" oninput="updateDragDropItems(this)">
+        <button type="button" class="btn-remove" onclick="removeDragDropItem(this)">Remove</button>
+    `;
+    
+    container.appendChild(itemDiv);
+    updateDragDropItems(itemDiv.querySelector('input[type="text"]'));
+}
+
+function removeDragDropItem(button) {
+    const itemDiv = button.parentElement;
+    const container = itemDiv.parentElement;
+    itemDiv.remove();
+    
+    // Reorder sequence numbers
+    container.querySelectorAll('.sequence-order').forEach((orderDiv, index) => {
+        orderDiv.textContent = index + 1;
+    });
+    
+    // Update items after removal
+    const firstInput = container.querySelector('input[type="text"]');
+    if (firstInput) {
+        updateDragDropItems(firstInput);
+    }
+}
+
+function updateDragDropItems(textInput) {
+    const questionItem = textInput.closest('.quiz-question-item');
+    const container = textInput.closest('.quiz-items-container');
+    const items = [];
+    const sequence = [];
+    
+    container.querySelectorAll('input[type="text"]').forEach((input, index) => {
+        if (input.value.trim() !== '') {
+            const itemKey = `item${index + 1}`;
+            items.push({ key: itemKey, text: input.value.trim() });
+            sequence.push(itemKey);
+        }
+    });
+    
+    // Update correct option field with sequence
+    const correctOptionField = questionItem.querySelector('.item-correctOption');
+    if (correctOptionField) {
+        correctOptionField.value = JSON.stringify(sequence);
+    }
+    
+    // Update structural data
+    const structuralData = questionItem.querySelector('.item-structural-data');
+    if (structuralData) {
+        structuralData.value = JSON.stringify({ items: items, correctSequence: sequence });
     }
 }
 

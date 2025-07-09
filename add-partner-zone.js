@@ -485,8 +485,36 @@ async function processImages(obj, imagesDir, uploadedFiles = new Set()) {
   // Recursively process nested objects and arrays
   for (const key in obj) {
     if (Array.isArray(obj[key])) {
-      for (const item of obj[key]) {
-        await processImages(item, imagesDir, uploadedFiles);
+      // Special handling for tour waypoint images which are arrays of strings
+      if (key === 'images' && obj[key].every(item => typeof item === 'string')) {
+        console.log(`🚶 Processing ${obj[key].length} tour waypoint images...`);
+        
+        // Create a new array to store both original paths and public URLs
+        const processedImages = [];
+        
+        for (const imagePath of obj[key]) {
+          const localPath = path.join(imagesDir, imagePath);
+          if (fs.existsSync(localPath)) {
+            const publicUrl = await uploadImage(localPath, imagePath, uploadedFiles);
+            // Store both the original path and public URL for compatibility
+            processedImages.push({
+              storageRef: imagePath,
+              publicUrl: publicUrl
+            });
+          } else {
+            console.warn(`⚠️ Tour waypoint image not found: ${localPath}`);
+            // Keep original string format if file not found
+            processedImages.push(imagePath);
+          }
+        }
+        
+        // Replace the array with processed images
+        obj[key] = processedImages;
+      } else {
+        // Regular array processing for non-image arrays
+        for (const item of obj[key]) {
+          await processImages(item, imagesDir, uploadedFiles);
+        }
       }
     } else if (typeof obj[key] === 'object') {
       await processImages(obj[key], imagesDir, uploadedFiles);
