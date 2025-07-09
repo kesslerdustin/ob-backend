@@ -2220,6 +2220,15 @@ function importAllLanguagesJSON() {
             return;
         }
         
+        // CRITICAL FIX: Ensure all translatable keys are updated before importing translations
+        // This fixes the issue where ticket offer names/descriptions end up empty in English
+        document.querySelectorAll('.ticket-offer-item').forEach(item => {
+            updateOfferTranslatableKeys(item);
+        });
+        document.querySelectorAll('.waypoint-item').forEach(item => {
+            updateWaypointTranslatableKeys(item);
+        });
+        
         // Import all found languages
         let totalImported = 0;
         const importResults = [];

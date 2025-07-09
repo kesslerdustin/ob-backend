@@ -1766,7 +1766,10 @@ try {
          'gaming', 'fortnite', 'minecraft', 'roblox', 'among us',
          'music video', 'song', 'lyrics', 'cover song', 'dance',
          'anime', 'manga', 'cartoon', 'kids', 'children',
-         'toy', 'toys', 'play', 'playground', 'wrestling', 'match', 'fight', 'game highlight', 'game highlights', 'game review'
+         'toy', 'toys', 'play', 'playground', 'wrestling', 'match', 'fight', 
+         'game highlight', 'game highlights', 'game review', 'full game highlights',
+         'baseball', 'football', 'basketball', 'soccer', 'hockey', 'sports highlights',
+         'nfl', 'nba', 'mlb', 'premier league', 'champions league'
        ];
        
        // Check for Asian language indicators
@@ -1893,6 +1896,29 @@ try {
                 
                 // Apply enhanced content filtering
                 const filteredVideos = filterContent(videos);
+                
+                // Debug: Log filtered videos for 7 vs wild category
+                if (categoryKey === 'seven_vs_wild') {
+                  const removedVideos = videos.filter(v => !filteredVideos.some(fv => fv.id === v.id));
+                  if (removedVideos.length > 0) {
+                    console.log(`🚫 Filtered out ${removedVideos.length} videos from 7 vs wild:`, 
+                      removedVideos.map(v => v.title.substring(0, 50) + '...'));
+                  }
+                  
+                  // Check specifically for game highlights
+                  const gameHighlightVideos = videos.filter(v => 
+                    v.title.toLowerCase().includes('game highlight') || 
+                    v.description.toLowerCase().includes('game highlight')
+                  );
+                  if (gameHighlightVideos.length > 0) {
+                    console.log(`🎮 Found ${gameHighlightVideos.length} game highlight videos:`, 
+                      gameHighlightVideos.map(v => ({
+                        title: v.title,
+                        filtered: !filteredVideos.some(fv => fv.id === v.id)
+                      })));
+                  }
+                }
+                
                 allCategoryVideos.push(...filteredVideos);
                 console.log(`✅ Found ${videos.length} videos, ${filteredVideos.length} after filtering for "${searchTerm}"`);
               }

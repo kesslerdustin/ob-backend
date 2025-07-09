@@ -134,6 +134,7 @@
   },
   "tickets": {
     "validUntil": "2026-12-12T00:00:00.000Z",
+    "ticketLink": "http://www.wildscope.app",
     "offers": {
       "best-offer": {
         "normalPrice": 12,
@@ -249,8 +250,8 @@
         ],
         "offers": {
           "best-offer": {
-            "name": "",
-            "description": ""
+            "name": "Best Offer",
+            "description": "Free entry"
           }
         }
       }
