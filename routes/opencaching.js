@@ -46,8 +46,10 @@ router.get('/search/nearest', verifyFirebaseToken, async (req, res) => {
     }
     
     // Validate coordinates
+    console.log('🔍 Backend received coordinates:', { raw_lat: latitude, raw_lon: longitude });
     const lat = parseFloat(latitude);
     const lon = parseFloat(longitude);
+    console.log('🔍 Backend parsed coordinates:', { lat, lon });
     
     if (isNaN(lat) || isNaN(lon) || lat < -90 || lat > 90 || lon < -180 || lon > 180) {
       return res.status(400).json({

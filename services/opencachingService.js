@@ -155,6 +155,7 @@ async function makeOAuthRequest(country, endpoint, params = {}, method = 'POST',
 // Search for nearby caches (read operation - no OAuth needed)
 async function searchNearestCaches(country, latitude, longitude, limit = 10) {
   const center = `${latitude}|${longitude}`;
+  console.log('🔍 Service creating center string:', { latitude, longitude, center });
   
   return await makeSimpleApiRequest(
     country,
