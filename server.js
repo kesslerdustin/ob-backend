@@ -347,6 +347,10 @@ try {
     });
   });
 
+  // OpenCaching routes
+  const opencachingRoutes = require('./routes/opencaching');
+  app.use('/api/opencaching', opencachingRoutes);
+
   app.get('/test-firebase', async (req, res) => {
     try {
       const users = await admin.auth().listUsers(10);

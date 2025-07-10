@@ -1,0 +1,278 @@
+const express = require('express');
+const { verifyFirebaseToken } = require('../middleware/auth');
+const { createUserRateLimit } = require('../middleware/userRateLimit');
+const opencachingService = require('../services/opencachingService');
+
+const router = express.Router();
+
+// Rate limiting for OpenCaching endpoints
+const opencachingRateLimit = createUserRateLimit(30, 60 * 1000); // 30 requests per minute
+
+// Apply rate limiting to all OpenCaching routes
+router.use(opencachingRateLimit);
+
+// Get available countries
+router.get('/countries', verifyFirebaseToken, async (req, res) => {
+  try {
+    const countries = opencachingService.getAvailableCountries();
+    res.json({
+      success: true,
+      countries: countries.map(code => ({
+        code,
+        name: getCountryName(code),
+        endpoint: getEndpointForCountry(code)
+      }))
+    });
+  } catch (error) {
+    console.error('Error getting available countries:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get available countries'
+    });
+  }
+});
+
+// Search for nearest caches
+router.get('/search/nearest', verifyFirebaseToken, async (req, res) => {
+  try {
+    const { country, latitude, longitude, limit = 10 } = req.query;
+    
+    // Validate required parameters
+    if (!country || !latitude || !longitude) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameters: country, latitude, longitude'
+      });
+    }
+    
+    // Validate coordinates
+    const lat = parseFloat(latitude);
+    const lon = parseFloat(longitude);
+    
+    if (isNaN(lat) || isNaN(lon) || lat < -90 || lat > 90 || lon < -180 || lon > 180) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid coordinates'
+      });
+    }
+    
+    // Validate country
+    opencachingService.validateCountry(country);
+    
+    // Get user token from headers (optional for basic search)
+    const userToken = req.headers['x-oc-token'];
+    const userTokenSecret = req.headers['x-oc-token-secret'];
+    
+    const results = await opencachingService.searchNearestCaches(
+      country, 
+      lat, 
+      lon, 
+      parseInt(limit), 
+      userToken, 
+      userTokenSecret
+    );
+    
+    res.json({
+      success: true,
+      data: results,
+      query: {
+        country,
+        latitude: lat,
+        longitude: lon,
+        limit: parseInt(limit)
+      }
+    });
+    
+  } catch (error) {
+    console.error('Error searching caches:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message || 'Failed to search caches'
+    });
+  }
+});
+
+// Get detailed cache information
+router.get('/caches/details', verifyFirebaseToken, async (req, res) => {
+  try {
+    const { country, codes } = req.query;
+    
+    // Validate required parameters
+    if (!country || !codes) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameters: country, codes'
+      });
+    }
+    
+    // Validate country
+    opencachingService.validateCountry(country);
+    
+    // Get user token from headers (optional)
+    const userToken = req.headers['x-oc-token'];
+    const userTokenSecret = req.headers['x-oc-token-secret'];
+    
+    const cacheCodes = codes.split(',').map(code => code.trim());
+    
+    const results = await opencachingService.getCacheDetails(
+      country, 
+      cacheCodes, 
+      userToken, 
+      userTokenSecret
+    );
+    
+    res.json({
+      success: true,
+      data: results,
+      query: {
+        country,
+        codes: cacheCodes
+      }
+    });
+    
+  } catch (error) {
+    console.error('Error getting cache details:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message || 'Failed to get cache details'
+    });
+  }
+});
+
+// Get cache logs
+router.get('/logs/:cacheCode', verifyFirebaseToken, async (req, res) => {
+  try {
+    const { cacheCode } = req.params;
+    const { country, offset = 0, limit = 10 } = req.query;
+    
+    // Validate required parameters
+    if (!country || !cacheCode) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameters: country, cacheCode'
+      });
+    }
+    
+    // Validate country
+    opencachingService.validateCountry(country);
+    
+    // Get user token from headers (optional)
+    const userToken = req.headers['x-oc-token'];
+    const userTokenSecret = req.headers['x-oc-token-secret'];
+    
+    const results = await opencachingService.getCacheLogs(
+      country, 
+      cacheCode, 
+      parseInt(offset), 
+      parseInt(limit), 
+      userToken, 
+      userTokenSecret
+    );
+    
+    res.json({
+      success: true,
+      data: results,
+      query: {
+        country,
+        cacheCode,
+        offset: parseInt(offset),
+        limit: parseInt(limit)
+      }
+    });
+    
+  } catch (error) {
+    console.error('Error getting cache logs:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message || 'Failed to get cache logs'
+    });
+  }
+});
+
+// Submit cache log (requires user authentication)
+router.post('/logs/submit', verifyFirebaseToken, async (req, res) => {
+  try {
+    const { country, cacheCode, logType, comment } = req.body;
+    
+    // Validate required parameters
+    if (!country || !cacheCode || !logType || !comment) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameters: country, cacheCode, logType, comment'
+      });
+    }
+    
+    // Validate country
+    opencachingService.validateCountry(country);
+    
+    // Get user token from headers (required for log submission)
+    const userToken = req.headers['x-oc-token'];
+    const userTokenSecret = req.headers['x-oc-token-secret'];
+    
+    if (!userToken || !userTokenSecret) {
+      return res.status(401).json({
+        success: false,
+        error: 'User OpenCaching authentication required for log submission'
+      });
+    }
+    
+    // Validate log type
+    const validLogTypes = ['Found it', 'Didn\'t find it', 'Comment', 'Needs maintenance'];
+    if (!validLogTypes.includes(logType)) {
+      return res.status(400).json({
+        success: false,
+        error: `Invalid log type. Valid types: ${validLogTypes.join(', ')}`
+      });
+    }
+    
+    const results = await opencachingService.submitCacheLog(
+      country, 
+      cacheCode, 
+      logType, 
+      comment, 
+      userToken, 
+      userTokenSecret
+    );
+    
+    res.json({
+      success: true,
+      data: results,
+      message: 'Log submitted successfully'
+    });
+    
+  } catch (error) {
+    console.error('Error submitting cache log:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message || 'Failed to submit cache log'
+    });
+  }
+});
+
+// Helper function to get country name
+function getCountryName(code) {
+  const countryNames = {
+    PL: 'Poland',
+    DE: 'Germany',
+    US: 'United States',
+    NL: 'Netherlands',
+    RO: 'Romania',
+    UK: 'United Kingdom'
+  };
+  return countryNames[code] || code;
+}
+
+// Helper function to get endpoint for country
+function getEndpointForCountry(code) {
+  const endpoints = {
+    PL: 'opencaching.pl',
+    DE: 'opencaching.de',
+    US: 'opencaching.us',
+    NL: 'opencaching.nl',
+    RO: 'opencaching.ro',
+    UK: 'opencache.uk'
+  };
+  return endpoints[code] || 'unknown';
+}
+
+module.exports = router; 
