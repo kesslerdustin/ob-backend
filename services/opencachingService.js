@@ -11,26 +11,68 @@ const OPENCACHING_ENDPOINTS = {
   UK: 'https://opencache.uk/okapi'
 };
 
-// OAuth 1.0a signature generation
+// Simple API request (for read operations - matches working HTML example)
+async function makeSimpleApiRequest(country, endpoint, params = {}) {
+  try {
+    const baseUrl = OPENCACHING_ENDPOINTS[country];
+    if (!baseUrl) {
+      throw new Error(`Unsupported country: ${country}`);
+    }
+    
+    const consumerKey = process.env[`OC_KEY_${country}`];
+    if (!consumerKey) {
+      throw new Error(`Missing OpenCaching consumer key for country: ${country}`);
+    }
+    
+    const fullUrl = `${baseUrl}/services/${endpoint}`;
+    
+    // Add consumer key to parameters (like in the working HTML example)
+    const requestParams = {
+      ...params,
+      consumer_key: consumerKey
+    };
+    
+    console.log(`🔍 OpenCaching API Request: ${fullUrl}`);
+    console.log(`📊 Parameters:`, requestParams);
+    
+    const response = await axios.get(fullUrl, {
+      params: requestParams,
+      timeout: 30000,
+      headers: {
+        'User-Agent': 'OutdoorBible/1.0 (https://outdoor-bible.com; contact@outdoor-bible.com)',
+        'Accept': 'application/json'
+      }
+    });
+    
+    console.log(`✅ OpenCaching API Response: ${response.status}`);
+    return response.data;
+    
+  } catch (error) {
+    console.error('❌ OpenCaching API request failed:', {
+      url: `${OPENCACHING_ENDPOINTS[country]}/services/${endpoint}`,
+      error: error.message,
+      response: error.response?.data,
+      status: error.response?.status
+    });
+    throw new Error(`OpenCaching API error: ${error.message}`);
+  }
+}
+
+// OAuth 1.0a signature generation (for write operations)
 function generateOAuthSignature(method, url, parameters, consumerSecret, tokenSecret = '') {
-  // Create signature base string
   const parameterString = Object.keys(parameters)
     .sort()
     .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(parameters[key])}`)
     .join('&');
   
   const signatureBaseString = `${method.toUpperCase()}&${encodeURIComponent(url)}&${encodeURIComponent(parameterString)}`;
-  
-  // Create signing key
   const signingKey = `${encodeURIComponent(consumerSecret)}&${encodeURIComponent(tokenSecret)}`;
-  
-  // Generate signature
   const signature = crypto.createHmac('sha1', signingKey).update(signatureBaseString).digest('base64');
   
   return signature;
 }
 
-// Generate OAuth parameters
+// Generate OAuth parameters (for write operations)
 function generateOAuthParameters(consumerKey, consumerSecret, tokenKey = '', tokenSecret = '') {
   const timestamp = Math.floor(Date.now() / 1000);
   const nonce = crypto.randomBytes(16).toString('hex');
@@ -50,8 +92,8 @@ function generateOAuthParameters(consumerKey, consumerSecret, tokenKey = '', tok
   return { oauthParams, tokenSecret };
 }
 
-// Make authenticated request to OpenCaching API
-async function makeOpenCachingRequest(country, endpoint, params = {}, method = 'GET', userToken = null, userTokenSecret = null) {
+// Make authenticated OAuth request (for write operations like log submission)
+async function makeOAuthRequest(country, endpoint, params = {}, method = 'POST', userToken, userTokenSecret) {
   try {
     const baseUrl = OPENCACHING_ENDPOINTS[country];
     if (!baseUrl) {
@@ -89,53 +131,43 @@ async function makeOpenCachingRequest(country, endpoint, params = {}, method = '
     
     allParams.oauth_signature = signature;
     
-    // Make request
     const config = {
       method,
       url: fullUrl,
       timeout: 30000,
       headers: {
         'User-Agent': 'OutdoorBible/1.0 (https://outdoor-bible.com; contact@outdoor-bible.com)',
-        'Accept': 'application/json'
-      }
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      data: allParams
     };
-    
-    if (method.toUpperCase() === 'GET') {
-      config.params = allParams;
-    } else {
-      config.data = allParams;
-      config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-    }
     
     const response = await axios(config);
     return response.data;
     
   } catch (error) {
-    console.error('OpenCaching API request failed:', error);
+    console.error('OpenCaching OAuth API request failed:', error);
     throw new Error(`OpenCaching API error: ${error.message}`);
   }
 }
 
-// Search for nearby caches
-async function searchNearestCaches(country, latitude, longitude, limit = 10, userToken = null, userTokenSecret = null) {
+// Search for nearby caches (read operation - no OAuth needed)
+async function searchNearestCaches(country, latitude, longitude, limit = 10) {
   const center = `${latitude}|${longitude}`;
   
-  return await makeOpenCachingRequest(
+  return await makeSimpleApiRequest(
     country,
     'caches/search/nearest',
     {
       center,
-      limit,
-      consumer_key: process.env[`OC_KEY_${country}`]
-    },
-    'GET',
-    userToken,
-    userTokenSecret
+      limit
+    }
   );
 }
 
-// Get detailed cache information
-async function getCacheDetails(country, cacheCodes, userToken = null, userTokenSecret = null) {
+// Get detailed cache information (read operation - no OAuth needed)
+async function getCacheDetails(country, cacheCodes) {
   const fields = [
     'code', 'name', 'location', 'type', 'size2', 'difficulty', 'terrain', 
     'status', 'needs_maintenance', 'url', 'owner', 'founds', 'notfounds', 
@@ -145,46 +177,38 @@ async function getCacheDetails(country, cacheCodes, userToken = null, userTokenS
   
   const logFields = ['date', 'user', 'type', 'comment', 'images'].join('|');
   
-  return await makeOpenCachingRequest(
+  return await makeSimpleApiRequest(
     country,
     'caches/geocaches',
     {
       cache_codes: Array.isArray(cacheCodes) ? cacheCodes.join('|') : cacheCodes,
       fields,
       log_fields: logFields,
-      lpc: 10,
-      consumer_key: process.env[`OC_KEY_${country}`]
-    },
-    'GET',
-    userToken,
-    userTokenSecret
+      lpc: 10
+    }
   );
 }
 
-// Get cache logs
-async function getCacheLogs(country, cacheCode, offset = 0, limit = 10, userToken = null, userTokenSecret = null) {
-  return await makeOpenCachingRequest(
+// Get cache logs (read operation - no OAuth needed)
+async function getCacheLogs(country, cacheCode, offset = 0, limit = 10) {
+  return await makeSimpleApiRequest(
     country,
     'logs/logs',
     {
       cache_code: cacheCode,
       offset,
-      limit,
-      consumer_key: process.env[`OC_KEY_${country}`]
-    },
-    'GET',
-    userToken,
-    userTokenSecret
+      limit
+    }
   );
 }
 
-// Submit a cache log (requires user authentication)
+// Submit a cache log (write operation - requires OAuth)
 async function submitCacheLog(country, cacheCode, logType, comment, userToken, userTokenSecret) {
   if (!userToken || !userTokenSecret) {
     throw new Error('User authentication required for log submission');
   }
   
-  return await makeOpenCachingRequest(
+  return await makeOAuthRequest(
     country,
     'logs/submit',
     {
@@ -201,7 +225,7 @@ async function submitCacheLog(country, cacheCode, logType, comment, userToken, u
 // Get available countries
 function getAvailableCountries() {
   return Object.keys(OPENCACHING_ENDPOINTS).filter(country => {
-    return process.env[`OC_KEY_${country}`] && process.env[`OC_SECRET_${country}`];
+    return process.env[`OC_KEY_${country}`];
   });
 }
 
@@ -220,5 +244,6 @@ module.exports = {
   submitCacheLog,
   getAvailableCountries,
   validateCountry,
-  makeOpenCachingRequest
+  makeSimpleApiRequest,
+  makeOAuthRequest
 }; 

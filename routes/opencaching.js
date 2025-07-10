@@ -59,17 +59,11 @@ router.get('/search/nearest', verifyFirebaseToken, async (req, res) => {
     // Validate country
     opencachingService.validateCountry(country);
     
-    // Get user token from headers (optional for basic search)
-    const userToken = req.headers['x-oc-token'];
-    const userTokenSecret = req.headers['x-oc-token-secret'];
-    
     const results = await opencachingService.searchNearestCaches(
       country, 
       lat, 
       lon, 
-      parseInt(limit), 
-      userToken, 
-      userTokenSecret
+      parseInt(limit)
     );
     
     res.json({
@@ -108,17 +102,11 @@ router.get('/caches/details', verifyFirebaseToken, async (req, res) => {
     // Validate country
     opencachingService.validateCountry(country);
     
-    // Get user token from headers (optional)
-    const userToken = req.headers['x-oc-token'];
-    const userTokenSecret = req.headers['x-oc-token-secret'];
-    
     const cacheCodes = codes.split(',').map(code => code.trim());
     
     const results = await opencachingService.getCacheDetails(
       country, 
-      cacheCodes, 
-      userToken, 
-      userTokenSecret
+      cacheCodes
     );
     
     res.json({
@@ -156,17 +144,11 @@ router.get('/logs/:cacheCode', verifyFirebaseToken, async (req, res) => {
     // Validate country
     opencachingService.validateCountry(country);
     
-    // Get user token from headers (optional)
-    const userToken = req.headers['x-oc-token'];
-    const userTokenSecret = req.headers['x-oc-token-secret'];
-    
     const results = await opencachingService.getCacheLogs(
       country, 
       cacheCode, 
       parseInt(offset), 
-      parseInt(limit), 
-      userToken, 
-      userTokenSecret
+      parseInt(limit)
     );
     
     res.json({
