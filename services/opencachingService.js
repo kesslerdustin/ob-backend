@@ -71,14 +71,26 @@ async function makeSimpleApiRequest(country, endpoint, params = {}) {
 
 // OAuth 1.0a signature generation (for write operations)
 function generateOAuthSignature(method, url, parameters, consumerSecret, tokenSecret = '') {
+  console.log('🔐 Generating OAuth signature:');
+  console.log('  Method:', method);
+  console.log('  URL:', url);
+  console.log('  Parameters:', parameters);
+  
   const parameterString = Object.keys(parameters)
     .sort()
     .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(parameters[key])}`)
     .join('&');
   
+  console.log('  Parameter string:', parameterString);
+  
   const signatureBaseString = `${method.toUpperCase()}&${encodeURIComponent(url)}&${encodeURIComponent(parameterString)}`;
+  console.log('  Signature base string:', signatureBaseString);
+  
   const signingKey = `${encodeURIComponent(consumerSecret)}&${encodeURIComponent(tokenSecret)}`;
+  console.log('  Signing key:', `${encodeURIComponent(consumerSecret)}&[REDACTED]`);
+  
   const signature = crypto.createHmac('sha1', signingKey).update(signatureBaseString).digest('base64');
+  console.log('  Generated signature:', signature);
   
   return signature;
 }
@@ -121,26 +133,30 @@ async function makeOAuthRequest(country, endpoint, params = {}, method = 'POST',
     const fullUrl = `${baseUrl}/services/${endpoint}`;
     
     // Generate OAuth parameters
-    const { oauthParams, tokenSecret } = generateOAuthParameters(
+    const { oauthParams } = generateOAuthParameters(
       consumerKey, 
       consumerSecret, 
       userToken, 
       userTokenSecret
     );
     
-    // Merge all parameters
-    const allParams = { ...params, ...oauthParams };
+    // For signature generation, we need all parameters
+    const allParamsForSignature = { ...params, ...oauthParams };
     
-    // Generate signature
+    // Generate signature with ALL parameters
     const signature = generateOAuthSignature(
       method, 
       fullUrl, 
-      allParams, 
+      allParamsForSignature, 
       consumerSecret, 
-      tokenSecret
+      userTokenSecret
     );
     
-    allParams.oauth_signature = signature;
+    // Add signature to OAuth params only (not to form data)
+    oauthParams.oauth_signature = signature;
+    
+    // For the actual request, merge all params including signature
+    const allParams = { ...params, ...oauthParams };
     
     let config = {
       method,
@@ -156,10 +172,27 @@ async function makeOAuthRequest(country, endpoint, params = {}, method = 'POST',
     if (method.toUpperCase() === 'GET') {
       // For GET requests, add parameters to URL
       config.params = allParams;
+      console.log(`🔍 GET request to ${fullUrl} with params:`, allParams);
     } else {
-      // For POST requests, add parameters to body
+      // For POST requests, add parameters to body as form data
       config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-      config.data = allParams;
+      
+      // Convert to URL-encoded form data
+      const formData = new URLSearchParams();
+      Object.keys(allParams).forEach(key => {
+        formData.append(key, allParams[key]);
+      });
+      config.data = formData.toString();
+      
+      console.log(`📤 POST request to ${fullUrl}`);
+      console.log(`📋 Form data:`, formData.toString());
+      console.log(`🔐 OAuth params included:`, {
+        oauth_consumer_key: allParams.oauth_consumer_key ? 'present' : 'missing',
+        oauth_token: allParams.oauth_token ? 'present' : 'missing',
+        oauth_signature: allParams.oauth_signature ? 'present' : 'missing',
+        oauth_timestamp: allParams.oauth_timestamp,
+        oauth_nonce: allParams.oauth_nonce
+      });
     }
     
     const response = await axios(config);
@@ -236,18 +269,40 @@ async function submitCacheLog(country, cacheCode, logType, comment, userToken, u
     throw new Error('User authentication required for log submission');
   }
   
-  return await makeOAuthRequest(
-    country,
-    'logs/submit',
-    {
-      cache_code: cacheCode,
-      logtype: logType,
-      comment: comment
-    },
-    'POST',
-    userToken,
-    userTokenSecret
-  );
+  console.log(`📝 Submitting log for ${country}:`, {
+    cache_code: cacheCode,
+    logtype: logType,
+    comment: comment ? comment.substring(0, 50) + '...' : 'empty',
+    hasToken: !!userToken,
+    hasSecret: !!userTokenSecret
+  });
+  
+  try {
+    const result = await makeOAuthRequest(
+      country,
+      'logs/submit',
+      {
+        cache_code: cacheCode,
+        logtype: logType,
+        comment: comment
+        // Removed optional parameters to test basic submission
+      },
+      'POST',
+      userToken,
+      userTokenSecret
+    );
+    
+    console.log(`✅ Log submission successful for ${cacheCode}:`, result);
+    return result;
+    
+  } catch (error) {
+    console.error(`❌ Log submission failed for ${cacheCode}:`, {
+      error: error.message,
+      response: error.response?.data,
+      status: error.response?.status
+    });
+    throw error;
+  }
 }
 
 // Get available countries
