@@ -71,26 +71,39 @@ async function makeSimpleApiRequest(country, endpoint, params = {}) {
 
 // OAuth 1.0a signature generation (for write operations)
 function generateOAuthSignature(method, url, parameters, consumerSecret, tokenSecret = '') {
-  console.log('🔐 Generating OAuth signature:');
+  console.log('🔐 === OAUTH SIGNATURE GENERATION START ===');
   console.log('  Method:', method);
   console.log('  URL:', url);
-  console.log('  Parameters:', parameters);
+  console.log('  Consumer Secret Length:', consumerSecret ? consumerSecret.length : 'undefined');
+  console.log('  Token Secret Length:', tokenSecret ? tokenSecret.length : 'undefined');
+  console.log('  Parameters:', JSON.stringify(parameters, null, 2));
   
-  const parameterString = Object.keys(parameters)
-    .sort()
-    .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(parameters[key])}`)
+  // Sort parameters by key name
+  const sortedKeys = Object.keys(parameters).sort();
+  console.log('  Sorted parameter keys:', sortedKeys);
+  
+  const parameterString = sortedKeys
+    .map(key => {
+      const encodedKey = encodeURIComponent(key);
+      const encodedValue = encodeURIComponent(parameters[key]);
+      console.log(`    ${key} = ${parameters[key]} -> ${encodedKey}=${encodedValue}`);
+      return `${encodedKey}=${encodedValue}`;
+    })
     .join('&');
   
-  console.log('  Parameter string:', parameterString);
+  console.log('  Final parameter string:', parameterString);
   
-  const signatureBaseString = `${method.toUpperCase()}&${encodeURIComponent(url)}&${encodeURIComponent(parameterString)}`;
+  const baseUrl = url.split('?')[0]; // Remove any query params from URL
+  const signatureBaseString = `${method.toUpperCase()}&${encodeURIComponent(baseUrl)}&${encodeURIComponent(parameterString)}`;
   console.log('  Signature base string:', signatureBaseString);
   
   const signingKey = `${encodeURIComponent(consumerSecret)}&${encodeURIComponent(tokenSecret)}`;
-  console.log('  Signing key:', `${encodeURIComponent(consumerSecret)}&[REDACTED]`);
+  console.log('  Signing key structure: [CONSUMER_SECRET]&[TOKEN_SECRET]');
+  console.log('  Signing key length:', signingKey.length);
   
   const signature = crypto.createHmac('sha1', signingKey).update(signatureBaseString).digest('base64');
   console.log('  Generated signature:', signature);
+  console.log('🔐 === OAUTH SIGNATURE GENERATION END ===');
   
   return signature;
 }
@@ -99,6 +112,8 @@ function generateOAuthSignature(method, url, parameters, consumerSecret, tokenSe
 function generateOAuthParameters(consumerKey, consumerSecret, tokenKey = '', tokenSecret = '') {
   const timestamp = Math.floor(Date.now() / 1000);
   const nonce = crypto.randomBytes(16).toString('hex');
+  
+  console.log(`🕐 OAuth timestamp: ${timestamp} (current time: ${new Date().toISOString()})`);
   
   const oauthParams = {
     oauth_consumer_key: consumerKey,
@@ -111,6 +126,12 @@ function generateOAuthParameters(consumerKey, consumerSecret, tokenKey = '', tok
   if (tokenKey) {
     oauthParams.oauth_token = tokenKey;
   }
+  
+  console.log(`🔧 Generated OAuth params:`, {
+    ...oauthParams,
+    oauth_consumer_key: oauthParams.oauth_consumer_key.substring(0, 8) + '...',
+    oauth_token: oauthParams.oauth_token ? oauthParams.oauth_token.substring(0, 8) + '...' : 'none'
+  });
   
   return { oauthParams, tokenSecret };
 }
@@ -263,6 +284,31 @@ async function getCacheLogs(country, cacheCode, offset = 0, limit = 10) {
   );
 }
 
+// Check log capabilities for a cache
+async function checkLogCapabilities(country, cacheCode, userToken, userTokenSecret) {
+  try {
+    console.log(`🔍 Checking log capabilities for ${cacheCode} in ${country}`);
+    
+    const result = await makeOAuthRequest(
+      country,
+      'logs/capabilities',
+      {
+        cache_code: cacheCode
+      },
+      'GET',
+      userToken,
+      userTokenSecret
+    );
+    
+    console.log(`📋 Log capabilities for ${cacheCode}:`, result);
+    return result;
+    
+  } catch (error) {
+    console.error(`❌ Failed to check log capabilities for ${cacheCode}:`, error.message);
+    return null;
+  }
+}
+
 // Submit a cache log (write operation - requires OAuth)
 async function submitCacheLog(country, cacheCode, logType, comment, userToken, userTokenSecret) {
   if (!userToken || !userTokenSecret) {
@@ -276,6 +322,15 @@ async function submitCacheLog(country, cacheCode, logType, comment, userToken, u
     hasToken: !!userToken,
     hasSecret: !!userTokenSecret
   });
+  
+  // First check what log types are allowed for this cache
+  const capabilities = await checkLogCapabilities(country, cacheCode, userToken, userTokenSecret);
+  if (capabilities && capabilities.submittable_logtypes) {
+    console.log(`✅ Available log types for ${cacheCode}:`, capabilities.submittable_logtypes);
+    if (!capabilities.submittable_logtypes.includes(logType)) {
+      throw new Error(`Log type "${logType}" is not allowed for this cache. Available types: ${capabilities.submittable_logtypes.join(', ')}`);
+    }
+  }
   
   try {
     const result = await makeOAuthRequest(
@@ -513,6 +568,7 @@ module.exports = {
   getCacheDetails,
   getCacheLogs,
   submitCacheLog,
+  checkLogCapabilities,
   getAvailableCountries,
   validateCountry,
   makeSimpleApiRequest,

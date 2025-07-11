@@ -173,6 +173,55 @@ router.get('/logs/:cacheCode', verifyFirebaseToken, async (req, res) => {
   }
 });
 
+// Check log capabilities for a cache
+router.get('/logs/capabilities/:cacheCode', verifyFirebaseToken, async (req, res) => {
+  try {
+    const { cacheCode } = req.params;
+    const { country } = req.query;
+    
+    // Validate required parameters
+    if (!country || !cacheCode) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameters: country, cacheCode'
+      });
+    }
+    
+    // Validate country
+    opencachingService.validateCountry(country);
+    
+    // Get user token from headers
+    const userToken = req.headers['x-oc-token'];
+    const userTokenSecret = req.headers['x-oc-token-secret'];
+    
+    if (!userToken || !userTokenSecret) {
+      return res.status(401).json({
+        success: false,
+        error: 'User OpenCaching authentication required for checking capabilities'
+      });
+    }
+    
+    const results = await opencachingService.checkLogCapabilities(
+      country, 
+      cacheCode, 
+      userToken, 
+      userTokenSecret
+    );
+    
+    res.json({
+      success: true,
+      data: results
+    });
+    
+  } catch (error) {
+    console.error('Error checking log capabilities:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message || 'Failed to check log capabilities'
+    });
+  }
+});
+
 // Submit cache log (requires user authentication)
 router.post('/logs/submit', verifyFirebaseToken, async (req, res) => {
   try {
