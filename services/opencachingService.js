@@ -153,6 +153,11 @@ async function makeOAuthRequest(country, endpoint, params = {}, method = 'POST',
     
     const fullUrl = `${baseUrl}/services/${endpoint}`;
     
+    console.log(`🔐 Making OAuth request to: ${fullUrl}`);
+    console.log(`📊 Method: ${method}, Endpoint: ${endpoint}`);
+    console.log(`🔑 Has consumer key: ${!!consumerKey}, Has consumer secret: ${!!consumerSecret}`);
+    console.log(`👤 Has user token: ${!!userToken}, Has user secret: ${!!userTokenSecret}`);
+    
     // Generate OAuth parameters
     const { oauthParams } = generateOAuthParameters(
       consumerKey, 
@@ -216,8 +221,71 @@ async function makeOAuthRequest(country, endpoint, params = {}, method = 'POST',
       });
     }
     
-    const response = await axios(config);
-    return response.data;
+    // Debug specific log types that might be causing issues
+    if (params.logtype) {
+      console.log(`📝 Debug - Log type being submitted: "${params.logtype}"`);
+      console.log(`📝 Debug - Cache code: "${params.cache_code}"`);
+      console.log(`📝 Debug - Comment length: ${params.comment?.length || 0}`);
+      console.log(`📝 Debug - Date: "${params.when}"`);
+    }
+    
+    try {
+      const response = await axios(config);
+      
+      console.log(`✅ OAuth request successful:`, {
+        status: response.status,
+        endpoint: endpoint,
+        method: method,
+        hasData: !!response.data
+      });
+      
+      return response.data;
+      
+    } catch (axiosError) {
+      console.error(`❌ OAuth request failed:`, {
+        endpoint: endpoint,
+        method: method,
+        status: axiosError.response?.status,
+        statusText: axiosError.response?.statusText,
+        data: axiosError.response?.data,
+        headers: axiosError.response?.headers
+      });
+      
+      // Enhanced error handling for different status codes
+      if (axiosError.response?.status === 500) {
+        console.error('🔍 500 Internal Server Error - Detailed debugging:');
+        console.error('  - Full URL:', fullUrl);
+        console.error('  - Method:', method);
+        console.error('  - Form data sent:', config.data);
+        console.error('  - Response data:', axiosError.response?.data);
+        console.error('  - Response headers:', axiosError.response?.headers);
+        
+        // If this is a log submission, provide specific guidance
+        if (endpoint === 'logs/submit' && params.logtype) {
+          console.error(`  - Log type causing 500 error: "${params.logtype}"`);
+          console.error(`  - Suggestion: This log type might not be supported or there's an issue with the OKAPI endpoint`);
+        }
+        
+        throw new Error(`Server error (500): The OpenCaching API encountered an internal error. This might be related to the "${params.logtype}" log type or server-side issues.`);
+      } else if (axiosError.response?.status === 401) {
+        console.error('🔍 401 Unauthorized - OAuth authentication failed:');
+        console.error('  - Check if user tokens are valid');
+        console.error('  - Verify OAuth signature generation');
+        throw new Error('Authentication failed: Invalid OAuth credentials or expired tokens');
+      } else if (axiosError.response?.status === 403) {
+        console.error('🔍 403 Forbidden - Access denied:');
+        console.error('  - User might not have permission for this operation');
+        console.error('  - Check if account is properly verified');
+        throw new Error('Access denied: Insufficient permissions for this operation');
+      } else if (axiosError.response?.status === 400) {
+        console.error('🔍 400 Bad Request - Invalid parameters:');
+        console.error('  - Check parameter format and values');
+        console.error('  - Response:', axiosError.response?.data);
+        throw new Error(`Bad request: ${axiosError.response?.data?.error_message || 'Invalid parameters'}`);
+      }
+      
+      throw axiosError;
+    }
     
   } catch (error) {
     console.error('OpenCaching OAuth API request failed:', error);
@@ -355,7 +423,26 @@ async function submitCacheLog(country, cacheCode, logType, comment, userToken, u
     );
     
     console.log(`✅ Log submission successful for ${cacheCode}:`, result);
-    return result;
+    
+    // Ensure we return the log_uuid for potential image uploads
+    if (result && result.log_uuid) {
+      return {
+        success: true,
+        log_uuid: result.log_uuid,
+        log_url: result.log_url,
+        cache_code: cacheCode,
+        message: 'Log submitted successfully'
+      };
+    } else {
+      // Handle case where log_uuid is not returned
+      console.warn(`⚠️ Log submission response missing log_uuid:`, result);
+      return {
+        success: true,
+        ...result,
+        cache_code: cacheCode,
+        message: 'Log submitted successfully'
+      };
+    }
     
   } catch (error) {
     console.error(`❌ Log submission failed for ${cacheCode}:`, {
@@ -363,7 +450,140 @@ async function submitCacheLog(country, cacheCode, logType, comment, userToken, u
       response: error.response?.data,
       status: error.response?.status
     });
-    throw error;
+    
+    // Provide more detailed error information
+    if (error.response?.data) {
+      const errorData = error.response.data;
+      console.error('🔍 Detailed error response:', errorData);
+      
+      // Handle specific OKAPI error codes
+      if (errorData.error_code) {
+        switch (errorData.error_code) {
+          case 'InvalidLogType':
+            throw new Error(`Invalid log type "${logType}" for this cache. Please check available log types.`);
+          case 'CacheNotFound':
+            throw new Error(`Cache "${cacheCode}" not found or not accessible.`);
+          case 'AccessDenied':
+            throw new Error('Access denied. Please check your authentication credentials.');
+          case 'DuplicateLog':
+            throw new Error('You have already submitted a similar log for this cache.');
+          default:
+            throw new Error(`OKAPI Error: ${errorData.error_code} - ${errorData.error_message || 'Unknown error'}`);
+        }
+      }
+      
+      // If no specific error code, try to extract meaningful message
+      if (errorData.error_message) {
+        throw new Error(`Log submission failed: ${errorData.error_message}`);
+      }
+    }
+    
+    // Generic error fallback
+    throw new Error(`Log submission failed: ${error.message}`);
+  }
+}
+
+// Add images to an existing log (OKAPI two-step process)
+async function addImagesToLog(country, logUuid, images, userToken, userTokenSecret) {
+  if (!userToken || !userTokenSecret) {
+    throw new Error('User authentication required for image upload');
+  }
+  
+  console.log(`📷 Adding ${images.length} image(s) to log ${logUuid} for ${country}`);
+  
+  try {
+    const results = [];
+    
+    // Process each image individually (OKAPI limitation)
+    for (let i = 0; i < images.length; i++) {
+      const image = images[i];
+      console.log(`📷 Processing image ${i + 1}/${images.length}: ${image.filename}`);
+      
+      // Prepare image parameters for OKAPI
+      const imageParams = {
+        log_uuid: logUuid,
+        image: image.base64,
+        filename: image.filename,
+        caption: image.caption || '',
+        unique_filename: 'yes' // Let OKAPI handle filename uniqueness
+      };
+      
+      console.log(`📷 Image parameters for ${image.filename}:`, {
+        log_uuid: logUuid,
+        filename: image.filename,
+        caption: image.caption || '',
+        base64Length: image.base64.length,
+        unique_filename: 'yes'
+      });
+      
+      try {
+        const result = await makeOAuthRequest(
+          country,
+          'logs/images/add',
+          imageParams,
+          'POST',
+          userToken,
+          userTokenSecret
+        );
+        
+        console.log(`✅ Image ${i + 1} uploaded successfully:`, result);
+        results.push({
+          success: true,
+          filename: image.filename,
+          image_uuid: result.image_uuid,
+          image_url: result.image_url,
+          index: i + 1
+        });
+        
+      } catch (imageError) {
+        console.error(`❌ Image ${i + 1} upload failed:`, {
+          filename: image.filename,
+          error: imageError.message,
+          response: imageError.response?.data
+        });
+        
+        results.push({
+          success: false,
+          filename: image.filename,
+          error: imageError.message,
+          index: i + 1
+        });
+      }
+      
+      // Add small delay between image uploads to avoid rate limiting
+      if (i < images.length - 1) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+    }
+    
+    // Calculate success summary
+    const successCount = results.filter(r => r.success).length;
+    const failureCount = results.filter(r => !r.success).length;
+    
+    console.log(`📷 Image upload summary: ${successCount} successful, ${failureCount} failed`);
+    
+    return {
+      success: failureCount === 0,
+      log_uuid: logUuid,
+      results: results,
+      summary: {
+        total: images.length,
+        successful: successCount,
+        failed: failureCount
+      },
+      message: failureCount === 0 
+        ? `All ${images.length} images uploaded successfully`
+        : `${successCount} of ${images.length} images uploaded successfully`
+    };
+    
+  } catch (error) {
+    console.error(`❌ Image upload failed for log ${logUuid}:`, {
+      error: error.message,
+      response: error.response?.data,
+      status: error.response?.status
+    });
+    
+    throw new Error(`Image upload failed: ${error.message}`);
   }
 }
 
@@ -636,6 +856,7 @@ module.exports = {
   getCacheLogs,
   submitCacheLog,
   submitCacheLogWithImages,
+  addImagesToLog, // Add the new function to exports
   deleteCacheLog,
   checkLogCapabilities,
   getAvailableCountries,

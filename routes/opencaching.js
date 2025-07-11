@@ -286,6 +286,78 @@ router.post('/logs/submit-with-images', verifyFirebaseToken, async (req, res) =>
   }
 });
 
+// Add images to an existing log (OKAPI two-step process)
+router.post('/logs/images/add', verifyFirebaseToken, async (req, res) => {
+  try {
+    const { country, log_uuid, images } = req.body;
+    
+    console.log('📷 Adding images to log:', { country, log_uuid, imageCount: images?.length });
+    
+    // Validate required parameters
+    if (!country || !log_uuid || !images || !Array.isArray(images)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameters: country, log_uuid, images (array)'
+      });
+    }
+    
+    // Validate country
+    opencachingService.validateCountry(country);
+    
+    // Get user token from headers (required for image upload)
+    const userToken = req.headers['x-oc-token'];
+    const userTokenSecret = req.headers['x-oc-token-secret'];
+    
+    if (!userToken || !userTokenSecret) {
+      return res.status(401).json({
+        success: false,
+        error: 'User OpenCaching authentication required for image upload'
+      });
+    }
+    
+    // Validate images array
+    if (images.length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'At least one image is required'
+      });
+    }
+    
+    // Validate each image has required fields
+    for (let i = 0; i < images.length; i++) {
+      const image = images[i];
+      if (!image.base64 || !image.filename) {
+        return res.status(400).json({
+          success: false,
+          error: `Image ${i + 1} missing required fields: base64, filename`
+        });
+      }
+    }
+    
+    const results = await opencachingService.addImagesToLog(
+      country,
+      log_uuid,
+      images,
+      userToken,
+      userTokenSecret
+    );
+    
+    res.json({
+      success: true,
+      data: results,
+      message: `Successfully added ${images.length} image(s) to log`
+    });
+    
+  } catch (error) {
+    console.error('Error adding images to log:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message || 'Failed to add images to log',
+      details: error.response?.data || error.message
+    });
+  }
+});
+
 // Submit cache log (requires user authentication)
 router.post('/logs/submit', verifyFirebaseToken, async (req, res) => {
   try {
