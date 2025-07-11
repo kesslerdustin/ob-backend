@@ -35,7 +35,7 @@ router.get('/countries', verifyFirebaseToken, async (req, res) => {
 // Search for nearest caches
 router.get('/search/nearest', verifyFirebaseToken, async (req, res) => {
   try {
-    const { country, latitude, longitude, limit = 10 } = req.query;
+    const { country, latitude, longitude, limit = 50 } = req.query;
     
     // Validate required parameters
     if (!country || !latitude || !longitude) {
@@ -245,6 +245,77 @@ function getCountryName(code) {
   };
   return countryNames[code] || code;
 }
+
+// OAuth endpoints for account connection
+
+// Get OAuth request token
+router.post('/oauth/request_token', verifyFirebaseToken, async (req, res) => {
+  try {
+    const { country, oauth_callback = 'oob' } = req.body;
+    
+    // Validate required parameters
+    if (!country) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: country'
+      });
+    }
+    
+    // Validate country
+    opencachingService.validateCountry(country);
+    
+    const results = await opencachingService.getRequestToken(country, oauth_callback);
+    
+    res.json({
+      success: true,
+      data: results
+    });
+    
+  } catch (error) {
+    console.error('Error getting OAuth request token:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message || 'Failed to get request token'
+    });
+  }
+});
+
+// Exchange request token for access token
+router.post('/oauth/access_token', verifyFirebaseToken, async (req, res) => {
+  try {
+    const { country, oauth_token, oauth_token_secret, oauth_verifier } = req.body;
+    
+    // Validate required parameters
+    if (!country || !oauth_token || !oauth_token_secret || !oauth_verifier) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameters: country, oauth_token, oauth_token_secret, oauth_verifier'
+      });
+    }
+    
+    // Validate country
+    opencachingService.validateCountry(country);
+    
+    const results = await opencachingService.getAccessToken(
+      country, 
+      oauth_token, 
+      oauth_token_secret, 
+      oauth_verifier
+    );
+    
+    res.json({
+      success: true,
+      data: results
+    });
+    
+  } catch (error) {
+    console.error('Error getting OAuth access token:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message || 'Failed to get access token'
+    });
+  }
+});
 
 // Helper function to get endpoint for country
 function getEndpointForCountry(code) {
