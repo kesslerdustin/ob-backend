@@ -142,17 +142,25 @@ async function makeOAuthRequest(country, endpoint, params = {}, method = 'POST',
     
     allParams.oauth_signature = signature;
     
-    const config = {
+    let config = {
       method,
       url: fullUrl,
       timeout: 30000,
       headers: {
         'User-Agent': 'OutdoorBible/1.0 (https://outdoor-bible.com; contact@outdoor-bible.com)',
-        'Accept': 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      data: allParams
+        'Accept': 'application/json'
+      }
     };
+
+    // Handle GET vs POST requests differently
+    if (method.toUpperCase() === 'GET') {
+      // For GET requests, add parameters to URL
+      config.params = allParams;
+    } else {
+      // For POST requests, add parameters to body
+      config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+      config.data = allParams;
+    }
     
     const response = await axios(config);
     return response.data;
@@ -373,25 +381,62 @@ async function getAccessToken(country, requestToken, requestTokenSecret, verifie
     });
     
     // Parse the response (format: oauth_token=...&oauth_token_secret=...&user_info=...)
+    console.log('OAuth access token response data:', response.data);
     const params = new URLSearchParams(response.data);
     const oauth_token = params.get('oauth_token');
     const oauth_token_secret = params.get('oauth_token_secret');
+    
+    // Log all available parameters for debugging
+    console.log('Available OAuth response parameters:');
+    for (const [key, value] of params) {
+      console.log(`  ${key}: ${value}`);
+    }
     
     if (!oauth_token || !oauth_token_secret) {
       throw new Error('Invalid response from OAuth provider');
     }
     
-    // Try to get username if available
+    // Try to get username using the OAuth access token
     let username = null;
-    try {
-      // Make a simple API call to get user info
-      const userResponse = await makeSimpleApiRequest(country, 'users/user', {
-        user_uuid: params.get('user_uuid') || '',
-        fields: 'username'
-      });
-      username = userResponse.username;
-    } catch (error) {
-      console.log('Could not fetch username:', error.message);
+    
+    // First, check if username is directly in the OAuth response
+    const usernameFromOAuth = params.get('username') || params.get('user_username') || params.get('user_name');
+    if (usernameFromOAuth) {
+      username = usernameFromOAuth;
+      console.log(`✅ Got username from OAuth response: ${username}`);
+    } else {
+      // Try to fetch user info using the OAuth access token
+      try {
+        console.log(`🔍 Fetching user info with OAuth token for ${country}`);
+        const userResponse = await makeOAuthRequest(
+          country,
+          'users/user',
+          { fields: 'username|uuid' },
+          'GET',
+          oauth_token,
+          oauth_token_secret
+        );
+        console.log('User API response:', userResponse);
+        username = userResponse.username || userResponse.uuid || 'User';
+      } catch (error) {
+        console.log('Could not fetch username with OAuth token:', error.message);
+        
+        // Last resort - try getting user by UUID if available
+        const userUuid = params.get('user_uuid') || params.get('uuid');
+        if (userUuid) {
+          try {
+            const userByUuidResponse = await makeSimpleApiRequest(country, 'users/user', {
+              user_uuid: userUuid,
+              fields: 'username'
+            });
+            username = userByUuidResponse.username;
+            console.log(`✅ Got username by UUID: ${username}`);
+          } catch (uuidError) {
+            console.log('Could not fetch username by UUID:', uuidError.message);
+            username = userUuid.substring(0, 8); // Use first 8 chars of UUID as fallback
+          }
+        }
+      }
     }
     
     console.log(`✅ Got OAuth access token for ${country}${username ? ` (user: ${username})` : ''}`);
