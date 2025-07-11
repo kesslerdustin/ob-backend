@@ -225,7 +225,7 @@ router.get('/logs/capabilities/:cacheCode', verifyFirebaseToken, async (req, res
 // Submit cache log with images (requires user authentication)
 router.post('/logs/submit-with-images', verifyFirebaseToken, async (req, res) => {
   try {
-    const { country, cacheCode, logType, comment, imageCount, rating } = req.body;
+    const { country, cacheCode, logType, comment, imageCount, rating, needsMaintenance } = req.body;
     
     // Validate required parameters
     if (!country || !cacheCode || !logType || !comment) {
@@ -249,8 +249,8 @@ router.post('/logs/submit-with-images', verifyFirebaseToken, async (req, res) =>
       });
     }
     
-    // Validate log type
-    const validLogTypes = ['Found it', 'Didn\'t find it', 'Comment', 'Needs maintenance'];
+    // Validate log type - FIXED: Removed "Needs maintenance" as it's not a log type
+    const validLogTypes = ['Found it', 'Didn\'t find it', 'Comment'];
     if (!validLogTypes.includes(logType)) {
       return res.status(400).json({
         success: false,
@@ -276,6 +276,16 @@ router.post('/logs/submit-with-images', verifyFirebaseToken, async (req, res) =>
       }
     }
     
+    // Validate needsMaintenance parameter
+    if (needsMaintenance !== undefined) {
+      if (typeof needsMaintenance !== 'boolean') {
+        return res.status(400).json({
+          success: false,
+          error: 'needsMaintenance must be a boolean (true/false)'
+        });
+      }
+    }
+    
     // For now, create a mock images array with the count
     const mockImages = new Array(parseInt(imageCount) || 0).fill({ type: 'selected' });
     
@@ -286,6 +296,7 @@ router.post('/logs/submit-with-images', verifyFirebaseToken, async (req, res) =>
       comment, 
       mockImages,
       rating, // Pass rating to service
+      needsMaintenance, // Pass needs maintenance flag
       userToken, 
       userTokenSecret
     );
@@ -310,13 +321,41 @@ router.post('/logs/images/add', verifyFirebaseToken, async (req, res) => {
   try {
     const { country, log_uuid, images } = req.body;
     
-    console.log('📷 Adding images to log:', { country, log_uuid, imageCount: images?.length });
+    console.log('📷 Adding images to log - Full request body:', JSON.stringify(req.body, null, 2));
+    console.log('📷 Extracted parameters:', { 
+      country, 
+      log_uuid, 
+      images: images ? `Array(${images.length})` : images,
+      imagesType: typeof images,
+      isArray: Array.isArray(images)
+    });
     
-    // Validate required parameters
-    if (!country || !log_uuid || !images || !Array.isArray(images)) {
+    // Validate required parameters with detailed error messages
+    if (!country) {
       return res.status(400).json({
         success: false,
-        error: 'Missing required parameters: country, log_uuid, images (array)'
+        error: 'Missing required parameter: country'
+      });
+    }
+    
+    if (!log_uuid) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: log_uuid'
+      });
+    }
+    
+    if (!images) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: images'
+      });
+    }
+    
+    if (!Array.isArray(images)) {
+      return res.status(400).json({
+        success: false,
+        error: `Invalid parameter: images must be an array, received ${typeof images}`
       });
     }
     
@@ -342,13 +381,22 @@ router.post('/logs/images/add', verifyFirebaseToken, async (req, res) => {
       });
     }
     
+    console.log(`📷 Validating ${images.length} images...`);
+    
     // Validate each image has required fields
     for (let i = 0; i < images.length; i++) {
       const image = images[i];
+      console.log(`📷 Image ${i + 1}:`, {
+        hasBase64: !!image.base64,
+        hasFilename: !!image.filename,
+        base64Length: image.base64?.length || 0,
+        filename: image.filename
+      });
+      
       if (!image.base64 || !image.filename) {
         return res.status(400).json({
           success: false,
-          error: `Image ${i + 1} missing required fields: base64, filename`
+          error: `Image ${i + 1} missing required fields: ${!image.base64 ? 'base64' : ''} ${!image.filename ? 'filename' : ''}`.trim()
         });
       }
     }
@@ -380,7 +428,7 @@ router.post('/logs/images/add', verifyFirebaseToken, async (req, res) => {
 // Submit cache log (requires user authentication)
 router.post('/logs/submit', verifyFirebaseToken, async (req, res) => {
   try {
-    const { country, cacheCode, logType, comment, rating } = req.body;
+    const { country, cacheCode, logType, comment, rating, needsMaintenance } = req.body;
     
     // Validate required parameters
     if (!country || !cacheCode || !logType || !comment) {
@@ -404,8 +452,8 @@ router.post('/logs/submit', verifyFirebaseToken, async (req, res) => {
       });
     }
     
-    // Validate log type
-    const validLogTypes = ['Found it', 'Didn\'t find it', 'Comment', 'Needs maintenance'];
+    // Validate log type - FIXED: Removed "Needs maintenance" as it's not a log type
+    const validLogTypes = ['Found it', 'Didn\'t find it', 'Comment'];
     if (!validLogTypes.includes(logType)) {
       return res.status(400).json({
         success: false,
@@ -431,12 +479,23 @@ router.post('/logs/submit', verifyFirebaseToken, async (req, res) => {
       }
     }
     
+    // Validate needsMaintenance parameter
+    if (needsMaintenance !== undefined) {
+      if (typeof needsMaintenance !== 'boolean') {
+        return res.status(400).json({
+          success: false,
+          error: 'needsMaintenance must be a boolean (true/false)'
+        });
+      }
+    }
+    
     const results = await opencachingService.submitCacheLog(
       country, 
       cacheCode, 
       logType, 
       comment,
       rating, // Pass rating to service
+      needsMaintenance, // Pass needs maintenance flag
       userToken, 
       userTokenSecret
     );

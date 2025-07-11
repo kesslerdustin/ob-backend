@@ -406,7 +406,7 @@ async function checkLogCapabilities(country, cacheCode, userToken, userTokenSecr
 }
 
 // Submit a cache log (write operation - requires OAuth)
-async function submitCacheLog(country, cacheCode, logType, comment, rating, userToken, userTokenSecret) {
+async function submitCacheLog(country, cacheCode, logType, comment, rating, needsMaintenance, userToken, userTokenSecret) {
   if (!userToken || !userTokenSecret) {
     throw new Error('User authentication required for log submission');
   }
@@ -416,6 +416,7 @@ async function submitCacheLog(country, cacheCode, logType, comment, rating, user
     logtype: logType,
     comment: comment ? comment.substring(0, 50) + '...' : 'empty',
     rating: rating || 'none',
+    needsMaintenance: needsMaintenance,
     hasToken: !!userToken,
     hasSecret: !!userTokenSecret
   });
@@ -455,6 +456,12 @@ async function submitCacheLog(country, cacheCode, logType, comment, rating, user
       }
     }
     
+    // Add needs_maintenance2 parameter if provided (replaces deprecated needs_maintenance)
+    if (needsMaintenance !== undefined) {
+      logParams.needs_maintenance2 = needsMaintenance;
+      console.log(`🔧 Adding needs_maintenance2: ${needsMaintenance}`);
+    }
+    
     console.log(`📝 Log parameters being sent:`, logParams);
     
     const result = await makeOAuthRequest(
@@ -476,6 +483,7 @@ async function submitCacheLog(country, cacheCode, logType, comment, rating, user
         log_url: result.log_url,
         cache_code: cacheCode,
         rating_submitted: rating !== undefined ? parseInt(rating) : null,
+        needs_maintenance_submitted: needsMaintenance,
         message: 'Log submitted successfully'
       };
     } else {
@@ -486,6 +494,7 @@ async function submitCacheLog(country, cacheCode, logType, comment, rating, user
         ...result,
         cache_code: cacheCode,
         rating_submitted: rating !== undefined ? parseInt(rating) : null,
+        needs_maintenance_submitted: needsMaintenance,
         message: 'Log submitted successfully'
       };
     }
@@ -671,7 +680,7 @@ async function deleteCacheLog(country, logUuid, userToken, userTokenSecret) {
 // Submit a cache log with images (write operation - requires OAuth)
 // Note: For now, this submits the text log and notes that images were selected
 // Full image upload to OpenCaching API would require additional implementation
-async function submitCacheLogWithImages(country, cacheCode, logType, comment, images, rating, userToken, userTokenSecret) {
+async function submitCacheLogWithImages(country, cacheCode, logType, comment, images, rating, needsMaintenance, userToken, userTokenSecret) {
   if (!userToken || !userTokenSecret) {
     throw new Error('User authentication required for log submission');
   }
@@ -682,6 +691,7 @@ async function submitCacheLogWithImages(country, cacheCode, logType, comment, im
     comment: comment ? comment.substring(0, 50) + '...' : 'empty',
     imageCount: images.length,
     rating: rating || 'none',
+    needsMaintenance: needsMaintenance,
     hasToken: !!userToken,
     hasSecret: !!userTokenSecret
   });
@@ -692,8 +702,8 @@ async function submitCacheLogWithImages(country, cacheCode, logType, comment, im
     enhancedComment += `\n\n[📷 ${images.length} image${images.length > 1 ? 's' : ''} selected - image upload feature in development]`;
   }
   
-  // Submit the log with enhanced comment and rating
-  return await submitCacheLog(country, cacheCode, logType, enhancedComment, rating, userToken, userTokenSecret);
+  // Submit the log with enhanced comment, rating, and needs maintenance flag
+  return await submitCacheLog(country, cacheCode, logType, enhancedComment, rating, needsMaintenance, userToken, userTokenSecret);
 }
 
 // Get available countries
