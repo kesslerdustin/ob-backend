@@ -225,7 +225,7 @@ router.get('/logs/capabilities/:cacheCode', verifyFirebaseToken, async (req, res
 // Submit cache log with images (requires user authentication)
 router.post('/logs/submit-with-images', verifyFirebaseToken, async (req, res) => {
   try {
-    const { country, cacheCode, logType, comment, imageCount } = req.body;
+    const { country, cacheCode, logType, comment, imageCount, rating } = req.body;
     
     // Validate required parameters
     if (!country || !cacheCode || !logType || !comment) {
@@ -258,6 +258,24 @@ router.post('/logs/submit-with-images', verifyFirebaseToken, async (req, res) =>
       });
     }
     
+    // Validate rating if provided (only for "Found it" logs)
+    if (rating !== undefined) {
+      if (logType !== 'Found it') {
+        return res.status(400).json({
+          success: false,
+          error: 'Rating can only be submitted with "Found it" log entries'
+        });
+      }
+      
+      const ratingNum = parseInt(rating);
+      if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
+        return res.status(400).json({
+          success: false,
+          error: 'Rating must be an integer between 1 and 5'
+        });
+      }
+    }
+    
     // For now, create a mock images array with the count
     const mockImages = new Array(parseInt(imageCount) || 0).fill({ type: 'selected' });
     
@@ -267,6 +285,7 @@ router.post('/logs/submit-with-images', verifyFirebaseToken, async (req, res) =>
       logType, 
       comment, 
       mockImages,
+      rating, // Pass rating to service
       userToken, 
       userTokenSecret
     );
@@ -361,7 +380,7 @@ router.post('/logs/images/add', verifyFirebaseToken, async (req, res) => {
 // Submit cache log (requires user authentication)
 router.post('/logs/submit', verifyFirebaseToken, async (req, res) => {
   try {
-    const { country, cacheCode, logType, comment } = req.body;
+    const { country, cacheCode, logType, comment, rating } = req.body;
     
     // Validate required parameters
     if (!country || !cacheCode || !logType || !comment) {
@@ -394,19 +413,41 @@ router.post('/logs/submit', verifyFirebaseToken, async (req, res) => {
       });
     }
     
+    // Validate rating if provided (only for "Found it" logs)
+    if (rating !== undefined) {
+      if (logType !== 'Found it') {
+        return res.status(400).json({
+          success: false,
+          error: 'Rating can only be submitted with "Found it" log entries'
+        });
+      }
+      
+      const ratingNum = parseInt(rating);
+      if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
+        return res.status(400).json({
+          success: false,
+          error: 'Rating must be an integer between 1 and 5'
+        });
+      }
+    }
+    
     const results = await opencachingService.submitCacheLog(
       country, 
       cacheCode, 
       logType, 
-      comment, 
+      comment,
+      rating, // Pass rating to service
       userToken, 
       userTokenSecret
     );
     
+    console.log('📝 Backend sending response:', results);
+    
     res.json({
       success: true,
       data: results,
-      message: 'Log submitted successfully'
+      log_uuid: results.log_uuid, // Ensure log_uuid is at top level for frontend
+      message: results.message || 'Log submitted successfully'
     });
     
   } catch (error) {

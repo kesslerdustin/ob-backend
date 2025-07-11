@@ -78,15 +78,25 @@ function generateOAuthSignature(method, url, parameters, consumerSecret, tokenSe
   console.log('  Token Secret Length:', tokenSecret ? tokenSecret.length : 'undefined');
   console.log('  Parameters:', JSON.stringify(parameters, null, 2));
   
+  // RFC 3986 compliant percent encoding
+  const rfc3986EncodeURIComponent = (str) => {
+    return encodeURIComponent(str)
+      .replace(/[!'()*]/g, (c) => {
+        return '%' + c.charCodeAt(0).toString(16).toUpperCase().padStart(2, '0');
+      });
+  };
+  
   // Sort parameters by key name
   const sortedKeys = Object.keys(parameters).sort();
   console.log('  Sorted parameter keys:', sortedKeys);
   
   const parameterString = sortedKeys
     .map(key => {
-      const encodedKey = encodeURIComponent(key);
-      const encodedValue = encodeURIComponent(parameters[key]);
-      console.log(`    ${key} = ${parameters[key]} -> ${encodedKey}=${encodedValue}`);
+      const value = parameters[key];
+      // Use RFC 3986 compliant encoding
+      const encodedKey = rfc3986EncodeURIComponent(key);
+      const encodedValue = rfc3986EncodeURIComponent(value);
+      console.log(`    ${key} = ${value} -> ${encodedKey}=${encodedValue}`);
       return `${encodedKey}=${encodedValue}`;
     })
     .join('&');
@@ -94,10 +104,12 @@ function generateOAuthSignature(method, url, parameters, consumerSecret, tokenSe
   console.log('  Final parameter string:', parameterString);
   
   const baseUrl = url.split('?')[0]; // Remove any query params from URL
-  const signatureBaseString = `${method.toUpperCase()}&${encodeURIComponent(baseUrl)}&${encodeURIComponent(parameterString)}`;
+  
+  // Create signature base string with proper encoding
+  const signatureBaseString = `${method.toUpperCase()}&${rfc3986EncodeURIComponent(baseUrl)}&${rfc3986EncodeURIComponent(parameterString)}`;
   console.log('  Signature base string:', signatureBaseString);
   
-  const signingKey = `${encodeURIComponent(consumerSecret)}&${encodeURIComponent(tokenSecret)}`;
+  const signingKey = `${rfc3986EncodeURIComponent(consumerSecret)}&${rfc3986EncodeURIComponent(tokenSecret)}`;
   console.log('  Signing key structure: [CONSUMER_SECRET]&[TOKEN_SECRET]');
   console.log('  Signing key length:', signingKey.length);
   
@@ -369,6 +381,22 @@ async function checkLogCapabilities(country, cacheCode, userToken, userTokenSecr
     );
     
     console.log(`📋 Log capabilities for ${cacheCode}:`, result);
+    
+    // Enhanced capabilities with rating info
+    if (result) {
+      result.rating_info = {
+        can_rate: result.can_rate,
+        rating_allowed_for_found_it: result.can_rate === true || result.can_rate === 'yes',
+        rating_explanation: result.can_rate === 'need_more_founds' 
+          ? `You need ${result.rcmd_founds_needed || 'more'} finds to rate caches`
+          : result.can_rate === false 
+          ? 'You have already rated this cache or rating is not available'
+          : 'You can rate this cache with a "Found it" log'
+      };
+      
+      console.log(`⭐ Rating capabilities: ${JSON.stringify(result.rating_info)}`);
+    }
+    
     return result;
     
   } catch (error) {
@@ -378,7 +406,7 @@ async function checkLogCapabilities(country, cacheCode, userToken, userTokenSecr
 }
 
 // Submit a cache log (write operation - requires OAuth)
-async function submitCacheLog(country, cacheCode, logType, comment, userToken, userTokenSecret) {
+async function submitCacheLog(country, cacheCode, logType, comment, rating, userToken, userTokenSecret) {
   if (!userToken || !userTokenSecret) {
     throw new Error('User authentication required for log submission');
   }
@@ -387,6 +415,7 @@ async function submitCacheLog(country, cacheCode, logType, comment, userToken, u
     cache_code: cacheCode,
     logtype: logType,
     comment: comment ? comment.substring(0, 50) + '...' : 'empty',
+    rating: rating || 'none',
     hasToken: !!userToken,
     hasSecret: !!userTokenSecret
   });
@@ -397,6 +426,12 @@ async function submitCacheLog(country, cacheCode, logType, comment, userToken, u
     console.log(`✅ Available log types for ${cacheCode}:`, capabilities.submittable_logtypes);
     if (!capabilities.submittable_logtypes.includes(logType)) {
       throw new Error(`Log type "${logType}" is not allowed for this cache. Available types: ${capabilities.submittable_logtypes.join(', ')}`);
+    }
+    
+    // Check if rating is allowed and warn if not
+    if (rating !== undefined && logType === 'Found it' && capabilities.can_rate === false) {
+      console.warn(`⚠️ Rating submission attempted but not allowed for ${cacheCode}. User may have already rated this cache.`);
+      // Don't throw error, just log warning and continue without rating
     }
   }
   
@@ -410,6 +445,15 @@ async function submitCacheLog(country, cacheCode, logType, comment, userToken, u
       when: new Date().toISOString().split('T')[0], // Current date in YYYY-MM-DD format
       on_duplicate: 'user_error'  // Better error handling for duplicates
     };
+    
+    // Add rating for "Found it" logs if provided and allowed
+    if (rating !== undefined && logType === 'Found it') {
+      const ratingNum = parseInt(rating);
+      if (ratingNum >= 1 && ratingNum <= 5) {
+        logParams.rating = ratingNum;
+        console.log(`⭐ Adding rating: ${ratingNum}/5 stars`);
+      }
+    }
     
     console.log(`📝 Log parameters being sent:`, logParams);
     
@@ -431,6 +475,7 @@ async function submitCacheLog(country, cacheCode, logType, comment, userToken, u
         log_uuid: result.log_uuid,
         log_url: result.log_url,
         cache_code: cacheCode,
+        rating_submitted: rating !== undefined ? parseInt(rating) : null,
         message: 'Log submitted successfully'
       };
     } else {
@@ -440,6 +485,7 @@ async function submitCacheLog(country, cacheCode, logType, comment, userToken, u
         success: true,
         ...result,
         cache_code: cacheCode,
+        rating_submitted: rating !== undefined ? parseInt(rating) : null,
         message: 'Log submitted successfully'
       };
     }
@@ -467,6 +513,8 @@ async function submitCacheLog(country, cacheCode, logType, comment, userToken, u
             throw new Error('Access denied. Please check your authentication credentials.');
           case 'DuplicateLog':
             throw new Error('You have already submitted a similar log for this cache.');
+          case 'InvalidRating':
+            throw new Error('Rating is invalid or not allowed. You may have already rated this cache.');
           default:
             throw new Error(`OKAPI Error: ${errorData.error_code} - ${errorData.error_message || 'Unknown error'}`);
         }
@@ -623,7 +671,7 @@ async function deleteCacheLog(country, logUuid, userToken, userTokenSecret) {
 // Submit a cache log with images (write operation - requires OAuth)
 // Note: For now, this submits the text log and notes that images were selected
 // Full image upload to OpenCaching API would require additional implementation
-async function submitCacheLogWithImages(country, cacheCode, logType, comment, images, userToken, userTokenSecret) {
+async function submitCacheLogWithImages(country, cacheCode, logType, comment, images, rating, userToken, userTokenSecret) {
   if (!userToken || !userTokenSecret) {
     throw new Error('User authentication required for log submission');
   }
@@ -633,6 +681,7 @@ async function submitCacheLogWithImages(country, cacheCode, logType, comment, im
     logtype: logType,
     comment: comment ? comment.substring(0, 50) + '...' : 'empty',
     imageCount: images.length,
+    rating: rating || 'none',
     hasToken: !!userToken,
     hasSecret: !!userTokenSecret
   });
@@ -643,8 +692,8 @@ async function submitCacheLogWithImages(country, cacheCode, logType, comment, im
     enhancedComment += `\n\n[📷 ${images.length} image${images.length > 1 ? 's' : ''} selected - image upload feature in development]`;
   }
   
-  // Submit the log with enhanced comment
-  return await submitCacheLog(country, cacheCode, logType, enhancedComment, userToken, userTokenSecret);
+  // Submit the log with enhanced comment and rating
+  return await submitCacheLog(country, cacheCode, logType, enhancedComment, rating, userToken, userTokenSecret);
 }
 
 // Get available countries
