@@ -333,15 +333,22 @@ async function submitCacheLog(country, cacheCode, logType, comment, userToken, u
   }
   
   try {
+    // Prepare log parameters following OKAPI documentation
+    const logParams = {
+      cache_code: cacheCode,
+      logtype: logType,
+      comment: comment,
+      comment_format: 'plaintext',  // Recommended by OKAPI docs
+      when: new Date().toISOString().split('T')[0], // Current date in YYYY-MM-DD format
+      on_duplicate: 'user_error'  // Better error handling for duplicates
+    };
+    
+    console.log(`📝 Log parameters being sent:`, logParams);
+    
     const result = await makeOAuthRequest(
       country,
       'logs/submit',
-      {
-        cache_code: cacheCode,
-        logtype: logType,
-        comment: comment
-        // Removed optional parameters to test basic submission
-      },
+      logParams,
       'POST',
       userToken,
       userTokenSecret
@@ -406,12 +413,12 @@ async function getRequestToken(country, callback = 'oob') {
     };
     
     // Generate signature
-    const signature = generateOAuthSignature('POST', fullUrl, oauthParams, consumerSecret, '');
+    const signature = generateOAuthSignature('GET', fullUrl, oauthParams, consumerSecret, '');
     oauthParams.oauth_signature = signature;
     
     console.log(`🔐 Getting OAuth request token for ${country}`);
     
-    const response = await axios.post(fullUrl, null, {
+    const response = await axios.get(fullUrl, {
       params: oauthParams,
       timeout: 30000,
       headers: {
@@ -476,12 +483,12 @@ async function getAccessToken(country, requestToken, requestTokenSecret, verifie
     };
     
     // Generate signature
-    const signature = generateOAuthSignature('POST', fullUrl, oauthParams, consumerSecret, requestTokenSecret);
+    const signature = generateOAuthSignature('GET', fullUrl, oauthParams, consumerSecret, requestTokenSecret);
     oauthParams.oauth_signature = signature;
     
     console.log(`🔐 Exchanging request token for access token for ${country}`);
     
-    const response = await axios.post(fullUrl, null, {
+    const response = await axios.get(fullUrl, {
       params: oauthParams,
       timeout: 30000,
       headers: {
