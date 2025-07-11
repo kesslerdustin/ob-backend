@@ -353,13 +353,24 @@ async function getCacheDetails(country, cacheCodes) {
 
 // Get cache logs (read operation - no OAuth needed)
 async function getCacheLogs(country, cacheCode, offset = 0, limit = 10) {
+  // FIXED: Add fields parameter to get images and other detailed log data
+  const logFields = ['date', 'user', 'type', 'comment', 'images', 'uuid'].join('|');
+  
+  console.log(`📋 Getting cache logs for ${cacheCode} with images:`, {
+    country,
+    offset,
+    limit,
+    fields: logFields
+  });
+  
   return await makeSimpleApiRequest(
     country,
     'logs/logs',
     {
       cache_code: cacheCode,
       offset,
-      limit
+      limit,
+      fields: logFields // Standard fields parameter for OKAPI endpoints
     }
   );
 }
