@@ -554,26 +554,32 @@ async function addImagesToLog(country, logUuid, images, userToken, userTokenSecr
     // Process each image individually (OKAPI limitation)
     for (let i = 0; i < images.length; i++) {
       const image = images[i];
-      console.log(`📷 Processing image ${i + 1}/${images.length}: ${image.filename}`);
+      console.log(`📷 Processing image ${i + 1}/${images.length}: ${image.filename || 'unnamed'}`);
       
-      // Prepare image parameters for OKAPI
+      // Prepare image parameters for OKAPI - FIXED: Using exact OKAPI specification
       const imageParams = {
         log_uuid: logUuid,
-        image: image.base64,
-        filename: image.filename,
-        caption: image.caption || '',
-        unique_filename: 'yes' // Let OKAPI handle filename uniqueness
+        image: image.base64, // Base64-encoded image file (required)
+        caption: image.caption || `Image ${i + 1}`, // Plain-text caption (optional)
+        is_spoiler: image.is_spoiler || false, // Whether image contains spoilers (optional, default: false)
+        position: i // 0-based position in image list (optional)
       };
       
-      console.log(`📷 Image parameters for ${image.filename}:`, {
+      console.log(`📷 OKAPI parameters for image ${i + 1}:`, {
         log_uuid: logUuid,
-        filename: image.filename,
-        caption: image.caption || '',
-        base64Length: image.base64.length,
-        unique_filename: 'yes'
+        caption: imageParams.caption,
+        is_spoiler: imageParams.is_spoiler,
+        position: imageParams.position,
+        base64Length: image.base64?.length || 0
       });
       
       try {
+        // Add delay between uploads to avoid rate limiting
+        if (i > 0) {
+          console.log('⏱️ Adding 1 second delay between image uploads...');
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+        
         const result = await makeOAuthRequest(
           country,
           'logs/images/add',
@@ -583,63 +589,61 @@ async function addImagesToLog(country, logUuid, images, userToken, userTokenSecr
           userTokenSecret
         );
         
-        console.log(`✅ Image ${i + 1} uploaded successfully:`, result);
-        results.push({
-          success: true,
-          filename: image.filename,
+        console.log(`✅ Image ${i + 1} uploaded successfully:`, {
+          success: result.success,
           image_uuid: result.image_uuid,
           image_url: result.image_url,
-          index: i + 1
+          position: result.position,
+          message: result.message
+        });
+        
+        results.push({
+          index: i + 1,
+          success: result.success || false,
+          image_uuid: result.image_uuid || null,
+          image_url: result.image_url || null,
+          position: result.position !== undefined ? result.position : null,
+          message: result.message || (result.success ? 'Image uploaded successfully' : 'Upload failed'),
+          filename: image.filename || `image_${i + 1}.jpg`
         });
         
       } catch (imageError) {
-        console.error(`❌ Image ${i + 1} upload failed:`, {
-          filename: image.filename,
+        console.error(`❌ Failed to upload image ${i + 1}:`, {
           error: imageError.message,
-          response: imageError.response?.data
+          response: imageError.response?.data,
+          status: imageError.response?.status
         });
         
         results.push({
+          index: i + 1,
           success: false,
-          filename: image.filename,
-          error: imageError.message,
-          index: i + 1
+          image_uuid: null,
+          image_url: null,
+          position: null,
+          message: imageError.response?.data?.message || imageError.message || 'Upload failed',
+          filename: image.filename || `image_${i + 1}.jpg`,
+          error: imageError.message
         });
-      }
-      
-      // Add small delay between image uploads to avoid rate limiting
-      if (i < images.length - 1) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
       }
     }
     
-    // Calculate success summary
-    const successCount = results.filter(r => r.success).length;
-    const failureCount = results.filter(r => !r.success).length;
+    // Summarize results
+    const successful = results.filter(r => r.success).length;
+    const failed = results.filter(r => !r.success).length;
     
-    console.log(`📷 Image upload summary: ${successCount} successful, ${failureCount} failed`);
+    console.log(`📷 Image upload summary: ${successful} successful, ${failed} failed`);
     
     return {
-      success: failureCount === 0,
-      log_uuid: logUuid,
+      success: successful > 0, // Consider it successful if at least one image uploaded
+      total_images: images.length,
+      successful_uploads: successful,
+      failed_uploads: failed,
       results: results,
-      summary: {
-        total: images.length,
-        successful: successCount,
-        failed: failureCount
-      },
-      message: failureCount === 0 
-        ? `All ${images.length} images uploaded successfully`
-        : `${successCount} of ${images.length} images uploaded successfully`
+      message: `${successful}/${images.length} images uploaded successfully`
     };
     
   } catch (error) {
-    console.error(`❌ Image upload failed for log ${logUuid}:`, {
-      error: error.message,
-      response: error.response?.data,
-      status: error.response?.status
-    });
-    
+    console.error(`❌ Image upload process failed for log ${logUuid}:`, error.message);
     throw new Error(`Image upload failed: ${error.message}`);
   }
 }
