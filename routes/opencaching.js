@@ -222,6 +222,70 @@ router.get('/logs/capabilities/:cacheCode', verifyFirebaseToken, async (req, res
   }
 });
 
+// Submit cache log with images (requires user authentication)
+router.post('/logs/submit-with-images', verifyFirebaseToken, async (req, res) => {
+  try {
+    const { country, cacheCode, logType, comment, imageCount } = req.body;
+    
+    // Validate required parameters
+    if (!country || !cacheCode || !logType || !comment) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameters: country, cacheCode, logType, comment'
+      });
+    }
+    
+    // Validate country
+    opencachingService.validateCountry(country);
+    
+    // Get user token from headers (required for log submission)
+    const userToken = req.headers['x-oc-token'];
+    const userTokenSecret = req.headers['x-oc-token-secret'];
+    
+    if (!userToken || !userTokenSecret) {
+      return res.status(401).json({
+        success: false,
+        error: 'User OpenCaching authentication required for log submission'
+      });
+    }
+    
+    // Validate log type
+    const validLogTypes = ['Found it', 'Didn\'t find it', 'Comment', 'Needs maintenance'];
+    if (!validLogTypes.includes(logType)) {
+      return res.status(400).json({
+        success: false,
+        error: `Invalid log type. Valid types: ${validLogTypes.join(', ')}`
+      });
+    }
+    
+    // For now, create a mock images array with the count
+    const mockImages = new Array(parseInt(imageCount) || 0).fill({ type: 'selected' });
+    
+    const results = await opencachingService.submitCacheLogWithImages(
+      country, 
+      cacheCode, 
+      logType, 
+      comment, 
+      mockImages,
+      userToken, 
+      userTokenSecret
+    );
+    
+    res.json({
+      success: true,
+      data: results,
+      message: 'Log with images submitted successfully'
+    });
+    
+  } catch (error) {
+    console.error('Error submitting cache log with images:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message || 'Failed to submit cache log with images'
+    });
+  }
+});
+
 // Submit cache log (requires user authentication)
 router.post('/logs/submit', verifyFirebaseToken, async (req, res) => {
   try {
@@ -278,6 +342,56 @@ router.post('/logs/submit', verifyFirebaseToken, async (req, res) => {
     res.status(500).json({
       success: false,
       error: error.message || 'Failed to submit cache log'
+    });
+  }
+});
+
+// Delete cache log (requires user authentication)
+router.delete('/logs/:logUuid', verifyFirebaseToken, async (req, res) => {
+  try {
+    const { logUuid } = req.params;
+    const { country } = req.query;
+    
+    // Validate required parameters
+    if (!country || !logUuid) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameters: country, logUuid'
+      });
+    }
+    
+    // Validate country
+    opencachingService.validateCountry(country);
+    
+    // Get user token from headers (required for log deletion)
+    const userToken = req.headers['x-oc-token'];
+    const userTokenSecret = req.headers['x-oc-token-secret'];
+    
+    if (!userToken || !userTokenSecret) {
+      return res.status(401).json({
+        success: false,
+        error: 'User OpenCaching authentication required for log deletion'
+      });
+    }
+    
+    const results = await opencachingService.deleteCacheLog(
+      country, 
+      logUuid, 
+      userToken, 
+      userTokenSecret
+    );
+    
+    res.json({
+      success: true,
+      data: results,
+      message: 'Log deleted successfully'
+    });
+    
+  } catch (error) {
+    console.error('Error deleting cache log:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message || 'Failed to delete cache log'
     });
   }
 });

@@ -367,6 +367,66 @@ async function submitCacheLog(country, cacheCode, logType, comment, userToken, u
   }
 }
 
+// Delete a cache log (write operation - requires OAuth)
+async function deleteCacheLog(country, logUuid, userToken, userTokenSecret) {
+  if (!userToken || !userTokenSecret) {
+    throw new Error('User authentication required for log deletion');
+  }
+  
+  console.log(`🗑️ Deleting log ${logUuid} for ${country}`);
+  
+  try {
+    const result = await makeOAuthRequest(
+      country,
+      'logs/delete',
+      {
+        log_uuid: logUuid
+      },
+      'POST',
+      userToken,
+      userTokenSecret
+    );
+    
+    console.log(`✅ Log deletion successful for ${logUuid}:`, result);
+    return result;
+    
+  } catch (error) {
+    console.error(`❌ Log deletion failed for ${logUuid}:`, {
+      error: error.message,
+      response: error.response?.data,
+      status: error.response?.status
+    });
+    throw error;
+  }
+}
+
+// Submit a cache log with images (write operation - requires OAuth)
+// Note: For now, this submits the text log and notes that images were selected
+// Full image upload to OpenCaching API would require additional implementation
+async function submitCacheLogWithImages(country, cacheCode, logType, comment, images, userToken, userTokenSecret) {
+  if (!userToken || !userTokenSecret) {
+    throw new Error('User authentication required for log submission');
+  }
+  
+  console.log(`📝📷 Submitting log with ${images.length} images for ${country}:`, {
+    cache_code: cacheCode,
+    logtype: logType,
+    comment: comment ? comment.substring(0, 50) + '...' : 'empty',
+    imageCount: images.length,
+    hasToken: !!userToken,
+    hasSecret: !!userTokenSecret
+  });
+  
+  // For now, append image info to the comment
+  let enhancedComment = comment;
+  if (images.length > 0) {
+    enhancedComment += `\n\n[📷 ${images.length} image${images.length > 1 ? 's' : ''} selected - image upload feature in development]`;
+  }
+  
+  // Submit the log with enhanced comment
+  return await submitCacheLog(country, cacheCode, logType, enhancedComment, userToken, userTokenSecret);
+}
+
 // Get available countries
 function getAvailableCountries() {
   return Object.keys(OPENCACHING_ENDPOINTS).filter(country => {
@@ -575,6 +635,8 @@ module.exports = {
   getCacheDetails,
   getCacheLogs,
   submitCacheLog,
+  submitCacheLogWithImages,
+  deleteCacheLog,
   checkLogCapabilities,
   getAvailableCountries,
   validateCountry,
