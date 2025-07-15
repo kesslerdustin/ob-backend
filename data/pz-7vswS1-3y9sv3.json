@@ -13,11 +13,11 @@
   "areaPolygon": [],
   "customStyle": {
     "color": "#4a90e2",
-    "icon": ""
+    "icon": "water"
   },
   "heroImage": {
-    "storageRef": "",
-    "priority": "",
+    "storageRef": "partner-zones/pz-7vswS1-3y9sv3/hero/n-snaren-norra-katrineholm.jpg",
+    "priority": "high",
     "imageSource": ""
   },
   "contact": {
@@ -29,6 +29,21 @@
   "historicalInfo": {
     "icon": "book",
     "images": {}
+  },
+  "quiz": {
+    "settings": {
+      "timePerQuestion": 30,
+      "passingScore": 70,
+      "randomizeQuestions": true,
+      "showExplanations": true
+    },
+    "rewards": {
+      "bronzeScore": 60,
+      "silverScore": 80,
+      "goldScore": 90,
+      "completionAchievement": ""
+    },
+    "questions": {}
   },
   "stats": {
     "survival-duration": {
@@ -199,7 +214,7 @@
       "region": "Värmland, Sweden",
       "description": "7 vs Wild Season 1 is the inaugural edition of a German outdoor survival web series created by YouTuber Fritz Meinecke in 2021. Seven participants – mostly experienced outdoor YouTubers – were dropped off solo around Lake Nären in the forests of Värmland, Sweden. Each had to survive 7 days in complete isolation with only 7 personal items for gear.\n\nThe adventure was filmed in late August 2021 and released in 16 episodes on Meinecke’s YouTube channel from November 6 to December 29, 2021. The remote Swedish setting (about 4 hours northwest of Stockholm) provided a rugged backdrop of lakeshore and woods, making it an ideal test of survival skills.\n.",
       "heroImage": {
-        "caption": "",
+        "caption": "Lake Naren in Sweden",
         "alt": ""
       },
       "stats": {
@@ -315,12 +330,20 @@
             }
           }
         }
+      },
+      "quiz": {
+        "title": "",
+        "description": "",
+        "questions": {}
       }
     },
     "it": {
       "name": "7 vs Wild - Season 1 Location",
       "region": "Värmland, Sweden",
       "description": "7 vs Wild Season 1 is the inaugural edition of a German outdoor survival web series created by YouTuber Fritz Meinecke in 2021. Seven participants – mostly experienced outdoor YouTubers – were dropped off solo around Lake Nären in the forests of Värmland, Sweden. Each had to survive 7 days in complete isolation with only 7 personal items for gear.\n\nThe adventure was filmed in late August 2021 and released in 16 episodes on Meinecke’s YouTube channel from November 6 to December 29, 2021. The remote Swedish setting (about 4 hours northwest of Stockholm) provided a rugged backdrop of lakeshore and woods, making it an ideal test of survival skills.\n.",
+      "heroImage": {
+        "caption": "Lake Naren in Sweden"
+      },
       "stats": {
         "survival-duration": {
           "label": "Survival Duration",
@@ -402,9 +425,12 @@
       }
     },
     "de": {
-      "name": "7 vs. Wild – Staffel-1-Schauplatz",
+      "name": "7 vs. Wild – Staffel 1 Schauplatz",
       "region": "Värmland, Schweden",
-      "description": "7 vs. Wild Staffel 1 ist die erste Ausgabe einer deutschen Outdoor-Survival-Webserie, die 2021 vom YouTuber Fritz Meinecke ins Leben gerufen wurde. Sieben Teilnehmer – hauptsächlich erfahrene Outdoor-YouTuber – wurden einzeln am Närsen-See in den Wäldern von Värmland, Schweden, ausgesetzt. Jeder musste 7 Tage in völliger Isolation mit nur 7 persönlichen Gegenständen als Ausrüstung überleben.\n\nDas Abenteuer wurde Ende August 2021 gedreht und vom 6. November bis 29. Dezember 2021 in 16 Episoden auf Meineckes YouTube-Kanal veröffentlicht. Die abgelegene schwedische Kulisse (ca. 4 Stunden nordwestlich von Stockholm) bot eine raue Landschaft aus Seeufern und Wäldern und war damit ein idealer Test für Überlebensfähigkeiten.\n.",
+      "description": "7 vs. Wild Staffel 1 ist die erste Ausgabe einer deutschen Outdoor-Survival-Webserie, die 2021 vom YouTuber Fritz Meinecke ins Leben gerufen wurde. Sieben Teilnehmer – meist erfahrene Outdoor-YouTuber – wurden einzeln am Nären-See in den Wäldern von Värmland, Schweden, ausgesetzt. Jeder musste 7 Tage in völliger Isolation mit nur 7 persönlichen Gegenständen als Ausrüstung überleben.\n\nDas Abenteuer wurde Ende August 2021 gedreht und vom 6. November bis 29. Dezember 2021 in 16 Episoden auf Meineckes YouTube-Kanal veröffentlicht. Die abgelegene schwedische Kulisse (etwa 4 Stunden nordwestlich von Stockholm) bot eine raue Umgebung aus Seeufern und Wäldern und war damit ein idealer Test für Überlebensfähigkeiten.\n.",
+      "heroImage": {
+        "caption": "Der Nären-See in Schweden"
+      },
       "stats": {
         "survival-duration": {
           "label": "Überlebensdauer",
@@ -416,7 +442,7 @@
         },
         "participants": {
           "label": "Teilnehmer",
-          "description": "7 Kandidaten (alles deutsche Content Creator, angeführt vom Schöpfer Fritz Meinecke)"
+          "description": "7 Teilnehmer (alles deutsche Content-Creator, angeführt von Schöpfer Fritz Meinecke)"
         },
         "gear-limit": {
           "label": "Ausrüstungslimit",
@@ -424,62 +450,62 @@
         },
         "winner": {
           "label": "Gewinner",
-          "description": "Fritz Meinecke mit 42 durch Challenges verdienten Punkten – er spendete das Preisgeld von 10.000 € an die Wohltätigkeitsorganisation „Mission Earth“"
+          "description": "Fritz Meinecke mit 42 Punkten aus den Challenges – er spendete das Preisgeld von 10.000 € an die Wohltätigkeitsorganisation „Mission Earth“"
         }
       },
       "interestingFacts": {
         "fans-found-the-location-the-production-tried-to-ke": {
-          "text": "Fans fanden den Ort: Die Produktion versuchte, den genauen Ort geheim zu halten, aber engagierte Fans machten den Närsen-See innerhalb weniger Stunden durch die Analyse von Drohnenaufnahmen und Karten ausfindig. Der Name des Sees erschien sogar kurzzeitig auf Wikipedia, was die Zuschauer dazu veranlasste, in dieser Gegend zu suchen."
+          "text": "Fans fanden den Ort: Die Produktion versuchte, den genauen Ort geheim zu halten, aber engagierte Fans machten den Nären-See innerhalb von Stunden durch die Analyse von Drohnenaufnahmen und Karten ausfindig. Der Name des Sees erschien sogar kurzzeitig auf Wikipedia, was die Zuschauer darauf hinwies, in diesem Gebiet zu suchen."
         },
         "2-item-challenge-contestant-fabio-schfer-deliberat": {
-          "text": "„2-Gegenstände“-Challenge: Kandidat Fabio Schäfer entschied sich bewusst dafür, nur 2 Gegenstände (ein Messer und einen Feuerstahl) anstelle der erlaubten sieben mitzunehmen, um die Schwierigkeit für sich selbst zu erhöhen. Seine extreme Entscheidung brachte ihm den Respekt der Fans ein und hob ihn von den anderen ab."
+          "text": "„2-Gegenstände“-Challenge: Der Teilnehmer Fabio Schäfer entschied sich bewusst dafür, nur 2 Gegenstände (ein Messer und einen Feuerstahl) anstelle der erlaubten sieben mitzunehmen, um die Schwierigkeit für sich selbst zu erhöhen. Seine extreme Entscheidung brachte ihm den Respekt der Fans ein und hob ihn von den anderen ab."
         },
         "mid-game-evacuation-despite-his-mental-resilience-": {
-          "text": "Evakuierung während des Spiels: Trotz seiner mentalen Stärke musste Fabio an Tag 5 aufgeben, nachdem er bei dem kalten, nassen Wetter eine schwere Unterkühlung erlitten hatte. Ein medizinischer Eingriff war notwendig, was ihn zum einzigen Teilnehmer der 1. Staffel machte, der nicht die vollen 7 Tage durchhielt. (Für seine Bemühungen wurde er bei den Fans als „Sieger der Herzen“ bekannt.)"
+          "text": "Evakuierung während des Spiels: Trotz seiner mentalen Stärke musste Fabio an Tag 5 aufgeben, nachdem er bei dem kalten, nassen Wetter eine schwere Unterkühlung erlitten hatte. Eine medizinische Intervention war notwendig, was ihn zum einzigen Teilnehmer der 1. Staffel machte, der nicht die vollen 7 Tage durchhielt. (Für seinen Einsatz wurde er bei den Fans als „Sieger der Herzen“ bekannt.)"
         },
         "natural-water-and-food-source-the-choice-of-a-lake": {
-          "text": "Natürliche Wasser- und Nahrungsquelle: Die Wahl eines Standorts am See war strategisch – frisches Wasser und Angelmöglichkeiten standen den Kandidaten zur Verfügung. Das Wasser des Närsen-Sees bedeutete, dass jeder eine zuverlässige Trinkquelle und die Chance hatte, Fische zu fangen, was entscheidende Vorteile in einer ansonsten unbarmherzigen Wildnis darstellte."
+          "text": "Natürliche Wasser- und Nahrungsquelle: Die Wahl eines Standorts am See war strategisch – frisches Wasser und die Möglichkeit zum Fischen standen den Teilnehmern zur Verfügung. Das Wasser des Nären-Sees bedeutete, dass jeder eine zuverlässige Trinkwasserquelle und die Chance hatte, Fische zu fangen, was entscheidende Vorteile in einer ansonsten unbarmherzigen Wildnis waren."
         },
         "surprise-youtube-hit-7-vs-wild-became-a-massive-on": {
-          "text": "Überraschungs-YouTube-Hit: 7 vs. Wild wurde ein riesiger Online-Erfolg. Die Popularität der Serie ließ den YouTube-Kanal von Fritz Meinecke in die Höhe schnellen, der während der Veröffentlichung der 1. Staffel wöchentlich rund 100.000 neue Abonnenten gewann. Der Erfolg der Show als Graswurzelprojekt (ohne Beteiligung eines Fernsehsenders) war in der deutschen YouTube-Szene beispiellos."
+          "text": "Überraschungserfolg auf YouTube: 7 vs. Wild wurde zu einem riesigen Online-Hit. Die Popularität der Serie ließ den YouTube-Kanal von Fritz Meinecke in die Höhe schnellen, der während der Veröffentlichung von Staffel 1 wöchentlich rund 100.000 neue Abonnenten gewann. Der Erfolg der Sendung als Basisprojekt (ohne Beteiligung eines Fernsehsenders) war in der deutschen YouTube-Szene beispiellos."
         }
       },
       "historicalInfo": {
-        "text": "Der Närsen-See liegt in der Gemeinde Hagfors in der Region Värmland in West-Zentralschweden. Diese Region war historisch dünn besiedelt, von dichten borealen Wäldern bedeckt und mit Seen übersät. Im späten 19. Jahrhundert gewann Värmland durch die Industrialisierung an Bedeutung – so wuchs beispielsweise die Stadt Hagfors um 1873 neu errichtete Hochöfen, als die Eisenverarbeitung wichtig wurde. Hagfors wurde später eine der letzten Städte Schwedens, die 1950 den offiziellen Stadtstatus erhielt, mit einem Wappen, das ihr Erbe in der Eisenverarbeitung ehrt. Heute ist das Gebiet nach wie vor dünn besiedelt und stark bewaldet, aber es ist für Nischenattraktionen bekannt, wie die jährliche Austragung der Schweden-Rallye (eine große Autorallye, die jedes Jahr im Februar die lokale Wirtschaft ankurbelt). Diese Mischung aus Industriegeschichte und wilder Natur schuf die Kulisse für die Survival-Herausforderung von 7 vs. Wild an den Ufern des Närsen-Sees."
+        "text": "Der Nären-See liegt in der Gemeinde Hagfors in der Region Värmland in West-Zentralschweden. Diese Region war historisch dünn besiedelt, von dichten borealen Wäldern bedeckt und mit Seen übersät. Im späten 19. Jahrhundert gewann Värmland durch die Industrialisierung an Bedeutung – so wuchs beispielsweise die Stadt Hagfors um 1873 errichtete Hochöfen, als die Eisenverarbeitung wichtig wurde. Hagfors wurde später eine der letzten Städte Schwedens, die 1950 den offiziellen Stadtstatus erhielt, mit einem Wappen, das ihr Erbe in der Eisenverarbeitung ehrt. Heute ist das Gebiet nach wie vor dünn besiedelt und stark bewaldet, aber es ist bekannt für Nischenattraktionen wie die jährliche Schweden-Rallye (eine große Autorennen-Veranstaltung im Februar, die die lokale Wirtschaft ankurbelt). Diese Mischung aus Industriegeschichte und wilder Natur bildete die Bühne für die Überlebensherausforderung von 7 vs. Wild an den Ufern des Nären-Sees."
       },
       "pois": {
         "fabios-cave": {
           "title": "Fabios Höhle",
           "openingHours": "Immer",
           "accessibility": "Schwer zu entdecken",
-          "bestTimeToVisit": "Bitte bleiben Sie zu Hause. Sollten Sie sich dennoch für einen Besuch entscheiden, stellen Sie sicher, dass Sie den Ort so verlassen, wie Sie ihn vorgefunden haben."
+          "bestTimeToVisit": "Bitte bleibt zu Hause. Solltet ihr euch dennoch für einen Besuch entscheiden, stellt sicher, dass ihr den Ort so verlasst, wie ihr ihn vorgefunden habt."
         }
       },
       "tours": {
         "7-vs-wild-season-1-survival-camps": {
-          "name": "7 vs. Wild: Staffel-1-Survival-Camps",
-          "description": "Eine Tour zu den sieben Aussetzungsorten rund um den Närsen-See, an denen jeder Kandidat der 1. Staffel sein Lager aufschlug. Diese Wegpunkte umrunden den See in der Wildnis von Hagfors und markieren die isolierten Stellen, an denen jeder Teilnehmer versuchte, eine Woche lang zu überleben.",
+          "name": "7 vs. Wild: Staffel 1 Überlebenscamps",
+          "description": "Eine Tour zu den sieben Aussetzungsorten rund um den Nären-See, an denen jeder Teilnehmer der ersten Staffel sein Lager aufgeschlagen hat. Diese Wegpunkte umrunden den See in der Wildnis von Hagfors und markieren die isolierten Stellen, an denen jeder Teilnehmer versuchte, eine Woche lang zu überleben.",
           "waypoints": {
             "pascal-der-bommel-bommerts-camp": {
-              "title": "Pascal „Der Bommel“ Bommerts Camp"
+              "title": "Camp von Pascal „Der Bommel“ Bommert"
             },
             "chris-reloadiak-nostys-camp": {
-              "title": "Chris „Reloadiak“ Nostys Camp"
+              "title": "Camp von Chris „Reloadiak“ Nosty"
             },
             "david-dave-henrichs-camp": {
-              "title": "David „DAVE“ Henrichs' Camp"
+              "title": "Camp von David „DAVE“ Henrichs"
             },
             "fabio-schfers-camp-cave-site": {
-              "title": "Fabio Schäfers Camp (Höhlenstandort)"
+              "title": "Camp von Fabio Schäfer (Höhle)"
             },
             "fritz-meineckes-camp": {
-              "title": "Fritz Meineckes Camp"
+              "title": "Camp von Fritz Meinecke"
             },
             "martin-survival-mattin-rudloffs-camp": {
-              "title": "Martin „Survival Mattin“ Rudloffs Camp"
+              "title": "Camp von Martin „Survival Mattin“ Rudloff"
             },
             "niklas-niklas-on-fire-rders-camp": {
-              "title": "Niklas „Niklas on Fire“ Röders Camp"
+              "title": "Camp von Niklas „Niklas on Fire“ Röder"
             }
           }
         }
@@ -489,6 +515,9 @@
       "name": "7 vs Wild - Season 1 Location",
       "region": "Värmland, Sweden",
       "description": "7 vs Wild Season 1 is the inaugural edition of a German outdoor survival web series created by YouTuber Fritz Meinecke in 2021. Seven participants – mostly experienced outdoor YouTubers – were dropped off solo around Lake Nären in the forests of Värmland, Sweden. Each had to survive 7 days in complete isolation with only 7 personal items for gear.\n\nThe adventure was filmed in late August 2021 and released in 16 episodes on Meinecke’s YouTube channel from November 6 to December 29, 2021. The remote Swedish setting (about 4 hours northwest of Stockholm) provided a rugged backdrop of lakeshore and woods, making it an ideal test of survival skills.\n.",
+      "heroImage": {
+        "caption": "Lake Naren in Sweden"
+      },
       "stats": {
         "survival-duration": {
           "label": "Survival Duration",
@@ -573,6 +602,9 @@
       "name": "7 vs Wild - Season 1 Location",
       "region": "Värmland, Sweden",
       "description": "7 vs Wild Season 1 is the inaugural edition of a German outdoor survival web series created by YouTuber Fritz Meinecke in 2021. Seven participants – mostly experienced outdoor YouTubers – were dropped off solo around Lake Nären in the forests of Värmland, Sweden. Each had to survive 7 days in complete isolation with only 7 personal items for gear.\n\nThe adventure was filmed in late August 2021 and released in 16 episodes on Meinecke’s YouTube channel from November 6 to December 29, 2021. The remote Swedish setting (about 4 hours northwest of Stockholm) provided a rugged backdrop of lakeshore and woods, making it an ideal test of survival skills.\n.",
+      "heroImage": {
+        "caption": "Lake Naren in Sweden"
+      },
       "stats": {
         "survival-duration": {
           "label": "Survival Duration",
@@ -657,6 +689,9 @@
       "name": "7 vs Wild - Season 1 Location",
       "region": "Värmland, Sweden",
       "description": "7 vs Wild Season 1 is the inaugural edition of a German outdoor survival web series created by YouTuber Fritz Meinecke in 2021. Seven participants – mostly experienced outdoor YouTubers – were dropped off solo around Lake Nären in the forests of Värmland, Sweden. Each had to survive 7 days in complete isolation with only 7 personal items for gear.\n\nThe adventure was filmed in late August 2021 and released in 16 episodes on Meinecke’s YouTube channel from November 6 to December 29, 2021. The remote Swedish setting (about 4 hours northwest of Stockholm) provided a rugged backdrop of lakeshore and woods, making it an ideal test of survival skills.\n.",
+      "heroImage": {
+        "caption": "Lake Naren in Sweden"
+      },
       "stats": {
         "survival-duration": {
           "label": "Survival Duration",
@@ -741,6 +776,9 @@
       "name": "7 vs Wild - Season 1 Location",
       "region": "Värmland, Sweden",
       "description": "7 vs Wild Season 1 is the inaugural edition of a German outdoor survival web series created by YouTuber Fritz Meinecke in 2021. Seven participants – mostly experienced outdoor YouTubers – were dropped off solo around Lake Nären in the forests of Värmland, Sweden. Each had to survive 7 days in complete isolation with only 7 personal items for gear.\n\nThe adventure was filmed in late August 2021 and released in 16 episodes on Meinecke’s YouTube channel from November 6 to December 29, 2021. The remote Swedish setting (about 4 hours northwest of Stockholm) provided a rugged backdrop of lakeshore and woods, making it an ideal test of survival skills.\n.",
+      "heroImage": {
+        "caption": "Lake Naren in Sweden"
+      },
       "stats": {
         "survival-duration": {
           "label": "Survival Duration",
