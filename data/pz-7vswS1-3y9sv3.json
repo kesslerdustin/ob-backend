@@ -30,21 +30,6 @@
     "icon": "book",
     "images": {}
   },
-  "quiz": {
-    "settings": {
-      "timePerQuestion": 30,
-      "passingScore": 70,
-      "randomizeQuestions": true,
-      "showExplanations": true
-    },
-    "rewards": {
-      "bronzeScore": 60,
-      "silverScore": 80,
-      "goldScore": 90,
-      "completionAchievement": ""
-    },
-    "questions": {}
-  },
   "stats": {
     "survival-duration": {
       "icon": "calendar",
@@ -330,11 +315,6 @@
             }
           }
         }
-      },
-      "quiz": {
-        "title": "",
-        "description": "",
-        "questions": {}
       }
     },
     "it": {
