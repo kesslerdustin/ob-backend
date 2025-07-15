@@ -53,8 +53,8 @@ function validateStat(stat, supportedLanguages = ['en']) {
   if (!stat.icon) return `Stat ${stat.id} missing icon`;
   if (!SUPPORTED_ICONS.includes(stat.icon)) return `Stat ${stat.id} has unsupported icon: ${stat.icon}`;
   if (!stat.value) return `Stat ${stat.id} missing value`;
-  if (!stat.unit) return `Stat ${stat.id} missing unit`;
-  if (!SUPPORTED_UNITS.includes(stat.unit)) return `Stat ${stat.id} has unsupported unit: ${stat.unit}`;
+  // Unit is now optional, but if provided, must be supported
+  if (stat.unit && !SUPPORTED_UNITS.includes(stat.unit)) return `Stat ${stat.id} has unsupported unit: ${stat.unit}`;
   if (stat.secondaryUnit && !SUPPORTED_UNITS.includes(stat.secondaryUnit)) {
     return `Stat ${stat.id} has unsupported secondary unit: ${stat.secondaryUnit}`;
   }
@@ -161,7 +161,7 @@ function validateTranslationCompleteness(zoneData) {
       for (const [statId, stat] of Object.entries(zoneData.stats)) {
         if (!stat.icon) errors.push(`Root stat ${statId} missing icon`);
         if (!stat.value) errors.push(`Root stat ${statId} missing value`);
-        if (!stat.unit) errors.push(`Root stat ${statId} missing unit`);
+        // Unit is now optional for root stats, but if provided, must be supported
         if (stat.icon && !SUPPORTED_ICONS.includes(stat.icon)) {
           errors.push(`Root stat ${statId} has unsupported icon: ${stat.icon}`);
         }
