@@ -1,0 +1,850 @@
+/*
+⚠️ Structure validation warnings detected - please review.
+Please fix the issues and regenerate the JSON.
+*/
+
+{
+  "likes": [],
+  "id": "pz-7vswS1-3y9sv3",
+  "author": "Wildscope",
+  "priority": 1,
+  "official": true,
+  "active": true,
+  "searchRadius": 50,
+  "center": [
+    60.247626,
+    13.832297
+  ],
+  "areaPolygon": [],
+  "customStyle": {
+    "color": "#4a90e2",
+    "icon": ""
+  },
+  "heroImage": {
+    "storageRef": "",
+    "priority": "",
+    "imageSource": ""
+  },
+  "contact": {
+    "website": "",
+    "phone": "",
+    "email": "",
+    "emergencyPhone": ""
+  },
+  "historicalInfo": {
+    "icon": "book",
+    "images": {}
+  },
+  "quiz": {
+    "settings": {
+      "timePerQuestion": 30,
+      "passingScore": 70,
+      "randomizeQuestions": true,
+      "showExplanations": true
+    },
+    "rewards": {
+      "bronzeScore": 60,
+      "silverScore": 80,
+      "goldScore": 90,
+      "completionAchievement": ""
+    },
+    "questions": {}
+  },
+  "stats": {
+    "survival-duration": {
+      "icon": "calendar",
+      "value": "7 Days",
+      "unit": "",
+      "secondaryValue": "",
+      "secondaryUnit": ""
+    },
+    "episodes": {
+      "icon": "analytics",
+      "value": "16",
+      "unit": "",
+      "secondaryValue": "",
+      "secondaryUnit": ""
+    },
+    "participants": {
+      "icon": "groups",
+      "value": "7 contestants",
+      "unit": "",
+      "secondaryValue": "",
+      "secondaryUnit": ""
+    },
+    "gear-limit": {
+      "icon": "history",
+      "value": "7",
+      "unit": "",
+      "secondaryValue": "",
+      "secondaryUnit": ""
+    },
+    "winner": {
+      "icon": "medal-outline",
+      "value": "Fritz Meinecke",
+      "unit": "",
+      "secondaryValue": "",
+      "secondaryUnit": ""
+    }
+  },
+  "interestingFacts": {
+    "fans-found-the-location-the-production-tried-to-ke": {
+      "icon": "location",
+      "image": {
+        "storageRef": "",
+        "imageSource": ""
+      }
+    },
+    "2-item-challenge-contestant-fabio-schfer-deliberat": {
+      "icon": "explore",
+      "image": {
+        "storageRef": "",
+        "imageSource": ""
+      }
+    },
+    "mid-game-evacuation-despite-his-mental-resilience-": {
+      "icon": "compass",
+      "image": {
+        "storageRef": "",
+        "imageSource": ""
+      }
+    },
+    "natural-water-and-food-source-the-choice-of-a-lake": {
+      "icon": "water",
+      "image": {
+        "storageRef": "",
+        "imageSource": ""
+      }
+    },
+    "surprise-youtube-hit-7-vs-wild-became-a-massive-on": {
+      "icon": "globe",
+      "image": {
+        "storageRef": "",
+        "imageSource": ""
+      }
+    }
+  },
+  "news": {},
+  "pois": {
+    "fabios-cave": {
+      "type": "historic_site",
+      "coords": [
+        60.226932,
+        13.859779
+      ],
+      "amenities": [
+        "camping"
+      ],
+      "gallery": {
+        "storagePrefix": "",
+        "images": {}
+      }
+    }
+  },
+  "tours": {
+    "7-vs-wild-season-1-survival-camps": {
+      "duration": "Full day",
+      "difficulty": "Moderate to difficult",
+      "distance": "15 miles",
+      "waypoints": {
+        "pascal-der-bommel-bommerts-camp": {
+          "coords": [
+            60.257535,
+            13.839343
+          ],
+          "estimatedTime": 0,
+          "type": "rest_area",
+          "images": []
+        },
+        "chris-reloadiak-nostys-camp": {
+          "coords": [
+            60.241683,
+            13.842434
+          ],
+          "estimatedTime": 0,
+          "type": "rest_area",
+          "images": []
+        },
+        "david-dave-henrichs-camp": {
+          "coords": [
+            60.267587,
+            13.805341
+          ],
+          "estimatedTime": 0,
+          "type": "rest_area",
+          "images": []
+        },
+        "fabio-schfers-camp-cave-site": {
+          "coords": [
+            60.228808,
+            13.864587
+          ],
+          "estimatedTime": 0,
+          "type": "rest_area",
+          "images": []
+        },
+        "fritz-meineckes-camp": {
+          "coords": [
+            60.276189,
+            13.822342
+          ],
+          "estimatedTime": 0,
+          "type": "rest_area",
+          "images": []
+        },
+        "martin-survival-mattin-rudloffs-camp": {
+          "coords": [
+            60.220791,
+            13.830241
+          ],
+          "estimatedTime": 0,
+          "type": "rest_area",
+          "images": []
+        },
+        "niklas-niklas-on-fire-rders-camp": {
+          "coords": [
+            60.214307,
+            13.853768
+          ],
+          "estimatedTime": 0,
+          "type": "rest_area",
+          "images": []
+        }
+      }
+    }
+  },
+  "translations": {
+    "en": {
+      "name": "7 vs Wild - Season 1 Location",
+      "region": "Värmland, Sweden",
+      "description": "7 vs Wild Season 1 is the inaugural edition of a German outdoor survival web series created by YouTuber Fritz Meinecke in 2021. Seven participants – mostly experienced outdoor YouTubers – were dropped off solo around Lake Nären in the forests of Värmland, Sweden. Each had to survive 7 days in complete isolation with only 7 personal items for gear.\n\nThe adventure was filmed in late August 2021 and released in 16 episodes on Meinecke’s YouTube channel from November 6 to December 29, 2021. The remote Swedish setting (about 4 hours northwest of Stockholm) provided a rugged backdrop of lakeshore and woods, making it an ideal test of survival skills.\n.",
+      "heroImage": {
+        "caption": "",
+        "alt": ""
+      },
+      "stats": {
+        "survival-duration": {
+          "label": "Survival Duration",
+          "description": "one full week in late August 2021"
+        },
+        "episodes": {
+          "label": "Episodes",
+          "description": "aired November 6 – December 29, 2021 on YouTube"
+        },
+        "participants": {
+          "label": "Participants",
+          "description": "7 contestants (all German content creators, led by creator Fritz Meinecke)"
+        },
+        "gear-limit": {
+          "label": "Gear Limit",
+          "description": "7 personal items allowed per participant (standard clothing not counted as items)"
+        },
+        "winner": {
+          "label": "Winner",
+          "description": "Fritz Meinecke with 42 points earned from challenges – he donated the €10,000 prize to the charity “Mission Earth”"
+        }
+      },
+      "interestingFacts": {
+        "fans-found-the-location-the-production-tried-to-ke": {
+          "text": "Fans found the location: The production tried to keep the exact location secret, but dedicated fans pinpointed Lake Nären within hours by analyzing drone shots and maps. The lake’s name even briefly appeared on Wikipedia, tipping off viewers to search in that area.",
+          "image": {
+            "caption": ""
+          }
+        },
+        "2-item-challenge-contestant-fabio-schfer-deliberat": {
+          "text": "“2-Item” challenge: Contestant Fabio Schäfer deliberately chose to bring only 2 items (a knife and a fire steel) instead of the allowed seven, to increase the difficulty for himself. His extreme decision earned respect from fans and set him apart from the others.",
+          "image": {
+            "caption": ""
+          }
+        },
+        "mid-game-evacuation-despite-his-mental-resilience-": {
+          "text": "Mid-game evacuation: Despite his mental resilience, Fabio had to tap out on Day 5 after suffering severe hypothermia in the cold, wet weather. Medical intervention was necessary, making him the only Season 1 participant who did not last the full 7 days. (He became known as the “winner of hearts” among fans for his effort.)",
+          "image": {
+            "caption": ""
+          }
+        },
+        "natural-water-and-food-source-the-choice-of-a-lake": {
+          "text": "Natural water and food source: The choice of a lakeside location was strategic – fresh water and fishing were readily available for contestants. Lake Nären’s waters meant everyone had a reliable drinking source and a chance to catch fish, crucial advantages in an otherwise unforgiving wilderness.",
+          "image": {
+            "caption": ""
+          }
+        },
+        "surprise-youtube-hit-7-vs-wild-became-a-massive-on": {
+          "text": "Surprise YouTube hit: 7 vs Wild became a massive online hit. The series’ popularity skyrocketed Fritz Meinecke’s YouTube channel, gaining roughly 100,000 new subscribers per week during Season 1’s release. The show’s success as a grassroots project (with no TV network involved) was unprecedented in the German YouTube scene.",
+          "image": {
+            "caption": ""
+          }
+        }
+      },
+      "historicalInfo": {
+        "text": "Lake Nären’s locale is within Hagfors Municipality in the Värmland region of west-central Sweden. This region was historically sparsely populated, covered in dense boreal forests and dotted with lakes. In the late 19th century, Värmland gained prominence through industrialization – for example, the town of Hagfors grew around newly built blast furnaces in 1873 as ironworking became important. Hagfors later became one of Sweden’s last towns to receive official city status in 1950, with a coat of arms honoring its ironworks heritage. Today the area remains thinly populated and heavily forested, but it’s known for niche attractions like hosting the annual Swedish Rally (a major car rally each February that boosts the local economy). This blend of industrial history and wild nature set the stage for 7 vs Wild’s survival challenge on Lake Nären’s shores.",
+        "images": {}
+      },
+      "contact": {
+        "websiteLabel": "",
+        "phoneLabel": "",
+        "emailLabel": "",
+        "emergencyLabel": "",
+        "address": "",
+        "hours": ""
+      },
+      "news": {},
+      "pois": {
+        "fabios-cave": {
+          "title": "Fabios Cave",
+          "description": "",
+          "openingHours": "Always",
+          "accessibility": "Hard to spot",
+          "bestTimeToVisit": "Please stay at home. If you decide to visit nevertheless, make sure to leave the site as you found it.",
+          "address": "",
+          "phone": ""
+        }
+      },
+      "tours": {
+        "7-vs-wild-season-1-survival-camps": {
+          "name": "7 vs Wild: Season 1 Survival Camps",
+          "description": "A tour of the seven drop-off locations around Lake Nären where each Season 1 contestant set up camp. These waypoints circle the lake in the Hagfors wilderness, marking the isolated spots each participant attempted to survive for a week.",
+          "waypoints": {
+            "pascal-der-bommel-bommerts-camp": {
+              "title": "Pascal “Der Bommel” Bommert’s Camp",
+              "info": ""
+            },
+            "chris-reloadiak-nostys-camp": {
+              "title": "Chris “Reloadiak” Nosty’s Camp",
+              "info": ""
+            },
+            "david-dave-henrichs-camp": {
+              "title": "David “DAVE” Henrichs’ Camp",
+              "info": ""
+            },
+            "fabio-schfers-camp-cave-site": {
+              "title": "Fabio Schäfer’s Camp (Cave Site)",
+              "info": ""
+            },
+            "fritz-meineckes-camp": {
+              "title": "Fritz Meinecke’s Camp",
+              "info": ""
+            },
+            "martin-survival-mattin-rudloffs-camp": {
+              "title": "Martin “Survival Mattin” Rudloff’s Camp",
+              "info": ""
+            },
+            "niklas-niklas-on-fire-rders-camp": {
+              "title": "Niklas “Niklas on Fire” Röder’s Camp",
+              "info": ""
+            }
+          }
+        }
+      },
+      "quiz": {
+        "title": "",
+        "description": "",
+        "questions": {}
+      }
+    },
+    "it": {
+      "name": "7 vs Wild - Season 1 Location",
+      "region": "Värmland, Sweden",
+      "description": "7 vs Wild Season 1 is the inaugural edition of a German outdoor survival web series created by YouTuber Fritz Meinecke in 2021. Seven participants – mostly experienced outdoor YouTubers – were dropped off solo around Lake Nären in the forests of Värmland, Sweden. Each had to survive 7 days in complete isolation with only 7 personal items for gear.\n\nThe adventure was filmed in late August 2021 and released in 16 episodes on Meinecke’s YouTube channel from November 6 to December 29, 2021. The remote Swedish setting (about 4 hours northwest of Stockholm) provided a rugged backdrop of lakeshore and woods, making it an ideal test of survival skills.\n.",
+      "stats": {
+        "survival-duration": {
+          "label": "Survival Duration",
+          "description": "one full week in late August 2021"
+        },
+        "episodes": {
+          "label": "Episodes",
+          "description": "aired November 6 – December 29, 2021 on YouTube"
+        },
+        "participants": {
+          "label": "Participants",
+          "description": "7 contestants (all German content creators, led by creator Fritz Meinecke)"
+        },
+        "gear-limit": {
+          "label": "Gear Limit",
+          "description": "7 personal items allowed per participant (standard clothing not counted as items)"
+        },
+        "winner": {
+          "label": "Winner",
+          "description": "Fritz Meinecke with 42 points earned from challenges – he donated the €10,000 prize to the charity “Mission Earth”"
+        }
+      },
+      "interestingFacts": {
+        "fans-found-the-location-the-production-tried-to-ke": {
+          "text": "Fans found the location: The production tried to keep the exact location secret, but dedicated fans pinpointed Lake Nären within hours by analyzing drone shots and maps. The lake’s name even briefly appeared on Wikipedia, tipping off viewers to search in that area."
+        },
+        "2-item-challenge-contestant-fabio-schfer-deliberat": {
+          "text": "“2-Item” challenge: Contestant Fabio Schäfer deliberately chose to bring only 2 items (a knife and a fire steel) instead of the allowed seven, to increase the difficulty for himself. His extreme decision earned respect from fans and set him apart from the others."
+        },
+        "mid-game-evacuation-despite-his-mental-resilience-": {
+          "text": "Mid-game evacuation: Despite his mental resilience, Fabio had to tap out on Day 5 after suffering severe hypothermia in the cold, wet weather. Medical intervention was necessary, making him the only Season 1 participant who did not last the full 7 days. (He became known as the “winner of hearts” among fans for his effort.)"
+        },
+        "natural-water-and-food-source-the-choice-of-a-lake": {
+          "text": "Natural water and food source: The choice of a lakeside location was strategic – fresh water and fishing were readily available for contestants. Lake Nären’s waters meant everyone had a reliable drinking source and a chance to catch fish, crucial advantages in an otherwise unforgiving wilderness."
+        },
+        "surprise-youtube-hit-7-vs-wild-became-a-massive-on": {
+          "text": "Surprise YouTube hit: 7 vs Wild became a massive online hit. The series’ popularity skyrocketed Fritz Meinecke’s YouTube channel, gaining roughly 100,000 new subscribers per week during Season 1’s release. The show’s success as a grassroots project (with no TV network involved) was unprecedented in the German YouTube scene."
+        }
+      },
+      "historicalInfo": {
+        "text": "Lake Nären’s locale is within Hagfors Municipality in the Värmland region of west-central Sweden. This region was historically sparsely populated, covered in dense boreal forests and dotted with lakes. In the late 19th century, Värmland gained prominence through industrialization – for example, the town of Hagfors grew around newly built blast furnaces in 1873 as ironworking became important. Hagfors later became one of Sweden’s last towns to receive official city status in 1950, with a coat of arms honoring its ironworks heritage. Today the area remains thinly populated and heavily forested, but it’s known for niche attractions like hosting the annual Swedish Rally (a major car rally each February that boosts the local economy). This blend of industrial history and wild nature set the stage for 7 vs Wild’s survival challenge on Lake Nären’s shores."
+      },
+      "pois": {
+        "fabios-cave": {
+          "title": "Fabios Cave",
+          "openingHours": "Always",
+          "accessibility": "Hard to spot",
+          "bestTimeToVisit": "Please stay at home. If you decide to visit nevertheless, make sure to leave the site as you found it."
+        }
+      },
+      "tours": {
+        "7-vs-wild-season-1-survival-camps": {
+          "name": "7 vs Wild: Season 1 Survival Camps",
+          "description": "A tour of the seven drop-off locations around Lake Nären where each Season 1 contestant set up camp. These waypoints circle the lake in the Hagfors wilderness, marking the isolated spots each participant attempted to survive for a week.",
+          "waypoints": {
+            "pascal-der-bommel-bommerts-camp": {
+              "title": "Pascal “Der Bommel” Bommert’s Camp"
+            },
+            "chris-reloadiak-nostys-camp": {
+              "title": "Chris “Reloadiak” Nosty’s Camp"
+            },
+            "david-dave-henrichs-camp": {
+              "title": "David “DAVE” Henrichs’ Camp"
+            },
+            "fabio-schfers-camp-cave-site": {
+              "title": "Fabio Schäfer’s Camp (Cave Site)"
+            },
+            "fritz-meineckes-camp": {
+              "title": "Fritz Meinecke’s Camp"
+            },
+            "martin-survival-mattin-rudloffs-camp": {
+              "title": "Martin “Survival Mattin” Rudloff’s Camp"
+            },
+            "niklas-niklas-on-fire-rders-camp": {
+              "title": "Niklas “Niklas on Fire” Röder’s Camp"
+            }
+          }
+        }
+      }
+    },
+    "de": {
+      "name": "7 vs. Wild – Staffel-1-Schauplatz",
+      "region": "Värmland, Schweden",
+      "description": "7 vs. Wild Staffel 1 ist die erste Ausgabe einer deutschen Outdoor-Survival-Webserie, die 2021 vom YouTuber Fritz Meinecke ins Leben gerufen wurde. Sieben Teilnehmer – hauptsächlich erfahrene Outdoor-YouTuber – wurden einzeln am Närsen-See in den Wäldern von Värmland, Schweden, ausgesetzt. Jeder musste 7 Tage in völliger Isolation mit nur 7 persönlichen Gegenständen als Ausrüstung überleben.\n\nDas Abenteuer wurde Ende August 2021 gedreht und vom 6. November bis 29. Dezember 2021 in 16 Episoden auf Meineckes YouTube-Kanal veröffentlicht. Die abgelegene schwedische Kulisse (ca. 4 Stunden nordwestlich von Stockholm) bot eine raue Landschaft aus Seeufern und Wäldern und war damit ein idealer Test für Überlebensfähigkeiten.\n.",
+      "stats": {
+        "survival-duration": {
+          "label": "Überlebensdauer",
+          "description": "eine volle Woche Ende August 2021"
+        },
+        "episodes": {
+          "label": "Episoden",
+          "description": "ausgestrahlt vom 6. November bis 29. Dezember 2021 auf YouTube"
+        },
+        "participants": {
+          "label": "Teilnehmer",
+          "description": "7 Kandidaten (alles deutsche Content Creator, angeführt vom Schöpfer Fritz Meinecke)"
+        },
+        "gear-limit": {
+          "label": "Ausrüstungslimit",
+          "description": "7 persönliche Gegenstände pro Teilnehmer erlaubt (Standardkleidung zählt nicht als Gegenstand)"
+        },
+        "winner": {
+          "label": "Gewinner",
+          "description": "Fritz Meinecke mit 42 durch Challenges verdienten Punkten – er spendete das Preisgeld von 10.000 € an die Wohltätigkeitsorganisation „Mission Earth“"
+        }
+      },
+      "interestingFacts": {
+        "fans-found-the-location-the-production-tried-to-ke": {
+          "text": "Fans fanden den Ort: Die Produktion versuchte, den genauen Ort geheim zu halten, aber engagierte Fans machten den Närsen-See innerhalb weniger Stunden durch die Analyse von Drohnenaufnahmen und Karten ausfindig. Der Name des Sees erschien sogar kurzzeitig auf Wikipedia, was die Zuschauer dazu veranlasste, in dieser Gegend zu suchen."
+        },
+        "2-item-challenge-contestant-fabio-schfer-deliberat": {
+          "text": "„2-Gegenstände“-Challenge: Kandidat Fabio Schäfer entschied sich bewusst dafür, nur 2 Gegenstände (ein Messer und einen Feuerstahl) anstelle der erlaubten sieben mitzunehmen, um die Schwierigkeit für sich selbst zu erhöhen. Seine extreme Entscheidung brachte ihm den Respekt der Fans ein und hob ihn von den anderen ab."
+        },
+        "mid-game-evacuation-despite-his-mental-resilience-": {
+          "text": "Evakuierung während des Spiels: Trotz seiner mentalen Stärke musste Fabio an Tag 5 aufgeben, nachdem er bei dem kalten, nassen Wetter eine schwere Unterkühlung erlitten hatte. Ein medizinischer Eingriff war notwendig, was ihn zum einzigen Teilnehmer der 1. Staffel machte, der nicht die vollen 7 Tage durchhielt. (Für seine Bemühungen wurde er bei den Fans als „Sieger der Herzen“ bekannt.)"
+        },
+        "natural-water-and-food-source-the-choice-of-a-lake": {
+          "text": "Natürliche Wasser- und Nahrungsquelle: Die Wahl eines Standorts am See war strategisch – frisches Wasser und Angelmöglichkeiten standen den Kandidaten zur Verfügung. Das Wasser des Närsen-Sees bedeutete, dass jeder eine zuverlässige Trinkquelle und die Chance hatte, Fische zu fangen, was entscheidende Vorteile in einer ansonsten unbarmherzigen Wildnis darstellte."
+        },
+        "surprise-youtube-hit-7-vs-wild-became-a-massive-on": {
+          "text": "Überraschungs-YouTube-Hit: 7 vs. Wild wurde ein riesiger Online-Erfolg. Die Popularität der Serie ließ den YouTube-Kanal von Fritz Meinecke in die Höhe schnellen, der während der Veröffentlichung der 1. Staffel wöchentlich rund 100.000 neue Abonnenten gewann. Der Erfolg der Show als Graswurzelprojekt (ohne Beteiligung eines Fernsehsenders) war in der deutschen YouTube-Szene beispiellos."
+        }
+      },
+      "historicalInfo": {
+        "text": "Der Närsen-See liegt in der Gemeinde Hagfors in der Region Värmland in West-Zentralschweden. Diese Region war historisch dünn besiedelt, von dichten borealen Wäldern bedeckt und mit Seen übersät. Im späten 19. Jahrhundert gewann Värmland durch die Industrialisierung an Bedeutung – so wuchs beispielsweise die Stadt Hagfors um 1873 neu errichtete Hochöfen, als die Eisenverarbeitung wichtig wurde. Hagfors wurde später eine der letzten Städte Schwedens, die 1950 den offiziellen Stadtstatus erhielt, mit einem Wappen, das ihr Erbe in der Eisenverarbeitung ehrt. Heute ist das Gebiet nach wie vor dünn besiedelt und stark bewaldet, aber es ist für Nischenattraktionen bekannt, wie die jährliche Austragung der Schweden-Rallye (eine große Autorallye, die jedes Jahr im Februar die lokale Wirtschaft ankurbelt). Diese Mischung aus Industriegeschichte und wilder Natur schuf die Kulisse für die Survival-Herausforderung von 7 vs. Wild an den Ufern des Närsen-Sees."
+      },
+      "pois": {
+        "fabios-cave": {
+          "title": "Fabios Höhle",
+          "openingHours": "Immer",
+          "accessibility": "Schwer zu entdecken",
+          "bestTimeToVisit": "Bitte bleiben Sie zu Hause. Sollten Sie sich dennoch für einen Besuch entscheiden, stellen Sie sicher, dass Sie den Ort so verlassen, wie Sie ihn vorgefunden haben."
+        }
+      },
+      "tours": {
+        "7-vs-wild-season-1-survival-camps": {
+          "name": "7 vs. Wild: Staffel-1-Survival-Camps",
+          "description": "Eine Tour zu den sieben Aussetzungsorten rund um den Närsen-See, an denen jeder Kandidat der 1. Staffel sein Lager aufschlug. Diese Wegpunkte umrunden den See in der Wildnis von Hagfors und markieren die isolierten Stellen, an denen jeder Teilnehmer versuchte, eine Woche lang zu überleben.",
+          "waypoints": {
+            "pascal-der-bommel-bommerts-camp": {
+              "title": "Pascal „Der Bommel“ Bommerts Camp"
+            },
+            "chris-reloadiak-nostys-camp": {
+              "title": "Chris „Reloadiak“ Nostys Camp"
+            },
+            "david-dave-henrichs-camp": {
+              "title": "David „DAVE“ Henrichs' Camp"
+            },
+            "fabio-schfers-camp-cave-site": {
+              "title": "Fabio Schäfers Camp (Höhlenstandort)"
+            },
+            "fritz-meineckes-camp": {
+              "title": "Fritz Meineckes Camp"
+            },
+            "martin-survival-mattin-rudloffs-camp": {
+              "title": "Martin „Survival Mattin“ Rudloffs Camp"
+            },
+            "niklas-niklas-on-fire-rders-camp": {
+              "title": "Niklas „Niklas on Fire“ Röders Camp"
+            }
+          }
+        }
+      }
+    },
+    "es": {
+      "name": "7 vs Wild - Season 1 Location",
+      "region": "Värmland, Sweden",
+      "description": "7 vs Wild Season 1 is the inaugural edition of a German outdoor survival web series created by YouTuber Fritz Meinecke in 2021. Seven participants – mostly experienced outdoor YouTubers – were dropped off solo around Lake Nären in the forests of Värmland, Sweden. Each had to survive 7 days in complete isolation with only 7 personal items for gear.\n\nThe adventure was filmed in late August 2021 and released in 16 episodes on Meinecke’s YouTube channel from November 6 to December 29, 2021. The remote Swedish setting (about 4 hours northwest of Stockholm) provided a rugged backdrop of lakeshore and woods, making it an ideal test of survival skills.\n.",
+      "stats": {
+        "survival-duration": {
+          "label": "Survival Duration",
+          "description": "one full week in late August 2021"
+        },
+        "episodes": {
+          "label": "Episodes",
+          "description": "aired November 6 – December 29, 2021 on YouTube"
+        },
+        "participants": {
+          "label": "Participants",
+          "description": "7 contestants (all German content creators, led by creator Fritz Meinecke)"
+        },
+        "gear-limit": {
+          "label": "Gear Limit",
+          "description": "7 personal items allowed per participant (standard clothing not counted as items)"
+        },
+        "winner": {
+          "label": "Winner",
+          "description": "Fritz Meinecke with 42 points earned from challenges – he donated the €10,000 prize to the charity “Mission Earth”"
+        }
+      },
+      "interestingFacts": {
+        "fans-found-the-location-the-production-tried-to-ke": {
+          "text": "Fans found the location: The production tried to keep the exact location secret, but dedicated fans pinpointed Lake Nären within hours by analyzing drone shots and maps. The lake’s name even briefly appeared on Wikipedia, tipping off viewers to search in that area."
+        },
+        "2-item-challenge-contestant-fabio-schfer-deliberat": {
+          "text": "“2-Item” challenge: Contestant Fabio Schäfer deliberately chose to bring only 2 items (a knife and a fire steel) instead of the allowed seven, to increase the difficulty for himself. His extreme decision earned respect from fans and set him apart from the others."
+        },
+        "mid-game-evacuation-despite-his-mental-resilience-": {
+          "text": "Mid-game evacuation: Despite his mental resilience, Fabio had to tap out on Day 5 after suffering severe hypothermia in the cold, wet weather. Medical intervention was necessary, making him the only Season 1 participant who did not last the full 7 days. (He became known as the “winner of hearts” among fans for his effort.)"
+        },
+        "natural-water-and-food-source-the-choice-of-a-lake": {
+          "text": "Natural water and food source: The choice of a lakeside location was strategic – fresh water and fishing were readily available for contestants. Lake Nären’s waters meant everyone had a reliable drinking source and a chance to catch fish, crucial advantages in an otherwise unforgiving wilderness."
+        },
+        "surprise-youtube-hit-7-vs-wild-became-a-massive-on": {
+          "text": "Surprise YouTube hit: 7 vs Wild became a massive online hit. The series’ popularity skyrocketed Fritz Meinecke’s YouTube channel, gaining roughly 100,000 new subscribers per week during Season 1’s release. The show’s success as a grassroots project (with no TV network involved) was unprecedented in the German YouTube scene."
+        }
+      },
+      "historicalInfo": {
+        "text": "Lake Nären’s locale is within Hagfors Municipality in the Värmland region of west-central Sweden. This region was historically sparsely populated, covered in dense boreal forests and dotted with lakes. In the late 19th century, Värmland gained prominence through industrialization – for example, the town of Hagfors grew around newly built blast furnaces in 1873 as ironworking became important. Hagfors later became one of Sweden’s last towns to receive official city status in 1950, with a coat of arms honoring its ironworks heritage. Today the area remains thinly populated and heavily forested, but it’s known for niche attractions like hosting the annual Swedish Rally (a major car rally each February that boosts the local economy). This blend of industrial history and wild nature set the stage for 7 vs Wild’s survival challenge on Lake Nären’s shores."
+      },
+      "pois": {
+        "fabios-cave": {
+          "title": "Fabios Cave",
+          "openingHours": "Always",
+          "accessibility": "Hard to spot",
+          "bestTimeToVisit": "Please stay at home. If you decide to visit nevertheless, make sure to leave the site as you found it."
+        }
+      },
+      "tours": {
+        "7-vs-wild-season-1-survival-camps": {
+          "name": "7 vs Wild: Season 1 Survival Camps",
+          "description": "A tour of the seven drop-off locations around Lake Nären where each Season 1 contestant set up camp. These waypoints circle the lake in the Hagfors wilderness, marking the isolated spots each participant attempted to survive for a week.",
+          "waypoints": {
+            "pascal-der-bommel-bommerts-camp": {
+              "title": "Pascal “Der Bommel” Bommert’s Camp"
+            },
+            "chris-reloadiak-nostys-camp": {
+              "title": "Chris “Reloadiak” Nosty’s Camp"
+            },
+            "david-dave-henrichs-camp": {
+              "title": "David “DAVE” Henrichs’ Camp"
+            },
+            "fabio-schfers-camp-cave-site": {
+              "title": "Fabio Schäfer’s Camp (Cave Site)"
+            },
+            "fritz-meineckes-camp": {
+              "title": "Fritz Meinecke’s Camp"
+            },
+            "martin-survival-mattin-rudloffs-camp": {
+              "title": "Martin “Survival Mattin” Rudloff’s Camp"
+            },
+            "niklas-niklas-on-fire-rders-camp": {
+              "title": "Niklas “Niklas on Fire” Röder’s Camp"
+            }
+          }
+        }
+      }
+    },
+    "pt": {
+      "name": "7 vs Wild - Season 1 Location",
+      "region": "Värmland, Sweden",
+      "description": "7 vs Wild Season 1 is the inaugural edition of a German outdoor survival web series created by YouTuber Fritz Meinecke in 2021. Seven participants – mostly experienced outdoor YouTubers – were dropped off solo around Lake Nären in the forests of Värmland, Sweden. Each had to survive 7 days in complete isolation with only 7 personal items for gear.\n\nThe adventure was filmed in late August 2021 and released in 16 episodes on Meinecke’s YouTube channel from November 6 to December 29, 2021. The remote Swedish setting (about 4 hours northwest of Stockholm) provided a rugged backdrop of lakeshore and woods, making it an ideal test of survival skills.\n.",
+      "stats": {
+        "survival-duration": {
+          "label": "Survival Duration",
+          "description": "one full week in late August 2021"
+        },
+        "episodes": {
+          "label": "Episodes",
+          "description": "aired November 6 – December 29, 2021 on YouTube"
+        },
+        "participants": {
+          "label": "Participants",
+          "description": "7 contestants (all German content creators, led by creator Fritz Meinecke)"
+        },
+        "gear-limit": {
+          "label": "Gear Limit",
+          "description": "7 personal items allowed per participant (standard clothing not counted as items)"
+        },
+        "winner": {
+          "label": "Winner",
+          "description": "Fritz Meinecke with 42 points earned from challenges – he donated the €10,000 prize to the charity “Mission Earth”"
+        }
+      },
+      "interestingFacts": {
+        "fans-found-the-location-the-production-tried-to-ke": {
+          "text": "Fans found the location: The production tried to keep the exact location secret, but dedicated fans pinpointed Lake Nären within hours by analyzing drone shots and maps. The lake’s name even briefly appeared on Wikipedia, tipping off viewers to search in that area."
+        },
+        "2-item-challenge-contestant-fabio-schfer-deliberat": {
+          "text": "“2-Item” challenge: Contestant Fabio Schäfer deliberately chose to bring only 2 items (a knife and a fire steel) instead of the allowed seven, to increase the difficulty for himself. His extreme decision earned respect from fans and set him apart from the others."
+        },
+        "mid-game-evacuation-despite-his-mental-resilience-": {
+          "text": "Mid-game evacuation: Despite his mental resilience, Fabio had to tap out on Day 5 after suffering severe hypothermia in the cold, wet weather. Medical intervention was necessary, making him the only Season 1 participant who did not last the full 7 days. (He became known as the “winner of hearts” among fans for his effort.)"
+        },
+        "natural-water-and-food-source-the-choice-of-a-lake": {
+          "text": "Natural water and food source: The choice of a lakeside location was strategic – fresh water and fishing were readily available for contestants. Lake Nären’s waters meant everyone had a reliable drinking source and a chance to catch fish, crucial advantages in an otherwise unforgiving wilderness."
+        },
+        "surprise-youtube-hit-7-vs-wild-became-a-massive-on": {
+          "text": "Surprise YouTube hit: 7 vs Wild became a massive online hit. The series’ popularity skyrocketed Fritz Meinecke’s YouTube channel, gaining roughly 100,000 new subscribers per week during Season 1’s release. The show’s success as a grassroots project (with no TV network involved) was unprecedented in the German YouTube scene."
+        }
+      },
+      "historicalInfo": {
+        "text": "Lake Nären’s locale is within Hagfors Municipality in the Värmland region of west-central Sweden. This region was historically sparsely populated, covered in dense boreal forests and dotted with lakes. In the late 19th century, Värmland gained prominence through industrialization – for example, the town of Hagfors grew around newly built blast furnaces in 1873 as ironworking became important. Hagfors later became one of Sweden’s last towns to receive official city status in 1950, with a coat of arms honoring its ironworks heritage. Today the area remains thinly populated and heavily forested, but it’s known for niche attractions like hosting the annual Swedish Rally (a major car rally each February that boosts the local economy). This blend of industrial history and wild nature set the stage for 7 vs Wild’s survival challenge on Lake Nären’s shores."
+      },
+      "pois": {
+        "fabios-cave": {
+          "title": "Fabios Cave",
+          "openingHours": "Always",
+          "accessibility": "Hard to spot",
+          "bestTimeToVisit": "Please stay at home. If you decide to visit nevertheless, make sure to leave the site as you found it."
+        }
+      },
+      "tours": {
+        "7-vs-wild-season-1-survival-camps": {
+          "name": "7 vs Wild: Season 1 Survival Camps",
+          "description": "A tour of the seven drop-off locations around Lake Nären where each Season 1 contestant set up camp. These waypoints circle the lake in the Hagfors wilderness, marking the isolated spots each participant attempted to survive for a week.",
+          "waypoints": {
+            "pascal-der-bommel-bommerts-camp": {
+              "title": "Pascal “Der Bommel” Bommert’s Camp"
+            },
+            "chris-reloadiak-nostys-camp": {
+              "title": "Chris “Reloadiak” Nosty’s Camp"
+            },
+            "david-dave-henrichs-camp": {
+              "title": "David “DAVE” Henrichs’ Camp"
+            },
+            "fabio-schfers-camp-cave-site": {
+              "title": "Fabio Schäfer’s Camp (Cave Site)"
+            },
+            "fritz-meineckes-camp": {
+              "title": "Fritz Meinecke’s Camp"
+            },
+            "martin-survival-mattin-rudloffs-camp": {
+              "title": "Martin “Survival Mattin” Rudloff’s Camp"
+            },
+            "niklas-niklas-on-fire-rders-camp": {
+              "title": "Niklas “Niklas on Fire” Röder’s Camp"
+            }
+          }
+        }
+      }
+    },
+    "ja": {
+      "name": "7 vs Wild - Season 1 Location",
+      "region": "Värmland, Sweden",
+      "description": "7 vs Wild Season 1 is the inaugural edition of a German outdoor survival web series created by YouTuber Fritz Meinecke in 2021. Seven participants – mostly experienced outdoor YouTubers – were dropped off solo around Lake Nären in the forests of Värmland, Sweden. Each had to survive 7 days in complete isolation with only 7 personal items for gear.\n\nThe adventure was filmed in late August 2021 and released in 16 episodes on Meinecke’s YouTube channel from November 6 to December 29, 2021. The remote Swedish setting (about 4 hours northwest of Stockholm) provided a rugged backdrop of lakeshore and woods, making it an ideal test of survival skills.\n.",
+      "stats": {
+        "survival-duration": {
+          "label": "Survival Duration",
+          "description": "one full week in late August 2021"
+        },
+        "episodes": {
+          "label": "Episodes",
+          "description": "aired November 6 – December 29, 2021 on YouTube"
+        },
+        "participants": {
+          "label": "Participants",
+          "description": "7 contestants (all German content creators, led by creator Fritz Meinecke)"
+        },
+        "gear-limit": {
+          "label": "Gear Limit",
+          "description": "7 personal items allowed per participant (standard clothing not counted as items)"
+        },
+        "winner": {
+          "label": "Winner",
+          "description": "Fritz Meinecke with 42 points earned from challenges – he donated the €10,000 prize to the charity “Mission Earth”"
+        }
+      },
+      "interestingFacts": {
+        "fans-found-the-location-the-production-tried-to-ke": {
+          "text": "Fans found the location: The production tried to keep the exact location secret, but dedicated fans pinpointed Lake Nären within hours by analyzing drone shots and maps. The lake’s name even briefly appeared on Wikipedia, tipping off viewers to search in that area."
+        },
+        "2-item-challenge-contestant-fabio-schfer-deliberat": {
+          "text": "“2-Item” challenge: Contestant Fabio Schäfer deliberately chose to bring only 2 items (a knife and a fire steel) instead of the allowed seven, to increase the difficulty for himself. His extreme decision earned respect from fans and set him apart from the others."
+        },
+        "mid-game-evacuation-despite-his-mental-resilience-": {
+          "text": "Mid-game evacuation: Despite his mental resilience, Fabio had to tap out on Day 5 after suffering severe hypothermia in the cold, wet weather. Medical intervention was necessary, making him the only Season 1 participant who did not last the full 7 days. (He became known as the “winner of hearts” among fans for his effort.)"
+        },
+        "natural-water-and-food-source-the-choice-of-a-lake": {
+          "text": "Natural water and food source: The choice of a lakeside location was strategic – fresh water and fishing were readily available for contestants. Lake Nären’s waters meant everyone had a reliable drinking source and a chance to catch fish, crucial advantages in an otherwise unforgiving wilderness."
+        },
+        "surprise-youtube-hit-7-vs-wild-became-a-massive-on": {
+          "text": "Surprise YouTube hit: 7 vs Wild became a massive online hit. The series’ popularity skyrocketed Fritz Meinecke’s YouTube channel, gaining roughly 100,000 new subscribers per week during Season 1’s release. The show’s success as a grassroots project (with no TV network involved) was unprecedented in the German YouTube scene."
+        }
+      },
+      "historicalInfo": {
+        "text": "Lake Nären’s locale is within Hagfors Municipality in the Värmland region of west-central Sweden. This region was historically sparsely populated, covered in dense boreal forests and dotted with lakes. In the late 19th century, Värmland gained prominence through industrialization – for example, the town of Hagfors grew around newly built blast furnaces in 1873 as ironworking became important. Hagfors later became one of Sweden’s last towns to receive official city status in 1950, with a coat of arms honoring its ironworks heritage. Today the area remains thinly populated and heavily forested, but it’s known for niche attractions like hosting the annual Swedish Rally (a major car rally each February that boosts the local economy). This blend of industrial history and wild nature set the stage for 7 vs Wild’s survival challenge on Lake Nären’s shores."
+      },
+      "pois": {
+        "fabios-cave": {
+          "title": "Fabios Cave",
+          "openingHours": "Always",
+          "accessibility": "Hard to spot",
+          "bestTimeToVisit": "Please stay at home. If you decide to visit nevertheless, make sure to leave the site as you found it."
+        }
+      },
+      "tours": {
+        "7-vs-wild-season-1-survival-camps": {
+          "name": "7 vs Wild: Season 1 Survival Camps",
+          "description": "A tour of the seven drop-off locations around Lake Nären where each Season 1 contestant set up camp. These waypoints circle the lake in the Hagfors wilderness, marking the isolated spots each participant attempted to survive for a week.",
+          "waypoints": {
+            "pascal-der-bommel-bommerts-camp": {
+              "title": "Pascal “Der Bommel” Bommert’s Camp"
+            },
+            "chris-reloadiak-nostys-camp": {
+              "title": "Chris “Reloadiak” Nosty’s Camp"
+            },
+            "david-dave-henrichs-camp": {
+              "title": "David “DAVE” Henrichs’ Camp"
+            },
+            "fabio-schfers-camp-cave-site": {
+              "title": "Fabio Schäfer’s Camp (Cave Site)"
+            },
+            "fritz-meineckes-camp": {
+              "title": "Fritz Meinecke’s Camp"
+            },
+            "martin-survival-mattin-rudloffs-camp": {
+              "title": "Martin “Survival Mattin” Rudloff’s Camp"
+            },
+            "niklas-niklas-on-fire-rders-camp": {
+              "title": "Niklas “Niklas on Fire” Röder’s Camp"
+            }
+          }
+        }
+      }
+    },
+    "fr": {
+      "name": "7 vs Wild - Season 1 Location",
+      "region": "Värmland, Sweden",
+      "description": "7 vs Wild Season 1 is the inaugural edition of a German outdoor survival web series created by YouTuber Fritz Meinecke in 2021. Seven participants – mostly experienced outdoor YouTubers – were dropped off solo around Lake Nären in the forests of Värmland, Sweden. Each had to survive 7 days in complete isolation with only 7 personal items for gear.\n\nThe adventure was filmed in late August 2021 and released in 16 episodes on Meinecke’s YouTube channel from November 6 to December 29, 2021. The remote Swedish setting (about 4 hours northwest of Stockholm) provided a rugged backdrop of lakeshore and woods, making it an ideal test of survival skills.\n.",
+      "stats": {
+        "survival-duration": {
+          "label": "Survival Duration",
+          "description": "one full week in late August 2021"
+        },
+        "episodes": {
+          "label": "Episodes",
+          "description": "aired November 6 – December 29, 2021 on YouTube"
+        },
+        "participants": {
+          "label": "Participants",
+          "description": "7 contestants (all German content creators, led by creator Fritz Meinecke)"
+        },
+        "gear-limit": {
+          "label": "Gear Limit",
+          "description": "7 personal items allowed per participant (standard clothing not counted as items)"
+        },
+        "winner": {
+          "label": "Winner",
+          "description": "Fritz Meinecke with 42 points earned from challenges – he donated the €10,000 prize to the charity “Mission Earth”"
+        }
+      },
+      "interestingFacts": {
+        "fans-found-the-location-the-production-tried-to-ke": {
+          "text": "Fans found the location: The production tried to keep the exact location secret, but dedicated fans pinpointed Lake Nären within hours by analyzing drone shots and maps. The lake’s name even briefly appeared on Wikipedia, tipping off viewers to search in that area."
+        },
+        "2-item-challenge-contestant-fabio-schfer-deliberat": {
+          "text": "“2-Item” challenge: Contestant Fabio Schäfer deliberately chose to bring only 2 items (a knife and a fire steel) instead of the allowed seven, to increase the difficulty for himself. His extreme decision earned respect from fans and set him apart from the others."
+        },
+        "mid-game-evacuation-despite-his-mental-resilience-": {
+          "text": "Mid-game evacuation: Despite his mental resilience, Fabio had to tap out on Day 5 after suffering severe hypothermia in the cold, wet weather. Medical intervention was necessary, making him the only Season 1 participant who did not last the full 7 days. (He became known as the “winner of hearts” among fans for his effort.)"
+        },
+        "natural-water-and-food-source-the-choice-of-a-lake": {
+          "text": "Natural water and food source: The choice of a lakeside location was strategic – fresh water and fishing were readily available for contestants. Lake Nären’s waters meant everyone had a reliable drinking source and a chance to catch fish, crucial advantages in an otherwise unforgiving wilderness."
+        },
+        "surprise-youtube-hit-7-vs-wild-became-a-massive-on": {
+          "text": "Surprise YouTube hit: 7 vs Wild became a massive online hit. The series’ popularity skyrocketed Fritz Meinecke’s YouTube channel, gaining roughly 100,000 new subscribers per week during Season 1’s release. The show’s success as a grassroots project (with no TV network involved) was unprecedented in the German YouTube scene."
+        }
+      },
+      "historicalInfo": {
+        "text": "Lake Nären’s locale is within Hagfors Municipality in the Värmland region of west-central Sweden. This region was historically sparsely populated, covered in dense boreal forests and dotted with lakes. In the late 19th century, Värmland gained prominence through industrialization – for example, the town of Hagfors grew around newly built blast furnaces in 1873 as ironworking became important. Hagfors later became one of Sweden’s last towns to receive official city status in 1950, with a coat of arms honoring its ironworks heritage. Today the area remains thinly populated and heavily forested, but it’s known for niche attractions like hosting the annual Swedish Rally (a major car rally each February that boosts the local economy). This blend of industrial history and wild nature set the stage for 7 vs Wild’s survival challenge on Lake Nären’s shores."
+      },
+      "pois": {
+        "fabios-cave": {
+          "title": "Fabios Cave",
+          "openingHours": "Always",
+          "accessibility": "Hard to spot",
+          "bestTimeToVisit": "Please stay at home. If you decide to visit nevertheless, make sure to leave the site as you found it."
+        }
+      },
+      "tours": {
+        "7-vs-wild-season-1-survival-camps": {
+          "name": "7 vs Wild: Season 1 Survival Camps",
+          "description": "A tour of the seven drop-off locations around Lake Nären where each Season 1 contestant set up camp. These waypoints circle the lake in the Hagfors wilderness, marking the isolated spots each participant attempted to survive for a week.",
+          "waypoints": {
+            "pascal-der-bommel-bommerts-camp": {
+              "title": "Pascal “Der Bommel” Bommert’s Camp"
+            },
+            "chris-reloadiak-nostys-camp": {
+              "title": "Chris “Reloadiak” Nosty’s Camp"
+            },
+            "david-dave-henrichs-camp": {
+              "title": "David “DAVE” Henrichs’ Camp"
+            },
+            "fabio-schfers-camp-cave-site": {
+              "title": "Fabio Schäfer’s Camp (Cave Site)"
+            },
+            "fritz-meineckes-camp": {
+              "title": "Fritz Meinecke’s Camp"
+            },
+            "martin-survival-mattin-rudloffs-camp": {
+              "title": "Martin “Survival Mattin” Rudloff’s Camp"
+            },
+            "niklas-niklas-on-fire-rders-camp": {
+              "title": "Niklas “Niklas on Fire” Röder’s Camp"
+            }
+          }
+        }
+      }
+    }
+  }
+}
