@@ -1,0 +1,1620 @@
+{
+  "likes": [],
+  "id": "pz-7vswS3-1yqpeg",
+  "author": "Wildscope",
+  "priority": 1,
+  "official": true,
+  "active": true,
+  "searchRadius": 50,
+  "center": [
+    50.915206,
+    -127.88499
+  ],
+  "areaPolygon": [],
+  "customStyle": {
+    "color": "#e24b71",
+    "icon": "explore"
+  },
+  "heroImage": {
+    "storageRef": "partner-zones/pz-7vswS3-1yqpeg/hero/vancouver-island-27987695577.jpg",
+    "priority": "medium",
+    "imageSource": ""
+  },
+  "contact": {
+    "website": "",
+    "phone": "",
+    "email": "",
+    "emergencyPhone": ""
+  },
+  "historicalInfo": {
+    "icon": "history_edu",
+    "images": {
+      "native-community-of-vancouver-island-in-the-early-": {
+        "storageRef": "partner-zones/pz-7vswS3-1yqpeg/history/the-vancouver-island-community-postcard-nara-29725.jpg",
+        "imageSource": "PICRYL"
+      }
+    }
+  },
+  "quiz": {
+    "settings": {
+      "timePerQuestion": 30,
+      "passingScore": 70,
+      "randomizeQuestions": true,
+      "showExplanations": true
+    },
+    "rewards": {
+      "bronzeScore": 60,
+      "silverScore": 80,
+      "goldScore": 90,
+      "completionAchievement": ""
+    },
+    "questions": {
+      "where-was-7-vs-wild-season-3-filmed": {
+        "type": "multiple_choice",
+        "options": [
+          "Hate & Seattle Island",
+          "Trust & Yukon Island",
+          "Hope & Nigei Island",
+          "Eagle & Nainnou Island"
+        ],
+        "correctOption": 2
+      },
+      "how-many-participants-and-days-were-in-season-3": {
+        "type": "multiple_choice",
+        "options": [
+          "7 participants, 7 days",
+          "14 participants, 14 days",
+          "10 participants, 10 days",
+          "7 teams, 21 days"
+        ],
+        "correctOption": 1
+      },
+      "what-replaced-the-7-item-rule-in-season-3": {
+        "type": "multiple_choice",
+        "options": [
+          "Backpack full of gear",
+          "No items at all",
+          "Gear fit in a 1-liter bottle",
+          "3 preselected tools"
+        ],
+        "correctOption": 2
+      },
+      "which-contestant-continued-alone-after-his-teammat": {
+        "type": "multiple_choice",
+        "options": [
+          "Trymacs",
+          "Fritz Meinecke",
+          "Joey kelly",
+          "Otto Karasch"
+        ],
+        "correctOption": 2
+      },
+      "which-predator-posed-a-potential-danger-in-the-are": {
+        "type": "multiple_choice",
+        "options": [
+          "Grizzly bear",
+          "Wolf",
+          "Crocodile",
+          "Komodo Dragon"
+        ],
+        "correctOption": 1
+      }
+    }
+  },
+  "stats": {
+    "participants": {
+      "icon": "people",
+      "value": "14",
+      "unit": "",
+      "secondaryValue": "",
+      "secondaryUnit": ""
+    },
+    "days-survival": {
+      "icon": "calendar",
+      "value": "14",
+      "unit": "",
+      "secondaryValue": "",
+      "secondaryUnit": ""
+    },
+    "liter-of-items": {
+      "icon": "recycling",
+      "value": "1",
+      "unit": "",
+      "secondaryValue": "",
+      "secondaryUnit": ""
+    },
+    "episodes": {
+      "icon": "photo_camera",
+      "value": "17",
+      "unit": "",
+      "secondaryValue": "",
+      "secondaryUnit": ""
+    },
+    "viewers": {
+      "icon": "expand",
+      "value": "4",
+      "unit": "million",
+      "secondaryValue": "",
+      "secondaryUnit": ""
+    }
+  },
+  "interestingFacts": {
+    "show-creator-exits-early-in-a-surprising-twist-fri": {
+      "icon": "warning",
+      "image": {
+        "storageRef": "",
+        "imageSource": ""
+      }
+    },
+    "solo-survival-bonus-episode-after-joey-kellys-team": {
+      "icon": "compass",
+      "image": {
+        "storageRef": "",
+        "imageSource": ""
+      }
+    },
+    "tv-stars-invited-and-declined-the-season-3-team-fo": {
+      "icon": "star-outline",
+      "image": {
+        "storageRef": "",
+        "imageSource": ""
+      }
+    },
+    "wildcard-team-made-history-the-inclusion-of-hannah": {
+      "icon": "diversity_3",
+      "image": {
+        "storageRef": "",
+        "imageSource": ""
+      }
+    },
+    "extreme-weather-and-storm-tide-event-the-vancouver": {
+      "icon": "cloud-offline-outline",
+      "image": {
+        "storageRef": "",
+        "imageSource": ""
+      }
+    },
+    "or-a-shortterm-survival-situation-you-ideally-want": {
+      "icon": "water",
+      "image": {
+        "storageRef": "",
+        "imageSource": ""
+      }
+    }
+  },
+  "news": {},
+  "pois": {
+    "cape-scott-provincial-park": {
+      "type": "trailhead",
+      "coords": [
+        50.7823,
+        -128.4273
+      ],
+      "amenities": [
+        "educational_programs",
+        "parking",
+        "visitor_center"
+      ],
+      "gallery": {
+        "storagePrefix": "partner-zones/pz-7vswS3-1yqpeg/pois/cape-scott-provincial-park/",
+        "images": {
+          "wheelchair-accessible-trail-cape-scott-provincial-": {
+            "filename": "wheelchair-accessible-trail-cape-scott-provincial-.jpg",
+            "type": "secondary",
+            "imageSource": ""
+          }
+        }
+      }
+    },
+    "bull-harbour": {
+      "type": "historic_site",
+      "coords": [
+        50.915481,
+        -127.934608
+      ],
+      "amenities": [],
+      "gallery": {
+        "storagePrefix": "partner-zones/pz-7vswS3-1yqpeg/pois/bull-harbour/",
+        "images": {
+          "images-2": {
+            "filename": "images-2.jpeg",
+            "type": "secondary",
+            "imageSource": ""
+          }
+        }
+      }
+    },
+    "pine-island-lighthouse": {
+      "type": "historic_site",
+      "coords": [
+        50.975343,
+        -127.728426
+      ],
+      "amenities": [],
+      "gallery": {
+        "storagePrefix": "partner-zones/pz-7vswS3-1yqpeg/pois/poi-3/",
+        "images": {}
+      }
+    }
+  },
+  "tours": {
+    "expedition-route-hope-and-nigei-wild-coast": {
+      "duration": "Multi-day",
+      "difficulty": "Very difficult",
+      "distance": "20+ miles",
+      "waypoints": {
+        "east-coastal-inlet-hope-island": {
+          "coords": [
+            50.9072,
+            -127.7342
+          ],
+          "estimatedTime": 0,
+          "type": "viewpoint",
+          "images": []
+        },
+        "southeast-headland-nigei-island": {
+          "coords": [
+            50.9042,
+            -127.7722
+          ],
+          "estimatedTime": 0,
+          "type": "water",
+          "images": []
+        },
+        "south-island-shore-hope-island": {
+          "coords": [
+            50.8969,
+            -127.9094
+          ],
+          "estimatedTime": 0,
+          "type": "trail",
+          "images": []
+        },
+        "central-creek-estuary-nigei-island": {
+          "coords": [
+            50.9339,
+            -127.8647
+          ],
+          "estimatedTime": 0,
+          "type": "end",
+          "images": []
+        }
+      }
+    }
+  },
+  "translations": {
+    "en": {
+      "name": "7 vs Wild - Season 3 Location",
+      "region": "Vancouver Island, Canada",
+      "description": "Season 3 of 7 vs. Wild took place on Hope and Nigei Islands off British Columbia’s Vancouver Island coast, shifting to a “Teams Edition” with seven pairs surviving 14 days. Instead of seven items, each duo packed all their gear into a single one‑liter bottle, forcing creative choices like compact knives, firestarters, and fishing kits. The season debuted on Amazon Freevee in October 2023 before hitting YouTube, and featured a mix of survival pros and influencers: Fritz Meinecke with “Survival Mattin”; Gerrit Rösel & Andreas Schulze; Joey Kelly & Jan Lange; Trymacs & Rumathra; Papaplatte & Reeze; Knossi & Sascha Huber; and the wildcard all‑female team Hannah Assil & Ann‑Kathrin Bendixen, chosen from over 1,700 applicants.",
+      "heroImage": {
+        "caption": "Vancouver Island",
+        "alt": "Vancouver Island covers approximately 32 100 km² (about 12 400 mi²), making it the largest island on the Pacific coast of North America "
+      },
+      "stats": {
+        "participants": {
+          "label": "Participants",
+          "description": "14 people (7 teams of two). This was a doubling of the usual cast size (previous seasons had 7 solo participants). Teams were pre-paired (friends or colleagues) – a first for the show. Notably, 2 out of 14 participants were female (both on the wildcard team), marking the first all-female team in 7 vs. Wild history."
+        },
+        "days-survival": {
+          "label": "Days Survival",
+          "description": "14 days (extended format). Season 3’s survival period was two weeks long, compared to the 7-day duration of Seasons 1 and 2. Filming took place in late August through September 2023, and of the seven teams that started, three teams lasted the entire 14 days (the others tapped out earlier). This longer timespan introduced new levels of fatigue, resource depletion, and psychological strain as contestants had to endure twice as many nights in the wild."
+        },
+        "liter-of-items": {
+          "label": "Liter of items",
+          "description": "1 liter of items per team. Instead of each person choosing 7 items, Season 3 teams shared a 1 L bottle into which they packed all their chosen survival items. There was no set number of items – anything was allowed as long as it fit in the sealed bottle. This resulted in creative “micro-kits” (fishing lines, firesteel, multitool, etc.) and meant teams had far fewer tools than in prior seasons (effectively, many teams brought on the order of ~10–15 small items). Clothing was still exempt from this limit, and each team also had emergency and camera gear as usual."
+        },
+        "episodes": {
+          "label": "Episodes",
+          "description": "The season’s story was told across 16 main episodes plus 1 bonus episode. Episodes averaged 45–60 minutes, released twice weekly. Uniquely, Season 3 was first broadcast on Amazon Freevee (Oct–Dec 2023) and then released on YouTube with a few weeks’ delay (Nov 2023 – Jan 2024). The final “Episode 17” was a special bonus feature (“Joey Alone in the Forest”) that aired in late January 2024 after the main finale."
+        },
+        "viewers": {
+          "label": "Viewers",
+          "description": "Over 4 million viewers per episode on average. Season 3 drew massive online viewership – each episode garnered ~4–5 million views on YouTube on average, with millions more watching via Freevee. By season’s end, the series had accumulated over 100 million total views across platforms, making 7 vs. Wild one of the most-watched YouTube-origin reality shows. The expanded cast and mainstream exposure helped Season 3 break its own records; at one point the producers reported 116 million total views and 2.2 million likes across all Season 3 content. This success cemented the show’s status as a global YouTube phenomenon."
+        }
+      },
+      "interestingFacts": {
+        "show-creator-exits-early-in-a-surprising-twist-fri": {
+          "text": "Show Creator Exits Early: In a surprising twist, Fritz Meinecke – the show’s founder and an experienced survivalist – tapped out on Day 3 of the challenge\nen.wikipedia.org\n. Fritz and his partner Mattin had landed in a tough spot and struggled with incessant rain and a flooding river. Fritz’s early exit (due to hypothermia risk) shocked fans, proving that even the most seasoned survival expert wasn’t guaranteed to last under Season 3’s harsh conditions.",
+          "image": {
+            "caption": ""
+          }
+        },
+        "solo-survival-bonus-episode-after-joey-kellys-team": {
+          "text": "Solo Survival Bonus Episode: After Joey Kelly’s teammate Jan Schlappen withdrew on Day 7, Joey chose to continue the survival challenge alone for the remaining week. He survived by himself for 7 more days, effectively doing a solo challenge. This unique situation was not scored in the main competition, but the footage was compiled into a special bonus episode “Joey allein im Wald” (Joey Alone in the Forest) – showcasing Joey’s resourcefulness and mental fortitude in completing the two weeks solo.",
+          "image": {
+            "caption": ""
+          }
+        },
+        "tv-stars-invited-and-declined-the-season-3-team-fo": {
+          "text": "TV Stars Invited – and Declined: The Season 3 team format opened the door to big-name invitees. The production publicly invited famous German TV hosts Joko Winterscheidt and Klaas Heufer-Umlauf to join the adventure as a duo. These two are known for outrageous challenges on their own show, so fans were excited by the prospect. However, Joko & Klaas ultimately declined the offer, citing the extreme conditions. Their refusal became an amusing talking point in the pre-season – even 7 vs. Wild was too wild for some celebrities!",
+          "image": {
+            "caption": ""
+          }
+        },
+        "wildcard-team-made-history-the-inclusion-of-hannah": {
+          "text": "Wildcard Team Made History: The inclusion of Hannah Assil and “Affe auf Bike” (Ann-Kathrin Bendixen) as a wildcard team introduced the first women contestants to 7 vs. Wild. Hannah, a wildlife photographer and ranger, and Ann-Kathrin, an adventurer known for traveling by motorbike, beat out hundreds of applicants in a public vote. Despite being less famous, they quickly earned viewer respect. Fun fact: their wildcard entry was originally intended to be a single person, but the showrunners decided to take two and form a team – and it paid off, as Hannah & Affe impressively survived all 14 days, demonstrating skill and grit equal to any other team.",
+          "image": {
+            "caption": ""
+          }
+        },
+        "extreme-weather-and-storm-tide-event-the-vancouver": {
+          "text": "Extreme Weather and “Storm Tide” Event: The Vancouver Island environment did not go easy on the participants. On only Day 3, a powerful storm coinciding with a high spring tide slammed into the camps. Heavy rain and gale-force winds hit overnight, and the high tide inundated low-lying beach camps – an incident featured in Episode 5 aptly titled “Sturmflut” (Storm Tide). Teams woke to find part of their gear soaked or swept away. This was the first time in the series that a tidal surge caused such damage. The storm became a dramatic turning point early in the season, testing shelters and morale. (It was after this night that two teams decided to call it quits.) The lesson: on a wild coast, the ocean can be as formidable an opponent as hunger or isolation.",
+          "image": {
+            "caption": ""
+          }
+        },
+        "or-a-shortterm-survival-situation-you-ideally-want": {
+          "text": "or a short‑term survival situation, you ideally want water with total dissolved solids (TDS) below about 1 000 mg/L (1 g/L), which most people find palatable and which your kidneys can handle without extra strain. Brackish water—up to around 10 g/L (10 000 mg/L, or 1 % salt)—can be drunk once or twice in an emergency, but you’ll quickly start to feel thirsty, nauseous and your body will lose more water trying to expel the excess salt. Anything above 10 g/L risks vomiting, diarrhea and dehydration; drinking true seawater (≈35 g/L) is dangerous even briefly.",
+          "image": {
+            "caption": ""
+          }
+        }
+      },
+      "historicalInfo": {
+        "text": "Season 3’s “Teams Edition” of 7 vs. Wild unfolded against a backdrop shaped by millennia of human history as much as by the forces of nature. The northern extremity of Vancouver Island and its outlying islets—Hope and Nigei—lie within the ancestral territories of the Kwakwaka’wakw peoples, whose communities, like the Tlatlasikwala at Bull Harbour, thrived here for generations. Skillfully harvesting cedar, salmon and shellfish, they established villages, carved totem poles and wove legends into every place name—Nigei Island itself memorializes a respected Nahwitti chief encountered by Spanish explorers in 1792.\n\nEuropean contact arrived comparatively late, when Spanish naval officers Galiano and Valdés charted these straits in 1792, soon followed by Captain George Vancouver’s British expedition. Though mapping opened the region to fur traders and colonial outposts—Fort Rupert near today’s Port Hardy emerged by the 1840s—the dense forests and rocky shores of Hope and Nigei remained largely untouched. Yet contact brought tragic depopulation: smallpox and other imported diseases decimated Indigenous communities, reducing vibrant nations to a fraction of their former strength by the late 19th century.\n\nBy the turn of the 20th century, only isolated fishing camps, a handful of homesteads and the solitary Pine Island Lighthouse hinted at European settlement along these rugged shores. Meanwhile, the Kwakwaka’wakw persevered, their seasonal camps and sacred sites scattered among the temperate rainforests. Today, much of the filming region sits within protected areas like Cape Scott Provincial Park, preserving century‑old cedar carvings, shell middens and footpaths. As Season 3’s teams battled storms and wildlife, viewers glimpsed not only the raw challenges of survival but also the enduring imprint of human history—an environment where Indigenous ingenuity and colonial ambition have both left their mark on the land.",
+        "images": {
+          "native-community-of-vancouver-island-in-the-early-": {
+            "caption": "Native Community of Vancouver Island in the early 20th century. ",
+            "alt": ""
+          }
+        }
+      },
+      "contact": {
+        "websiteLabel": "",
+        "phoneLabel": "",
+        "emailLabel": "",
+        "emergencyLabel": "",
+        "address": "",
+        "hours": ""
+      },
+      "news": {},
+      "pois": {
+        "cape-scott-provincial-park": {
+          "title": "Cape Scott Provincial Park",
+          "description": " A rugged wilderness park at the northwestern tip of Vancouver Island, known for its spectacular remote beaches, sea stacks, and old-growth forest. Established in 1973, the park covers the Cape Scott peninsula, including ~30 km of wave-swept sandy beaches and trails through bog and rainforest. Hikers here can visit the Cape Scott Lighthouse and the haunting ruins of a failed 19th-century Danish settlement, all while being mindful of the wolves and black bears that roam the area.",
+          "openingHours": "check website",
+          "accessibility": "Party wheelchair accesibility",
+          "bestTimeToVisit": "",
+          "address": "",
+          "phone": "",
+          "gallery": {
+            "images": {
+              "wheelchair-accessible-trail-cape-scott-provincial-": {
+                "caption": "A beginner friendly taril in Cape Scott Provincial Park"
+              }
+            }
+          }
+        },
+        "bull-harbour": {
+          "title": "Bull Harbour",
+          "description": "A natural harbor on Hope Island, just north of Vancouver Island’s tip. This protected bay is the traditional home of the Tlatlasikwala First Nation and was used historically as a safe anchorage for vessels waiting to navigate the rough waters of Nahwitti Bar. Today Bull Harbour’s population is only a few families (≈2–20 people). The name comes from the roaring sea lions (“bulls”) often seen on the nearby rocks. During WWII the harbor also served as a coast guard outpost. Visitors by boat still stop here as the last calm refuge before heading into the open Pacific.",
+          "openingHours": "Book a tour",
+          "accessibility": "Boat / Waterplane",
+          "bestTimeToVisit": "",
+          "address": "",
+          "phone": "",
+          "gallery": {
+            "images": {
+              "images-2": {
+                "caption": "The filming crews accomodation has been repurposed to support local tourism."
+              }
+            }
+          }
+        },
+        "pine-island-lighthouse": {
+          "title": "Pine Island Lighthouse",
+          "description": "A lonely lighthouse perched on Pine Island, guarding the eastern approach to Queen Charlotte Strait. Established in 1937, the light station is still active and manned by keepers. It flashes a white light that was visible to Season 3 contestants on clear nights. The waters around Pine Island are notoriously rough – the meeting point of Pacific swells and tidal outflows, with a shallow bar that can create dangerous seas. For mariners, this lighthouse is a crucial navigational aid before they round Cape Scott or head south. For visitors, Pine Island is accessible only by boat (it’s about 6 km offshore from Hope Island), but its stout white tower symbolizes human touchpoints in an otherwise remote seascape. The station also keeps weather data; it’s known for recording some of the strongest winds on BC’s coast during winter storms.",
+          "openingHours": "times may vary",
+          "accessibility": "guided boat tour",
+          "bestTimeToVisit": "",
+          "address": "",
+          "phone": ""
+        }
+      },
+      "tours": {
+        "expedition-route-hope-and-nigei-wild-coast": {
+          "name": "Expedition Route: Hope and Nigei Wild Coast",
+          "description": "The expedition route below connects these remote coastal points, each corresponding to a team’s drop-off in Season 3. Starting from the easternmost site and looping around, the route showcases the diverse terrain (from sheltered bays to rugged headlands) that teams had to endure.",
+          "waypoints": {
+            "east-coastal-inlet-hope-island": {
+              "title": "East Coastal Inlet (Hope Island)",
+              "info": "A calm pebble cove on Hope Island’s east side (across from Pine Island Lighthouse), backed by dense spruce forest. Sheltered from open‑ocean swells but patrolled by coastal wolves and subject to strong tidal currents."
+            },
+            "southeast-headland-nigei-island": {
+              "title": "Southeast Headland (Nigei Island)",
+              "info": "A windswept rocky point at Nigei’s southeastern tip, with almost no natural shelter. Rocky shoreline gives way to boggy woods; constant wind off Goletas Channel and the sound of crashing waves."
+            },
+            "south-island-shore-hope-island": {
+              "title": "South Island Shore (Hope Island)",
+              "info": "A long sand‑and‑gravel beach near Bull Harbour’s mouth, strewn with driftwood from fierce storms. Behind: salal thickets and giant cedars. The only team here was truly isolated on Hope Island."
+            },
+            "central-creek-estuary-nigei-island": {
+              "title": "Central Creek Estuary (Nigei Island)",
+              "info": "Where a freshwater creek meets the sea on Bate Passage’s east side. Rich in shellfish and driftwood, very muddy at low tide, with thick forest and wolf tracks—truly in the island’s wild center."
+            }
+          }
+        }
+      },
+      "quiz": {
+        "title": "Season 3 Quiz",
+        "description": "Answer some short answers to test your knowledge.",
+        "questions": {
+          "where-was-7-vs-wild-season-3-filmed": {
+            "question": "Where was 7 vs. Wild Season 3 filmed?",
+            "explanation": {
+              "text": "The season was filmed on Hope & Nigei Island, part of Vancouver island. ",
+              "image": {
+                "caption": ""
+              }
+            },
+            "options": [
+              "Hate & Seattle Island",
+              "Trust & Yukon Island",
+              "Hope & Nigei Island",
+              "Eagle & Nainnou Island"
+            ]
+          },
+          "how-many-participants-and-days-were-in-season-3": {
+            "question": "How many participants and days were in Season 3?",
+            "explanation": {
+              "text": "14 participants in teams of two, tried to survive for 14 days. ",
+              "image": {
+                "caption": ""
+              }
+            },
+            "options": [
+              "7 participants, 7 days",
+              "14 participants, 14 days",
+              "10 participants, 10 days",
+              "7 teams, 21 days"
+            ]
+          },
+          "what-replaced-the-7-item-rule-in-season-3": {
+            "question": "What replaced the 7-item rule in Season 3?",
+            "explanation": {
+              "text": "All of a teams equipment had to fit into a single 1 liter bottle. ",
+              "image": {
+                "caption": ""
+              }
+            },
+            "options": [
+              "Backpack full of gear",
+              "No items at all",
+              "Gear fit in a 1-liter bottle",
+              "3 preselected tools"
+            ]
+          },
+          "which-contestant-continued-alone-after-his-teammat": {
+            "question": "Which contestant continued alone after his teammate left?",
+            "explanation": {
+              "text": "Joey received his own special episode after his teammate left. ",
+              "image": {
+                "caption": ""
+              }
+            },
+            "options": [
+              "Trymacs",
+              "Fritz Meinecke",
+              "Joey kelly",
+              "Otto Karasch"
+            ]
+          },
+          "which-predator-posed-a-potential-danger-in-the-are": {
+            "question": "Which predator posed a potential danger in the area?",
+            "explanation": {
+              "text": "While bears are common on Vancouver island, Nigei & Hope island have rare sightings. The coastal Wolf is the most dominant predator.",
+              "image": {
+                "caption": ""
+              }
+            },
+            "options": [
+              "Grizzly bear",
+              "Wolf",
+              "Crocodile",
+              "Komodo Dragon"
+            ]
+          }
+        }
+      }
+    },
+    "it": {
+      "name": "7 vs Wild - Season 3 Location",
+      "region": "Vancouver Island, Canada",
+      "description": "Season 3 of 7 vs. Wild took place on Hope and Nigei Islands off British Columbia’s Vancouver Island coast, shifting to a “Teams Edition” with seven pairs surviving 14 days. Instead of seven items, each duo packed all their gear into a single one‑liter bottle, forcing creative choices like compact knives, firestarters, and fishing kits. The season debuted on Amazon Freevee in October 2023 before hitting YouTube, and featured a mix of survival pros and influencers: Fritz Meinecke with “Survival Mattin”; Gerrit Rösel & Andreas Schulze; Joey Kelly & Jan Lange; Trymacs & Rumathra; Papaplatte & Reeze; Knossi & Sascha Huber; and the wildcard all‑female team Hannah Assil & Ann‑Kathrin Bendixen, chosen from over 1,700 applicants.",
+      "heroImage": {
+        "caption": "Vancouver Island",
+        "alt": "Vancouver Island covers approximately 32 100 km² (about 12 400 mi²), making it the largest island on the Pacific coast of North America "
+      },
+      "stats": {
+        "participants": {
+          "label": "Participants",
+          "description": "14 people (7 teams of two). This was a doubling of the usual cast size (previous seasons had 7 solo participants). Teams were pre-paired (friends or colleagues) – a first for the show. Notably, 2 out of 14 participants were female (both on the wildcard team), marking the first all-female team in 7 vs. Wild history."
+        },
+        "days-survival": {
+          "label": "Days Survival",
+          "description": "14 days (extended format). Season 3’s survival period was two weeks long, compared to the 7-day duration of Seasons 1 and 2. Filming took place in late August through September 2023, and of the seven teams that started, three teams lasted the entire 14 days (the others tapped out earlier). This longer timespan introduced new levels of fatigue, resource depletion, and psychological strain as contestants had to endure twice as many nights in the wild."
+        },
+        "liter-of-items": {
+          "label": "Liter of items",
+          "description": "1 liter of items per team. Instead of each person choosing 7 items, Season 3 teams shared a 1 L bottle into which they packed all their chosen survival items. There was no set number of items – anything was allowed as long as it fit in the sealed bottle. This resulted in creative “micro-kits” (fishing lines, firesteel, multitool, etc.) and meant teams had far fewer tools than in prior seasons (effectively, many teams brought on the order of ~10–15 small items). Clothing was still exempt from this limit, and each team also had emergency and camera gear as usual."
+        },
+        "episodes": {
+          "label": "Episodes",
+          "description": "The season’s story was told across 16 main episodes plus 1 bonus episode. Episodes averaged 45–60 minutes, released twice weekly. Uniquely, Season 3 was first broadcast on Amazon Freevee (Oct–Dec 2023) and then released on YouTube with a few weeks’ delay (Nov 2023 – Jan 2024). The final “Episode 17” was a special bonus feature (“Joey Alone in the Forest”) that aired in late January 2024 after the main finale."
+        },
+        "viewers": {
+          "label": "Viewers",
+          "description": "Over 4 million viewers per episode on average. Season 3 drew massive online viewership – each episode garnered ~4–5 million views on YouTube on average, with millions more watching via Freevee. By season’s end, the series had accumulated over 100 million total views across platforms, making 7 vs. Wild one of the most-watched YouTube-origin reality shows. The expanded cast and mainstream exposure helped Season 3 break its own records; at one point the producers reported 116 million total views and 2.2 million likes across all Season 3 content. This success cemented the show’s status as a global YouTube phenomenon."
+        }
+      },
+      "interestingFacts": {
+        "show-creator-exits-early-in-a-surprising-twist-fri": {
+          "text": "Show Creator Exits Early: In a surprising twist, Fritz Meinecke – the show’s founder and an experienced survivalist – tapped out on Day 3 of the challenge\nen.wikipedia.org\n. Fritz and his partner Mattin had landed in a tough spot and struggled with incessant rain and a flooding river. Fritz’s early exit (due to hypothermia risk) shocked fans, proving that even the most seasoned survival expert wasn’t guaranteed to last under Season 3’s harsh conditions."
+        },
+        "solo-survival-bonus-episode-after-joey-kellys-team": {
+          "text": "Solo Survival Bonus Episode: After Joey Kelly’s teammate Jan Schlappen withdrew on Day 7, Joey chose to continue the survival challenge alone for the remaining week. He survived by himself for 7 more days, effectively doing a solo challenge. This unique situation was not scored in the main competition, but the footage was compiled into a special bonus episode “Joey allein im Wald” (Joey Alone in the Forest) – showcasing Joey’s resourcefulness and mental fortitude in completing the two weeks solo."
+        },
+        "tv-stars-invited-and-declined-the-season-3-team-fo": {
+          "text": "TV Stars Invited – and Declined: The Season 3 team format opened the door to big-name invitees. The production publicly invited famous German TV hosts Joko Winterscheidt and Klaas Heufer-Umlauf to join the adventure as a duo. These two are known for outrageous challenges on their own show, so fans were excited by the prospect. However, Joko & Klaas ultimately declined the offer, citing the extreme conditions. Their refusal became an amusing talking point in the pre-season – even 7 vs. Wild was too wild for some celebrities!"
+        },
+        "wildcard-team-made-history-the-inclusion-of-hannah": {
+          "text": "Wildcard Team Made History: The inclusion of Hannah Assil and “Affe auf Bike” (Ann-Kathrin Bendixen) as a wildcard team introduced the first women contestants to 7 vs. Wild. Hannah, a wildlife photographer and ranger, and Ann-Kathrin, an adventurer known for traveling by motorbike, beat out hundreds of applicants in a public vote. Despite being less famous, they quickly earned viewer respect. Fun fact: their wildcard entry was originally intended to be a single person, but the showrunners decided to take two and form a team – and it paid off, as Hannah & Affe impressively survived all 14 days, demonstrating skill and grit equal to any other team."
+        },
+        "extreme-weather-and-storm-tide-event-the-vancouver": {
+          "text": "Extreme Weather and “Storm Tide” Event: The Vancouver Island environment did not go easy on the participants. On only Day 3, a powerful storm coinciding with a high spring tide slammed into the camps. Heavy rain and gale-force winds hit overnight, and the high tide inundated low-lying beach camps – an incident featured in Episode 5 aptly titled “Sturmflut” (Storm Tide). Teams woke to find part of their gear soaked or swept away. This was the first time in the series that a tidal surge caused such damage. The storm became a dramatic turning point early in the season, testing shelters and morale. (It was after this night that two teams decided to call it quits.) The lesson: on a wild coast, the ocean can be as formidable an opponent as hunger or isolation."
+        },
+        "or-a-shortterm-survival-situation-you-ideally-want": {
+          "text": "or a short‑term survival situation, you ideally want water with total dissolved solids (TDS) below about 1 000 mg/L (1 g/L), which most people find palatable and which your kidneys can handle without extra strain. Brackish water—up to around 10 g/L (10 000 mg/L, or 1 % salt)—can be drunk once or twice in an emergency, but you’ll quickly start to feel thirsty, nauseous and your body will lose more water trying to expel the excess salt. Anything above 10 g/L risks vomiting, diarrhea and dehydration; drinking true seawater (≈35 g/L) is dangerous even briefly."
+        }
+      },
+      "historicalInfo": {
+        "text": "Season 3’s “Teams Edition” of 7 vs. Wild unfolded against a backdrop shaped by millennia of human history as much as by the forces of nature. The northern extremity of Vancouver Island and its outlying islets—Hope and Nigei—lie within the ancestral territories of the Kwakwaka’wakw peoples, whose communities, like the Tlatlasikwala at Bull Harbour, thrived here for generations. Skillfully harvesting cedar, salmon and shellfish, they established villages, carved totem poles and wove legends into every place name—Nigei Island itself memorializes a respected Nahwitti chief encountered by Spanish explorers in 1792.\n\nEuropean contact arrived comparatively late, when Spanish naval officers Galiano and Valdés charted these straits in 1792, soon followed by Captain George Vancouver’s British expedition. Though mapping opened the region to fur traders and colonial outposts—Fort Rupert near today’s Port Hardy emerged by the 1840s—the dense forests and rocky shores of Hope and Nigei remained largely untouched. Yet contact brought tragic depopulation: smallpox and other imported diseases decimated Indigenous communities, reducing vibrant nations to a fraction of their former strength by the late 19th century.\n\nBy the turn of the 20th century, only isolated fishing camps, a handful of homesteads and the solitary Pine Island Lighthouse hinted at European settlement along these rugged shores. Meanwhile, the Kwakwaka’wakw persevered, their seasonal camps and sacred sites scattered among the temperate rainforests. Today, much of the filming region sits within protected areas like Cape Scott Provincial Park, preserving century‑old cedar carvings, shell middens and footpaths. As Season 3’s teams battled storms and wildlife, viewers glimpsed not only the raw challenges of survival but also the enduring imprint of human history—an environment where Indigenous ingenuity and colonial ambition have both left their mark on the land.",
+        "images": {
+          "native-community-of-vancouver-island-in-the-early-": {
+            "caption": "Native Community of Vancouver Island in the early 20th century. "
+          }
+        }
+      },
+      "pois": {
+        "cape-scott-provincial-park": {
+          "title": "Cape Scott Provincial Park",
+          "description": " A rugged wilderness park at the northwestern tip of Vancouver Island, known for its spectacular remote beaches, sea stacks, and old-growth forest. Established in 1973, the park covers the Cape Scott peninsula, including ~30 km of wave-swept sandy beaches and trails through bog and rainforest. Hikers here can visit the Cape Scott Lighthouse and the haunting ruins of a failed 19th-century Danish settlement, all while being mindful of the wolves and black bears that roam the area.",
+          "openingHours": "check website",
+          "accessibility": "Party wheelchair accesibility",
+          "gallery": {
+            "images": {
+              "wheelchair-accessible-trail-cape-scott-provincial-": {
+                "caption": "A beginner friendly taril in Cape Scott Provincial Park"
+              }
+            }
+          }
+        },
+        "bull-harbour": {
+          "title": "Bull Harbour",
+          "description": "A natural harbor on Hope Island, just north of Vancouver Island’s tip. This protected bay is the traditional home of the Tlatlasikwala First Nation and was used historically as a safe anchorage for vessels waiting to navigate the rough waters of Nahwitti Bar. Today Bull Harbour’s population is only a few families (≈2–20 people). The name comes from the roaring sea lions (“bulls”) often seen on the nearby rocks. During WWII the harbor also served as a coast guard outpost. Visitors by boat still stop here as the last calm refuge before heading into the open Pacific.",
+          "openingHours": "Book a tour",
+          "accessibility": "Boat / Waterplane",
+          "gallery": {
+            "images": {
+              "images-2": {
+                "caption": "The filming crews accomodation has been repurposed to support local tourism."
+              }
+            }
+          }
+        },
+        "pine-island-lighthouse": {
+          "title": "Pine Island Lighthouse",
+          "description": "A lonely lighthouse perched on Pine Island, guarding the eastern approach to Queen Charlotte Strait. Established in 1937, the light station is still active and manned by keepers. It flashes a white light that was visible to Season 3 contestants on clear nights. The waters around Pine Island are notoriously rough – the meeting point of Pacific swells and tidal outflows, with a shallow bar that can create dangerous seas. For mariners, this lighthouse is a crucial navigational aid before they round Cape Scott or head south. For visitors, Pine Island is accessible only by boat (it’s about 6 km offshore from Hope Island), but its stout white tower symbolizes human touchpoints in an otherwise remote seascape. The station also keeps weather data; it’s known for recording some of the strongest winds on BC’s coast during winter storms.",
+          "openingHours": "times may vary",
+          "accessibility": "guided boat tour"
+        }
+      },
+      "tours": {
+        "expedition-route-hope-and-nigei-wild-coast": {
+          "name": "Expedition Route: Hope and Nigei Wild Coast",
+          "description": "The expedition route below connects these remote coastal points, each corresponding to a team’s drop-off in Season 3. Starting from the easternmost site and looping around, the route showcases the diverse terrain (from sheltered bays to rugged headlands) that teams had to endure.",
+          "waypoints": {
+            "east-coastal-inlet-hope-island": {
+              "title": "East Coastal Inlet (Hope Island)",
+              "info": "A calm pebble cove on Hope Island’s east side (across from Pine Island Lighthouse), backed by dense spruce forest. Sheltered from open‑ocean swells but patrolled by coastal wolves and subject to strong tidal currents."
+            },
+            "southeast-headland-nigei-island": {
+              "title": "Southeast Headland (Nigei Island)",
+              "info": "A windswept rocky point at Nigei’s southeastern tip, with almost no natural shelter. Rocky shoreline gives way to boggy woods; constant wind off Goletas Channel and the sound of crashing waves."
+            },
+            "south-island-shore-hope-island": {
+              "title": "South Island Shore (Hope Island)",
+              "info": "A long sand‑and‑gravel beach near Bull Harbour’s mouth, strewn with driftwood from fierce storms. Behind: salal thickets and giant cedars. The only team here was truly isolated on Hope Island."
+            },
+            "central-creek-estuary-nigei-island": {
+              "title": "Central Creek Estuary (Nigei Island)",
+              "info": "Where a freshwater creek meets the sea on Bate Passage’s east side. Rich in shellfish and driftwood, very muddy at low tide, with thick forest and wolf tracks—truly in the island’s wild center."
+            }
+          }
+        }
+      },
+      "quiz": {
+        "title": "Season 3 Quiz",
+        "description": "Answer some short answers to test your knowledge.",
+        "questions": {
+          "where-was-7-vs-wild-season-3-filmed": {
+            "question": "Where was 7 vs. Wild Season 3 filmed?",
+            "options": [
+              "Hate & Seattle Island",
+              "Trust & Yukon Island",
+              "Hope & Nigei Island",
+              "Eagle & Nainnou Island"
+            ],
+            "explanation": {
+              "text": "The season was filmed on Hope & Nigei Island, part of Vancouver island. "
+            }
+          },
+          "how-many-participants-and-days-were-in-season-3": {
+            "question": "How many participants and days were in Season 3?",
+            "options": [
+              "7 participants, 7 days",
+              "14 participants, 14 days",
+              "10 participants, 10 days",
+              "7 teams, 21 days"
+            ],
+            "explanation": {
+              "text": "14 participants in teams of two, tried to survive for 14 days. "
+            }
+          },
+          "what-replaced-the-7-item-rule-in-season-3": {
+            "question": "What replaced the 7-item rule in Season 3?",
+            "options": [
+              "Backpack full of gear",
+              "No items at all",
+              "Gear fit in a 1-liter bottle",
+              "3 preselected tools"
+            ],
+            "explanation": {
+              "text": "All of a teams equipment had to fit into a single 1 liter bottle. "
+            }
+          },
+          "which-contestant-continued-alone-after-his-teammat": {
+            "question": "Which contestant continued alone after his teammate left?",
+            "options": [
+              "Trymacs",
+              "Fritz Meinecke",
+              "Joey kelly",
+              "Otto Karasch"
+            ],
+            "explanation": {
+              "text": "Joey received his own special episode after his teammate left. "
+            }
+          },
+          "which-predator-posed-a-potential-danger-in-the-are": {
+            "question": "Which predator posed a potential danger in the area?",
+            "options": [
+              "Grizzly bear",
+              "Wolf",
+              "Crocodile",
+              "Komodo Dragon"
+            ],
+            "explanation": {
+              "text": "While bears are common on Vancouver island, Nigei & Hope island have rare sightings. The coastal Wolf is the most dominant predator."
+            }
+          }
+        }
+      }
+    },
+    "de": {
+      "name": "7 vs. Wild – Staffel 3 Schauplatz",
+      "region": "Vancouver Island, Kanada",
+      "description": "Die 3. Staffel von 7 vs. Wild fand auf Hope und Nigei Island vor der Küste von British Columbias Vancouver Island statt und wechselte zu einer „Teams Edition“, in der sieben Paare 14 Tage lang überlebten. Anstelle von sieben Gegenständen packte jedes Duo seine gesamte Ausrüstung in eine einzige Ein-Liter-Flasche, was kreative Entscheidungen wie kompakte Messer, Feuerstarter und Angelsets erzwang. Die Staffel wurde im Oktober 2023 auf Amazon Freevee erstausgestrahlt, bevor sie auf YouTube erschien, und präsentierte eine Mischung aus Survival-Profis und Influencern: Fritz Meinecke mit „Survival Mattin“; Gerrit Rösel & Andreas Schulze; Joey Kelly & Jan Lange; Trymacs & Rumathra; Papaplatte & Reeze; Knossi & Sascha Huber; und das Wildcard-Team, bestehend nur aus Frauen, Hannah Assil & Ann‑Kathrin Bendixen, das aus über 1.700 Bewerberinnen ausgewählt wurde.",
+      "heroImage": {
+        "caption": "Vancouver Island",
+        "alt": "Vancouver Island umfasst circa 32.100 km² (etwa 12.400 mi²) und ist damit die größte Insel an der Pazifikküste Nordamerikas."
+      },
+      "stats": {
+        "participants": {
+          "label": "Teilnehmer",
+          "description": "14 Personen (7 Zweierteams). Dies war eine Verdopplung der üblichen Teilnehmerzahl (in früheren Staffeln gab es 7 Einzelteilnehmer). Die Teams wurden vorab zusammengestellt (Freunde oder Kollegen) – eine Premiere für die Show. Bemerkenswert ist, dass 2 der 14 Teilnehmer weiblich waren (beide im Wildcard-Team), was das erste rein weibliche Team in der Geschichte von 7 vs. Wild darstellt."
+        },
+        "days-survival": {
+          "label": "Überlebenstage",
+          "description": "14 Tage (verlängertes Format). Der Überlebenszeitraum der 3. Staffel betrug zwei Wochen, im Vergleich zur 7-tägigen Dauer der Staffeln 1 und 2. Die Dreharbeiten fanden von Ende August bis September 2023 statt, und von den sieben gestarteten Teams hielten drei die gesamten 14 Tage durch (die anderen schieden früher aus). Dieser längere Zeitraum führte zu neuen Ausmaßen von Erschöpfung, Ressourcenknappheit und psychischer Belastung, da die Teilnehmer doppelt so viele Nächte in der Wildnis überstehen mussten."
+        },
+        "liter-of-items": {
+          "label": "Liter an Gegenständen",
+          "description": "1 Liter an Gegenständen pro Team. Anstatt dass jede Person 7 Gegenstände auswählte, teilten sich die Teams in Staffel 3 eine 1-Liter-Flasche, in die sie all ihre gewählten Überlebensgegenstände packten. Es gab keine feste Anzahl von Gegenständen – alles war erlaubt, solange es in die versiegelte Flasche passte. Dies führte zu kreativen „Mikro-Kits“ (Angelschnüre, Feuerstahl, Multitool usw.) und bedeutete, dass die Teams weit weniger Werkzeuge als in früheren Staffeln hatten (effektiv brachten viele Teams etwa 10–15 kleine Gegenstände mit). Kleidung war weiterhin von dieser Beschränkung ausgenommen, und jedes Team hatte wie üblich auch Notfall- und Kameraausrüstung dabei."
+        },
+        "episodes": {
+          "label": "Episoden",
+          "description": "Die Geschichte der Staffel wurde in 16 Haupt- und einer Bonus-Episode erzählt. Die Episoden dauerten im Durchschnitt 45–60 Minuten und wurden zweimal wöchentlich veröffentlicht. Einzigartig war, dass Staffel 3 zuerst auf Amazon Freevee ausgestrahlt (Okt.–Dez. 2023) und dann mit einigen Wochen Verzögerung auf YouTube veröffentlicht wurde (Nov. 2023 – Jan. 2024). Die letzte „Episode 17“ war ein besonderes Bonus-Feature („Joey allein im Wald“), das Ende Januar 2024 nach dem Hauptfinale ausgestrahlt wurde."
+        },
+        "viewers": {
+          "label": "Zuschauer",
+          "description": "Über 4 Millionen Zuschauer pro Episode im Durchschnitt. Staffel 3 zog ein riesiges Online-Publikum an – jede Episode erreichte auf YouTube durchschnittlich ~4–5 Millionen Aufrufe, mit Millionen weiteren Zuschauern über Freevee. Am Ende der Staffel hatte die Serie plattformübergreifend über 100 Millionen Gesamtaufrufe angesammelt, was 7 vs. Wild zu einer der meistgesehenen Reality-Shows mit YouTube-Ursprung macht. Die erweiterte Besetzung und die Mainstream-Präsenz halfen Staffel 3, ihre eigenen Rekorde zu brechen; zu einem Zeitpunkt meldeten die Produzenten 116 Millionen Gesamtaufrufe und 2,2 Millionen Likes für alle Inhalte der 3. Staffel. Dieser Erfolg festigte den Status der Show als globales YouTube-Phänomen."
+        }
+      },
+      "interestingFacts": {
+        "show-creator-exits-early-in-a-surprising-twist-fri": {
+          "text": "Serienschöpfer scheidet früh aus: In einer überraschenden Wendung gab Fritz Meinecke – der Gründer der Show und ein erfahrener Survival-Experte – an Tag 3 der Herausforderung auf\nen.wikipedia.org\n. Fritz und sein Partner Mattin waren an einem schwierigen Ort gelandet und hatten mit unaufhörlichem Regen und einem überfluteten Fluss zu kämpfen. Fritz' frühes Ausscheiden (aufgrund von Unterkühlungsgefahr) schockierte die Fans und bewies, dass selbst der erfahrenste Überlebensexperte unter den harten Bedingungen von Staffel 3 nicht garantiert durchhalten würde."
+        },
+        "solo-survival-bonus-episode-after-joey-kellys-team": {
+          "text": "Solo-Survival-Bonus-Episode: Nachdem Joey Kellys Teamkollege Jan Schlappen an Tag 7 aufgab, entschied sich Joey, die Survival-Herausforderung für die verbleibende Woche allein fortzusetzen. Er überlebte weitere 7 Tage allein und absolvierte damit praktisch eine Solo-Herausforderung. Diese einzigartige Situation wurde nicht im Hauptwettbewerb gewertet, aber das Filmmaterial wurde zu einer speziellen Bonus-Episode „Joey allein im Wald“ zusammengestellt, die Joeys Einfallsreichtum und mentale Stärke bei der Bewältigung der zwei Wochen im Alleingang zeigt."
+        },
+        "tv-stars-invited-and-declined-the-season-3-team-fo": {
+          "text": "TV-Stars eingeladen – und abgelehnt: Das Team-Format der 3. Staffel öffnete die Tür für Einladungen an große Namen. Die Produktion lud die berühmten deutschen TV-Moderatoren Joko Winterscheidt und Klaas Heufer-Umlauf öffentlich ein, als Duo am Abenteuer teilzunehmen. Die beiden sind für ihre ausgefallenen Herausforderungen in ihrer eigenen Show bekannt, daher waren die Fans von der Aussicht begeistert. Joko & Klaas lehnten das Angebot jedoch letztendlich unter Berufung auf die extremen Bedingungen ab. Ihre Absage wurde zu einem amüsanten Gesprächsthema in der Vor-Saison – selbst 7 vs. Wild war für einige Prominente zu wild!"
+        },
+        "wildcard-team-made-history-the-inclusion-of-hannah": {
+          "text": "Wildcard-Team schrieb Geschichte: Mit der Aufnahme von Hannah Assil und „Affe auf Bike“ (Ann-Kathrin Bendixen) als Wildcard-Team nahmen erstmals weibliche Kandidatinnen an 7 vs. Wild teil. Hannah, eine Wildtierfotografin und Rangerin, und Ann-Kathrin, eine Abenteurerin, die für ihre Motorradreisen bekannt ist, setzten sich in einer öffentlichen Abstimmung gegen Hunderte von Bewerbern durch. Obwohl sie weniger bekannt waren, verdienten sie sich schnell den Respekt der Zuschauer. Fun Fact: Ihr Wildcard-Platz war ursprünglich für eine einzelne Person gedacht, aber die Showrunner entschieden sich, zwei zu nehmen und ein Team zu bilden – und es zahlte sich aus, denn Hannah & Affe überlebten beeindruckend alle 14 Tage und bewiesen dabei ebenso viel Geschick und Biss wie jedes andere Team."
+        },
+        "extreme-weather-and-storm-tide-event-the-vancouver": {
+          "text": "Extremwetter und „Sturmflut“-Ereignis: Die Umgebung von Vancouver Island machte es den Teilnehmern nicht leicht. Bereits an Tag 3 traf ein heftiger Sturm, der mit einer hohen Springflut zusammenfiel, die Lager. Starkregen und stürmische Winde tobten über Nacht, und die Flut überschwemmte tief liegende Strandlager – ein Vorfall, der in Episode 5 mit dem treffenden Titel „Sturmflut“ gezeigt wurde. Die Teams wachten auf und fanden Teile ihrer Ausrüstung durchnässt oder weggeschwemmt vor. Es war das erste Mal in der Serie, dass eine Sturmflut einen solchen Schaden verursachte. Der Sturm wurde zu einem dramatischen Wendepunkt zu Beginn der Staffel, der Unterkünfte und Moral auf die Probe stellte. (Nach dieser Nacht beschlossen zwei Teams, aufzugeben.) Die Lektion: An einer wilden Küste kann der Ozean ein ebenso gewaltiger Gegner sein wie Hunger oder Isolation."
+        },
+        "or-a-shortterm-survival-situation-you-ideally-want": {
+          "text": "oder in einer kurzfristigen Überlebenssituation möchten Sie idealerweise Wasser mit einem Gehalt an gelösten Feststoffen (TDS) von unter 1.000 mg/L (1 g/L), das die meisten Menschen als schmackhaft empfinden und das Ihre Nieren ohne zusätzliche Belastung verarbeiten können. Brackwasser – bis zu etwa 10 g/L (10.000 mg/L oder 1 % Salz) – kann im Notfall ein- oder zweimal getrunken werden, aber Sie werden schnell durstig, Ihnen wird übel und Ihr Körper verliert mehr Wasser beim Versuch, das überschüssige Salz auszuscheiden. Alles über 10 g/L birgt das Risiko von Erbrechen, Durchfall und Dehydrierung; das Trinken von echtem Meerwasser (≈35 g/L) ist selbst für kurze Zeit gefährlich."
+        }
+      },
+      "historicalInfo": {
+        "text": "Die „Teams Edition“ der 3. Staffel von 7 vs. Wild spielte vor einem Hintergrund, der sowohl von Jahrtausenden menschlicher Geschichte als auch von den Kräften der Natur geprägt ist. Die Nordspitze von Vancouver Island und ihre vorgelagerten Inseln – Hope und Nigei – liegen im angestammten Gebiet der Kwakwaka'wakw-Völker, deren Gemeinschaften, wie die Tlatlasikwala in Bull Harbour, hier seit Generationen gediehen. Durch die geschickte Ernte von Zedernholz, Lachs und Muscheln gründeten sie Dörfer, schnitzten Totempfähle und verwoben Legenden in jeden Ortsnamen – Nigei Island selbst erinnert an einen angesehenen Nahwitti-Häuptling, dem spanische Entdecker 1792 begegneten.\n\nDer europäische Kontakt kam vergleichsweise spät, als die spanischen Marineoffiziere Galiano und Valdés diese Meerengen 1792 kartierten, bald gefolgt von der britischen Expedition von Kapitän George Vancouver. Obwohl die Kartierung die Region für Pelzhändler und koloniale Außenposten öffnete – Fort Rupert in der Nähe des heutigen Port Hardy entstand in den 1840er Jahren –, blieben die dichten Wälder und felsigen Küsten von Hope und Nigei weitgehend unberührt. Doch der Kontakt brachte eine tragische Entvölkerung mit sich: Pocken und andere eingeschleppte Krankheiten dezimierten die indigenen Gemeinschaften und reduzierten blühende Nationen bis zum späten 19. Jahrhundert auf einen Bruchteil ihrer früheren Stärke.\n\nUm die Wende zum 20. Jahrhundert deuteten nur vereinzelte Fischerlager, eine Handvoll Gehöfte und der einsame Leuchtturm von Pine Island auf eine europäische Besiedlung entlang dieser rauen Küsten hin. Währenddessen hielten die Kwakwaka'wakw durch, ihre saisonalen Lager und heiligen Stätten waren in den gemäßigten Regenwäldern verstreut. Heute liegt ein Großteil der Drehregion in Schutzgebieten wie dem Cape Scott Provincial Park, der jahrhundertealte Zedernschnitzereien, Muschelhaufen und Fußpfade bewahrt. Während die Teams der 3. Staffel gegen Stürme und Wildtiere kämpften, erhaschten die Zuschauer nicht nur einen Blick auf die rohen Herausforderungen des Überlebens, sondern auch auf den bleibenden Abdruck der menschlichen Geschichte – eine Umgebung, in der sowohl der indigene Einfallsreichtum als auch der koloniale Ehrgeiz ihre Spuren im Land hinterlassen haben.",
+        "images": {
+          "native-community-of-vancouver-island-in-the-early-": {
+            "caption": "Indigene Gemeinschaft auf Vancouver Island im frühen 20. Jahrhundert. "
+          }
+        }
+      },
+      "pois": {
+        "cape-scott-provincial-park": {
+          "title": "Cape Scott Provincial Park",
+          "description": "Ein rauer Wildnispark an der nordwestlichen Spitze von Vancouver Island, bekannt für seine spektakulären, abgelegenen Strände, Brandungspfeiler und alten Wälder. Der 1973 gegründete Park umfasst die Cape-Scott-Halbinsel mit ca. 30 km wellenumtosten Sandstränden und Wegen durch Moore und Regenwald. Wanderer können hier den Leuchtturm von Cape Scott und die unheimlichen Ruinen einer gescheiterten dänischen Siedlung aus dem 19. Jahrhundert besichtigen, müssen dabei aber auf die Wölfe und Schwarzbären achten, die in der Gegend umherstreifen.",
+          "openingHours": "Siehe Webseite",
+          "accessibility": "Teilweise rollstuhlgerecht",
+          "gallery": {
+            "images": {
+              "wheelchair-accessible-trail-cape-scott-provincial-": {
+                "caption": "Ein anfängerfreundlicher Weg im Cape Scott Provincial Park"
+              }
+            }
+          }
+        },
+        "bull-harbour": {
+          "title": "Bull Harbour",
+          "description": "Ein natürlicher Hafen auf Hope Island, direkt nördlich der Spitze von Vancouver Island. Diese geschützte Bucht ist die traditionelle Heimat der Tlatlasikwala First Nation und wurde historisch als sicherer Ankerplatz für Schiffe genutzt, die darauf warteten, die rauen Gewässer der Nahwitti Bar zu durchqueren. Heute besteht die Bevölkerung von Bull Harbour nur aus wenigen Familien (ca. 2–20 Personen). Der Name leitet sich von den brüllenden Seelöwen („Bullen“) ab, die oft auf den nahegelegenen Felsen zu sehen sind. Während des Zweiten Weltkriegs diente der Hafen auch als Außenposten der Küstenwache. Besucher mit Booten halten hier immer noch an, da es der letzte ruhige Zufluchtsort ist, bevor es auf den offenen Pazifik geht.",
+          "openingHours": "Tour buchen",
+          "accessibility": "Boot / Wasserflugzeug",
+          "gallery": {
+            "images": {
+              "images-2": {
+                "caption": "Die Unterkunft der Filmcrew wurde umfunktioniert, um den lokalen Tourismus zu unterstützen."
+              }
+            }
+          }
+        },
+        "pine-island-lighthouse": {
+          "title": "Pine Island Lighthouse",
+          "description": "Ein einsamer Leuchtturm auf Pine Island, der den östlichen Zugang zur Queen Charlotte Strait bewacht. Die 1937 errichtete Leuchtfeuerstation ist immer noch aktiv und mit Wärtern besetzt. Sie sendet ein weißes Blinklicht aus, das für die Teilnehmer der 3. Staffel in klaren Nächten sichtbar war. Die Gewässer um Pine Island sind notorisch rau – der Treffpunkt von pazifischen Dünungen und Gezeitenströmen, mit einer flachen Sandbank, die gefährliche See erzeugen kann. Für Seeleute ist dieser Leuchtturm eine entscheidende Navigationshilfe, bevor sie Cape Scott umrunden oder nach Süden fahren. Für Besucher ist Pine Island nur per Boot erreichbar (etwa 6 km vor der Küste von Hope Island), aber sein massiver weißer Turm symbolisiert menschliche Anknüpfungspunkte in einer ansonsten abgelegenen Meereslandschaft. Die Station erfasst auch Wetterdaten; sie ist dafür bekannt, einige der stärksten Winde an der Küste von British Columbia während Winterstürmen aufzuzeichnen.",
+          "openingHours": "Zeiten können variieren",
+          "accessibility": "geführte Bootstour"
+        }
+      },
+      "tours": {
+        "expedition-route-hope-and-nigei-wild-coast": {
+          "name": "Expeditionsroute: Wilde Küste von Hope und Nigei",
+          "description": "Die nachstehende Expeditionsroute verbindet diese entlegenen Küstenpunkte, die jeweils einem Absetzpunkt eines Teams in Staffel 3 entsprechen. Beginnend am östlichsten Punkt und in einer Schleife verlaufend, zeigt die Route das vielfältige Gelände (von geschützten Buchten bis hin zu schroffen Landzungen), das die Teams bewältigen mussten.",
+          "waypoints": {
+            "east-coastal-inlet-hope-island": {
+              "title": "Östlicher Küsteneinlass (Hope Island)",
+              "info": "Eine ruhige Kieselbucht an der Ostseite von Hope Island (gegenüber dem Pine Island Lighthouse), umgeben von dichtem Fichtenwald. Geschützt vor den Dünungen des offenen Ozeans, aber von Küstenwölfen patrouilliert und starken Gezeitenströmungen ausgesetzt."
+            },
+            "southeast-headland-nigei-island": {
+              "title": "Südöstliche Landzunge (Nigei Island)",
+              "info": "Eine windgepeitschte, felsige Spitze am südöstlichen Ende von Nigei Island, mit fast keinem natürlichen Schutz. Die felsige Küstenlinie geht in sumpfige Wälder über; ständiger Wind vom Goletas Channel und das Geräusch brechender Wellen."
+            },
+            "south-island-shore-hope-island": {
+              "title": "Südküste der Insel (Hope Island)",
+              "info": "Ein langer Sand- und Kiesstrand nahe der Mündung von Bull Harbour, übersät mit Treibholz von heftigen Stürmen. Dahinter: Salal-Dickicht und riesige Zedern. Das einzige Team hier war wirklich auf Hope Island isoliert."
+            },
+            "central-creek-estuary-nigei-island": {
+              "title": "Zentrales Bachdelta (Nigei Island)",
+              "info": "Wo ein Süßwasserbach an der Ostseite der Bate Passage ins Meer mündet. Reich an Muscheln und Treibholz, bei Ebbe sehr schlammig, mit dichtem Wald und Wolfsspuren – wahrhaft im wilden Zentrum der Insel."
+            }
+          }
+        }
+      },
+      "quiz": {
+        "title": "Staffel 3 Quiz",
+        "description": "Beantworte einige kurze Fragen, um dein Wissen zu testen.",
+        "questions": {
+          "where-was-7-vs-wild-season-3-filmed": {
+            "question": "Wo wurde 7 vs. Wild Staffel 3 gedreht?",
+            "options": [
+              "Hate & Seattle Island",
+              "Trust & Yukon Island",
+              "Hope & Nigei Island",
+              "Eagle & Nainnou Island"
+            ],
+            "explanation": {
+              "text": "Die Staffel wurde auf Hope & Nigei Island, einem Teil von Vancouver Island, gedreht. "
+            }
+          },
+          "how-many-participants-and-days-were-in-season-3": {
+            "question": "Wie viele Teilnehmer und Tage gab es in Staffel 3?",
+            "options": [
+              "7 Teilnehmer, 7 Tage",
+              "14 Teilnehmer, 14 Tage",
+              "10 Teilnehmer, 10 Tage",
+              "7 Teams, 21 Tage"
+            ],
+            "explanation": {
+              "text": "14 Teilnehmer in Zweierteams versuchten, 14 Tage lang zu überleben. "
+            }
+          },
+          "what-replaced-the-7-item-rule-in-season-3": {
+            "question": "Was ersetzte die 7-Gegenstände-Regel in Staffel 3?",
+            "options": [
+              "Ein Rucksack voller Ausrüstung",
+              "Gar keine Gegenstände",
+              "Ausrüstung, die in eine 1-Liter-Flasche passt",
+              "3 vorausgewählte Werkzeuge"
+            ],
+            "explanation": {
+              "text": "Die gesamte Ausrüstung eines Teams musste in eine einzige 1-Liter-Flasche passen. "
+            }
+          },
+          "which-contestant-continued-alone-after-his-teammat": {
+            "question": "Welcher Teilnehmer machte alleine weiter, nachdem sein Teamkollege ausgeschieden war?",
+            "options": [
+              "Trymacs",
+              "Fritz Meinecke",
+              "Joey Kelly",
+              "Otto Karasch"
+            ],
+            "explanation": {
+              "text": "Joey erhielt eine eigene Sonderfolge, nachdem sein Teamkollege ausgeschieden war. "
+            }
+          },
+          "which-predator-posed-a-potential-danger-in-the-are": {
+            "question": "Welches Raubtier stellte in der Gegend eine potenzielle Gefahr dar?",
+            "options": [
+              "Grizzlybär",
+              "Wolf",
+              "Krokodil",
+              "Komodowaran"
+            ],
+            "explanation": {
+              "text": "Während Bären auf Vancouver Island verbreitet sind, werden sie auf Nigei & Hope Island nur selten gesichtet. Der Küstenwolf ist das dominanteste Raubtier."
+            }
+          }
+        }
+      }
+    },
+    "es": {
+      "name": "7 vs Wild - Season 3 Location",
+      "region": "Vancouver Island, Canada",
+      "description": "Season 3 of 7 vs. Wild took place on Hope and Nigei Islands off British Columbia’s Vancouver Island coast, shifting to a “Teams Edition” with seven pairs surviving 14 days. Instead of seven items, each duo packed all their gear into a single one‑liter bottle, forcing creative choices like compact knives, firestarters, and fishing kits. The season debuted on Amazon Freevee in October 2023 before hitting YouTube, and featured a mix of survival pros and influencers: Fritz Meinecke with “Survival Mattin”; Gerrit Rösel & Andreas Schulze; Joey Kelly & Jan Lange; Trymacs & Rumathra; Papaplatte & Reeze; Knossi & Sascha Huber; and the wildcard all‑female team Hannah Assil & Ann‑Kathrin Bendixen, chosen from over 1,700 applicants.",
+      "heroImage": {
+        "caption": "Vancouver Island",
+        "alt": "Vancouver Island covers approximately 32 100 km² (about 12 400 mi²), making it the largest island on the Pacific coast of North America "
+      },
+      "stats": {
+        "participants": {
+          "label": "Participants",
+          "description": "14 people (7 teams of two). This was a doubling of the usual cast size (previous seasons had 7 solo participants). Teams were pre-paired (friends or colleagues) – a first for the show. Notably, 2 out of 14 participants were female (both on the wildcard team), marking the first all-female team in 7 vs. Wild history."
+        },
+        "days-survival": {
+          "label": "Days Survival",
+          "description": "14 days (extended format). Season 3’s survival period was two weeks long, compared to the 7-day duration of Seasons 1 and 2. Filming took place in late August through September 2023, and of the seven teams that started, three teams lasted the entire 14 days (the others tapped out earlier). This longer timespan introduced new levels of fatigue, resource depletion, and psychological strain as contestants had to endure twice as many nights in the wild."
+        },
+        "liter-of-items": {
+          "label": "Liter of items",
+          "description": "1 liter of items per team. Instead of each person choosing 7 items, Season 3 teams shared a 1 L bottle into which they packed all their chosen survival items. There was no set number of items – anything was allowed as long as it fit in the sealed bottle. This resulted in creative “micro-kits” (fishing lines, firesteel, multitool, etc.) and meant teams had far fewer tools than in prior seasons (effectively, many teams brought on the order of ~10–15 small items). Clothing was still exempt from this limit, and each team also had emergency and camera gear as usual."
+        },
+        "episodes": {
+          "label": "Episodes",
+          "description": "The season’s story was told across 16 main episodes plus 1 bonus episode. Episodes averaged 45–60 minutes, released twice weekly. Uniquely, Season 3 was first broadcast on Amazon Freevee (Oct–Dec 2023) and then released on YouTube with a few weeks’ delay (Nov 2023 – Jan 2024). The final “Episode 17” was a special bonus feature (“Joey Alone in the Forest”) that aired in late January 2024 after the main finale."
+        },
+        "viewers": {
+          "label": "Viewers",
+          "description": "Over 4 million viewers per episode on average. Season 3 drew massive online viewership – each episode garnered ~4–5 million views on YouTube on average, with millions more watching via Freevee. By season’s end, the series had accumulated over 100 million total views across platforms, making 7 vs. Wild one of the most-watched YouTube-origin reality shows. The expanded cast and mainstream exposure helped Season 3 break its own records; at one point the producers reported 116 million total views and 2.2 million likes across all Season 3 content. This success cemented the show’s status as a global YouTube phenomenon."
+        }
+      },
+      "interestingFacts": {
+        "show-creator-exits-early-in-a-surprising-twist-fri": {
+          "text": "Show Creator Exits Early: In a surprising twist, Fritz Meinecke – the show’s founder and an experienced survivalist – tapped out on Day 3 of the challenge\nen.wikipedia.org\n. Fritz and his partner Mattin had landed in a tough spot and struggled with incessant rain and a flooding river. Fritz’s early exit (due to hypothermia risk) shocked fans, proving that even the most seasoned survival expert wasn’t guaranteed to last under Season 3’s harsh conditions."
+        },
+        "solo-survival-bonus-episode-after-joey-kellys-team": {
+          "text": "Solo Survival Bonus Episode: After Joey Kelly’s teammate Jan Schlappen withdrew on Day 7, Joey chose to continue the survival challenge alone for the remaining week. He survived by himself for 7 more days, effectively doing a solo challenge. This unique situation was not scored in the main competition, but the footage was compiled into a special bonus episode “Joey allein im Wald” (Joey Alone in the Forest) – showcasing Joey’s resourcefulness and mental fortitude in completing the two weeks solo."
+        },
+        "tv-stars-invited-and-declined-the-season-3-team-fo": {
+          "text": "TV Stars Invited – and Declined: The Season 3 team format opened the door to big-name invitees. The production publicly invited famous German TV hosts Joko Winterscheidt and Klaas Heufer-Umlauf to join the adventure as a duo. These two are known for outrageous challenges on their own show, so fans were excited by the prospect. However, Joko & Klaas ultimately declined the offer, citing the extreme conditions. Their refusal became an amusing talking point in the pre-season – even 7 vs. Wild was too wild for some celebrities!"
+        },
+        "wildcard-team-made-history-the-inclusion-of-hannah": {
+          "text": "Wildcard Team Made History: The inclusion of Hannah Assil and “Affe auf Bike” (Ann-Kathrin Bendixen) as a wildcard team introduced the first women contestants to 7 vs. Wild. Hannah, a wildlife photographer and ranger, and Ann-Kathrin, an adventurer known for traveling by motorbike, beat out hundreds of applicants in a public vote. Despite being less famous, they quickly earned viewer respect. Fun fact: their wildcard entry was originally intended to be a single person, but the showrunners decided to take two and form a team – and it paid off, as Hannah & Affe impressively survived all 14 days, demonstrating skill and grit equal to any other team."
+        },
+        "extreme-weather-and-storm-tide-event-the-vancouver": {
+          "text": "Extreme Weather and “Storm Tide” Event: The Vancouver Island environment did not go easy on the participants. On only Day 3, a powerful storm coinciding with a high spring tide slammed into the camps. Heavy rain and gale-force winds hit overnight, and the high tide inundated low-lying beach camps – an incident featured in Episode 5 aptly titled “Sturmflut” (Storm Tide). Teams woke to find part of their gear soaked or swept away. This was the first time in the series that a tidal surge caused such damage. The storm became a dramatic turning point early in the season, testing shelters and morale. (It was after this night that two teams decided to call it quits.) The lesson: on a wild coast, the ocean can be as formidable an opponent as hunger or isolation."
+        },
+        "or-a-shortterm-survival-situation-you-ideally-want": {
+          "text": "or a short‑term survival situation, you ideally want water with total dissolved solids (TDS) below about 1 000 mg/L (1 g/L), which most people find palatable and which your kidneys can handle without extra strain. Brackish water—up to around 10 g/L (10 000 mg/L, or 1 % salt)—can be drunk once or twice in an emergency, but you’ll quickly start to feel thirsty, nauseous and your body will lose more water trying to expel the excess salt. Anything above 10 g/L risks vomiting, diarrhea and dehydration; drinking true seawater (≈35 g/L) is dangerous even briefly."
+        }
+      },
+      "historicalInfo": {
+        "text": "Season 3’s “Teams Edition” of 7 vs. Wild unfolded against a backdrop shaped by millennia of human history as much as by the forces of nature. The northern extremity of Vancouver Island and its outlying islets—Hope and Nigei—lie within the ancestral territories of the Kwakwaka’wakw peoples, whose communities, like the Tlatlasikwala at Bull Harbour, thrived here for generations. Skillfully harvesting cedar, salmon and shellfish, they established villages, carved totem poles and wove legends into every place name—Nigei Island itself memorializes a respected Nahwitti chief encountered by Spanish explorers in 1792.\n\nEuropean contact arrived comparatively late, when Spanish naval officers Galiano and Valdés charted these straits in 1792, soon followed by Captain George Vancouver’s British expedition. Though mapping opened the region to fur traders and colonial outposts—Fort Rupert near today’s Port Hardy emerged by the 1840s—the dense forests and rocky shores of Hope and Nigei remained largely untouched. Yet contact brought tragic depopulation: smallpox and other imported diseases decimated Indigenous communities, reducing vibrant nations to a fraction of their former strength by the late 19th century.\n\nBy the turn of the 20th century, only isolated fishing camps, a handful of homesteads and the solitary Pine Island Lighthouse hinted at European settlement along these rugged shores. Meanwhile, the Kwakwaka’wakw persevered, their seasonal camps and sacred sites scattered among the temperate rainforests. Today, much of the filming region sits within protected areas like Cape Scott Provincial Park, preserving century‑old cedar carvings, shell middens and footpaths. As Season 3’s teams battled storms and wildlife, viewers glimpsed not only the raw challenges of survival but also the enduring imprint of human history—an environment where Indigenous ingenuity and colonial ambition have both left their mark on the land.",
+        "images": {
+          "native-community-of-vancouver-island-in-the-early-": {
+            "caption": "Native Community of Vancouver Island in the early 20th century. "
+          }
+        }
+      },
+      "pois": {
+        "cape-scott-provincial-park": {
+          "title": "Cape Scott Provincial Park",
+          "description": " A rugged wilderness park at the northwestern tip of Vancouver Island, known for its spectacular remote beaches, sea stacks, and old-growth forest. Established in 1973, the park covers the Cape Scott peninsula, including ~30 km of wave-swept sandy beaches and trails through bog and rainforest. Hikers here can visit the Cape Scott Lighthouse and the haunting ruins of a failed 19th-century Danish settlement, all while being mindful of the wolves and black bears that roam the area.",
+          "openingHours": "check website",
+          "accessibility": "Party wheelchair accesibility",
+          "gallery": {
+            "images": {
+              "wheelchair-accessible-trail-cape-scott-provincial-": {
+                "caption": "A beginner friendly taril in Cape Scott Provincial Park"
+              }
+            }
+          }
+        },
+        "bull-harbour": {
+          "title": "Bull Harbour",
+          "description": "A natural harbor on Hope Island, just north of Vancouver Island’s tip. This protected bay is the traditional home of the Tlatlasikwala First Nation and was used historically as a safe anchorage for vessels waiting to navigate the rough waters of Nahwitti Bar. Today Bull Harbour’s population is only a few families (≈2–20 people). The name comes from the roaring sea lions (“bulls”) often seen on the nearby rocks. During WWII the harbor also served as a coast guard outpost. Visitors by boat still stop here as the last calm refuge before heading into the open Pacific.",
+          "openingHours": "Book a tour",
+          "accessibility": "Boat / Waterplane",
+          "gallery": {
+            "images": {
+              "images-2": {
+                "caption": "The filming crews accomodation has been repurposed to support local tourism."
+              }
+            }
+          }
+        },
+        "pine-island-lighthouse": {
+          "title": "Pine Island Lighthouse",
+          "description": "A lonely lighthouse perched on Pine Island, guarding the eastern approach to Queen Charlotte Strait. Established in 1937, the light station is still active and manned by keepers. It flashes a white light that was visible to Season 3 contestants on clear nights. The waters around Pine Island are notoriously rough – the meeting point of Pacific swells and tidal outflows, with a shallow bar that can create dangerous seas. For mariners, this lighthouse is a crucial navigational aid before they round Cape Scott or head south. For visitors, Pine Island is accessible only by boat (it’s about 6 km offshore from Hope Island), but its stout white tower symbolizes human touchpoints in an otherwise remote seascape. The station also keeps weather data; it’s known for recording some of the strongest winds on BC’s coast during winter storms.",
+          "openingHours": "times may vary",
+          "accessibility": "guided boat tour"
+        }
+      },
+      "tours": {
+        "expedition-route-hope-and-nigei-wild-coast": {
+          "name": "Expedition Route: Hope and Nigei Wild Coast",
+          "description": "The expedition route below connects these remote coastal points, each corresponding to a team’s drop-off in Season 3. Starting from the easternmost site and looping around, the route showcases the diverse terrain (from sheltered bays to rugged headlands) that teams had to endure.",
+          "waypoints": {
+            "east-coastal-inlet-hope-island": {
+              "title": "East Coastal Inlet (Hope Island)",
+              "info": "A calm pebble cove on Hope Island’s east side (across from Pine Island Lighthouse), backed by dense spruce forest. Sheltered from open‑ocean swells but patrolled by coastal wolves and subject to strong tidal currents."
+            },
+            "southeast-headland-nigei-island": {
+              "title": "Southeast Headland (Nigei Island)",
+              "info": "A windswept rocky point at Nigei’s southeastern tip, with almost no natural shelter. Rocky shoreline gives way to boggy woods; constant wind off Goletas Channel and the sound of crashing waves."
+            },
+            "south-island-shore-hope-island": {
+              "title": "South Island Shore (Hope Island)",
+              "info": "A long sand‑and‑gravel beach near Bull Harbour’s mouth, strewn with driftwood from fierce storms. Behind: salal thickets and giant cedars. The only team here was truly isolated on Hope Island."
+            },
+            "central-creek-estuary-nigei-island": {
+              "title": "Central Creek Estuary (Nigei Island)",
+              "info": "Where a freshwater creek meets the sea on Bate Passage’s east side. Rich in shellfish and driftwood, very muddy at low tide, with thick forest and wolf tracks—truly in the island’s wild center."
+            }
+          }
+        }
+      },
+      "quiz": {
+        "title": "Season 3 Quiz",
+        "description": "Answer some short answers to test your knowledge.",
+        "questions": {
+          "where-was-7-vs-wild-season-3-filmed": {
+            "question": "Where was 7 vs. Wild Season 3 filmed?",
+            "options": [
+              "Hate & Seattle Island",
+              "Trust & Yukon Island",
+              "Hope & Nigei Island",
+              "Eagle & Nainnou Island"
+            ],
+            "explanation": {
+              "text": "The season was filmed on Hope & Nigei Island, part of Vancouver island. "
+            }
+          },
+          "how-many-participants-and-days-were-in-season-3": {
+            "question": "How many participants and days were in Season 3?",
+            "options": [
+              "7 participants, 7 days",
+              "14 participants, 14 days",
+              "10 participants, 10 days",
+              "7 teams, 21 days"
+            ],
+            "explanation": {
+              "text": "14 participants in teams of two, tried to survive for 14 days. "
+            }
+          },
+          "what-replaced-the-7-item-rule-in-season-3": {
+            "question": "What replaced the 7-item rule in Season 3?",
+            "options": [
+              "Backpack full of gear",
+              "No items at all",
+              "Gear fit in a 1-liter bottle",
+              "3 preselected tools"
+            ],
+            "explanation": {
+              "text": "All of a teams equipment had to fit into a single 1 liter bottle. "
+            }
+          },
+          "which-contestant-continued-alone-after-his-teammat": {
+            "question": "Which contestant continued alone after his teammate left?",
+            "options": [
+              "Trymacs",
+              "Fritz Meinecke",
+              "Joey kelly",
+              "Otto Karasch"
+            ],
+            "explanation": {
+              "text": "Joey received his own special episode after his teammate left. "
+            }
+          },
+          "which-predator-posed-a-potential-danger-in-the-are": {
+            "question": "Which predator posed a potential danger in the area?",
+            "options": [
+              "Grizzly bear",
+              "Wolf",
+              "Crocodile",
+              "Komodo Dragon"
+            ],
+            "explanation": {
+              "text": "While bears are common on Vancouver island, Nigei & Hope island have rare sightings. The coastal Wolf is the most dominant predator."
+            }
+          }
+        }
+      }
+    },
+    "pt": {
+      "name": "7 vs Wild - Season 3 Location",
+      "region": "Vancouver Island, Canada",
+      "description": "Season 3 of 7 vs. Wild took place on Hope and Nigei Islands off British Columbia’s Vancouver Island coast, shifting to a “Teams Edition” with seven pairs surviving 14 days. Instead of seven items, each duo packed all their gear into a single one‑liter bottle, forcing creative choices like compact knives, firestarters, and fishing kits. The season debuted on Amazon Freevee in October 2023 before hitting YouTube, and featured a mix of survival pros and influencers: Fritz Meinecke with “Survival Mattin”; Gerrit Rösel & Andreas Schulze; Joey Kelly & Jan Lange; Trymacs & Rumathra; Papaplatte & Reeze; Knossi & Sascha Huber; and the wildcard all‑female team Hannah Assil & Ann‑Kathrin Bendixen, chosen from over 1,700 applicants.",
+      "heroImage": {
+        "caption": "Vancouver Island",
+        "alt": "Vancouver Island covers approximately 32 100 km² (about 12 400 mi²), making it the largest island on the Pacific coast of North America "
+      },
+      "stats": {
+        "participants": {
+          "label": "Participants",
+          "description": "14 people (7 teams of two). This was a doubling of the usual cast size (previous seasons had 7 solo participants). Teams were pre-paired (friends or colleagues) – a first for the show. Notably, 2 out of 14 participants were female (both on the wildcard team), marking the first all-female team in 7 vs. Wild history."
+        },
+        "days-survival": {
+          "label": "Days Survival",
+          "description": "14 days (extended format). Season 3’s survival period was two weeks long, compared to the 7-day duration of Seasons 1 and 2. Filming took place in late August through September 2023, and of the seven teams that started, three teams lasted the entire 14 days (the others tapped out earlier). This longer timespan introduced new levels of fatigue, resource depletion, and psychological strain as contestants had to endure twice as many nights in the wild."
+        },
+        "liter-of-items": {
+          "label": "Liter of items",
+          "description": "1 liter of items per team. Instead of each person choosing 7 items, Season 3 teams shared a 1 L bottle into which they packed all their chosen survival items. There was no set number of items – anything was allowed as long as it fit in the sealed bottle. This resulted in creative “micro-kits” (fishing lines, firesteel, multitool, etc.) and meant teams had far fewer tools than in prior seasons (effectively, many teams brought on the order of ~10–15 small items). Clothing was still exempt from this limit, and each team also had emergency and camera gear as usual."
+        },
+        "episodes": {
+          "label": "Episodes",
+          "description": "The season’s story was told across 16 main episodes plus 1 bonus episode. Episodes averaged 45–60 minutes, released twice weekly. Uniquely, Season 3 was first broadcast on Amazon Freevee (Oct–Dec 2023) and then released on YouTube with a few weeks’ delay (Nov 2023 – Jan 2024). The final “Episode 17” was a special bonus feature (“Joey Alone in the Forest”) that aired in late January 2024 after the main finale."
+        },
+        "viewers": {
+          "label": "Viewers",
+          "description": "Over 4 million viewers per episode on average. Season 3 drew massive online viewership – each episode garnered ~4–5 million views on YouTube on average, with millions more watching via Freevee. By season’s end, the series had accumulated over 100 million total views across platforms, making 7 vs. Wild one of the most-watched YouTube-origin reality shows. The expanded cast and mainstream exposure helped Season 3 break its own records; at one point the producers reported 116 million total views and 2.2 million likes across all Season 3 content. This success cemented the show’s status as a global YouTube phenomenon."
+        }
+      },
+      "interestingFacts": {
+        "show-creator-exits-early-in-a-surprising-twist-fri": {
+          "text": "Show Creator Exits Early: In a surprising twist, Fritz Meinecke – the show’s founder and an experienced survivalist – tapped out on Day 3 of the challenge\nen.wikipedia.org\n. Fritz and his partner Mattin had landed in a tough spot and struggled with incessant rain and a flooding river. Fritz’s early exit (due to hypothermia risk) shocked fans, proving that even the most seasoned survival expert wasn’t guaranteed to last under Season 3’s harsh conditions."
+        },
+        "solo-survival-bonus-episode-after-joey-kellys-team": {
+          "text": "Solo Survival Bonus Episode: After Joey Kelly’s teammate Jan Schlappen withdrew on Day 7, Joey chose to continue the survival challenge alone for the remaining week. He survived by himself for 7 more days, effectively doing a solo challenge. This unique situation was not scored in the main competition, but the footage was compiled into a special bonus episode “Joey allein im Wald” (Joey Alone in the Forest) – showcasing Joey’s resourcefulness and mental fortitude in completing the two weeks solo."
+        },
+        "tv-stars-invited-and-declined-the-season-3-team-fo": {
+          "text": "TV Stars Invited – and Declined: The Season 3 team format opened the door to big-name invitees. The production publicly invited famous German TV hosts Joko Winterscheidt and Klaas Heufer-Umlauf to join the adventure as a duo. These two are known for outrageous challenges on their own show, so fans were excited by the prospect. However, Joko & Klaas ultimately declined the offer, citing the extreme conditions. Their refusal became an amusing talking point in the pre-season – even 7 vs. Wild was too wild for some celebrities!"
+        },
+        "wildcard-team-made-history-the-inclusion-of-hannah": {
+          "text": "Wildcard Team Made History: The inclusion of Hannah Assil and “Affe auf Bike” (Ann-Kathrin Bendixen) as a wildcard team introduced the first women contestants to 7 vs. Wild. Hannah, a wildlife photographer and ranger, and Ann-Kathrin, an adventurer known for traveling by motorbike, beat out hundreds of applicants in a public vote. Despite being less famous, they quickly earned viewer respect. Fun fact: their wildcard entry was originally intended to be a single person, but the showrunners decided to take two and form a team – and it paid off, as Hannah & Affe impressively survived all 14 days, demonstrating skill and grit equal to any other team."
+        },
+        "extreme-weather-and-storm-tide-event-the-vancouver": {
+          "text": "Extreme Weather and “Storm Tide” Event: The Vancouver Island environment did not go easy on the participants. On only Day 3, a powerful storm coinciding with a high spring tide slammed into the camps. Heavy rain and gale-force winds hit overnight, and the high tide inundated low-lying beach camps – an incident featured in Episode 5 aptly titled “Sturmflut” (Storm Tide). Teams woke to find part of their gear soaked or swept away. This was the first time in the series that a tidal surge caused such damage. The storm became a dramatic turning point early in the season, testing shelters and morale. (It was after this night that two teams decided to call it quits.) The lesson: on a wild coast, the ocean can be as formidable an opponent as hunger or isolation."
+        },
+        "or-a-shortterm-survival-situation-you-ideally-want": {
+          "text": "or a short‑term survival situation, you ideally want water with total dissolved solids (TDS) below about 1 000 mg/L (1 g/L), which most people find palatable and which your kidneys can handle without extra strain. Brackish water—up to around 10 g/L (10 000 mg/L, or 1 % salt)—can be drunk once or twice in an emergency, but you’ll quickly start to feel thirsty, nauseous and your body will lose more water trying to expel the excess salt. Anything above 10 g/L risks vomiting, diarrhea and dehydration; drinking true seawater (≈35 g/L) is dangerous even briefly."
+        }
+      },
+      "historicalInfo": {
+        "text": "Season 3’s “Teams Edition” of 7 vs. Wild unfolded against a backdrop shaped by millennia of human history as much as by the forces of nature. The northern extremity of Vancouver Island and its outlying islets—Hope and Nigei—lie within the ancestral territories of the Kwakwaka’wakw peoples, whose communities, like the Tlatlasikwala at Bull Harbour, thrived here for generations. Skillfully harvesting cedar, salmon and shellfish, they established villages, carved totem poles and wove legends into every place name—Nigei Island itself memorializes a respected Nahwitti chief encountered by Spanish explorers in 1792.\n\nEuropean contact arrived comparatively late, when Spanish naval officers Galiano and Valdés charted these straits in 1792, soon followed by Captain George Vancouver’s British expedition. Though mapping opened the region to fur traders and colonial outposts—Fort Rupert near today’s Port Hardy emerged by the 1840s—the dense forests and rocky shores of Hope and Nigei remained largely untouched. Yet contact brought tragic depopulation: smallpox and other imported diseases decimated Indigenous communities, reducing vibrant nations to a fraction of their former strength by the late 19th century.\n\nBy the turn of the 20th century, only isolated fishing camps, a handful of homesteads and the solitary Pine Island Lighthouse hinted at European settlement along these rugged shores. Meanwhile, the Kwakwaka’wakw persevered, their seasonal camps and sacred sites scattered among the temperate rainforests. Today, much of the filming region sits within protected areas like Cape Scott Provincial Park, preserving century‑old cedar carvings, shell middens and footpaths. As Season 3’s teams battled storms and wildlife, viewers glimpsed not only the raw challenges of survival but also the enduring imprint of human history—an environment where Indigenous ingenuity and colonial ambition have both left their mark on the land.",
+        "images": {
+          "native-community-of-vancouver-island-in-the-early-": {
+            "caption": "Native Community of Vancouver Island in the early 20th century. "
+          }
+        }
+      },
+      "pois": {
+        "cape-scott-provincial-park": {
+          "title": "Cape Scott Provincial Park",
+          "description": " A rugged wilderness park at the northwestern tip of Vancouver Island, known for its spectacular remote beaches, sea stacks, and old-growth forest. Established in 1973, the park covers the Cape Scott peninsula, including ~30 km of wave-swept sandy beaches and trails through bog and rainforest. Hikers here can visit the Cape Scott Lighthouse and the haunting ruins of a failed 19th-century Danish settlement, all while being mindful of the wolves and black bears that roam the area.",
+          "openingHours": "check website",
+          "accessibility": "Party wheelchair accesibility",
+          "gallery": {
+            "images": {
+              "wheelchair-accessible-trail-cape-scott-provincial-": {
+                "caption": "A beginner friendly taril in Cape Scott Provincial Park"
+              }
+            }
+          }
+        },
+        "bull-harbour": {
+          "title": "Bull Harbour",
+          "description": "A natural harbor on Hope Island, just north of Vancouver Island’s tip. This protected bay is the traditional home of the Tlatlasikwala First Nation and was used historically as a safe anchorage for vessels waiting to navigate the rough waters of Nahwitti Bar. Today Bull Harbour’s population is only a few families (≈2–20 people). The name comes from the roaring sea lions (“bulls”) often seen on the nearby rocks. During WWII the harbor also served as a coast guard outpost. Visitors by boat still stop here as the last calm refuge before heading into the open Pacific.",
+          "openingHours": "Book a tour",
+          "accessibility": "Boat / Waterplane",
+          "gallery": {
+            "images": {
+              "images-2": {
+                "caption": "The filming crews accomodation has been repurposed to support local tourism."
+              }
+            }
+          }
+        },
+        "pine-island-lighthouse": {
+          "title": "Pine Island Lighthouse",
+          "description": "A lonely lighthouse perched on Pine Island, guarding the eastern approach to Queen Charlotte Strait. Established in 1937, the light station is still active and manned by keepers. It flashes a white light that was visible to Season 3 contestants on clear nights. The waters around Pine Island are notoriously rough – the meeting point of Pacific swells and tidal outflows, with a shallow bar that can create dangerous seas. For mariners, this lighthouse is a crucial navigational aid before they round Cape Scott or head south. For visitors, Pine Island is accessible only by boat (it’s about 6 km offshore from Hope Island), but its stout white tower symbolizes human touchpoints in an otherwise remote seascape. The station also keeps weather data; it’s known for recording some of the strongest winds on BC’s coast during winter storms.",
+          "openingHours": "times may vary",
+          "accessibility": "guided boat tour"
+        }
+      },
+      "tours": {
+        "expedition-route-hope-and-nigei-wild-coast": {
+          "name": "Expedition Route: Hope and Nigei Wild Coast",
+          "description": "The expedition route below connects these remote coastal points, each corresponding to a team’s drop-off in Season 3. Starting from the easternmost site and looping around, the route showcases the diverse terrain (from sheltered bays to rugged headlands) that teams had to endure.",
+          "waypoints": {
+            "east-coastal-inlet-hope-island": {
+              "title": "East Coastal Inlet (Hope Island)",
+              "info": "A calm pebble cove on Hope Island’s east side (across from Pine Island Lighthouse), backed by dense spruce forest. Sheltered from open‑ocean swells but patrolled by coastal wolves and subject to strong tidal currents."
+            },
+            "southeast-headland-nigei-island": {
+              "title": "Southeast Headland (Nigei Island)",
+              "info": "A windswept rocky point at Nigei’s southeastern tip, with almost no natural shelter. Rocky shoreline gives way to boggy woods; constant wind off Goletas Channel and the sound of crashing waves."
+            },
+            "south-island-shore-hope-island": {
+              "title": "South Island Shore (Hope Island)",
+              "info": "A long sand‑and‑gravel beach near Bull Harbour’s mouth, strewn with driftwood from fierce storms. Behind: salal thickets and giant cedars. The only team here was truly isolated on Hope Island."
+            },
+            "central-creek-estuary-nigei-island": {
+              "title": "Central Creek Estuary (Nigei Island)",
+              "info": "Where a freshwater creek meets the sea on Bate Passage’s east side. Rich in shellfish and driftwood, very muddy at low tide, with thick forest and wolf tracks—truly in the island’s wild center."
+            }
+          }
+        }
+      },
+      "quiz": {
+        "title": "Season 3 Quiz",
+        "description": "Answer some short answers to test your knowledge.",
+        "questions": {
+          "where-was-7-vs-wild-season-3-filmed": {
+            "question": "Where was 7 vs. Wild Season 3 filmed?",
+            "options": [
+              "Hate & Seattle Island",
+              "Trust & Yukon Island",
+              "Hope & Nigei Island",
+              "Eagle & Nainnou Island"
+            ],
+            "explanation": {
+              "text": "The season was filmed on Hope & Nigei Island, part of Vancouver island. "
+            }
+          },
+          "how-many-participants-and-days-were-in-season-3": {
+            "question": "How many participants and days were in Season 3?",
+            "options": [
+              "7 participants, 7 days",
+              "14 participants, 14 days",
+              "10 participants, 10 days",
+              "7 teams, 21 days"
+            ],
+            "explanation": {
+              "text": "14 participants in teams of two, tried to survive for 14 days. "
+            }
+          },
+          "what-replaced-the-7-item-rule-in-season-3": {
+            "question": "What replaced the 7-item rule in Season 3?",
+            "options": [
+              "Backpack full of gear",
+              "No items at all",
+              "Gear fit in a 1-liter bottle",
+              "3 preselected tools"
+            ],
+            "explanation": {
+              "text": "All of a teams equipment had to fit into a single 1 liter bottle. "
+            }
+          },
+          "which-contestant-continued-alone-after-his-teammat": {
+            "question": "Which contestant continued alone after his teammate left?",
+            "options": [
+              "Trymacs",
+              "Fritz Meinecke",
+              "Joey kelly",
+              "Otto Karasch"
+            ],
+            "explanation": {
+              "text": "Joey received his own special episode after his teammate left. "
+            }
+          },
+          "which-predator-posed-a-potential-danger-in-the-are": {
+            "question": "Which predator posed a potential danger in the area?",
+            "options": [
+              "Grizzly bear",
+              "Wolf",
+              "Crocodile",
+              "Komodo Dragon"
+            ],
+            "explanation": {
+              "text": "While bears are common on Vancouver island, Nigei & Hope island have rare sightings. The coastal Wolf is the most dominant predator."
+            }
+          }
+        }
+      }
+    },
+    "ja": {
+      "name": "7 vs Wild - Season 3 Location",
+      "region": "Vancouver Island, Canada",
+      "description": "Season 3 of 7 vs. Wild took place on Hope and Nigei Islands off British Columbia’s Vancouver Island coast, shifting to a “Teams Edition” with seven pairs surviving 14 days. Instead of seven items, each duo packed all their gear into a single one‑liter bottle, forcing creative choices like compact knives, firestarters, and fishing kits. The season debuted on Amazon Freevee in October 2023 before hitting YouTube, and featured a mix of survival pros and influencers: Fritz Meinecke with “Survival Mattin”; Gerrit Rösel & Andreas Schulze; Joey Kelly & Jan Lange; Trymacs & Rumathra; Papaplatte & Reeze; Knossi & Sascha Huber; and the wildcard all‑female team Hannah Assil & Ann‑Kathrin Bendixen, chosen from over 1,700 applicants.",
+      "heroImage": {
+        "caption": "Vancouver Island",
+        "alt": "Vancouver Island covers approximately 32 100 km² (about 12 400 mi²), making it the largest island on the Pacific coast of North America "
+      },
+      "stats": {
+        "participants": {
+          "label": "Participants",
+          "description": "14 people (7 teams of two). This was a doubling of the usual cast size (previous seasons had 7 solo participants). Teams were pre-paired (friends or colleagues) – a first for the show. Notably, 2 out of 14 participants were female (both on the wildcard team), marking the first all-female team in 7 vs. Wild history."
+        },
+        "days-survival": {
+          "label": "Days Survival",
+          "description": "14 days (extended format). Season 3’s survival period was two weeks long, compared to the 7-day duration of Seasons 1 and 2. Filming took place in late August through September 2023, and of the seven teams that started, three teams lasted the entire 14 days (the others tapped out earlier). This longer timespan introduced new levels of fatigue, resource depletion, and psychological strain as contestants had to endure twice as many nights in the wild."
+        },
+        "liter-of-items": {
+          "label": "Liter of items",
+          "description": "1 liter of items per team. Instead of each person choosing 7 items, Season 3 teams shared a 1 L bottle into which they packed all their chosen survival items. There was no set number of items – anything was allowed as long as it fit in the sealed bottle. This resulted in creative “micro-kits” (fishing lines, firesteel, multitool, etc.) and meant teams had far fewer tools than in prior seasons (effectively, many teams brought on the order of ~10–15 small items). Clothing was still exempt from this limit, and each team also had emergency and camera gear as usual."
+        },
+        "episodes": {
+          "label": "Episodes",
+          "description": "The season’s story was told across 16 main episodes plus 1 bonus episode. Episodes averaged 45–60 minutes, released twice weekly. Uniquely, Season 3 was first broadcast on Amazon Freevee (Oct–Dec 2023) and then released on YouTube with a few weeks’ delay (Nov 2023 – Jan 2024). The final “Episode 17” was a special bonus feature (“Joey Alone in the Forest”) that aired in late January 2024 after the main finale."
+        },
+        "viewers": {
+          "label": "Viewers",
+          "description": "Over 4 million viewers per episode on average. Season 3 drew massive online viewership – each episode garnered ~4–5 million views on YouTube on average, with millions more watching via Freevee. By season’s end, the series had accumulated over 100 million total views across platforms, making 7 vs. Wild one of the most-watched YouTube-origin reality shows. The expanded cast and mainstream exposure helped Season 3 break its own records; at one point the producers reported 116 million total views and 2.2 million likes across all Season 3 content. This success cemented the show’s status as a global YouTube phenomenon."
+        }
+      },
+      "interestingFacts": {
+        "show-creator-exits-early-in-a-surprising-twist-fri": {
+          "text": "Show Creator Exits Early: In a surprising twist, Fritz Meinecke – the show’s founder and an experienced survivalist – tapped out on Day 3 of the challenge\nen.wikipedia.org\n. Fritz and his partner Mattin had landed in a tough spot and struggled with incessant rain and a flooding river. Fritz’s early exit (due to hypothermia risk) shocked fans, proving that even the most seasoned survival expert wasn’t guaranteed to last under Season 3’s harsh conditions."
+        },
+        "solo-survival-bonus-episode-after-joey-kellys-team": {
+          "text": "Solo Survival Bonus Episode: After Joey Kelly’s teammate Jan Schlappen withdrew on Day 7, Joey chose to continue the survival challenge alone for the remaining week. He survived by himself for 7 more days, effectively doing a solo challenge. This unique situation was not scored in the main competition, but the footage was compiled into a special bonus episode “Joey allein im Wald” (Joey Alone in the Forest) – showcasing Joey’s resourcefulness and mental fortitude in completing the two weeks solo."
+        },
+        "tv-stars-invited-and-declined-the-season-3-team-fo": {
+          "text": "TV Stars Invited – and Declined: The Season 3 team format opened the door to big-name invitees. The production publicly invited famous German TV hosts Joko Winterscheidt and Klaas Heufer-Umlauf to join the adventure as a duo. These two are known for outrageous challenges on their own show, so fans were excited by the prospect. However, Joko & Klaas ultimately declined the offer, citing the extreme conditions. Their refusal became an amusing talking point in the pre-season – even 7 vs. Wild was too wild for some celebrities!"
+        },
+        "wildcard-team-made-history-the-inclusion-of-hannah": {
+          "text": "Wildcard Team Made History: The inclusion of Hannah Assil and “Affe auf Bike” (Ann-Kathrin Bendixen) as a wildcard team introduced the first women contestants to 7 vs. Wild. Hannah, a wildlife photographer and ranger, and Ann-Kathrin, an adventurer known for traveling by motorbike, beat out hundreds of applicants in a public vote. Despite being less famous, they quickly earned viewer respect. Fun fact: their wildcard entry was originally intended to be a single person, but the showrunners decided to take two and form a team – and it paid off, as Hannah & Affe impressively survived all 14 days, demonstrating skill and grit equal to any other team."
+        },
+        "extreme-weather-and-storm-tide-event-the-vancouver": {
+          "text": "Extreme Weather and “Storm Tide” Event: The Vancouver Island environment did not go easy on the participants. On only Day 3, a powerful storm coinciding with a high spring tide slammed into the camps. Heavy rain and gale-force winds hit overnight, and the high tide inundated low-lying beach camps – an incident featured in Episode 5 aptly titled “Sturmflut” (Storm Tide). Teams woke to find part of their gear soaked or swept away. This was the first time in the series that a tidal surge caused such damage. The storm became a dramatic turning point early in the season, testing shelters and morale. (It was after this night that two teams decided to call it quits.) The lesson: on a wild coast, the ocean can be as formidable an opponent as hunger or isolation."
+        },
+        "or-a-shortterm-survival-situation-you-ideally-want": {
+          "text": "or a short‑term survival situation, you ideally want water with total dissolved solids (TDS) below about 1 000 mg/L (1 g/L), which most people find palatable and which your kidneys can handle without extra strain. Brackish water—up to around 10 g/L (10 000 mg/L, or 1 % salt)—can be drunk once or twice in an emergency, but you’ll quickly start to feel thirsty, nauseous and your body will lose more water trying to expel the excess salt. Anything above 10 g/L risks vomiting, diarrhea and dehydration; drinking true seawater (≈35 g/L) is dangerous even briefly."
+        }
+      },
+      "historicalInfo": {
+        "text": "Season 3’s “Teams Edition” of 7 vs. Wild unfolded against a backdrop shaped by millennia of human history as much as by the forces of nature. The northern extremity of Vancouver Island and its outlying islets—Hope and Nigei—lie within the ancestral territories of the Kwakwaka’wakw peoples, whose communities, like the Tlatlasikwala at Bull Harbour, thrived here for generations. Skillfully harvesting cedar, salmon and shellfish, they established villages, carved totem poles and wove legends into every place name—Nigei Island itself memorializes a respected Nahwitti chief encountered by Spanish explorers in 1792.\n\nEuropean contact arrived comparatively late, when Spanish naval officers Galiano and Valdés charted these straits in 1792, soon followed by Captain George Vancouver’s British expedition. Though mapping opened the region to fur traders and colonial outposts—Fort Rupert near today’s Port Hardy emerged by the 1840s—the dense forests and rocky shores of Hope and Nigei remained largely untouched. Yet contact brought tragic depopulation: smallpox and other imported diseases decimated Indigenous communities, reducing vibrant nations to a fraction of their former strength by the late 19th century.\n\nBy the turn of the 20th century, only isolated fishing camps, a handful of homesteads and the solitary Pine Island Lighthouse hinted at European settlement along these rugged shores. Meanwhile, the Kwakwaka’wakw persevered, their seasonal camps and sacred sites scattered among the temperate rainforests. Today, much of the filming region sits within protected areas like Cape Scott Provincial Park, preserving century‑old cedar carvings, shell middens and footpaths. As Season 3’s teams battled storms and wildlife, viewers glimpsed not only the raw challenges of survival but also the enduring imprint of human history—an environment where Indigenous ingenuity and colonial ambition have both left their mark on the land.",
+        "images": {
+          "native-community-of-vancouver-island-in-the-early-": {
+            "caption": "Native Community of Vancouver Island in the early 20th century. "
+          }
+        }
+      },
+      "pois": {
+        "cape-scott-provincial-park": {
+          "title": "Cape Scott Provincial Park",
+          "description": " A rugged wilderness park at the northwestern tip of Vancouver Island, known for its spectacular remote beaches, sea stacks, and old-growth forest. Established in 1973, the park covers the Cape Scott peninsula, including ~30 km of wave-swept sandy beaches and trails through bog and rainforest. Hikers here can visit the Cape Scott Lighthouse and the haunting ruins of a failed 19th-century Danish settlement, all while being mindful of the wolves and black bears that roam the area.",
+          "openingHours": "check website",
+          "accessibility": "Party wheelchair accesibility",
+          "gallery": {
+            "images": {
+              "wheelchair-accessible-trail-cape-scott-provincial-": {
+                "caption": "A beginner friendly taril in Cape Scott Provincial Park"
+              }
+            }
+          }
+        },
+        "bull-harbour": {
+          "title": "Bull Harbour",
+          "description": "A natural harbor on Hope Island, just north of Vancouver Island’s tip. This protected bay is the traditional home of the Tlatlasikwala First Nation and was used historically as a safe anchorage for vessels waiting to navigate the rough waters of Nahwitti Bar. Today Bull Harbour’s population is only a few families (≈2–20 people). The name comes from the roaring sea lions (“bulls”) often seen on the nearby rocks. During WWII the harbor also served as a coast guard outpost. Visitors by boat still stop here as the last calm refuge before heading into the open Pacific.",
+          "openingHours": "Book a tour",
+          "accessibility": "Boat / Waterplane",
+          "gallery": {
+            "images": {
+              "images-2": {
+                "caption": "The filming crews accomodation has been repurposed to support local tourism."
+              }
+            }
+          }
+        },
+        "pine-island-lighthouse": {
+          "title": "Pine Island Lighthouse",
+          "description": "A lonely lighthouse perched on Pine Island, guarding the eastern approach to Queen Charlotte Strait. Established in 1937, the light station is still active and manned by keepers. It flashes a white light that was visible to Season 3 contestants on clear nights. The waters around Pine Island are notoriously rough – the meeting point of Pacific swells and tidal outflows, with a shallow bar that can create dangerous seas. For mariners, this lighthouse is a crucial navigational aid before they round Cape Scott or head south. For visitors, Pine Island is accessible only by boat (it’s about 6 km offshore from Hope Island), but its stout white tower symbolizes human touchpoints in an otherwise remote seascape. The station also keeps weather data; it’s known for recording some of the strongest winds on BC’s coast during winter storms.",
+          "openingHours": "times may vary",
+          "accessibility": "guided boat tour"
+        }
+      },
+      "tours": {
+        "expedition-route-hope-and-nigei-wild-coast": {
+          "name": "Expedition Route: Hope and Nigei Wild Coast",
+          "description": "The expedition route below connects these remote coastal points, each corresponding to a team’s drop-off in Season 3. Starting from the easternmost site and looping around, the route showcases the diverse terrain (from sheltered bays to rugged headlands) that teams had to endure.",
+          "waypoints": {
+            "east-coastal-inlet-hope-island": {
+              "title": "East Coastal Inlet (Hope Island)",
+              "info": "A calm pebble cove on Hope Island’s east side (across from Pine Island Lighthouse), backed by dense spruce forest. Sheltered from open‑ocean swells but patrolled by coastal wolves and subject to strong tidal currents."
+            },
+            "southeast-headland-nigei-island": {
+              "title": "Southeast Headland (Nigei Island)",
+              "info": "A windswept rocky point at Nigei’s southeastern tip, with almost no natural shelter. Rocky shoreline gives way to boggy woods; constant wind off Goletas Channel and the sound of crashing waves."
+            },
+            "south-island-shore-hope-island": {
+              "title": "South Island Shore (Hope Island)",
+              "info": "A long sand‑and‑gravel beach near Bull Harbour’s mouth, strewn with driftwood from fierce storms. Behind: salal thickets and giant cedars. The only team here was truly isolated on Hope Island."
+            },
+            "central-creek-estuary-nigei-island": {
+              "title": "Central Creek Estuary (Nigei Island)",
+              "info": "Where a freshwater creek meets the sea on Bate Passage’s east side. Rich in shellfish and driftwood, very muddy at low tide, with thick forest and wolf tracks—truly in the island’s wild center."
+            }
+          }
+        }
+      },
+      "quiz": {
+        "title": "Season 3 Quiz",
+        "description": "Answer some short answers to test your knowledge.",
+        "questions": {
+          "where-was-7-vs-wild-season-3-filmed": {
+            "question": "Where was 7 vs. Wild Season 3 filmed?",
+            "options": [
+              "Hate & Seattle Island",
+              "Trust & Yukon Island",
+              "Hope & Nigei Island",
+              "Eagle & Nainnou Island"
+            ],
+            "explanation": {
+              "text": "The season was filmed on Hope & Nigei Island, part of Vancouver island. "
+            }
+          },
+          "how-many-participants-and-days-were-in-season-3": {
+            "question": "How many participants and days were in Season 3?",
+            "options": [
+              "7 participants, 7 days",
+              "14 participants, 14 days",
+              "10 participants, 10 days",
+              "7 teams, 21 days"
+            ],
+            "explanation": {
+              "text": "14 participants in teams of two, tried to survive for 14 days. "
+            }
+          },
+          "what-replaced-the-7-item-rule-in-season-3": {
+            "question": "What replaced the 7-item rule in Season 3?",
+            "options": [
+              "Backpack full of gear",
+              "No items at all",
+              "Gear fit in a 1-liter bottle",
+              "3 preselected tools"
+            ],
+            "explanation": {
+              "text": "All of a teams equipment had to fit into a single 1 liter bottle. "
+            }
+          },
+          "which-contestant-continued-alone-after-his-teammat": {
+            "question": "Which contestant continued alone after his teammate left?",
+            "options": [
+              "Trymacs",
+              "Fritz Meinecke",
+              "Joey kelly",
+              "Otto Karasch"
+            ],
+            "explanation": {
+              "text": "Joey received his own special episode after his teammate left. "
+            }
+          },
+          "which-predator-posed-a-potential-danger-in-the-are": {
+            "question": "Which predator posed a potential danger in the area?",
+            "options": [
+              "Grizzly bear",
+              "Wolf",
+              "Crocodile",
+              "Komodo Dragon"
+            ],
+            "explanation": {
+              "text": "While bears are common on Vancouver island, Nigei & Hope island have rare sightings. The coastal Wolf is the most dominant predator."
+            }
+          }
+        }
+      }
+    },
+    "fr": {
+      "name": "7 vs Wild - Season 3 Location",
+      "region": "Vancouver Island, Canada",
+      "description": "Season 3 of 7 vs. Wild took place on Hope and Nigei Islands off British Columbia’s Vancouver Island coast, shifting to a “Teams Edition” with seven pairs surviving 14 days. Instead of seven items, each duo packed all their gear into a single one‑liter bottle, forcing creative choices like compact knives, firestarters, and fishing kits. The season debuted on Amazon Freevee in October 2023 before hitting YouTube, and featured a mix of survival pros and influencers: Fritz Meinecke with “Survival Mattin”; Gerrit Rösel & Andreas Schulze; Joey Kelly & Jan Lange; Trymacs & Rumathra; Papaplatte & Reeze; Knossi & Sascha Huber; and the wildcard all‑female team Hannah Assil & Ann‑Kathrin Bendixen, chosen from over 1,700 applicants.",
+      "heroImage": {
+        "caption": "Vancouver Island",
+        "alt": "Vancouver Island covers approximately 32 100 km² (about 12 400 mi²), making it the largest island on the Pacific coast of North America "
+      },
+      "stats": {
+        "participants": {
+          "label": "Participants",
+          "description": "14 people (7 teams of two). This was a doubling of the usual cast size (previous seasons had 7 solo participants). Teams were pre-paired (friends or colleagues) – a first for the show. Notably, 2 out of 14 participants were female (both on the wildcard team), marking the first all-female team in 7 vs. Wild history."
+        },
+        "days-survival": {
+          "label": "Days Survival",
+          "description": "14 days (extended format). Season 3’s survival period was two weeks long, compared to the 7-day duration of Seasons 1 and 2. Filming took place in late August through September 2023, and of the seven teams that started, three teams lasted the entire 14 days (the others tapped out earlier). This longer timespan introduced new levels of fatigue, resource depletion, and psychological strain as contestants had to endure twice as many nights in the wild."
+        },
+        "liter-of-items": {
+          "label": "Liter of items",
+          "description": "1 liter of items per team. Instead of each person choosing 7 items, Season 3 teams shared a 1 L bottle into which they packed all their chosen survival items. There was no set number of items – anything was allowed as long as it fit in the sealed bottle. This resulted in creative “micro-kits” (fishing lines, firesteel, multitool, etc.) and meant teams had far fewer tools than in prior seasons (effectively, many teams brought on the order of ~10–15 small items). Clothing was still exempt from this limit, and each team also had emergency and camera gear as usual."
+        },
+        "episodes": {
+          "label": "Episodes",
+          "description": "The season’s story was told across 16 main episodes plus 1 bonus episode. Episodes averaged 45–60 minutes, released twice weekly. Uniquely, Season 3 was first broadcast on Amazon Freevee (Oct–Dec 2023) and then released on YouTube with a few weeks’ delay (Nov 2023 – Jan 2024). The final “Episode 17” was a special bonus feature (“Joey Alone in the Forest”) that aired in late January 2024 after the main finale."
+        },
+        "viewers": {
+          "label": "Viewers",
+          "description": "Over 4 million viewers per episode on average. Season 3 drew massive online viewership – each episode garnered ~4–5 million views on YouTube on average, with millions more watching via Freevee. By season’s end, the series had accumulated over 100 million total views across platforms, making 7 vs. Wild one of the most-watched YouTube-origin reality shows. The expanded cast and mainstream exposure helped Season 3 break its own records; at one point the producers reported 116 million total views and 2.2 million likes across all Season 3 content. This success cemented the show’s status as a global YouTube phenomenon."
+        }
+      },
+      "interestingFacts": {
+        "show-creator-exits-early-in-a-surprising-twist-fri": {
+          "text": "Show Creator Exits Early: In a surprising twist, Fritz Meinecke – the show’s founder and an experienced survivalist – tapped out on Day 3 of the challenge\nen.wikipedia.org\n. Fritz and his partner Mattin had landed in a tough spot and struggled with incessant rain and a flooding river. Fritz’s early exit (due to hypothermia risk) shocked fans, proving that even the most seasoned survival expert wasn’t guaranteed to last under Season 3’s harsh conditions."
+        },
+        "solo-survival-bonus-episode-after-joey-kellys-team": {
+          "text": "Solo Survival Bonus Episode: After Joey Kelly’s teammate Jan Schlappen withdrew on Day 7, Joey chose to continue the survival challenge alone for the remaining week. He survived by himself for 7 more days, effectively doing a solo challenge. This unique situation was not scored in the main competition, but the footage was compiled into a special bonus episode “Joey allein im Wald” (Joey Alone in the Forest) – showcasing Joey’s resourcefulness and mental fortitude in completing the two weeks solo."
+        },
+        "tv-stars-invited-and-declined-the-season-3-team-fo": {
+          "text": "TV Stars Invited – and Declined: The Season 3 team format opened the door to big-name invitees. The production publicly invited famous German TV hosts Joko Winterscheidt and Klaas Heufer-Umlauf to join the adventure as a duo. These two are known for outrageous challenges on their own show, so fans were excited by the prospect. However, Joko & Klaas ultimately declined the offer, citing the extreme conditions. Their refusal became an amusing talking point in the pre-season – even 7 vs. Wild was too wild for some celebrities!"
+        },
+        "wildcard-team-made-history-the-inclusion-of-hannah": {
+          "text": "Wildcard Team Made History: The inclusion of Hannah Assil and “Affe auf Bike” (Ann-Kathrin Bendixen) as a wildcard team introduced the first women contestants to 7 vs. Wild. Hannah, a wildlife photographer and ranger, and Ann-Kathrin, an adventurer known for traveling by motorbike, beat out hundreds of applicants in a public vote. Despite being less famous, they quickly earned viewer respect. Fun fact: their wildcard entry was originally intended to be a single person, but the showrunners decided to take two and form a team – and it paid off, as Hannah & Affe impressively survived all 14 days, demonstrating skill and grit equal to any other team."
+        },
+        "extreme-weather-and-storm-tide-event-the-vancouver": {
+          "text": "Extreme Weather and “Storm Tide” Event: The Vancouver Island environment did not go easy on the participants. On only Day 3, a powerful storm coinciding with a high spring tide slammed into the camps. Heavy rain and gale-force winds hit overnight, and the high tide inundated low-lying beach camps – an incident featured in Episode 5 aptly titled “Sturmflut” (Storm Tide). Teams woke to find part of their gear soaked or swept away. This was the first time in the series that a tidal surge caused such damage. The storm became a dramatic turning point early in the season, testing shelters and morale. (It was after this night that two teams decided to call it quits.) The lesson: on a wild coast, the ocean can be as formidable an opponent as hunger or isolation."
+        },
+        "or-a-shortterm-survival-situation-you-ideally-want": {
+          "text": "or a short‑term survival situation, you ideally want water with total dissolved solids (TDS) below about 1 000 mg/L (1 g/L), which most people find palatable and which your kidneys can handle without extra strain. Brackish water—up to around 10 g/L (10 000 mg/L, or 1 % salt)—can be drunk once or twice in an emergency, but you’ll quickly start to feel thirsty, nauseous and your body will lose more water trying to expel the excess salt. Anything above 10 g/L risks vomiting, diarrhea and dehydration; drinking true seawater (≈35 g/L) is dangerous even briefly."
+        }
+      },
+      "historicalInfo": {
+        "text": "Season 3’s “Teams Edition” of 7 vs. Wild unfolded against a backdrop shaped by millennia of human history as much as by the forces of nature. The northern extremity of Vancouver Island and its outlying islets—Hope and Nigei—lie within the ancestral territories of the Kwakwaka’wakw peoples, whose communities, like the Tlatlasikwala at Bull Harbour, thrived here for generations. Skillfully harvesting cedar, salmon and shellfish, they established villages, carved totem poles and wove legends into every place name—Nigei Island itself memorializes a respected Nahwitti chief encountered by Spanish explorers in 1792.\n\nEuropean contact arrived comparatively late, when Spanish naval officers Galiano and Valdés charted these straits in 1792, soon followed by Captain George Vancouver’s British expedition. Though mapping opened the region to fur traders and colonial outposts—Fort Rupert near today’s Port Hardy emerged by the 1840s—the dense forests and rocky shores of Hope and Nigei remained largely untouched. Yet contact brought tragic depopulation: smallpox and other imported diseases decimated Indigenous communities, reducing vibrant nations to a fraction of their former strength by the late 19th century.\n\nBy the turn of the 20th century, only isolated fishing camps, a handful of homesteads and the solitary Pine Island Lighthouse hinted at European settlement along these rugged shores. Meanwhile, the Kwakwaka’wakw persevered, their seasonal camps and sacred sites scattered among the temperate rainforests. Today, much of the filming region sits within protected areas like Cape Scott Provincial Park, preserving century‑old cedar carvings, shell middens and footpaths. As Season 3’s teams battled storms and wildlife, viewers glimpsed not only the raw challenges of survival but also the enduring imprint of human history—an environment where Indigenous ingenuity and colonial ambition have both left their mark on the land.",
+        "images": {
+          "native-community-of-vancouver-island-in-the-early-": {
+            "caption": "Native Community of Vancouver Island in the early 20th century. "
+          }
+        }
+      },
+      "pois": {
+        "cape-scott-provincial-park": {
+          "title": "Cape Scott Provincial Park",
+          "description": " A rugged wilderness park at the northwestern tip of Vancouver Island, known for its spectacular remote beaches, sea stacks, and old-growth forest. Established in 1973, the park covers the Cape Scott peninsula, including ~30 km of wave-swept sandy beaches and trails through bog and rainforest. Hikers here can visit the Cape Scott Lighthouse and the haunting ruins of a failed 19th-century Danish settlement, all while being mindful of the wolves and black bears that roam the area.",
+          "openingHours": "check website",
+          "accessibility": "Party wheelchair accesibility",
+          "gallery": {
+            "images": {
+              "wheelchair-accessible-trail-cape-scott-provincial-": {
+                "caption": "A beginner friendly taril in Cape Scott Provincial Park"
+              }
+            }
+          }
+        },
+        "bull-harbour": {
+          "title": "Bull Harbour",
+          "description": "A natural harbor on Hope Island, just north of Vancouver Island’s tip. This protected bay is the traditional home of the Tlatlasikwala First Nation and was used historically as a safe anchorage for vessels waiting to navigate the rough waters of Nahwitti Bar. Today Bull Harbour’s population is only a few families (≈2–20 people). The name comes from the roaring sea lions (“bulls”) often seen on the nearby rocks. During WWII the harbor also served as a coast guard outpost. Visitors by boat still stop here as the last calm refuge before heading into the open Pacific.",
+          "openingHours": "Book a tour",
+          "accessibility": "Boat / Waterplane",
+          "gallery": {
+            "images": {
+              "images-2": {
+                "caption": "The filming crews accomodation has been repurposed to support local tourism."
+              }
+            }
+          }
+        },
+        "pine-island-lighthouse": {
+          "title": "Pine Island Lighthouse",
+          "description": "A lonely lighthouse perched on Pine Island, guarding the eastern approach to Queen Charlotte Strait. Established in 1937, the light station is still active and manned by keepers. It flashes a white light that was visible to Season 3 contestants on clear nights. The waters around Pine Island are notoriously rough – the meeting point of Pacific swells and tidal outflows, with a shallow bar that can create dangerous seas. For mariners, this lighthouse is a crucial navigational aid before they round Cape Scott or head south. For visitors, Pine Island is accessible only by boat (it’s about 6 km offshore from Hope Island), but its stout white tower symbolizes human touchpoints in an otherwise remote seascape. The station also keeps weather data; it’s known for recording some of the strongest winds on BC’s coast during winter storms.",
+          "openingHours": "times may vary",
+          "accessibility": "guided boat tour"
+        }
+      },
+      "tours": {
+        "expedition-route-hope-and-nigei-wild-coast": {
+          "name": "Expedition Route: Hope and Nigei Wild Coast",
+          "description": "The expedition route below connects these remote coastal points, each corresponding to a team’s drop-off in Season 3. Starting from the easternmost site and looping around, the route showcases the diverse terrain (from sheltered bays to rugged headlands) that teams had to endure.",
+          "waypoints": {
+            "east-coastal-inlet-hope-island": {
+              "title": "East Coastal Inlet (Hope Island)",
+              "info": "A calm pebble cove on Hope Island’s east side (across from Pine Island Lighthouse), backed by dense spruce forest. Sheltered from open‑ocean swells but patrolled by coastal wolves and subject to strong tidal currents."
+            },
+            "southeast-headland-nigei-island": {
+              "title": "Southeast Headland (Nigei Island)",
+              "info": "A windswept rocky point at Nigei’s southeastern tip, with almost no natural shelter. Rocky shoreline gives way to boggy woods; constant wind off Goletas Channel and the sound of crashing waves."
+            },
+            "south-island-shore-hope-island": {
+              "title": "South Island Shore (Hope Island)",
+              "info": "A long sand‑and‑gravel beach near Bull Harbour’s mouth, strewn with driftwood from fierce storms. Behind: salal thickets and giant cedars. The only team here was truly isolated on Hope Island."
+            },
+            "central-creek-estuary-nigei-island": {
+              "title": "Central Creek Estuary (Nigei Island)",
+              "info": "Where a freshwater creek meets the sea on Bate Passage’s east side. Rich in shellfish and driftwood, very muddy at low tide, with thick forest and wolf tracks—truly in the island’s wild center."
+            }
+          }
+        }
+      },
+      "quiz": {
+        "title": "Season 3 Quiz",
+        "description": "Answer some short answers to test your knowledge.",
+        "questions": {
+          "where-was-7-vs-wild-season-3-filmed": {
+            "question": "Where was 7 vs. Wild Season 3 filmed?",
+            "options": [
+              "Hate & Seattle Island",
+              "Trust & Yukon Island",
+              "Hope & Nigei Island",
+              "Eagle & Nainnou Island"
+            ],
+            "explanation": {
+              "text": "The season was filmed on Hope & Nigei Island, part of Vancouver island. "
+            }
+          },
+          "how-many-participants-and-days-were-in-season-3": {
+            "question": "How many participants and days were in Season 3?",
+            "options": [
+              "7 participants, 7 days",
+              "14 participants, 14 days",
+              "10 participants, 10 days",
+              "7 teams, 21 days"
+            ],
+            "explanation": {
+              "text": "14 participants in teams of two, tried to survive for 14 days. "
+            }
+          },
+          "what-replaced-the-7-item-rule-in-season-3": {
+            "question": "What replaced the 7-item rule in Season 3?",
+            "options": [
+              "Backpack full of gear",
+              "No items at all",
+              "Gear fit in a 1-liter bottle",
+              "3 preselected tools"
+            ],
+            "explanation": {
+              "text": "All of a teams equipment had to fit into a single 1 liter bottle. "
+            }
+          },
+          "which-contestant-continued-alone-after-his-teammat": {
+            "question": "Which contestant continued alone after his teammate left?",
+            "options": [
+              "Trymacs",
+              "Fritz Meinecke",
+              "Joey kelly",
+              "Otto Karasch"
+            ],
+            "explanation": {
+              "text": "Joey received his own special episode after his teammate left. "
+            }
+          },
+          "which-predator-posed-a-potential-danger-in-the-are": {
+            "question": "Which predator posed a potential danger in the area?",
+            "options": [
+              "Grizzly bear",
+              "Wolf",
+              "Crocodile",
+              "Komodo Dragon"
+            ],
+            "explanation": {
+              "text": "While bears are common on Vancouver island, Nigei & Hope island have rare sightings. The coastal Wolf is the most dominant predator."
+            }
+          }
+        }
+      }
+    }
+  }
+}

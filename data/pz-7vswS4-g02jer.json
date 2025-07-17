@@ -1,0 +1,1561 @@
+{
+  "likes": [],
+  "id": "pz-7vswS4-g02jer",
+  "author": "Wildscope",
+  "priority": 1,
+  "official": true,
+  "active": true,
+  "searchRadius": 50,
+  "center": [
+    -44.592636,
+    169.484732
+  ],
+  "areaPolygon": [],
+  "customStyle": {
+    "color": "#0b9d0d",
+    "icon": "mountain"
+  },
+  "heroImage": {
+    "storageRef": "partner-zones/pz-7vswS4-g02jer/hero/lindis-pass-002.jpg",
+    "priority": "medium",
+    "imageSource": "Wikimedia Commons"
+  },
+  "contact": {
+    "website": "",
+    "phone": "",
+    "email": "",
+    "emergencyPhone": ""
+  },
+  "historicalInfo": {
+    "icon": "book",
+    "images": {
+      "lake-wanaka-view": {
+        "storageRef": "partner-zones/pz-7vswS4-g02jer/history/lake-wanaka-view.jpg",
+        "imageSource": "Jason Pratt - Wikimedia Commons"
+      }
+    }
+  },
+  "quiz": {
+    "settings": {
+      "timePerQuestion": 30,
+      "passingScore": 70,
+      "randomizeQuestions": true,
+      "showExplanations": true
+    },
+    "rewards": {
+      "bronzeScore": 60,
+      "silverScore": 80,
+      "goldScore": 90,
+      "completionAchievement": ""
+    },
+    "questions": {
+      "how-did-7-vs-wild-season-4-begin": {
+        "type": "multiple_choice",
+        "options": [
+          "A jungle ambush",
+          "A plane crash scenario",
+          "A night drop by parachute",
+          "A desert march"
+        ],
+        "correctOption": 1
+      },
+      "where-did-season-4-take-place": {
+        "type": "multiple_choice",
+        "options": [
+          "Australia",
+          "Tasmania",
+          "New Zealand -  North island",
+          "New Zealand - South island"
+        ],
+        "correctOption": 3
+      },
+      "which-participant-left-the-season-first": {
+        "type": "multiple_choice",
+        "options": [
+          "Stefan Hinkelmann (Survival Deutschland)",
+          "Joe Vogel ",
+          "LetsHugo",
+          "Joey Kelly"
+        ],
+        "correctOption": 0
+      },
+      "whats-the-name-of-the-lone-tree-flying-uwe-had-an-": {
+        "type": "multiple_choice",
+        "options": [
+          "Birgit",
+          "Paula",
+          "Antonia",
+          "Laura"
+        ],
+        "correctOption": 2
+      },
+      "which-rare-flower-grows-near-the-season-4-filming-": {
+        "type": "multiple_choice",
+        "options": [
+          "Edelweiss",
+          "Ranunculus haastii",
+          "Crimson lotus",
+          "Ghost Orchid"
+        ],
+        "correctOption": 2
+      }
+    }
+  },
+  "stats": {
+    "participants": {
+      "icon": "people",
+      "value": "7",
+      "unit": "",
+      "secondaryValue": "",
+      "secondaryUnit": ""
+    },
+    "days": {
+      "icon": "time",
+      "value": "14",
+      "unit": "",
+      "secondaryValue": "",
+      "secondaryUnit": ""
+    },
+    "episodes": {
+      "icon": "star-outline",
+      "value": "16",
+      "unit": "",
+      "secondaryValue": "",
+      "secondaryUnit": ""
+    },
+    "items": {
+      "icon": "map",
+      "value": "7",
+      "unit": "",
+      "secondaryValue": "",
+      "secondaryUnit": ""
+    },
+    "views": {
+      "icon": "eye-outline",
+      "value": "15",
+      "unit": "million",
+      "secondaryValue": "",
+      "secondaryUnit": ""
+    }
+  },
+  "interestingFacts": {
+    "crashed-plane-simulation-the-production-actually-u": {
+      "icon": "explore",
+      "image": {
+        "storageRef": "",
+        "imageSource": ""
+      }
+    },
+    "helicopter-drop-group-start-for-the-first-time-con": {
+      "icon": "groups",
+      "image": {
+        "storageRef": "",
+        "imageSource": ""
+      }
+    },
+    "hidden-supplies-the-crashed-planes-wreckage-contai": {
+      "icon": "search",
+      "image": {
+        "storageRef": "",
+        "imageSource": ""
+      }
+    },
+    "extreme-endurance-athlete-season-4-featured-joey-k": {
+      "icon": "trophy-outline",
+      "image": {
+        "storageRef": "",
+        "imageSource": ""
+      }
+    },
+    "unique-alpine-flora-the-lindis-pass-area-is-home-t": {
+      "icon": "flower",
+      "image": {
+        "storageRef": "partner-zones/pz-7vswS4-g02jer/facts/153399807900123174.jpg",
+        "imageSource": "PictureThis"
+      }
+    }
+  },
+  "news": {},
+  "pois": {
+    "clay-cliffs": {
+      "type": "overlook",
+      "coords": [
+        -44.505,
+        169.877289
+      ],
+      "amenities": [
+        "benches",
+        "camping",
+        "parking"
+      ],
+      "gallery": {
+        "storagePrefix": "partner-zones/pz-7vswS4-g02jer/pois/poi-1/",
+        "images": {}
+      }
+    },
+    "elephant-rocks-near-duntroon": {
+      "type": "viewpoint",
+      "coords": [
+        -44.895,
+        170.65774
+      ],
+      "amenities": [
+        "benches",
+        "parking",
+        "picnic_tables"
+      ],
+      "gallery": {
+        "storagePrefix": "partner-zones/pz-7vswS4-g02jer/pois/elephant-rocks-near-duntroon/",
+        "images": {
+          "elephantrocksnov232024-02": {
+            "filename": "elephantrocksnov232024-02.jpg",
+            "type": "secondary",
+            "imageSource": ""
+          }
+        }
+      }
+    },
+    "the-wanaka-tree": {
+      "type": "viewpoint",
+      "coords": [
+        -44.698427,
+        -169.1176
+      ],
+      "amenities": [
+        "benches",
+        "communication",
+        "gift_shop",
+        "parking",
+        "pet_friendly",
+        "picnic_tables"
+      ],
+      "gallery": {
+        "storagePrefix": "partner-zones/pz-7vswS4-g02jer/pois/poi-3/",
+        "images": {}
+      }
+    }
+  },
+  "tours": {
+    "lindis-explorer-trail": {
+      "duration": "Multi-day",
+      "difficulty": "Moderate to difficult",
+      "distance": "20+ miles",
+      "waypoints": {
+        "wanaka-roys-bay": {
+          "coords": [
+            -44.693559,
+            169.1354
+          ],
+          "estimatedTime": 0,
+          "type": "start",
+          "images": [
+            "partner-zones/pz-7vswS4-g02jer/tour/waypoints/wanaka-roys-bay/view-of-lake-wanaka-from-roys-bay-4675185948.jpg"
+          ]
+        },
+        "lindis-pass-summit": {
+          "coords": [
+            -44.588327,
+            169.64236
+          ],
+          "estimatedTime": 0,
+          "type": "viewpoint",
+          "images": [
+            "partner-zones/pz-7vswS4-g02jer/tour/waypoints/lindis-pass-summit/20250221-dji-0950.jpg"
+          ]
+        },
+        "lindis-pass-hotel-site": {
+          "coords": [
+            -44.700569,
+            169.4943
+          ],
+          "estimatedTime": 0,
+          "type": "historic",
+          "images": []
+        },
+        "lindis-peak": {
+          "coords": [
+            -44.734193,
+            169.467118
+          ],
+          "estimatedTime": 0,
+          "type": "viewpoint",
+          "images": []
+        }
+      }
+    }
+  },
+  "translations": {
+    "en": {
+      "name": "7 vs Wild - Season 4 Location",
+      "region": "Lindis Pass, New Zealand",
+      "description": "Season 4 took the series to New Zealand (near Lindis Pass, Otago) with a “crashed plane” narrative twist. Unlike previous seasons, all 7 participants began together: after a briefing in Frankfurt they were flown (via Christchurch and Wanaka) into the wild, even helicoptered (blindfolded) into the Lindis Pass valley. A real Dornier Do 28A-1 aircraft was actually crushed onsite to simulate the crash scenario. The contestants (7 in total) – including survival expert Johannes “Joe” Vogel, streamer LetsHugo (Hugo Goedert), comedian Selfiesandra (Sandra Safiulov), athlete Joey Kelly, martial artist Flying Uwe (Uwe Schüder), former soldier Stefan Hinkelmann, and singer/YouTuber Julia Beautx (Julia Willecke) – each brought only the standard seven items (clothing aside) into this 14-day wilderness ordeal. Episodes premiered in Oct–Nov 2024 on Amazon Prime Video/Freevee (in Germany it hit #1 on the Prime charts), with a YouTube release shortly thereafter",
+      "heroImage": {
+        "caption": "The rugged terrain of the Lindis Pass",
+        "alt": ""
+      },
+      "stats": {
+        "participants": {
+          "label": "Participants",
+          "description": "7 survivalists (all strangers, grouped at start)"
+        },
+        "days": {
+          "label": "Days",
+          "description": "Duration of survival in the wilderness"
+        },
+        "episodes": {
+          "label": "Episodes",
+          "description": "First aired Oct–Nov 2024, Amazon and YouTube"
+        },
+        "items": {
+          "label": "Items",
+          "description": "Allowed Gear: Each contestant could take 7 items (plus pre-worn clothing) into the wild"
+        },
+        "views": {
+          "label": "Views",
+          "description": "Season 4 attracted 15.1 million YouTube views (first 10 episodes) and ranked #1 on German Amazon Prime charts"
+        }
+      },
+      "interestingFacts": {
+        "crashed-plane-simulation-the-production-actually-u": {
+          "text": "Crashed Plane Simulation: The production actually used a real airplane (Dornier Do 28A-1) for the opening scene. In a behind‐the‐scenes special, the plane was physically crushed onsite to create the crash scenario",
+          "image": {
+            "caption": ""
+          }
+        },
+        "helicopter-drop-group-start-for-the-first-time-con": {
+          "text": "Helicopter Drop & Group Start: For the first time contestants were delivered together by helicopter (wearing goggles) into the drop zone. This introduced a social dynamic absent in prior seasons.",
+          "image": {
+            "caption": ""
+          }
+        },
+        "hidden-supplies-the-crashed-planes-wreckage-contai": {
+          "text": "Hidden Supplies: The crashed plane’s wreckage contained six hidden suitcases of gear (tools, food, etc.) and coded radio messages. Contestants had to discover these via clues. Wikipedia details the contents and cassettes used to guide them",
+          "image": {
+            "caption": ""
+          }
+        },
+        "extreme-endurance-athlete-season-4-featured-joey-k": {
+          "text": "Extreme Endurance Athlete: Season 4 featured Joey Kelly, famous from the 1990s Kelly Family pop band. After music fame he became known as an ultra‐endurance athlete (finishing numerous marathons, Ironmans and ultradistance races)",
+          "image": {
+            "caption": ""
+          }
+        },
+        "unique-alpine-flora-the-lindis-pass-area-is-home-t": {
+          "text": "Unique Alpine Flora: The Lindis Pass area is home to Ranunculus haastii, a rare buttercup species adapted to the high plains. One of the largest populations grows on nearby Longslip Mountain",
+          "image": {
+            "caption": " Ranunculus haastii"
+          }
+        }
+      },
+      "historicalInfo": {
+        "text": "Lindis Pass is an alpine saddle (971 m) linking the Mackenzie Basin with Central Otago. The terrain is exposed, with snow-tussock grasslands dominating the landscape (Longslip Mountain nearby hosts extensive stands of the buttercup Ranunculus haastii). Summers are hot and dry; winters often bring snow and ice even down to the roadside. \n\nThe native wildlife includes small birds like the rifleman (titipounamu), grey warbler (riroriro), fantail (piwakawaka) and New Zealand falcon (kārearea), though no large forest stands remain. In Māori tradition this region lies in the territory of the Waitaha and Ngāi Tahu people. The lakes and mountains here feature in local legends – for example, ancestor Rākaihautū is said to have dug the great Southern Lakes including Wānaka. Historically, Māori (Ngāi Tahu) visited seasonally for eels, birds, and pounamu (greenstone) hunting. By the 19th century European settlers arrived for gold; the Lindis Pass Historic Area still preserves 1860s relics such as a gold-miner’s hut and the ruins of the old Lindis Pass Hotel.",
+        "images": {
+          "lake-wanaka-view": {
+            "caption": "Lake Wanaka View",
+            "alt": ""
+          }
+        }
+      },
+      "contact": {
+        "websiteLabel": "",
+        "phoneLabel": "",
+        "emailLabel": "",
+        "emergencyLabel": "",
+        "address": "",
+        "hours": ""
+      },
+      "news": {},
+      "pois": {
+        "clay-cliffs": {
+          "title": "Clay Cliffs",
+          "description": "A network of huge pinnacles of gravel and silt on private land at Quailburn, formed by glacial outwash erosion",
+          "openingHours": "Always",
+          "accessibility": "by car",
+          "bestTimeToVisit": "During sunset or sunrise.",
+          "address": "",
+          "phone": ""
+        },
+        "elephant-rocks-near-duntroon": {
+          "title": "Elephant Rocks (near Duntroon)",
+          "description": "Large limestone formations 30 km south of Omarama. The rocks were ancient seabed sand turned to limestone, carved by wind and water into elephant-like shapes",
+          "openingHours": "",
+          "accessibility": "",
+          "bestTimeToVisit": "",
+          "address": "",
+          "phone": "",
+          "gallery": {
+            "images": {
+              "elephantrocksnov232024-02": {
+                "caption": "Field of giant weathered limestone boulders (pictured below) on private farmland south of Duntroon"
+              }
+            }
+          }
+        },
+        "the-wanaka-tree": {
+          "title": "The Wanaka Tree",
+          "description": "Iconic lone willow tree growing in Lake Wānaka, often photographed at sunrise/sunset. It has become a symbol of Wanaka’s landscape.",
+          "openingHours": "always",
+          "accessibility": "Very accessible",
+          "bestTimeToVisit": "sunrise / sunset",
+          "address": "",
+          "phone": ""
+        }
+      },
+      "tours": {
+        "lindis-explorer-trail": {
+          "name": "Lindis Explorer Trail",
+          "description": "A high-country survival route through the Wanaka–Lindis region (4 waypoints)",
+          "waypoints": {
+            "wanaka-roys-bay": {
+              "title": "Wanaka (Roys Bay)",
+              "info": "Start at Lake Wānaka’s southern end (supply town and access point)."
+            },
+            "lindis-pass-summit": {
+              "title": "Lindis Pass Summit",
+              "info": "High alpine saddle (971 m) on SH8 – rugged tussock plateau with panoramic views"
+            },
+            "lindis-pass-hotel-site": {
+              "title": "Lindis Pass Hotel Site",
+              "info": "Historic campsite and riverbank (ruins of 1860s goldfields hotel)"
+            },
+            "lindis-peak": {
+              "title": "Lindis Peak",
+              "info": "A back-country summit above Old Faithful Rd; final water source for trekkers"
+            }
+          }
+        }
+      },
+      "quiz": {
+        "title": "Season 4 Quiz",
+        "description": "Test your knowledge about the latest season of 7 vs Wild.",
+        "questions": {
+          "how-did-7-vs-wild-season-4-begin": {
+            "question": "How did 7 vs. Wild Season 4 begin?",
+            "explanation": {
+              "text": "The plane crash was a reference to the Uruguayan Air Force Flight 571, which crashed in Argentina in 1972.",
+              "image": {
+                "caption": ""
+              }
+            },
+            "options": [
+              "A jungle ambush",
+              "A plane crash scenario",
+              "A night drop by parachute",
+              "A desert march"
+            ]
+          },
+          "where-did-season-4-take-place": {
+            "question": "Where did Season 4 take place?",
+            "explanation": {
+              "text": "The season was filmed near Wanaka on New Zealands south island.",
+              "image": {
+                "caption": ""
+              }
+            },
+            "options": [
+              "Australia",
+              "Tasmania",
+              "New Zealand -  North island",
+              "New Zealand - South island"
+            ]
+          },
+          "which-participant-left-the-season-first": {
+            "question": "Which participant left the season first? ",
+            "explanation": {
+              "text": "The self renowned survival expert who claimed to have climbed the famous Eiger Nordthface free solo left the season first. ",
+              "image": {
+                "caption": ""
+              }
+            },
+            "options": [
+              "Stefan Hinkelmann (Survival Deutschland)",
+              "Joe Vogel ",
+              "LetsHugo",
+              "Joey Kelly"
+            ]
+          },
+          "whats-the-name-of-the-lone-tree-flying-uwe-had-an-": {
+            "question": "Whats the name of the lone tree, Flying Uwe had an emotional connection with? ",
+            "explanation": {
+              "text": "Its Antonia. Nothing else to say. ",
+              "image": {
+                "caption": ""
+              }
+            },
+            "options": [
+              "Birgit",
+              "Paula",
+              "Antonia",
+              "Laura"
+            ]
+          },
+          "which-rare-flower-grows-near-the-season-4-filming-": {
+            "question": "Which rare flower grows near the Season 4 filming location?",
+            "explanation": {
+              "text": "These buttercups have been traditionally used by the local natives.",
+              "image": {
+                "caption": ""
+              }
+            },
+            "options": [
+              "Edelweiss",
+              "Ranunculus haastii",
+              "Crimson lotus",
+              "Ghost Orchid"
+            ]
+          }
+        }
+      }
+    },
+    "it": {
+      "name": "7 vs Wild - Season 4 Location",
+      "region": "Lindis Pass, New Zealand",
+      "description": "Season 4 took the series to New Zealand (near Lindis Pass, Otago) with a “crashed plane” narrative twist. Unlike previous seasons, all 7 participants began together: after a briefing in Frankfurt they were flown (via Christchurch and Wanaka) into the wild, even helicoptered (blindfolded) into the Lindis Pass valley. A real Dornier Do 28A-1 aircraft was actually crushed onsite to simulate the crash scenario. The contestants (7 in total) – including survival expert Johannes “Joe” Vogel, streamer LetsHugo (Hugo Goedert), comedian Selfiesandra (Sandra Safiulov), athlete Joey Kelly, martial artist Flying Uwe (Uwe Schüder), former soldier Stefan Hinkelmann, and singer/YouTuber Julia Beautx (Julia Willecke) – each brought only the standard seven items (clothing aside) into this 14-day wilderness ordeal. Episodes premiered in Oct–Nov 2024 on Amazon Prime Video/Freevee (in Germany it hit #1 on the Prime charts), with a YouTube release shortly thereafter",
+      "heroImage": {
+        "caption": "The rugged terrain of the Lindis Pass"
+      },
+      "stats": {
+        "participants": {
+          "label": "Participants",
+          "description": "7 survivalists (all strangers, grouped at start)"
+        },
+        "days": {
+          "label": "Days",
+          "description": "Duration of survival in the wilderness"
+        },
+        "episodes": {
+          "label": "Episodes",
+          "description": "First aired Oct–Nov 2024, Amazon and YouTube"
+        },
+        "items": {
+          "label": "Items",
+          "description": "Allowed Gear: Each contestant could take 7 items (plus pre-worn clothing) into the wild"
+        },
+        "views": {
+          "label": "Views",
+          "description": "Season 4 attracted 15.1 million YouTube views (first 10 episodes) and ranked #1 on German Amazon Prime charts"
+        }
+      },
+      "interestingFacts": {
+        "crashed-plane-simulation-the-production-actually-u": {
+          "text": "Crashed Plane Simulation: The production actually used a real airplane (Dornier Do 28A-1) for the opening scene. In a behind‐the‐scenes special, the plane was physically crushed onsite to create the crash scenario"
+        },
+        "helicopter-drop-group-start-for-the-first-time-con": {
+          "text": "Helicopter Drop & Group Start: For the first time contestants were delivered together by helicopter (wearing goggles) into the drop zone. This introduced a social dynamic absent in prior seasons."
+        },
+        "hidden-supplies-the-crashed-planes-wreckage-contai": {
+          "text": "Hidden Supplies: The crashed plane’s wreckage contained six hidden suitcases of gear (tools, food, etc.) and coded radio messages. Contestants had to discover these via clues. Wikipedia details the contents and cassettes used to guide them"
+        },
+        "extreme-endurance-athlete-season-4-featured-joey-k": {
+          "text": "Extreme Endurance Athlete: Season 4 featured Joey Kelly, famous from the 1990s Kelly Family pop band. After music fame he became known as an ultra‐endurance athlete (finishing numerous marathons, Ironmans and ultradistance races)"
+        },
+        "unique-alpine-flora-the-lindis-pass-area-is-home-t": {
+          "text": "Unique Alpine Flora: The Lindis Pass area is home to Ranunculus haastii, a rare buttercup species adapted to the high plains. One of the largest populations grows on nearby Longslip Mountain",
+          "image": {
+            "caption": " Ranunculus haastii"
+          }
+        }
+      },
+      "historicalInfo": {
+        "text": "Lindis Pass is an alpine saddle (971 m) linking the Mackenzie Basin with Central Otago. The terrain is exposed, with snow-tussock grasslands dominating the landscape (Longslip Mountain nearby hosts extensive stands of the buttercup Ranunculus haastii). Summers are hot and dry; winters often bring snow and ice even down to the roadside. \n\nThe native wildlife includes small birds like the rifleman (titipounamu), grey warbler (riroriro), fantail (piwakawaka) and New Zealand falcon (kārearea), though no large forest stands remain. In Māori tradition this region lies in the territory of the Waitaha and Ngāi Tahu people. The lakes and mountains here feature in local legends – for example, ancestor Rākaihautū is said to have dug the great Southern Lakes including Wānaka. Historically, Māori (Ngāi Tahu) visited seasonally for eels, birds, and pounamu (greenstone) hunting. By the 19th century European settlers arrived for gold; the Lindis Pass Historic Area still preserves 1860s relics such as a gold-miner’s hut and the ruins of the old Lindis Pass Hotel.",
+        "images": {
+          "lake-wanaka-view": {
+            "caption": "Lake Wanaka View"
+          }
+        }
+      },
+      "pois": {
+        "clay-cliffs": {
+          "title": "Clay Cliffs",
+          "description": "A network of huge pinnacles of gravel and silt on private land at Quailburn, formed by glacial outwash erosion",
+          "openingHours": "Always",
+          "accessibility": "by car",
+          "bestTimeToVisit": "During sunset or sunrise."
+        },
+        "elephant-rocks-near-duntroon": {
+          "title": "Elephant Rocks (near Duntroon)",
+          "description": "Large limestone formations 30 km south of Omarama. The rocks were ancient seabed sand turned to limestone, carved by wind and water into elephant-like shapes",
+          "gallery": {
+            "images": {
+              "elephantrocksnov232024-02": {
+                "caption": "Field of giant weathered limestone boulders (pictured below) on private farmland south of Duntroon"
+              }
+            }
+          }
+        },
+        "the-wanaka-tree": {
+          "title": "The Wanaka Tree",
+          "description": "Iconic lone willow tree growing in Lake Wānaka, often photographed at sunrise/sunset. It has become a symbol of Wanaka’s landscape.",
+          "openingHours": "always",
+          "accessibility": "Very accessible",
+          "bestTimeToVisit": "sunrise / sunset"
+        }
+      },
+      "tours": {
+        "lindis-explorer-trail": {
+          "name": "Lindis Explorer Trail",
+          "description": "A high-country survival route through the Wanaka–Lindis region (4 waypoints)",
+          "waypoints": {
+            "wanaka-roys-bay": {
+              "title": "Wanaka (Roys Bay)",
+              "info": "Start at Lake Wānaka’s southern end (supply town and access point)."
+            },
+            "lindis-pass-summit": {
+              "title": "Lindis Pass Summit",
+              "info": "High alpine saddle (971 m) on SH8 – rugged tussock plateau with panoramic views"
+            },
+            "lindis-pass-hotel-site": {
+              "title": "Lindis Pass Hotel Site",
+              "info": "Historic campsite and riverbank (ruins of 1860s goldfields hotel)"
+            },
+            "lindis-peak": {
+              "title": "Lindis Peak",
+              "info": "A back-country summit above Old Faithful Rd; final water source for trekkers"
+            }
+          }
+        }
+      },
+      "quiz": {
+        "title": "Season 4 Quiz",
+        "description": "Test your knowledge about the latest season of 7 vs Wild.",
+        "questions": {
+          "how-did-7-vs-wild-season-4-begin": {
+            "question": "How did 7 vs. Wild Season 4 begin?",
+            "options": [
+              "A jungle ambush",
+              "A plane crash scenario",
+              "A night drop by parachute",
+              "A desert march"
+            ],
+            "explanation": {
+              "text": "The plane crash was a reference to the Uruguayan Air Force Flight 571, which crashed in Argentina in 1972."
+            }
+          },
+          "where-did-season-4-take-place": {
+            "question": "Where did Season 4 take place?",
+            "options": [
+              "Australia",
+              "Tasmania",
+              "New Zealand -  North island",
+              "New Zealand - South island"
+            ],
+            "explanation": {
+              "text": "The season was filmed near Wanaka on New Zealands south island."
+            }
+          },
+          "which-participant-left-the-season-first": {
+            "question": "Which participant left the season first? ",
+            "options": [
+              "Stefan Hinkelmann (Survival Deutschland)",
+              "Joe Vogel",
+              "LetsHugo",
+              "Joey Kelly"
+            ],
+            "explanation": {
+              "text": "The self renowned survival expert who claimed to have climbed the famous Eiger Nordthface free solo left the season first. "
+            }
+          },
+          "whats-the-name-of-the-lone-tree-flying-uwe-had-an-": {
+            "question": "Whats the name of the lone tree, Flying Uwe had an emotional connection with? ",
+            "options": [
+              "Birgit",
+              "Paula",
+              "Antonia",
+              "Laura"
+            ],
+            "explanation": {
+              "text": "Its Antonia. Nothing else to say. "
+            }
+          },
+          "which-rare-flower-grows-near-the-season-4-filming-": {
+            "question": "Which rare flower grows near the Season 4 filming location?",
+            "options": [
+              "Edelweiss",
+              "Ranunculus haastii",
+              "Crimson lotus",
+              "Ghost Orchid"
+            ],
+            "explanation": {
+              "text": "These buttercups have been traditionally used by the local natives."
+            }
+          }
+        }
+      }
+    },
+    "de": {
+      "name": "7 vs. Wild – Staffel 4 Drehort",
+      "region": "Lindis Pass, Neuseeland",
+      "description": "Staffel 4 führte die Serie nach Neuseeland (in die Nähe des Lindis Pass, Otago) mit einem narrativen Twist um ein „abgestürztes Flugzeug“. Anders als in früheren Staffeln begannen alle 7 Teilnehmer gemeinsam: Nach einer Einweisung in Frankfurt wurden sie (über Christchurch und Wanaka) in die Wildnis geflogen und sogar mit dem Hubschrauber (mit verbundenen Augen) ins Lindis-Pass-Tal gebracht. Ein echtes Dornier Do 28A-1 Flugzeug wurde vor Ort zerstört, um das Absturzszenario zu simulieren. Die insgesamt 7 Teilnehmer – darunter der Survival-Experte Johannes „Joe“ Vogel, der Streamer LetsHugo (Hugo Goedert), die Komikerin Selfiesandra (Sandra Safiulov), der Sportler Joey Kelly, der Kampfkünstler Flying Uwe (Uwe Schüder), der ehemalige Soldat Stefan Hinkelmann und die Sängerin/YouTuberin Julia Beautx (Julia Willecke) – brachten jeweils nur die standardmäßigen sieben Gegenstände (abgesehen von der Kleidung) in diese 14-tägige Wildnisprüfung mit. Die Folgen wurden im Oktober/November 2024 auf Amazon Prime Video/Freevee erstausgestrahlt (in Deutschland erreichte die Staffel Platz 1 der Prime-Charts), eine Veröffentlichung auf YouTube folgte kurz darauf.",
+      "heroImage": {
+        "caption": "Das raue Gelände des Lindis Pass"
+      },
+      "stats": {
+        "participants": {
+          "label": "Teilnehmer",
+          "description": "7 Survival-Künstler (alle Fremde, zu Beginn in einer Gruppe)"
+        },
+        "days": {
+          "label": "Tage",
+          "description": "Dauer des Überlebens in der Wildnis"
+        },
+        "episodes": {
+          "label": "Folgen",
+          "description": "Erstausstrahlung Okt.–Nov. 2024, Amazon und YouTube"
+        },
+        "items": {
+          "label": "Gegenstände",
+          "description": "Erlaubte Ausrüstung: Jeder Teilnehmer durfte 7 Gegenstände (plus getragene Kleidung) mit in die Wildnis nehmen"
+        },
+        "views": {
+          "label": "Aufrufe",
+          "description": "Staffel 4 erreichte 15,1 Millionen YouTube-Aufrufe (erste 10 Folgen) und belegte Platz 1 der deutschen Amazon-Prime-Charts"
+        }
+      },
+      "interestingFacts": {
+        "crashed-plane-simulation-the-production-actually-u": {
+          "text": "Flugzeugabsturz-Simulation: Die Produktion verwendete tatsächlich ein echtes Flugzeug (Dornier Do 28A-1) für die Eröffnungsszene. In einem „Behind-the-Scenes“-Special wurde das Flugzeug vor Ort physisch zerstört, um das Absturzszenario zu erzeugen."
+        },
+        "helicopter-drop-group-start-for-the-first-time-con": {
+          "text": "Hubschrauber-Aussetzung & Gruppenstart: Erstmals wurden die Teilnehmer gemeinsam per Hubschrauber (mit Schutzbrillen) in der Aussetzungszone abgesetzt. Dies führte eine soziale Dynamik ein, die in früheren Staffeln fehlte."
+        },
+        "hidden-supplies-the-crashed-planes-wreckage-contai": {
+          "text": "Versteckte Vorräte: Das Wrack des abgestürzten Flugzeugs enthielt sechs versteckte Koffer mit Ausrüstung (Werkzeuge, Lebensmittel etc.) und verschlüsselte Funksprüche. Die Teilnehmer mussten diese mithilfe von Hinweisen entdecken. Wikipedia beschreibt detailliert den Inhalt und die Kassetten, die ihnen als Anleitung dienten."
+        },
+        "extreme-endurance-athlete-season-4-featured-joey-k": {
+          "text": "Extremsportler: In Staffel 4 war Joey Kelly dabei, bekannt aus der Popband Kelly Family der 1990er Jahre. Nach seinem musikalischen Ruhm wurde er als Ultra-Ausdauersportler bekannt (er absolvierte zahlreiche Marathons, Ironmans und Ultralangstreckenläufe)."
+        },
+        "unique-alpine-flora-the-lindis-pass-area-is-home-t": {
+          "text": "Einzigartige Alpenflora: Das Gebiet des Lindis Pass beheimatet Ranunculus haastii, eine seltene Hahnenfußart, die an die Hochebenen angepasst ist. Eine der größten Populationen wächst auf dem nahegelegenen Longslip Mountain.",
+          "image": {
+            "caption": "Ranunculus haastii"
+          }
+        }
+      },
+      "historicalInfo": {
+        "text": "Der Lindis Pass ist ein Alpensattel (971 m), der das Mackenzie-Becken mit Central Otago verbindet. Das Gelände ist exponiert, wobei Tussock-Grasland die Landschaft dominiert (der nahegelegene Longslip Mountain beherbergt ausgedehnte Bestände des Hahnenfußes Ranunculus haastii). Die Sommer sind heiß und trocken; die Winter bringen oft Schnee und Eis bis an den Straßenrand. \n\nDie heimische Tierwelt umfasst kleine Vögel wie den Grünschlüpfer (Titipounamu), den Graumantel-Gerygone (Riroriro), den Fächerschwanz (Piwakawaka) und den Neuseelandfalken (Kārearea), obwohl keine großen Waldbestände mehr vorhanden sind. In der Māori-Tradition liegt diese Region im Gebiet der Völker Waitaha und Ngāi Tahu. Die Seen und Berge hier sind Teil lokaler Legenden – so soll beispielsweise der Vorfahre Rākaihautū die großen Südlichen Seen, einschließlich Wānaka, gegraben haben. Historisch besuchten die Māori (Ngāi Tahu) das Gebiet saisonal zur Jagd auf Aale, Vögel und Pounamu (Grünstein). Im 19. Jahrhundert kamen europäische Siedler auf der Suche nach Gold; das Lindis Pass Historic Area bewahrt noch heute Relikte aus den 1860er Jahren wie eine Goldgräberhütte und die Ruinen des alten Lindis Pass Hotels.",
+        "images": {
+          "lake-wanaka-view": {
+            "caption": "Blick auf den Lake Wanaka"
+          }
+        }
+      },
+      "pois": {
+        "clay-cliffs": {
+          "title": "Clay Cliffs",
+          "description": "Ein Netzwerk aus riesigen Felsnadeln aus Schotter und Schlick auf Privatgrundstück bei Quailburn, geformt durch die Erosion von Gletscherschmelzwasser.",
+          "openingHours": "Immer",
+          "accessibility": "mit dem Auto",
+          "bestTimeToVisit": "Bei Sonnenuntergang oder Sonnenaufgang."
+        },
+        "elephant-rocks-near-duntroon": {
+          "title": "Elephant Rocks (nahe Duntroon)",
+          "description": "Große Kalksteinformationen 30 km südlich von Omarama. Die Felsen waren einst Sand am Meeresboden, der sich in Kalkstein verwandelte und von Wind und Wasser zu elefantenähnlichen Formen geschliffen wurde.",
+          "gallery": {
+            "images": {
+              "elephantrocksnov232024-02": {
+                "caption": "Feld riesiger verwitterter Kalksteinblöcke (unten abgebildet) auf privatem Farmland südlich von Duntroon"
+              }
+            }
+          }
+        },
+        "the-wanaka-tree": {
+          "title": "Der Wanaka-Baum",
+          "description": "Ikonische einsame Weide, die im Lake Wānaka wächst und oft bei Sonnenauf- oder -untergang fotografiert wird. Sie ist zu einem Symbol der Landschaft von Wanaka geworden.",
+          "openingHours": "immer",
+          "accessibility": "Sehr gut zugänglich",
+          "bestTimeToVisit": "Sonnenaufgang / Sonnenuntergang"
+        }
+      },
+      "tours": {
+        "lindis-explorer-trail": {
+          "name": "Lindis-Explorer-Pfad",
+          "description": "Eine Überlebensroute im Hochland durch die Region Wanaka–Lindis (4 Wegpunkte)",
+          "waypoints": {
+            "wanaka-roys-bay": {
+              "title": "Wanaka (Roys Bay)",
+              "info": "Start am südlichen Ende des Lake Wānaka (Versorgungsstadt und Zugangspunkt)."
+            },
+            "lindis-pass-summit": {
+              "title": "Lindis-Pass-Gipfel",
+              "info": "Hochalpiner Sattel (971 m) an der SH8 – raues Tussock-Plateau mit Panoramablick."
+            },
+            "lindis-pass-hotel-site": {
+              "title": "Standort des Lindis-Pass-Hotels",
+              "info": "Historischer Campingplatz und Flussufer (Ruinen des Goldgräberhotels aus den 1860er Jahren)."
+            },
+            "lindis-peak": {
+              "title": "Lindis Peak",
+              "info": "Ein Gipfel im Hinterland oberhalb der Old Faithful Rd; letzte Wasserquelle für Wanderer."
+            }
+          }
+        }
+      },
+      "quiz": {
+        "title": "Staffel-4-Quiz",
+        "description": "Teste dein Wissen über die neueste Staffel von 7 vs. Wild.",
+        "questions": {
+          "how-did-7-vs-wild-season-4-begin": {
+            "question": "Wie begann die 4. Staffel von 7 vs. Wild?",
+            "options": [
+              "Ein Dschungel-Hinterhalt",
+              "Ein Flugzeugabsturz-Szenario",
+              "Ein Nachtabsprung mit dem Fallschirm",
+              "Ein Wüstenmarsch"
+            ],
+            "explanation": {
+              "text": "Der Flugzeugabsturz war eine Anspielung auf den Flug 571 der uruguayischen Luftwaffe, der 1972 in Argentinien abstürzte."
+            }
+          },
+          "where-did-season-4-take-place": {
+            "question": "Wo fand Staffel 4 statt?",
+            "options": [
+              "Australien",
+              "Tasmanien",
+              "Neuseeland – Nordinsel",
+              "Neuseeland – Südinsel"
+            ],
+            "explanation": {
+              "text": "Die Staffel wurde in der Nähe von Wanaka auf der Südinsel Neuseelands gedreht."
+            }
+          },
+          "which-participant-left-the-season-first": {
+            "question": "Welcher Teilnehmer hat die Staffel zuerst verlassen?",
+            "options": [
+              "Stefan Hinkelmann (Survival Deutschland)",
+              "Joe Vogel",
+              "LetsHugo",
+              "Joey Kelly"
+            ],
+            "explanation": {
+              "text": "Der selbsternannte Survival-Experte, der behauptete, die berühmte Eiger-Nordwand free solo bestiegen zu haben, verließ die Staffel als Erster."
+            }
+          },
+          "whats-the-name-of-the-lone-tree-flying-uwe-had-an-": {
+            "question": "Wie heißt der einsame Baum, zu dem Flying Uwe eine emotionale Verbindung hatte?",
+            "options": [
+              "Birgit",
+              "Paula",
+              "Antonia",
+              "Laura"
+            ],
+            "explanation": {
+              "text": "Es ist Antonia. Mehr gibt es nicht zu sagen."
+            }
+          },
+          "which-rare-flower-grows-near-the-season-4-filming-": {
+            "question": "Welche seltene Blume wächst in der Nähe des Drehorts von Staffel 4?",
+            "options": [
+              "Edelweiß",
+              "Ranunculus haastii",
+              "Roter Lotus",
+              "Geisterorchidee"
+            ],
+            "explanation": {
+              "text": "Diese Hahnenfußgewächse wurden traditionell von den einheimischen Völkern verwendet."
+            }
+          }
+        }
+      }
+    },
+    "es": {
+      "name": "7 vs Wild - Season 4 Location",
+      "region": "Lindis Pass, New Zealand",
+      "description": "Season 4 took the series to New Zealand (near Lindis Pass, Otago) with a “crashed plane” narrative twist. Unlike previous seasons, all 7 participants began together: after a briefing in Frankfurt they were flown (via Christchurch and Wanaka) into the wild, even helicoptered (blindfolded) into the Lindis Pass valley. A real Dornier Do 28A-1 aircraft was actually crushed onsite to simulate the crash scenario. The contestants (7 in total) – including survival expert Johannes “Joe” Vogel, streamer LetsHugo (Hugo Goedert), comedian Selfiesandra (Sandra Safiulov), athlete Joey Kelly, martial artist Flying Uwe (Uwe Schüder), former soldier Stefan Hinkelmann, and singer/YouTuber Julia Beautx (Julia Willecke) – each brought only the standard seven items (clothing aside) into this 14-day wilderness ordeal. Episodes premiered in Oct–Nov 2024 on Amazon Prime Video/Freevee (in Germany it hit #1 on the Prime charts), with a YouTube release shortly thereafter",
+      "heroImage": {
+        "caption": "The rugged terrain of the Lindis Pass"
+      },
+      "stats": {
+        "participants": {
+          "label": "Participants",
+          "description": "7 survivalists (all strangers, grouped at start)"
+        },
+        "days": {
+          "label": "Days",
+          "description": "Duration of survival in the wilderness"
+        },
+        "episodes": {
+          "label": "Episodes",
+          "description": "First aired Oct–Nov 2024, Amazon and YouTube"
+        },
+        "items": {
+          "label": "Items",
+          "description": "Allowed Gear: Each contestant could take 7 items (plus pre-worn clothing) into the wild"
+        },
+        "views": {
+          "label": "Views",
+          "description": "Season 4 attracted 15.1 million YouTube views (first 10 episodes) and ranked #1 on German Amazon Prime charts"
+        }
+      },
+      "interestingFacts": {
+        "crashed-plane-simulation-the-production-actually-u": {
+          "text": "Crashed Plane Simulation: The production actually used a real airplane (Dornier Do 28A-1) for the opening scene. In a behind‐the‐scenes special, the plane was physically crushed onsite to create the crash scenario"
+        },
+        "helicopter-drop-group-start-for-the-first-time-con": {
+          "text": "Helicopter Drop & Group Start: For the first time contestants were delivered together by helicopter (wearing goggles) into the drop zone. This introduced a social dynamic absent in prior seasons."
+        },
+        "hidden-supplies-the-crashed-planes-wreckage-contai": {
+          "text": "Hidden Supplies: The crashed plane’s wreckage contained six hidden suitcases of gear (tools, food, etc.) and coded radio messages. Contestants had to discover these via clues. Wikipedia details the contents and cassettes used to guide them"
+        },
+        "extreme-endurance-athlete-season-4-featured-joey-k": {
+          "text": "Extreme Endurance Athlete: Season 4 featured Joey Kelly, famous from the 1990s Kelly Family pop band. After music fame he became known as an ultra‐endurance athlete (finishing numerous marathons, Ironmans and ultradistance races)"
+        },
+        "unique-alpine-flora-the-lindis-pass-area-is-home-t": {
+          "text": "Unique Alpine Flora: The Lindis Pass area is home to Ranunculus haastii, a rare buttercup species adapted to the high plains. One of the largest populations grows on nearby Longslip Mountain",
+          "image": {
+            "caption": " Ranunculus haastii"
+          }
+        }
+      },
+      "historicalInfo": {
+        "text": "Lindis Pass is an alpine saddle (971 m) linking the Mackenzie Basin with Central Otago. The terrain is exposed, with snow-tussock grasslands dominating the landscape (Longslip Mountain nearby hosts extensive stands of the buttercup Ranunculus haastii). Summers are hot and dry; winters often bring snow and ice even down to the roadside. \n\nThe native wildlife includes small birds like the rifleman (titipounamu), grey warbler (riroriro), fantail (piwakawaka) and New Zealand falcon (kārearea), though no large forest stands remain. In Māori tradition this region lies in the territory of the Waitaha and Ngāi Tahu people. The lakes and mountains here feature in local legends – for example, ancestor Rākaihautū is said to have dug the great Southern Lakes including Wānaka. Historically, Māori (Ngāi Tahu) visited seasonally for eels, birds, and pounamu (greenstone) hunting. By the 19th century European settlers arrived for gold; the Lindis Pass Historic Area still preserves 1860s relics such as a gold-miner’s hut and the ruins of the old Lindis Pass Hotel.",
+        "images": {
+          "lake-wanaka-view": {
+            "caption": "Lake Wanaka View"
+          }
+        }
+      },
+      "pois": {
+        "clay-cliffs": {
+          "title": "Clay Cliffs",
+          "description": "A network of huge pinnacles of gravel and silt on private land at Quailburn, formed by glacial outwash erosion",
+          "openingHours": "Always",
+          "accessibility": "by car",
+          "bestTimeToVisit": "During sunset or sunrise."
+        },
+        "elephant-rocks-near-duntroon": {
+          "title": "Elephant Rocks (near Duntroon)",
+          "description": "Large limestone formations 30 km south of Omarama. The rocks were ancient seabed sand turned to limestone, carved by wind and water into elephant-like shapes",
+          "gallery": {
+            "images": {
+              "elephantrocksnov232024-02": {
+                "caption": "Field of giant weathered limestone boulders (pictured below) on private farmland south of Duntroon"
+              }
+            }
+          }
+        },
+        "the-wanaka-tree": {
+          "title": "The Wanaka Tree",
+          "description": "Iconic lone willow tree growing in Lake Wānaka, often photographed at sunrise/sunset. It has become a symbol of Wanaka’s landscape.",
+          "openingHours": "always",
+          "accessibility": "Very accessible",
+          "bestTimeToVisit": "sunrise / sunset"
+        }
+      },
+      "tours": {
+        "lindis-explorer-trail": {
+          "name": "Lindis Explorer Trail",
+          "description": "A high-country survival route through the Wanaka–Lindis region (4 waypoints)",
+          "waypoints": {
+            "wanaka-roys-bay": {
+              "title": "Wanaka (Roys Bay)",
+              "info": "Start at Lake Wānaka’s southern end (supply town and access point)."
+            },
+            "lindis-pass-summit": {
+              "title": "Lindis Pass Summit",
+              "info": "High alpine saddle (971 m) on SH8 – rugged tussock plateau with panoramic views"
+            },
+            "lindis-pass-hotel-site": {
+              "title": "Lindis Pass Hotel Site",
+              "info": "Historic campsite and riverbank (ruins of 1860s goldfields hotel)"
+            },
+            "lindis-peak": {
+              "title": "Lindis Peak",
+              "info": "A back-country summit above Old Faithful Rd; final water source for trekkers"
+            }
+          }
+        }
+      },
+      "quiz": {
+        "title": "Season 4 Quiz",
+        "description": "Test your knowledge about the latest season of 7 vs Wild.",
+        "questions": {
+          "how-did-7-vs-wild-season-4-begin": {
+            "question": "How did 7 vs. Wild Season 4 begin?",
+            "options": [
+              "A jungle ambush",
+              "A plane crash scenario",
+              "A night drop by parachute",
+              "A desert march"
+            ],
+            "explanation": {
+              "text": "The plane crash was a reference to the Uruguayan Air Force Flight 571, which crashed in Argentina in 1972."
+            }
+          },
+          "where-did-season-4-take-place": {
+            "question": "Where did Season 4 take place?",
+            "options": [
+              "Australia",
+              "Tasmania",
+              "New Zealand -  North island",
+              "New Zealand - South island"
+            ],
+            "explanation": {
+              "text": "The season was filmed near Wanaka on New Zealands south island."
+            }
+          },
+          "which-participant-left-the-season-first": {
+            "question": "Which participant left the season first? ",
+            "options": [
+              "Stefan Hinkelmann (Survival Deutschland)",
+              "Joe Vogel",
+              "LetsHugo",
+              "Joey Kelly"
+            ],
+            "explanation": {
+              "text": "The self renowned survival expert who claimed to have climbed the famous Eiger Nordthface free solo left the season first. "
+            }
+          },
+          "whats-the-name-of-the-lone-tree-flying-uwe-had-an-": {
+            "question": "Whats the name of the lone tree, Flying Uwe had an emotional connection with? ",
+            "options": [
+              "Birgit",
+              "Paula",
+              "Antonia",
+              "Laura"
+            ],
+            "explanation": {
+              "text": "Its Antonia. Nothing else to say. "
+            }
+          },
+          "which-rare-flower-grows-near-the-season-4-filming-": {
+            "question": "Which rare flower grows near the Season 4 filming location?",
+            "options": [
+              "Edelweiss",
+              "Ranunculus haastii",
+              "Crimson lotus",
+              "Ghost Orchid"
+            ],
+            "explanation": {
+              "text": "These buttercups have been traditionally used by the local natives."
+            }
+          }
+        }
+      }
+    },
+    "pt": {
+      "name": "7 vs Wild - Season 4 Location",
+      "region": "Lindis Pass, New Zealand",
+      "description": "Season 4 took the series to New Zealand (near Lindis Pass, Otago) with a “crashed plane” narrative twist. Unlike previous seasons, all 7 participants began together: after a briefing in Frankfurt they were flown (via Christchurch and Wanaka) into the wild, even helicoptered (blindfolded) into the Lindis Pass valley. A real Dornier Do 28A-1 aircraft was actually crushed onsite to simulate the crash scenario. The contestants (7 in total) – including survival expert Johannes “Joe” Vogel, streamer LetsHugo (Hugo Goedert), comedian Selfiesandra (Sandra Safiulov), athlete Joey Kelly, martial artist Flying Uwe (Uwe Schüder), former soldier Stefan Hinkelmann, and singer/YouTuber Julia Beautx (Julia Willecke) – each brought only the standard seven items (clothing aside) into this 14-day wilderness ordeal. Episodes premiered in Oct–Nov 2024 on Amazon Prime Video/Freevee (in Germany it hit #1 on the Prime charts), with a YouTube release shortly thereafter",
+      "heroImage": {
+        "caption": "The rugged terrain of the Lindis Pass"
+      },
+      "stats": {
+        "participants": {
+          "label": "Participants",
+          "description": "7 survivalists (all strangers, grouped at start)"
+        },
+        "days": {
+          "label": "Days",
+          "description": "Duration of survival in the wilderness"
+        },
+        "episodes": {
+          "label": "Episodes",
+          "description": "First aired Oct–Nov 2024, Amazon and YouTube"
+        },
+        "items": {
+          "label": "Items",
+          "description": "Allowed Gear: Each contestant could take 7 items (plus pre-worn clothing) into the wild"
+        },
+        "views": {
+          "label": "Views",
+          "description": "Season 4 attracted 15.1 million YouTube views (first 10 episodes) and ranked #1 on German Amazon Prime charts"
+        }
+      },
+      "interestingFacts": {
+        "crashed-plane-simulation-the-production-actually-u": {
+          "text": "Crashed Plane Simulation: The production actually used a real airplane (Dornier Do 28A-1) for the opening scene. In a behind‐the‐scenes special, the plane was physically crushed onsite to create the crash scenario"
+        },
+        "helicopter-drop-group-start-for-the-first-time-con": {
+          "text": "Helicopter Drop & Group Start: For the first time contestants were delivered together by helicopter (wearing goggles) into the drop zone. This introduced a social dynamic absent in prior seasons."
+        },
+        "hidden-supplies-the-crashed-planes-wreckage-contai": {
+          "text": "Hidden Supplies: The crashed plane’s wreckage contained six hidden suitcases of gear (tools, food, etc.) and coded radio messages. Contestants had to discover these via clues. Wikipedia details the contents and cassettes used to guide them"
+        },
+        "extreme-endurance-athlete-season-4-featured-joey-k": {
+          "text": "Extreme Endurance Athlete: Season 4 featured Joey Kelly, famous from the 1990s Kelly Family pop band. After music fame he became known as an ultra‐endurance athlete (finishing numerous marathons, Ironmans and ultradistance races)"
+        },
+        "unique-alpine-flora-the-lindis-pass-area-is-home-t": {
+          "text": "Unique Alpine Flora: The Lindis Pass area is home to Ranunculus haastii, a rare buttercup species adapted to the high plains. One of the largest populations grows on nearby Longslip Mountain",
+          "image": {
+            "caption": " Ranunculus haastii"
+          }
+        }
+      },
+      "historicalInfo": {
+        "text": "Lindis Pass is an alpine saddle (971 m) linking the Mackenzie Basin with Central Otago. The terrain is exposed, with snow-tussock grasslands dominating the landscape (Longslip Mountain nearby hosts extensive stands of the buttercup Ranunculus haastii). Summers are hot and dry; winters often bring snow and ice even down to the roadside. \n\nThe native wildlife includes small birds like the rifleman (titipounamu), grey warbler (riroriro), fantail (piwakawaka) and New Zealand falcon (kārearea), though no large forest stands remain. In Māori tradition this region lies in the territory of the Waitaha and Ngāi Tahu people. The lakes and mountains here feature in local legends – for example, ancestor Rākaihautū is said to have dug the great Southern Lakes including Wānaka. Historically, Māori (Ngāi Tahu) visited seasonally for eels, birds, and pounamu (greenstone) hunting. By the 19th century European settlers arrived for gold; the Lindis Pass Historic Area still preserves 1860s relics such as a gold-miner’s hut and the ruins of the old Lindis Pass Hotel.",
+        "images": {
+          "lake-wanaka-view": {
+            "caption": "Lake Wanaka View"
+          }
+        }
+      },
+      "pois": {
+        "clay-cliffs": {
+          "title": "Clay Cliffs",
+          "description": "A network of huge pinnacles of gravel and silt on private land at Quailburn, formed by glacial outwash erosion",
+          "openingHours": "Always",
+          "accessibility": "by car",
+          "bestTimeToVisit": "During sunset or sunrise."
+        },
+        "elephant-rocks-near-duntroon": {
+          "title": "Elephant Rocks (near Duntroon)",
+          "description": "Large limestone formations 30 km south of Omarama. The rocks were ancient seabed sand turned to limestone, carved by wind and water into elephant-like shapes",
+          "gallery": {
+            "images": {
+              "elephantrocksnov232024-02": {
+                "caption": "Field of giant weathered limestone boulders (pictured below) on private farmland south of Duntroon"
+              }
+            }
+          }
+        },
+        "the-wanaka-tree": {
+          "title": "The Wanaka Tree",
+          "description": "Iconic lone willow tree growing in Lake Wānaka, often photographed at sunrise/sunset. It has become a symbol of Wanaka’s landscape.",
+          "openingHours": "always",
+          "accessibility": "Very accessible",
+          "bestTimeToVisit": "sunrise / sunset"
+        }
+      },
+      "tours": {
+        "lindis-explorer-trail": {
+          "name": "Lindis Explorer Trail",
+          "description": "A high-country survival route through the Wanaka–Lindis region (4 waypoints)",
+          "waypoints": {
+            "wanaka-roys-bay": {
+              "title": "Wanaka (Roys Bay)",
+              "info": "Start at Lake Wānaka’s southern end (supply town and access point)."
+            },
+            "lindis-pass-summit": {
+              "title": "Lindis Pass Summit",
+              "info": "High alpine saddle (971 m) on SH8 – rugged tussock plateau with panoramic views"
+            },
+            "lindis-pass-hotel-site": {
+              "title": "Lindis Pass Hotel Site",
+              "info": "Historic campsite and riverbank (ruins of 1860s goldfields hotel)"
+            },
+            "lindis-peak": {
+              "title": "Lindis Peak",
+              "info": "A back-country summit above Old Faithful Rd; final water source for trekkers"
+            }
+          }
+        }
+      },
+      "quiz": {
+        "title": "Season 4 Quiz",
+        "description": "Test your knowledge about the latest season of 7 vs Wild.",
+        "questions": {
+          "how-did-7-vs-wild-season-4-begin": {
+            "question": "How did 7 vs. Wild Season 4 begin?",
+            "options": [
+              "A jungle ambush",
+              "A plane crash scenario",
+              "A night drop by parachute",
+              "A desert march"
+            ],
+            "explanation": {
+              "text": "The plane crash was a reference to the Uruguayan Air Force Flight 571, which crashed in Argentina in 1972."
+            }
+          },
+          "where-did-season-4-take-place": {
+            "question": "Where did Season 4 take place?",
+            "options": [
+              "Australia",
+              "Tasmania",
+              "New Zealand -  North island",
+              "New Zealand - South island"
+            ],
+            "explanation": {
+              "text": "The season was filmed near Wanaka on New Zealands south island."
+            }
+          },
+          "which-participant-left-the-season-first": {
+            "question": "Which participant left the season first? ",
+            "options": [
+              "Stefan Hinkelmann (Survival Deutschland)",
+              "Joe Vogel",
+              "LetsHugo",
+              "Joey Kelly"
+            ],
+            "explanation": {
+              "text": "The self renowned survival expert who claimed to have climbed the famous Eiger Nordthface free solo left the season first. "
+            }
+          },
+          "whats-the-name-of-the-lone-tree-flying-uwe-had-an-": {
+            "question": "Whats the name of the lone tree, Flying Uwe had an emotional connection with? ",
+            "options": [
+              "Birgit",
+              "Paula",
+              "Antonia",
+              "Laura"
+            ],
+            "explanation": {
+              "text": "Its Antonia. Nothing else to say. "
+            }
+          },
+          "which-rare-flower-grows-near-the-season-4-filming-": {
+            "question": "Which rare flower grows near the Season 4 filming location?",
+            "options": [
+              "Edelweiss",
+              "Ranunculus haastii",
+              "Crimson lotus",
+              "Ghost Orchid"
+            ],
+            "explanation": {
+              "text": "These buttercups have been traditionally used by the local natives."
+            }
+          }
+        }
+      }
+    },
+    "ja": {
+      "name": "7 vs Wild - Season 4 Location",
+      "region": "Lindis Pass, New Zealand",
+      "description": "Season 4 took the series to New Zealand (near Lindis Pass, Otago) with a “crashed plane” narrative twist. Unlike previous seasons, all 7 participants began together: after a briefing in Frankfurt they were flown (via Christchurch and Wanaka) into the wild, even helicoptered (blindfolded) into the Lindis Pass valley. A real Dornier Do 28A-1 aircraft was actually crushed onsite to simulate the crash scenario. The contestants (7 in total) – including survival expert Johannes “Joe” Vogel, streamer LetsHugo (Hugo Goedert), comedian Selfiesandra (Sandra Safiulov), athlete Joey Kelly, martial artist Flying Uwe (Uwe Schüder), former soldier Stefan Hinkelmann, and singer/YouTuber Julia Beautx (Julia Willecke) – each brought only the standard seven items (clothing aside) into this 14-day wilderness ordeal. Episodes premiered in Oct–Nov 2024 on Amazon Prime Video/Freevee (in Germany it hit #1 on the Prime charts), with a YouTube release shortly thereafter",
+      "heroImage": {
+        "caption": "The rugged terrain of the Lindis Pass"
+      },
+      "stats": {
+        "participants": {
+          "label": "Participants",
+          "description": "7 survivalists (all strangers, grouped at start)"
+        },
+        "days": {
+          "label": "Days",
+          "description": "Duration of survival in the wilderness"
+        },
+        "episodes": {
+          "label": "Episodes",
+          "description": "First aired Oct–Nov 2024, Amazon and YouTube"
+        },
+        "items": {
+          "label": "Items",
+          "description": "Allowed Gear: Each contestant could take 7 items (plus pre-worn clothing) into the wild"
+        },
+        "views": {
+          "label": "Views",
+          "description": "Season 4 attracted 15.1 million YouTube views (first 10 episodes) and ranked #1 on German Amazon Prime charts"
+        }
+      },
+      "interestingFacts": {
+        "crashed-plane-simulation-the-production-actually-u": {
+          "text": "Crashed Plane Simulation: The production actually used a real airplane (Dornier Do 28A-1) for the opening scene. In a behind‐the‐scenes special, the plane was physically crushed onsite to create the crash scenario"
+        },
+        "helicopter-drop-group-start-for-the-first-time-con": {
+          "text": "Helicopter Drop & Group Start: For the first time contestants were delivered together by helicopter (wearing goggles) into the drop zone. This introduced a social dynamic absent in prior seasons."
+        },
+        "hidden-supplies-the-crashed-planes-wreckage-contai": {
+          "text": "Hidden Supplies: The crashed plane’s wreckage contained six hidden suitcases of gear (tools, food, etc.) and coded radio messages. Contestants had to discover these via clues. Wikipedia details the contents and cassettes used to guide them"
+        },
+        "extreme-endurance-athlete-season-4-featured-joey-k": {
+          "text": "Extreme Endurance Athlete: Season 4 featured Joey Kelly, famous from the 1990s Kelly Family pop band. After music fame he became known as an ultra‐endurance athlete (finishing numerous marathons, Ironmans and ultradistance races)"
+        },
+        "unique-alpine-flora-the-lindis-pass-area-is-home-t": {
+          "text": "Unique Alpine Flora: The Lindis Pass area is home to Ranunculus haastii, a rare buttercup species adapted to the high plains. One of the largest populations grows on nearby Longslip Mountain",
+          "image": {
+            "caption": " Ranunculus haastii"
+          }
+        }
+      },
+      "historicalInfo": {
+        "text": "Lindis Pass is an alpine saddle (971 m) linking the Mackenzie Basin with Central Otago. The terrain is exposed, with snow-tussock grasslands dominating the landscape (Longslip Mountain nearby hosts extensive stands of the buttercup Ranunculus haastii). Summers are hot and dry; winters often bring snow and ice even down to the roadside. \n\nThe native wildlife includes small birds like the rifleman (titipounamu), grey warbler (riroriro), fantail (piwakawaka) and New Zealand falcon (kārearea), though no large forest stands remain. In Māori tradition this region lies in the territory of the Waitaha and Ngāi Tahu people. The lakes and mountains here feature in local legends – for example, ancestor Rākaihautū is said to have dug the great Southern Lakes including Wānaka. Historically, Māori (Ngāi Tahu) visited seasonally for eels, birds, and pounamu (greenstone) hunting. By the 19th century European settlers arrived for gold; the Lindis Pass Historic Area still preserves 1860s relics such as a gold-miner’s hut and the ruins of the old Lindis Pass Hotel.",
+        "images": {
+          "lake-wanaka-view": {
+            "caption": "Lake Wanaka View"
+          }
+        }
+      },
+      "pois": {
+        "clay-cliffs": {
+          "title": "Clay Cliffs",
+          "description": "A network of huge pinnacles of gravel and silt on private land at Quailburn, formed by glacial outwash erosion",
+          "openingHours": "Always",
+          "accessibility": "by car",
+          "bestTimeToVisit": "During sunset or sunrise."
+        },
+        "elephant-rocks-near-duntroon": {
+          "title": "Elephant Rocks (near Duntroon)",
+          "description": "Large limestone formations 30 km south of Omarama. The rocks were ancient seabed sand turned to limestone, carved by wind and water into elephant-like shapes",
+          "gallery": {
+            "images": {
+              "elephantrocksnov232024-02": {
+                "caption": "Field of giant weathered limestone boulders (pictured below) on private farmland south of Duntroon"
+              }
+            }
+          }
+        },
+        "the-wanaka-tree": {
+          "title": "The Wanaka Tree",
+          "description": "Iconic lone willow tree growing in Lake Wānaka, often photographed at sunrise/sunset. It has become a symbol of Wanaka’s landscape.",
+          "openingHours": "always",
+          "accessibility": "Very accessible",
+          "bestTimeToVisit": "sunrise / sunset"
+        }
+      },
+      "tours": {
+        "lindis-explorer-trail": {
+          "name": "Lindis Explorer Trail",
+          "description": "A high-country survival route through the Wanaka–Lindis region (4 waypoints)",
+          "waypoints": {
+            "wanaka-roys-bay": {
+              "title": "Wanaka (Roys Bay)",
+              "info": "Start at Lake Wānaka’s southern end (supply town and access point)."
+            },
+            "lindis-pass-summit": {
+              "title": "Lindis Pass Summit",
+              "info": "High alpine saddle (971 m) on SH8 – rugged tussock plateau with panoramic views"
+            },
+            "lindis-pass-hotel-site": {
+              "title": "Lindis Pass Hotel Site",
+              "info": "Historic campsite and riverbank (ruins of 1860s goldfields hotel)"
+            },
+            "lindis-peak": {
+              "title": "Lindis Peak",
+              "info": "A back-country summit above Old Faithful Rd; final water source for trekkers"
+            }
+          }
+        }
+      },
+      "quiz": {
+        "title": "Season 4 Quiz",
+        "description": "Test your knowledge about the latest season of 7 vs Wild.",
+        "questions": {
+          "how-did-7-vs-wild-season-4-begin": {
+            "question": "How did 7 vs. Wild Season 4 begin?",
+            "options": [
+              "A jungle ambush",
+              "A plane crash scenario",
+              "A night drop by parachute",
+              "A desert march"
+            ],
+            "explanation": {
+              "text": "The plane crash was a reference to the Uruguayan Air Force Flight 571, which crashed in Argentina in 1972."
+            }
+          },
+          "where-did-season-4-take-place": {
+            "question": "Where did Season 4 take place?",
+            "options": [
+              "Australia",
+              "Tasmania",
+              "New Zealand -  North island",
+              "New Zealand - South island"
+            ],
+            "explanation": {
+              "text": "The season was filmed near Wanaka on New Zealands south island."
+            }
+          },
+          "which-participant-left-the-season-first": {
+            "question": "Which participant left the season first? ",
+            "options": [
+              "Stefan Hinkelmann (Survival Deutschland)",
+              "Joe Vogel",
+              "LetsHugo",
+              "Joey Kelly"
+            ],
+            "explanation": {
+              "text": "The self renowned survival expert who claimed to have climbed the famous Eiger Nordthface free solo left the season first. "
+            }
+          },
+          "whats-the-name-of-the-lone-tree-flying-uwe-had-an-": {
+            "question": "Whats the name of the lone tree, Flying Uwe had an emotional connection with? ",
+            "options": [
+              "Birgit",
+              "Paula",
+              "Antonia",
+              "Laura"
+            ],
+            "explanation": {
+              "text": "Its Antonia. Nothing else to say. "
+            }
+          },
+          "which-rare-flower-grows-near-the-season-4-filming-": {
+            "question": "Which rare flower grows near the Season 4 filming location?",
+            "options": [
+              "Edelweiss",
+              "Ranunculus haastii",
+              "Crimson lotus",
+              "Ghost Orchid"
+            ],
+            "explanation": {
+              "text": "These buttercups have been traditionally used by the local natives."
+            }
+          }
+        }
+      }
+    },
+    "fr": {
+      "name": "7 vs Wild - Season 4 Location",
+      "region": "Lindis Pass, New Zealand",
+      "description": "Season 4 took the series to New Zealand (near Lindis Pass, Otago) with a “crashed plane” narrative twist. Unlike previous seasons, all 7 participants began together: after a briefing in Frankfurt they were flown (via Christchurch and Wanaka) into the wild, even helicoptered (blindfolded) into the Lindis Pass valley. A real Dornier Do 28A-1 aircraft was actually crushed onsite to simulate the crash scenario. The contestants (7 in total) – including survival expert Johannes “Joe” Vogel, streamer LetsHugo (Hugo Goedert), comedian Selfiesandra (Sandra Safiulov), athlete Joey Kelly, martial artist Flying Uwe (Uwe Schüder), former soldier Stefan Hinkelmann, and singer/YouTuber Julia Beautx (Julia Willecke) – each brought only the standard seven items (clothing aside) into this 14-day wilderness ordeal. Episodes premiered in Oct–Nov 2024 on Amazon Prime Video/Freevee (in Germany it hit #1 on the Prime charts), with a YouTube release shortly thereafter",
+      "heroImage": {
+        "caption": "The rugged terrain of the Lindis Pass"
+      },
+      "stats": {
+        "participants": {
+          "label": "Participants",
+          "description": "7 survivalists (all strangers, grouped at start)"
+        },
+        "days": {
+          "label": "Days",
+          "description": "Duration of survival in the wilderness"
+        },
+        "episodes": {
+          "label": "Episodes",
+          "description": "First aired Oct–Nov 2024, Amazon and YouTube"
+        },
+        "items": {
+          "label": "Items",
+          "description": "Allowed Gear: Each contestant could take 7 items (plus pre-worn clothing) into the wild"
+        },
+        "views": {
+          "label": "Views",
+          "description": "Season 4 attracted 15.1 million YouTube views (first 10 episodes) and ranked #1 on German Amazon Prime charts"
+        }
+      },
+      "interestingFacts": {
+        "crashed-plane-simulation-the-production-actually-u": {
+          "text": "Crashed Plane Simulation: The production actually used a real airplane (Dornier Do 28A-1) for the opening scene. In a behind‐the‐scenes special, the plane was physically crushed onsite to create the crash scenario"
+        },
+        "helicopter-drop-group-start-for-the-first-time-con": {
+          "text": "Helicopter Drop & Group Start: For the first time contestants were delivered together by helicopter (wearing goggles) into the drop zone. This introduced a social dynamic absent in prior seasons."
+        },
+        "hidden-supplies-the-crashed-planes-wreckage-contai": {
+          "text": "Hidden Supplies: The crashed plane’s wreckage contained six hidden suitcases of gear (tools, food, etc.) and coded radio messages. Contestants had to discover these via clues. Wikipedia details the contents and cassettes used to guide them"
+        },
+        "extreme-endurance-athlete-season-4-featured-joey-k": {
+          "text": "Extreme Endurance Athlete: Season 4 featured Joey Kelly, famous from the 1990s Kelly Family pop band. After music fame he became known as an ultra‐endurance athlete (finishing numerous marathons, Ironmans and ultradistance races)"
+        },
+        "unique-alpine-flora-the-lindis-pass-area-is-home-t": {
+          "text": "Unique Alpine Flora: The Lindis Pass area is home to Ranunculus haastii, a rare buttercup species adapted to the high plains. One of the largest populations grows on nearby Longslip Mountain",
+          "image": {
+            "caption": " Ranunculus haastii"
+          }
+        }
+      },
+      "historicalInfo": {
+        "text": "Lindis Pass is an alpine saddle (971 m) linking the Mackenzie Basin with Central Otago. The terrain is exposed, with snow-tussock grasslands dominating the landscape (Longslip Mountain nearby hosts extensive stands of the buttercup Ranunculus haastii). Summers are hot and dry; winters often bring snow and ice even down to the roadside. \n\nThe native wildlife includes small birds like the rifleman (titipounamu), grey warbler (riroriro), fantail (piwakawaka) and New Zealand falcon (kārearea), though no large forest stands remain. In Māori tradition this region lies in the territory of the Waitaha and Ngāi Tahu people. The lakes and mountains here feature in local legends – for example, ancestor Rākaihautū is said to have dug the great Southern Lakes including Wānaka. Historically, Māori (Ngāi Tahu) visited seasonally for eels, birds, and pounamu (greenstone) hunting. By the 19th century European settlers arrived for gold; the Lindis Pass Historic Area still preserves 1860s relics such as a gold-miner’s hut and the ruins of the old Lindis Pass Hotel.",
+        "images": {
+          "lake-wanaka-view": {
+            "caption": "Lake Wanaka View"
+          }
+        }
+      },
+      "pois": {
+        "clay-cliffs": {
+          "title": "Clay Cliffs",
+          "description": "A network of huge pinnacles of gravel and silt on private land at Quailburn, formed by glacial outwash erosion",
+          "openingHours": "Always",
+          "accessibility": "by car",
+          "bestTimeToVisit": "During sunset or sunrise."
+        },
+        "elephant-rocks-near-duntroon": {
+          "title": "Elephant Rocks (near Duntroon)",
+          "description": "Large limestone formations 30 km south of Omarama. The rocks were ancient seabed sand turned to limestone, carved by wind and water into elephant-like shapes",
+          "gallery": {
+            "images": {
+              "elephantrocksnov232024-02": {
+                "caption": "Field of giant weathered limestone boulders (pictured below) on private farmland south of Duntroon"
+              }
+            }
+          }
+        },
+        "the-wanaka-tree": {
+          "title": "The Wanaka Tree",
+          "description": "Iconic lone willow tree growing in Lake Wānaka, often photographed at sunrise/sunset. It has become a symbol of Wanaka’s landscape.",
+          "openingHours": "always",
+          "accessibility": "Very accessible",
+          "bestTimeToVisit": "sunrise / sunset"
+        }
+      },
+      "tours": {
+        "lindis-explorer-trail": {
+          "name": "Lindis Explorer Trail",
+          "description": "A high-country survival route through the Wanaka–Lindis region (4 waypoints)",
+          "waypoints": {
+            "wanaka-roys-bay": {
+              "title": "Wanaka (Roys Bay)",
+              "info": "Start at Lake Wānaka’s southern end (supply town and access point)."
+            },
+            "lindis-pass-summit": {
+              "title": "Lindis Pass Summit",
+              "info": "High alpine saddle (971 m) on SH8 – rugged tussock plateau with panoramic views"
+            },
+            "lindis-pass-hotel-site": {
+              "title": "Lindis Pass Hotel Site",
+              "info": "Historic campsite and riverbank (ruins of 1860s goldfields hotel)"
+            },
+            "lindis-peak": {
+              "title": "Lindis Peak",
+              "info": "A back-country summit above Old Faithful Rd; final water source for trekkers"
+            }
+          }
+        }
+      },
+      "quiz": {
+        "title": "Season 4 Quiz",
+        "description": "Test your knowledge about the latest season of 7 vs Wild.",
+        "questions": {
+          "how-did-7-vs-wild-season-4-begin": {
+            "question": "How did 7 vs. Wild Season 4 begin?",
+            "options": [
+              "A jungle ambush",
+              "A plane crash scenario",
+              "A night drop by parachute",
+              "A desert march"
+            ],
+            "explanation": {
+              "text": "The plane crash was a reference to the Uruguayan Air Force Flight 571, which crashed in Argentina in 1972."
+            }
+          },
+          "where-did-season-4-take-place": {
+            "question": "Where did Season 4 take place?",
+            "options": [
+              "Australia",
+              "Tasmania",
+              "New Zealand -  North island",
+              "New Zealand - South island"
+            ],
+            "explanation": {
+              "text": "The season was filmed near Wanaka on New Zealands south island."
+            }
+          },
+          "which-participant-left-the-season-first": {
+            "question": "Which participant left the season first? ",
+            "options": [
+              "Stefan Hinkelmann (Survival Deutschland)",
+              "Joe Vogel",
+              "LetsHugo",
+              "Joey Kelly"
+            ],
+            "explanation": {
+              "text": "The self renowned survival expert who claimed to have climbed the famous Eiger Nordthface free solo left the season first. "
+            }
+          },
+          "whats-the-name-of-the-lone-tree-flying-uwe-had-an-": {
+            "question": "Whats the name of the lone tree, Flying Uwe had an emotional connection with? ",
+            "options": [
+              "Birgit",
+              "Paula",
+              "Antonia",
+              "Laura"
+            ],
+            "explanation": {
+              "text": "Its Antonia. Nothing else to say. "
+            }
+          },
+          "which-rare-flower-grows-near-the-season-4-filming-": {
+            "question": "Which rare flower grows near the Season 4 filming location?",
+            "options": [
+              "Edelweiss",
+              "Ranunculus haastii",
+              "Crimson lotus",
+              "Ghost Orchid"
+            ],
+            "explanation": {
+              "text": "These buttercups have been traditionally used by the local natives."
+            }
+          }
+        }
+      }
+    }
+  }
+}

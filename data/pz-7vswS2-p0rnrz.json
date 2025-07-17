@@ -1,0 +1,1275 @@
+{
+  "likes": [],
+  "id": "pz-7vswS2-p0rnrz",
+  "author": "Wildscope",
+  "priority": 1,
+  "official": true,
+  "active": true,
+  "searchRadius": 50,
+  "center": [
+    8.263107,
+    -79.110569
+  ],
+  "areaPolygon": [],
+  "customStyle": {
+    "color": "#d96a20",
+    "icon": "globe-outline"
+  },
+  "heroImage": {
+    "storageRef": "partner-zones/pz-7vswS2-p0rnrz/hero/isla.jpg",
+    "priority": "high",
+    "imageSource": "Wikimedia Commons"
+  },
+  "contact": {
+    "website": "",
+    "phone": "",
+    "email": "",
+    "emergencyPhone": ""
+  },
+  "historicalInfo": {
+    "icon": "library-outline",
+    "images": {}
+  },
+  "quiz": {
+    "settings": {
+      "timePerQuestion": 30,
+      "passingScore": 70,
+      "randomizeQuestions": true,
+      "showExplanations": true
+    },
+    "rewards": {
+      "bronzeScore": 60,
+      "silverScore": 80,
+      "goldScore": 90,
+      "completionAchievement": ""
+    },
+    "questions": {
+      "where-was-7-vs-wild-season-2-filmed": {
+        "type": "multiple_choice",
+        "options": [
+          "Costa Rica",
+          "Colombia",
+          "Panama",
+          "Philippines"
+        ],
+        "correctOption": 2
+      },
+      "how-long-did-contestants-have-to-survive-in-season": {
+        "type": "multiple_choice",
+        "options": [
+          "5 days",
+          "7 days",
+          "10 days",
+          "14 Days"
+        ],
+        "correctOption": 1
+      },
+      "how-many-items-were-allowed-and-how-were-they-dist": {
+        "type": "multiple_choice",
+        "options": [
+          "7 for all participants",
+          "Unlimited gear",
+          "1 item each ",
+          "Skill-based item limits"
+        ],
+        "correctOption": 3
+      },
+      "who-won-season-2": {
+        "type": "multiple_choice",
+        "options": [
+          "Joris",
+          "Fritz Meinecke",
+          "Otto \"Bulletproof\" Karasch",
+          "Sabrina Outdoor"
+        ],
+        "correctOption": 2
+      },
+      "why-are-the-pearl-islands-called-that": {
+        "type": "multiple_choice",
+        "options": [
+          "They were shaped like pearls",
+          "They were rich in pearl oysters",
+          "Pirates named them that",
+          "Spanish explorers brought pearls there from Asia"
+        ],
+        "correctOption": 1
+      }
+    }
+  },
+  "stats": {
+    "episoden": {
+      "icon": "photo_camera",
+      "value": "16",
+      "unit": "",
+      "secondaryValue": "",
+      "secondaryUnit": ""
+    },
+    "teilnehmer": {
+      "icon": "people",
+      "value": "7",
+      "unit": "",
+      "secondaryValue": "",
+      "secondaryUnit": ""
+    },
+    "survival-duration": {
+      "icon": "time",
+      "value": "7",
+      "unit": "",
+      "secondaryValue": "",
+      "secondaryUnit": ""
+    },
+    "viewership": {
+      "icon": "",
+      "value": " 11–12",
+      "unit": "million",
+      "secondaryValue": "",
+      "secondaryUnit": ""
+    },
+    "points": {
+      "icon": "",
+      "value": "40 ",
+      "unit": "",
+      "secondaryValue": "",
+      "secondaryUnit": ""
+    }
+  },
+  "interestingFacts": {
+    "pearl-islands-name-the-pearl-islands-get-their-nam": {
+      "icon": "history_edu",
+      "image": {
+        "storageRef": "",
+        "imageSource": ""
+      }
+    },
+    "wildcard-entry-season-2-was-the-first-to-include-a": {
+      "icon": "share",
+      "image": {
+        "storageRef": "",
+        "imageSource": ""
+      }
+    },
+    "differing-gear-limits-to-balance-skills-season-2-e": {
+      "icon": "walk-outline",
+      "image": {
+        "storageRef": "",
+        "imageSource": ""
+      }
+    },
+    "isla-san-joss-secret-the-seemingly-idyllic-isla-sa": {
+      "icon": "warning",
+      "image": {
+        "storageRef": "",
+        "imageSource": ""
+      }
+    },
+    "reality-tv-hotspot-the-pearl-islands-have-a-reputa": {
+      "icon": "star-outline",
+      "image": {
+        "storageRef": "",
+        "imageSource": ""
+      }
+    }
+  },
+  "news": {},
+  "pois": {
+    "isla-del-rey": {
+      "type": "beach",
+      "coords": [
+        8.361067,
+        -78.899603
+      ],
+      "amenities": [
+        "communication",
+        "guesthouse",
+        "lodge"
+      ],
+      "gallery": {
+        "storagePrefix": "partner-zones/pz-7vswS2-p0rnrz/pois/isla-del-rey/",
+        "images": {
+          "8947773723-799629a24c-b": {
+            "filename": "8947773723-799629a24c-b.jpg",
+            "type": "secondary",
+            "imageSource": ""
+          }
+        }
+      }
+    },
+    "panama-canal-pacific-entrance": {
+      "type": "historic_site",
+      "coords": [
+        9.056311,
+        -79.657398
+      ],
+      "amenities": [],
+      "gallery": {
+        "storagePrefix": "partner-zones/pz-7vswS2-p0rnrz/pois/panama-canal-pacific-entrance/",
+        "images": {
+          "vessels-locking-into-the-panama-canal": {
+            "filename": "vessels-locking-into-the-panama-canal.jpg",
+            "type": "secondary",
+            "imageSource": ""
+          }
+        }
+      }
+    }
+  },
+  "tours": {},
+  "translations": {
+    "en": {
+      "name": "7 vs Wild - Season 2 Location",
+      "region": "Panama’s Isla San José",
+      "description": "7 vs Wild Season 2 was shot on Isla San José, a 44 km² private island in Panama’s Pearl Islands. Covered in dense rainforest and ringed by over 50 beaches, it’s sparsely inhabited—an ideal, remote wilderness. Filming took place during the rainy season, with daytime highs of 30–35 °C, nights around 20–25 °C, and frequent tropical downpours. Wildlife abounds: wild pigs, deer, venomous snakes, spiders, crocodiles in the mangroves and sharks offshore. Although the U.S. military tested chemical weapons there in the 1940s, production zones were certified safe. The island remains largely undeveloped and accessible only by boat or small airstrip.",
+      "heroImage": {
+        "caption": "Aerial Image of the island",
+        "alt": ""
+      },
+      "stats": {
+        "episoden": {
+          "label": "Episoden",
+          "description": " Filmed on Isla San José, Panama, Season 2 consisted of 16 episodes published on YouTube between November 5 and December 28, 2022. Episodes ranged from roughly 30 minutes to over 1.5 hours in length, totaling about 19.7 hours of content (1,180 minutes)"
+        },
+        "teilnehmer": {
+          "label": "Teilnehmer",
+          "description": "There were 7 contestants (5 men and 2 women), each initially allowed up to 7 survival items. Uniquely, item counts were adjusted per person’s expertise – e.g. YouTuber Knossi carried all 7 items, while survival experts like Fritz Meinecke and Otto Karasch were limited to just 1 item each. This rule change added difficulty for the veterans and gave novices a better fighting chance."
+        },
+        "survival-duration": {
+          "label": "Survival Duration",
+          "description": "The challenge lasted 7 days and all participants aimed to survive the full week. In Season 2, 5 out of 7 contestants managed to endure until Day 7, while 2 participants were eliminated early (one withdrew on Day 2, another on Day 4 due to the harsh conditions). Those who lasted the distance were picked up at the end of Day 7.\n"
+        },
+        "viewership": {
+          "label": "Viewership",
+          "description": "Season 2 drew massive viewership on YouTube. Each episode amassed millions of views, with peak episodes reaching around 11–12 million views. In fact, Episode 2 (“Tödliches Paradies”) was viewed over 11 million times within three weeks of release and was named YouTube’s top trending video in Germany for 2022. The series as a whole garnered well over 100 million total views in Season 2 alone."
+        },
+        "points": {
+          "label": "Points",
+          "description": "The Season 2 winner was Ottogerd “Otto” Karasch, an ex-Bundeswehr soldier. He achieved a final score of 40 points from completing various daily challenges (edging out second-place Joris with 38 points). Otto survived all 7 days and earned the title “King of the Jungle.” As per the rules, he donated the €10,000 prize to a charity of his choice. (Five of the seven contestants finished the full 7-day duration, so the point tally broke the tie to decide the champion.)"
+        }
+      },
+      "interestingFacts": {
+        "pearl-islands-name-the-pearl-islands-get-their-nam": {
+          "text": "Pearl Islands Name: The Pearl Islands get their name from the vast quantities of pearls found there by the Spanish in the 16th century. Balboa named the archipelago after discovering “many pearls” during his 1513 expedition. The Spaniards extracted pearls so intensively (using enslaved divers) that a single expedition supposedly yielded 31 pounds of pearls.",
+          "image": {
+            "caption": ""
+          }
+        },
+        "wildcard-entry-season-2-was-the-first-to-include-a": {
+          "text": "Wildcard Entry: Season 2 was the first to include a wildcard contestant – a member of the general public. A botany enthusiast named Joris won a video application contest (the “7 vs. Wildcard”) to join the show. Despite being the unknown underdog, Joris impressed by surviving 7 days and nearly winning, finishing second with 38 points.",
+          "image": {
+            "caption": ""
+          }
+        },
+        "differing-gear-limits-to-balance-skills-season-2-e": {
+          "text": "Differing Gear Limits: To balance skills, Season 2 enforced asymmetric gear limits. Otto Karasch, as one of the most experienced survivalists, was only allowed one item (he chose a machete). In contrast, the least experienced participant Knossi – a popular entertainer with no survival background – was allowed the full seven items. This handicap system was a twist not seen in Season 1.",
+          "image": {
+            "caption": ""
+          }
+        },
+        "isla-san-joss-secret-the-seemingly-idyllic-isla-sa": {
+          "text": "Isla San José’s Secret: The seemingly idyllic Isla San José has a hidden danger from its past – unexploded ordnance. Between 1945 and 1947, the U.S. military tested chemical weapons on the deserted island, leaving behind at least eight unexploded 500–1000 lb bombs and traces of nerve agents like VX and sarin. The contestants were unaware of this history during filming, but it adds a real-world layer of peril to the island’s lore.",
+          "image": {
+            "caption": ""
+          }
+        },
+        "reality-tv-hotspot-the-pearl-islands-have-a-reputa": {
+          "text": "Reality TV Hotspot: The Pearl Islands have a reputation as a reality TV hotspot. Before 7 vs. Wild, the islands hosted three seasons of the American Survivor (including the famous Survivor: Pearl Islands in 2003) and several international versions of Survivor (French, Israeli, South African, etc.). The archipelago’s mix of beautiful beaches and unforgiving jungle has made it a favorite setting for survival and adventure shows.",
+          "image": {
+            "caption": ""
+          }
+        }
+      },
+      "historicalInfo": {
+        "text": "The Pearl Islands, once home to the Cuevas and Coclé peoples, were “discovered” by Vasco Núñez de Balboa in 1513 and quickly exploited for their abundant pearls. Within two years, most of the indigenous population had been decimated by conquistadors and enslaved divers were brought in to harvest pearls. Over the next centuries, the islands served as pirate hideouts before evolving into a quiet archipelago of small villages (mainly on Isla del Rey) and resorts. Today they’re prized for their pristine coral reefs, diverse marine and bird life, and lush landscapes—making them a popular setting for survival‐themed media, including several seasons of Survivor.",
+        "images": {}
+      },
+      "contact": {
+        "websiteLabel": "",
+        "phoneLabel": "",
+        "emailLabel": "",
+        "emergencyLabel": "",
+        "address": "",
+        "hours": ""
+      },
+      "news": {},
+      "pois": {
+        "isla-del-rey": {
+          "title": "Isla Del Rey",
+          "description": "The largest Pearl Island (234 km²) and one of the few with a permanent population. Isla del Rey hosts four small villages (total ~1,600 people as of 2000) and has over 15 pre-Columbian archaeological sites from indigenous Coclé and Cuevas peoples. It’s rich in history – Balboa sighted it in 1513 – and is the second-largest island in Panama (after Coiba). Travelers find mangrove forests, beaches, and even a landing strip on this island.",
+          "openingHours": "Always",
+          "accessibility": "Via boat or plane",
+          "bestTimeToVisit": "",
+          "address": "",
+          "phone": "",
+          "gallery": {
+            "images": {
+              "8947773723-799629a24c-b": {
+                "caption": "San Miguel, Isla del Rey"
+              }
+            }
+          }
+        },
+        "panama-canal-pacific-entrance": {
+          "title": "Panama Canal (Pacific Entrance)",
+          "description": "Though not in the Pearl Islands, the Panama Canal on the mainland is a defining landmark of the country. This 82 km engineering marvel connects the Atlantic and Pacific Oceans, cutting across the Isthmus of Panama. The canal’s Pacific entrance is near Panama City, just northwest of the Pearl Islands’ gulf. Many Season 2 viewers traveling through Panama might pass through Panama City to reach the islands, perhaps flying over the canal – a reminder of Panama’s strategic importance.",
+          "openingHours": "Always",
+          "accessibility": "By boat ",
+          "bestTimeToVisit": "",
+          "address": "",
+          "phone": "",
+          "gallery": {
+            "images": {
+              "vessels-locking-into-the-panama-canal": {
+                "caption": "Vessels locking into the Panama Canal"
+              }
+            }
+          }
+        }
+      },
+      "tours": {},
+      "quiz": {
+        "title": "Season 2 - Quiz",
+        "description": "A short quiz about Season 2 of 7 vs Wild. ",
+        "questions": {
+          "where-was-7-vs-wild-season-2-filmed": {
+            "question": "Where was 7 vs. Wild Season 2 filmed?",
+            "explanation": {
+              "text": "Season 2 was filmed on Isla San José in Panama. ",
+              "image": {
+                "caption": ""
+              }
+            },
+            "options": [
+              "Costa Rica",
+              "Colombia",
+              "Panama",
+              "Philippines"
+            ]
+          },
+          "how-long-did-contestants-have-to-survive-in-season": {
+            "question": "How long did contestants have to survive in Season 2?",
+            "explanation": {
+              "text": "As with season 1, participants had to survive for 7 days. ",
+              "image": {
+                "caption": ""
+              }
+            },
+            "options": [
+              "5 days",
+              "7 days",
+              "10 days",
+              "14 Days"
+            ]
+          },
+          "how-many-items-were-allowed-and-how-were-they-dist": {
+            "question": "How many items were allowed, and how were they distributed in Season 2?",
+            "explanation": {
+              "text": "Each participant was allowed items according to their skill level. ",
+              "image": {
+                "caption": ""
+              }
+            },
+            "options": [
+              "7 for all participants",
+              "Unlimited gear",
+              "1 item each ",
+              "Skill-based item limits"
+            ]
+          },
+          "who-won-season-2": {
+            "question": "Who won Season 2?",
+            "explanation": {
+              "text": "Otto won season 2. ",
+              "image": {
+                "caption": ""
+              }
+            },
+            "options": [
+              "Joris",
+              "Fritz Meinecke",
+              "Otto \"Bulletproof\" Karasch",
+              "Sabrina Outdoor"
+            ]
+          },
+          "why-are-the-pearl-islands-called-that": {
+            "question": "Why are the Pearl Islands called that?",
+            "explanation": {
+              "text": "The islands got their name because of high occurance of pearl oysters. ",
+              "image": {
+                "caption": ""
+              }
+            },
+            "options": [
+              "They were shaped like pearls",
+              "They were rich in pearl oysters",
+              "Pirates named them that",
+              "Spanish explorers brought pearls there from Asia"
+            ]
+          }
+        }
+      }
+    },
+    "it": {
+      "name": "7 vs Wild - Season 2 Location",
+      "region": "Panama’s Isla San José",
+      "description": "7 vs Wild Season 2 was shot on Isla San José, a 44 km² private island in Panama’s Pearl Islands. Covered in dense rainforest and ringed by over 50 beaches, it’s sparsely inhabited—an ideal, remote wilderness. Filming took place during the rainy season, with daytime highs of 30–35 °C, nights around 20–25 °C, and frequent tropical downpours. Wildlife abounds: wild pigs, deer, venomous snakes, spiders, crocodiles in the mangroves and sharks offshore. Although the U.S. military tested chemical weapons there in the 1940s, production zones were certified safe. The island remains largely undeveloped and accessible only by boat or small airstrip.",
+      "heroImage": {
+        "caption": "Aerial Image of the island"
+      },
+      "stats": {
+        "episoden": {
+          "label": "Episoden",
+          "description": " Filmed on Isla San José, Panama, Season 2 consisted of 16 episodes published on YouTube between November 5 and December 28, 2022. Episodes ranged from roughly 30 minutes to over 1.5 hours in length, totaling about 19.7 hours of content (1,180 minutes)"
+        },
+        "teilnehmer": {
+          "label": "Teilnehmer",
+          "description": "There were 7 contestants (5 men and 2 women), each initially allowed up to 7 survival items. Uniquely, item counts were adjusted per person’s expertise – e.g. YouTuber Knossi carried all 7 items, while survival experts like Fritz Meinecke and Otto Karasch were limited to just 1 item each. This rule change added difficulty for the veterans and gave novices a better fighting chance."
+        },
+        "survival-duration": {
+          "label": "Survival Duration",
+          "description": "The challenge lasted 7 days and all participants aimed to survive the full week. In Season 2, 5 out of 7 contestants managed to endure until Day 7, while 2 participants were eliminated early (one withdrew on Day 2, another on Day 4 due to the harsh conditions). Those who lasted the distance were picked up at the end of Day 7.\n"
+        },
+        "viewership": {
+          "label": "Viewership",
+          "description": "Season 2 drew massive viewership on YouTube. Each episode amassed millions of views, with peak episodes reaching around 11–12 million views. In fact, Episode 2 (“Tödliches Paradies”) was viewed over 11 million times within three weeks of release and was named YouTube’s top trending video in Germany for 2022. The series as a whole garnered well over 100 million total views in Season 2 alone."
+        },
+        "points": {
+          "label": "Points",
+          "description": "The Season 2 winner was Ottogerd “Otto” Karasch, an ex-Bundeswehr soldier. He achieved a final score of 40 points from completing various daily challenges (edging out second-place Joris with 38 points). Otto survived all 7 days and earned the title “King of the Jungle.” As per the rules, he donated the €10,000 prize to a charity of his choice. (Five of the seven contestants finished the full 7-day duration, so the point tally broke the tie to decide the champion.)"
+        }
+      },
+      "interestingFacts": {
+        "pearl-islands-name-the-pearl-islands-get-their-nam": {
+          "text": "Pearl Islands Name: The Pearl Islands get their name from the vast quantities of pearls found there by the Spanish in the 16th century. Balboa named the archipelago after discovering “many pearls” during his 1513 expedition. The Spaniards extracted pearls so intensively (using enslaved divers) that a single expedition supposedly yielded 31 pounds of pearls."
+        },
+        "wildcard-entry-season-2-was-the-first-to-include-a": {
+          "text": "Wildcard Entry: Season 2 was the first to include a wildcard contestant – a member of the general public. A botany enthusiast named Joris won a video application contest (the “7 vs. Wildcard”) to join the show. Despite being the unknown underdog, Joris impressed by surviving 7 days and nearly winning, finishing second with 38 points."
+        },
+        "differing-gear-limits-to-balance-skills-season-2-e": {
+          "text": "Differing Gear Limits: To balance skills, Season 2 enforced asymmetric gear limits. Otto Karasch, as one of the most experienced survivalists, was only allowed one item (he chose a machete). In contrast, the least experienced participant Knossi – a popular entertainer with no survival background – was allowed the full seven items. This handicap system was a twist not seen in Season 1."
+        },
+        "isla-san-joss-secret-the-seemingly-idyllic-isla-sa": {
+          "text": "Isla San José’s Secret: The seemingly idyllic Isla San José has a hidden danger from its past – unexploded ordnance. Between 1945 and 1947, the U.S. military tested chemical weapons on the deserted island, leaving behind at least eight unexploded 500–1000 lb bombs and traces of nerve agents like VX and sarin. The contestants were unaware of this history during filming, but it adds a real-world layer of peril to the island’s lore."
+        },
+        "reality-tv-hotspot-the-pearl-islands-have-a-reputa": {
+          "text": "Reality TV Hotspot: The Pearl Islands have a reputation as a reality TV hotspot. Before 7 vs. Wild, the islands hosted three seasons of the American Survivor (including the famous Survivor: Pearl Islands in 2003) and several international versions of Survivor (French, Israeli, South African, etc.). The archipelago’s mix of beautiful beaches and unforgiving jungle has made it a favorite setting for survival and adventure shows."
+        }
+      },
+      "historicalInfo": {
+        "text": "The Pearl Islands, once home to the Cuevas and Coclé peoples, were “discovered” by Vasco Núñez de Balboa in 1513 and quickly exploited for their abundant pearls. Within two years, most of the indigenous population had been decimated by conquistadors and enslaved divers were brought in to harvest pearls. Over the next centuries, the islands served as pirate hideouts before evolving into a quiet archipelago of small villages (mainly on Isla del Rey) and resorts. Today they’re prized for their pristine coral reefs, diverse marine and bird life, and lush landscapes—making them a popular setting for survival‐themed media, including several seasons of Survivor."
+      },
+      "pois": {
+        "isla-del-rey": {
+          "title": "Isla Del Rey",
+          "description": "The largest Pearl Island (234 km²) and one of the few with a permanent population. Isla del Rey hosts four small villages (total ~1,600 people as of 2000) and has over 15 pre-Columbian archaeological sites from indigenous Coclé and Cuevas peoples. It’s rich in history – Balboa sighted it in 1513 – and is the second-largest island in Panama (after Coiba). Travelers find mangrove forests, beaches, and even a landing strip on this island.",
+          "openingHours": "Always",
+          "accessibility": "Via boat or plane",
+          "gallery": {
+            "images": {
+              "8947773723-799629a24c-b": {
+                "caption": "San Miguel, Isla del Rey"
+              }
+            }
+          }
+        },
+        "panama-canal-pacific-entrance": {
+          "title": "Panama Canal (Pacific Entrance)",
+          "description": "Though not in the Pearl Islands, the Panama Canal on the mainland is a defining landmark of the country. This 82 km engineering marvel connects the Atlantic and Pacific Oceans, cutting across the Isthmus of Panama. The canal’s Pacific entrance is near Panama City, just northwest of the Pearl Islands’ gulf. Many Season 2 viewers traveling through Panama might pass through Panama City to reach the islands, perhaps flying over the canal – a reminder of Panama’s strategic importance.",
+          "openingHours": "Always",
+          "accessibility": "By boat ",
+          "gallery": {
+            "images": {
+              "vessels-locking-into-the-panama-canal": {
+                "caption": "Vessels locking into the Panama Canal"
+              }
+            }
+          }
+        }
+      },
+      "quiz": {
+        "title": "Season 2 - Quiz",
+        "description": "A short quiz about Season 2 of 7 vs Wild. ",
+        "questions": {
+          "where-was-7-vs-wild-season-2-filmed": {
+            "question": "Where was 7 vs. Wild Season 2 filmed?",
+            "options": [
+              "Costa Rica",
+              "Colombia",
+              "Panama",
+              "Philippines"
+            ],
+            "explanation": {
+              "text": "Season 2 was filmed on Isla San José in Panama. "
+            }
+          },
+          "how-long-did-contestants-have-to-survive-in-season": {
+            "question": "How long did contestants have to survive in Season 2?",
+            "options": [
+              "5 days",
+              "7 days",
+              "10 days",
+              "14 Days"
+            ],
+            "explanation": {
+              "text": "As with season 1, participants had to survive for 7 days. "
+            }
+          },
+          "how-many-items-were-allowed-and-how-were-they-dist": {
+            "question": "How many items were allowed, and how were they distributed in Season 2?",
+            "options": [
+              "7 for all participants",
+              "Unlimited gear",
+              "1 item each",
+              "Skill-based item limits"
+            ],
+            "explanation": {
+              "text": "Each participant was allowed items according to their skill level. "
+            }
+          },
+          "who-won-season-2": {
+            "question": "Who won Season 2?",
+            "options": [
+              "Joris",
+              "Fritz Meinecke",
+              "Otto \"Bulletproof\" Karasch",
+              "Sabrina Outdoor"
+            ],
+            "explanation": {
+              "text": "Otto won season 2. "
+            }
+          },
+          "why-are-the-pearl-islands-called-that": {
+            "question": "Why are the Pearl Islands called that?",
+            "options": [
+              "They were shaped like pearls",
+              "They were rich in pearl oysters",
+              "Pirates named them that",
+              "Spanish explorers brought pearls there from Asia"
+            ],
+            "explanation": {
+              "text": "The islands got their name because of high occurance of pearl oysters. "
+            }
+          }
+        }
+      }
+    },
+    "de": {
+      "name": "7 vs. Wild – Staffel 2 Drehort",
+      "region": "Isla San José, Panama",
+      "description": "Die 2. Staffel von 7 vs. Wild wurde auf der Isla San José gedreht, einer 44 km² großen Privatinsel auf den Perleninseln Panamas. Sie ist von dichtem Regenwald bedeckt und von über 50 Stränden umgeben und nur spärlich bewohnt – eine ideale, abgelegene Wildnis. Die Dreharbeiten fanden während der Regenzeit statt, mit Tageshöchsttemperaturen von 30–35 °C, Nachttemperaturen um 20–25 °C und häufigen tropischen Regenschauern. Die Tierwelt ist reichhaltig: Wildschweine, Hirsche, Giftschlangen, Spinnen, Krokodile in den Mangroven und Haie vor der Küste. Obwohl das US-Militär dort in den 1940er Jahren Chemiewaffen testete, wurden die Produktionszonen als sicher zertifiziert. Die Insel ist nach wie vor weitgehend unerschlossen und nur per Boot oder über eine kleine Landebahn erreichbar.",
+      "heroImage": {
+        "caption": "Luftaufnahme der Insel"
+      },
+      "stats": {
+        "episoden": {
+          "label": "Episoden",
+          "description": "Die auf der Isla San José, Panama, gedrehte 2. Staffel bestand aus 16 Folgen, die zwischen dem 5. November und 28. Dezember 2022 auf YouTube veröffentlicht wurden. Die Episodenlänge reichte von etwa 30 Minuten bis über 1,5 Stunden, was einer Gesamtspielzeit von circa 19,7 Stunden (1.180 Minuten) entspricht."
+        },
+        "teilnehmer": {
+          "label": "Teilnehmer",
+          "description": "Es gab 7 Teilnehmer (5 Männer und 2 Frauen), denen anfangs jeweils bis zu 7 Überlebensgegenstände erlaubt waren. Als Besonderheit wurde die Anzahl der Gegenstände an die Erfahrung der Person angepasst – z. B. durfte der YouTuber Knossi alle 7 Gegenstände mitnehmen, während Survival-Experten wie Fritz Meinecke und Otto Karasch auf nur je 1 Gegenstand beschränkt waren. Diese Regeländerung erhöhte den Schwierigkeitsgrad für die Veteranen und gab den Neulingen eine bessere Chance."
+        },
+        "survival-duration": {
+          "label": "Überlebensdauer",
+          "description": "Die Herausforderung dauerte 7 Tage, und alle Teilnehmer hatten das Ziel, die ganze Woche zu überleben. In Staffel 2 schafften es 5 von 7 Teilnehmern, bis Tag 7 durchzuhalten, während 2 Teilnehmer vorzeitig ausschieden (einer gab an Tag 2 auf, ein anderer an Tag 4 aufgrund der harten Bedingungen). Diejenigen, die bis zum Ende durchhielten, wurden am Ende von Tag 7 abgeholt."
+        },
+        "viewership": {
+          "label": "Zuschauerzahlen",
+          "description": "Staffel 2 erzielte auf YouTube massive Zuschauerzahlen. Jede Folge wurde millionenfach angesehen, wobei Spitzenepisoden etwa 11–12 Millionen Aufrufe erreichten. Folge 2 („Tödliches Paradies“) wurde innerhalb von drei Wochen nach Veröffentlichung über 11 Millionen Mal aufgerufen und zum Top-Trending-Video von YouTube in Deutschland für 2022 ernannt. Die gesamte Serie erzielte allein in Staffel 2 weit über 100 Millionen Aufrufe."
+        },
+        "points": {
+          "label": "Punkte",
+          "description": "Der Gewinner der 2. Staffel war Ottogerd „Otto“ Karasch, ein ehemaliger Bundeswehrsoldat. Er erreichte durch das Absolvieren verschiedener Tages-Challenges eine Endpunktzahl von 40 Punkten (und setzte sich damit knapp gegen den Zweitplatzierten Joris mit 38 Punkten durch). Otto überlebte alle 7 Tage und verdiente sich den Titel „König des Dschungels“. Gemäß den Regeln spendete er das Preisgeld von 10.000 € an eine Wohltätigkeitsorganisation seiner Wahl. (Fünf der sieben Teilnehmer beendeten die vollen 7 Tage, sodass die Punktzahl den Gleichstand auflöste und den Sieger bestimmte.)"
+        }
+      },
+      "interestingFacts": {
+        "pearl-islands-name-the-pearl-islands-get-their-nam": {
+          "text": "Name der Perleninseln: Die Perleninseln verdanken ihren Namen den riesigen Mengen an Perlen, die dort im 16. Jahrhundert von den Spaniern gefunden wurden. Balboa benannte den Archipel, nachdem er während seiner Expedition 1513 „viele Perlen“ entdeckt hatte. Die Spanier beuteten die Perlen so intensiv aus (mit versklavten Tauchern), dass eine einzige Expedition angeblich 31 Pfund Perlen erbrachte."
+        },
+        "wildcard-entry-season-2-was-the-first-to-include-a": {
+          "text": "Wildcard-Teilnahme: Staffel 2 war die erste, die einen Wildcard-Teilnehmer – ein Mitglied aus der Öffentlichkeit – beinhaltete. Ein Botanik-Enthusiast namens Joris gewann einen Videobewerbungswettbewerb (die „7 vs. Wildcard“), um an der Show teilzunehmen. Obwohl er der unbekannte Außenseiter war, beeindruckte Joris, indem er 7 Tage überlebte und mit 38 Punkten den zweiten Platz belegte."
+        },
+        "differing-gear-limits-to-balance-skills-season-2-e": {
+          "text": "Unterschiedliche Gegenstandslimits: Um die Fähigkeiten auszugleichen, wurden in Staffel 2 asymmetrische Gegenstandslimits durchgesetzt. Otto Karasch, als einer der erfahrensten Überlebenskünstler, durfte nur einen Gegenstand mitnehmen (er wählte eine Machete). Im Gegensatz dazu durfte der unerfahrenste Teilnehmer, Knossi – ein beliebter Entertainer ohne Survival-Hintergrund – die vollen sieben Gegenstände mitnehmen. Dieses Handicap-System war eine Neuerung, die es in Staffel 1 nicht gab."
+        },
+        "isla-san-joss-secret-the-seemingly-idyllic-isla-sa": {
+          "text": "Das Geheimnis der Isla San José: Die scheinbar idyllische Isla San José birgt eine verborgene Gefahr aus ihrer Vergangenheit – Blindgänger. Zwischen 1945 und 1947 testete das US-Militär auf der verlassenen Insel chemische Waffen und hinterließ mindestens acht nicht explodierte 500–1000-Pfund-Bomben sowie Spuren von Nervenkampfstoffen wie VX und Sarin. Die Teilnehmer wussten während der Dreharbeiten nichts von dieser Geschichte, aber sie fügt der Legende der Insel eine reale Gefahrenschicht hinzu."
+        },
+        "reality-tv-hotspot-the-pearl-islands-have-a-reputa": {
+          "text": "Reality-TV-Hotspot: Die Perleninseln haben den Ruf, ein Hotspot für Reality-TV zu sein. Vor 7 vs. Wild waren die Inseln Schauplatz von drei Staffeln des amerikanischen Survivor (einschließlich des berühmten Survivor: Pearl Islands von 2003) und mehrerer internationaler Versionen von Survivor (französisch, israelisch, südafrikanisch usw.). Die Mischung aus wunderschönen Stränden und unerbittlichem Dschungel hat den Archipel zu einem beliebten Schauplatz für Survival- und Abenteuershows gemacht."
+        }
+      },
+      "historicalInfo": {
+        "text": "Die Perleninseln, einst Heimat der Völker der Cuevas und Coclé, wurden 1513 von Vasco Núñez de Balboa „entdeckt“ und schnell wegen ihrer reichlich vorhandenen Perlen ausgebeutet. Innerhalb von zwei Jahren war der größte Teil der indigenen Bevölkerung durch Konquistadoren dezimiert worden, und versklavte Taucher wurden eingesetzt, um Perlen zu ernten. In den folgenden Jahrhunderten dienten die Inseln als Piratenverstecke, bevor sie sich zu einem ruhigen Archipel mit kleinen Dörfern (hauptsächlich auf der Isla del Rey) und Ferienorten entwickelten. Heute werden sie für ihre unberührten Korallenriffe, ihre vielfältige Meeres- und Vogelwelt und ihre üppigen Landschaften geschätzt – was sie zu einem beliebten Schauplatz für Medien mit Überlebensthema macht, darunter mehrere Staffeln von Survivor."
+      },
+      "pois": {
+        "isla-del-rey": {
+          "title": "Isla Del Rey",
+          "description": "Die größte der Perleninseln (234 km²) und eine der wenigen mit einer ständigen Bevölkerung. Auf der Isla del Rey gibt es vier kleine Dörfer (insgesamt ca. 1.600 Einwohner im Jahr 2000) und über 15 präkolumbianische archäologische Stätten der indigenen Völker Coclé und Cuevas. Sie ist reich an Geschichte – Balboa sichtete sie 1513 – und ist die zweitgrößte Insel Panamas (nach Coiba). Reisende finden auf dieser Insel Mangrovenwälder, Strände und sogar eine Landebahn.",
+          "openingHours": "Immer",
+          "accessibility": "Per Boot oder Flugzeug",
+          "gallery": {
+            "images": {
+              "8947773723-799629a24c-b": {
+                "caption": "San Miguel, Isla del Rey"
+              }
+            }
+          }
+        },
+        "panama-canal-pacific-entrance": {
+          "title": "Panamakanal (Pazifikeinfahrt)",
+          "description": "Obwohl nicht auf den Perleninseln gelegen, ist der Panamakanal auf dem Festland ein prägendes Wahrzeichen des Landes. Dieses 82 km lange Ingenieurwunder verbindet den Atlantischen und den Pazifischen Ozean und durchquert die Landenge von Panama. Die Pazifikeinfahrt des Kanals liegt in der Nähe von Panama-Stadt, nordwestlich des Golfs der Perleninseln. Viele Zuschauer der 2. Staffel, die durch Panama reisen, könnten auf dem Weg zu den Inseln durch Panama-Stadt kommen und vielleicht über den Kanal fliegen – eine Erinnerung an die strategische Bedeutung Panamas.",
+          "openingHours": "Immer",
+          "accessibility": "Per Boot ",
+          "gallery": {
+            "images": {
+              "vessels-locking-into-the-panama-canal": {
+                "caption": "Schiffe beim Einschleusen in den Panamakanal"
+              }
+            }
+          }
+        }
+      },
+      "quiz": {
+        "title": "Staffel 2 - Quiz",
+        "description": "Ein kurzes Quiz zur 2. Staffel von 7 vs. Wild. ",
+        "questions": {
+          "where-was-7-vs-wild-season-2-filmed": {
+            "question": "Wo wurde die 2. Staffel von 7 vs. Wild gedreht?",
+            "options": [
+              "Costa Rica",
+              "Kolumbien",
+              "Panama",
+              "Philippinen"
+            ],
+            "explanation": {
+              "text": "Staffel 2 wurde auf der Isla San José in Panama gedreht. "
+            }
+          },
+          "how-long-did-contestants-have-to-survive-in-season": {
+            "question": "Wie lange mussten die Teilnehmer in Staffel 2 überleben?",
+            "options": [
+              "5 Tage",
+              "7 Tage",
+              "10 Tage",
+              "14 Tage"
+            ],
+            "explanation": {
+              "text": "Wie in Staffel 1 mussten die Teilnehmer 7 Tage lang überleben. "
+            }
+          },
+          "how-many-items-were-allowed-and-how-were-they-dist": {
+            "question": "Wie viele Gegenstände waren erlaubt und wie wurden sie in Staffel 2 verteilt?",
+            "options": [
+              "7 für alle Teilnehmer",
+              "Unbegrenzte Ausrüstung",
+              "Jeweils 1 Gegenstand",
+              "Fähigkeitsbasierte Gegenstandslimits"
+            ],
+            "explanation": {
+              "text": "Jedem Teilnehmer wurden Gegenstände entsprechend seines Fähigkeitsniveaus zugeteilt. "
+            }
+          },
+          "who-won-season-2": {
+            "question": "Wer hat Staffel 2 gewonnen?",
+            "options": [
+              "Joris",
+              "Fritz Meinecke",
+              "Otto „Bulletproof“ Karasch",
+              "Sabrina Outdoor"
+            ],
+            "explanation": {
+              "text": "Otto hat Staffel 2 gewonnen. "
+            }
+          },
+          "why-are-the-pearl-islands-called-that": {
+            "question": "Warum heißen die Perleninseln so?",
+            "options": [
+              "Sie hatten die Form von Perlen",
+              "Sie waren reich an Perlaustern",
+              "Piraten gaben ihnen diesen Namen",
+              "Spanische Entdecker brachten Perlen aus Asien dorthin"
+            ],
+            "explanation": {
+              "text": "Die Inseln erhielten ihren Namen aufgrund des hohen Vorkommens von Perlaustern. "
+            }
+          }
+        }
+      }
+    },
+    "es": {
+      "name": "7 vs Wild - Season 2 Location",
+      "region": "Panama’s Isla San José",
+      "description": "7 vs Wild Season 2 was shot on Isla San José, a 44 km² private island in Panama’s Pearl Islands. Covered in dense rainforest and ringed by over 50 beaches, it’s sparsely inhabited—an ideal, remote wilderness. Filming took place during the rainy season, with daytime highs of 30–35 °C, nights around 20–25 °C, and frequent tropical downpours. Wildlife abounds: wild pigs, deer, venomous snakes, spiders, crocodiles in the mangroves and sharks offshore. Although the U.S. military tested chemical weapons there in the 1940s, production zones were certified safe. The island remains largely undeveloped and accessible only by boat or small airstrip.",
+      "heroImage": {
+        "caption": "Aerial Image of the island"
+      },
+      "stats": {
+        "episoden": {
+          "label": "Episoden",
+          "description": " Filmed on Isla San José, Panama, Season 2 consisted of 16 episodes published on YouTube between November 5 and December 28, 2022. Episodes ranged from roughly 30 minutes to over 1.5 hours in length, totaling about 19.7 hours of content (1,180 minutes)"
+        },
+        "teilnehmer": {
+          "label": "Teilnehmer",
+          "description": "There were 7 contestants (5 men and 2 women), each initially allowed up to 7 survival items. Uniquely, item counts were adjusted per person’s expertise – e.g. YouTuber Knossi carried all 7 items, while survival experts like Fritz Meinecke and Otto Karasch were limited to just 1 item each. This rule change added difficulty for the veterans and gave novices a better fighting chance."
+        },
+        "survival-duration": {
+          "label": "Survival Duration",
+          "description": "The challenge lasted 7 days and all participants aimed to survive the full week. In Season 2, 5 out of 7 contestants managed to endure until Day 7, while 2 participants were eliminated early (one withdrew on Day 2, another on Day 4 due to the harsh conditions). Those who lasted the distance were picked up at the end of Day 7.\n"
+        },
+        "viewership": {
+          "label": "Viewership",
+          "description": "Season 2 drew massive viewership on YouTube. Each episode amassed millions of views, with peak episodes reaching around 11–12 million views. In fact, Episode 2 (“Tödliches Paradies”) was viewed over 11 million times within three weeks of release and was named YouTube’s top trending video in Germany for 2022. The series as a whole garnered well over 100 million total views in Season 2 alone."
+        },
+        "points": {
+          "label": "Points",
+          "description": "The Season 2 winner was Ottogerd “Otto” Karasch, an ex-Bundeswehr soldier. He achieved a final score of 40 points from completing various daily challenges (edging out second-place Joris with 38 points). Otto survived all 7 days and earned the title “King of the Jungle.” As per the rules, he donated the €10,000 prize to a charity of his choice. (Five of the seven contestants finished the full 7-day duration, so the point tally broke the tie to decide the champion.)"
+        }
+      },
+      "interestingFacts": {
+        "pearl-islands-name-the-pearl-islands-get-their-nam": {
+          "text": "Pearl Islands Name: The Pearl Islands get their name from the vast quantities of pearls found there by the Spanish in the 16th century. Balboa named the archipelago after discovering “many pearls” during his 1513 expedition. The Spaniards extracted pearls so intensively (using enslaved divers) that a single expedition supposedly yielded 31 pounds of pearls."
+        },
+        "wildcard-entry-season-2-was-the-first-to-include-a": {
+          "text": "Wildcard Entry: Season 2 was the first to include a wildcard contestant – a member of the general public. A botany enthusiast named Joris won a video application contest (the “7 vs. Wildcard”) to join the show. Despite being the unknown underdog, Joris impressed by surviving 7 days and nearly winning, finishing second with 38 points."
+        },
+        "differing-gear-limits-to-balance-skills-season-2-e": {
+          "text": "Differing Gear Limits: To balance skills, Season 2 enforced asymmetric gear limits. Otto Karasch, as one of the most experienced survivalists, was only allowed one item (he chose a machete). In contrast, the least experienced participant Knossi – a popular entertainer with no survival background – was allowed the full seven items. This handicap system was a twist not seen in Season 1."
+        },
+        "isla-san-joss-secret-the-seemingly-idyllic-isla-sa": {
+          "text": "Isla San José’s Secret: The seemingly idyllic Isla San José has a hidden danger from its past – unexploded ordnance. Between 1945 and 1947, the U.S. military tested chemical weapons on the deserted island, leaving behind at least eight unexploded 500–1000 lb bombs and traces of nerve agents like VX and sarin. The contestants were unaware of this history during filming, but it adds a real-world layer of peril to the island’s lore."
+        },
+        "reality-tv-hotspot-the-pearl-islands-have-a-reputa": {
+          "text": "Reality TV Hotspot: The Pearl Islands have a reputation as a reality TV hotspot. Before 7 vs. Wild, the islands hosted three seasons of the American Survivor (including the famous Survivor: Pearl Islands in 2003) and several international versions of Survivor (French, Israeli, South African, etc.). The archipelago’s mix of beautiful beaches and unforgiving jungle has made it a favorite setting for survival and adventure shows."
+        }
+      },
+      "historicalInfo": {
+        "text": "The Pearl Islands, once home to the Cuevas and Coclé peoples, were “discovered” by Vasco Núñez de Balboa in 1513 and quickly exploited for their abundant pearls. Within two years, most of the indigenous population had been decimated by conquistadors and enslaved divers were brought in to harvest pearls. Over the next centuries, the islands served as pirate hideouts before evolving into a quiet archipelago of small villages (mainly on Isla del Rey) and resorts. Today they’re prized for their pristine coral reefs, diverse marine and bird life, and lush landscapes—making them a popular setting for survival‐themed media, including several seasons of Survivor."
+      },
+      "pois": {
+        "isla-del-rey": {
+          "title": "Isla Del Rey",
+          "description": "The largest Pearl Island (234 km²) and one of the few with a permanent population. Isla del Rey hosts four small villages (total ~1,600 people as of 2000) and has over 15 pre-Columbian archaeological sites from indigenous Coclé and Cuevas peoples. It’s rich in history – Balboa sighted it in 1513 – and is the second-largest island in Panama (after Coiba). Travelers find mangrove forests, beaches, and even a landing strip on this island.",
+          "openingHours": "Always",
+          "accessibility": "Via boat or plane",
+          "gallery": {
+            "images": {
+              "8947773723-799629a24c-b": {
+                "caption": "San Miguel, Isla del Rey"
+              }
+            }
+          }
+        },
+        "panama-canal-pacific-entrance": {
+          "title": "Panama Canal (Pacific Entrance)",
+          "description": "Though not in the Pearl Islands, the Panama Canal on the mainland is a defining landmark of the country. This 82 km engineering marvel connects the Atlantic and Pacific Oceans, cutting across the Isthmus of Panama. The canal’s Pacific entrance is near Panama City, just northwest of the Pearl Islands’ gulf. Many Season 2 viewers traveling through Panama might pass through Panama City to reach the islands, perhaps flying over the canal – a reminder of Panama’s strategic importance.",
+          "openingHours": "Always",
+          "accessibility": "By boat ",
+          "gallery": {
+            "images": {
+              "vessels-locking-into-the-panama-canal": {
+                "caption": "Vessels locking into the Panama Canal"
+              }
+            }
+          }
+        }
+      },
+      "quiz": {
+        "title": "Season 2 - Quiz",
+        "description": "A short quiz about Season 2 of 7 vs Wild. ",
+        "questions": {
+          "where-was-7-vs-wild-season-2-filmed": {
+            "question": "Where was 7 vs. Wild Season 2 filmed?",
+            "options": [
+              "Costa Rica",
+              "Colombia",
+              "Panama",
+              "Philippines"
+            ],
+            "explanation": {
+              "text": "Season 2 was filmed on Isla San José in Panama. "
+            }
+          },
+          "how-long-did-contestants-have-to-survive-in-season": {
+            "question": "How long did contestants have to survive in Season 2?",
+            "options": [
+              "5 days",
+              "7 days",
+              "10 days",
+              "14 Days"
+            ],
+            "explanation": {
+              "text": "As with season 1, participants had to survive for 7 days. "
+            }
+          },
+          "how-many-items-were-allowed-and-how-were-they-dist": {
+            "question": "How many items were allowed, and how were they distributed in Season 2?",
+            "options": [
+              "7 for all participants",
+              "Unlimited gear",
+              "1 item each",
+              "Skill-based item limits"
+            ],
+            "explanation": {
+              "text": "Each participant was allowed items according to their skill level. "
+            }
+          },
+          "who-won-season-2": {
+            "question": "Who won Season 2?",
+            "options": [
+              "Joris",
+              "Fritz Meinecke",
+              "Otto \"Bulletproof\" Karasch",
+              "Sabrina Outdoor"
+            ],
+            "explanation": {
+              "text": "Otto won season 2. "
+            }
+          },
+          "why-are-the-pearl-islands-called-that": {
+            "question": "Why are the Pearl Islands called that?",
+            "options": [
+              "They were shaped like pearls",
+              "They were rich in pearl oysters",
+              "Pirates named them that",
+              "Spanish explorers brought pearls there from Asia"
+            ],
+            "explanation": {
+              "text": "The islands got their name because of high occurance of pearl oysters. "
+            }
+          }
+        }
+      }
+    },
+    "pt": {
+      "name": "7 vs Wild - Season 2 Location",
+      "region": "Panama’s Isla San José",
+      "description": "7 vs Wild Season 2 was shot on Isla San José, a 44 km² private island in Panama’s Pearl Islands. Covered in dense rainforest and ringed by over 50 beaches, it’s sparsely inhabited—an ideal, remote wilderness. Filming took place during the rainy season, with daytime highs of 30–35 °C, nights around 20–25 °C, and frequent tropical downpours. Wildlife abounds: wild pigs, deer, venomous snakes, spiders, crocodiles in the mangroves and sharks offshore. Although the U.S. military tested chemical weapons there in the 1940s, production zones were certified safe. The island remains largely undeveloped and accessible only by boat or small airstrip.",
+      "heroImage": {
+        "caption": "Aerial Image of the island"
+      },
+      "stats": {
+        "episoden": {
+          "label": "Episoden",
+          "description": " Filmed on Isla San José, Panama, Season 2 consisted of 16 episodes published on YouTube between November 5 and December 28, 2022. Episodes ranged from roughly 30 minutes to over 1.5 hours in length, totaling about 19.7 hours of content (1,180 minutes)"
+        },
+        "teilnehmer": {
+          "label": "Teilnehmer",
+          "description": "There were 7 contestants (5 men and 2 women), each initially allowed up to 7 survival items. Uniquely, item counts were adjusted per person’s expertise – e.g. YouTuber Knossi carried all 7 items, while survival experts like Fritz Meinecke and Otto Karasch were limited to just 1 item each. This rule change added difficulty for the veterans and gave novices a better fighting chance."
+        },
+        "survival-duration": {
+          "label": "Survival Duration",
+          "description": "The challenge lasted 7 days and all participants aimed to survive the full week. In Season 2, 5 out of 7 contestants managed to endure until Day 7, while 2 participants were eliminated early (one withdrew on Day 2, another on Day 4 due to the harsh conditions). Those who lasted the distance were picked up at the end of Day 7.\n"
+        },
+        "viewership": {
+          "label": "Viewership",
+          "description": "Season 2 drew massive viewership on YouTube. Each episode amassed millions of views, with peak episodes reaching around 11–12 million views. In fact, Episode 2 (“Tödliches Paradies”) was viewed over 11 million times within three weeks of release and was named YouTube’s top trending video in Germany for 2022. The series as a whole garnered well over 100 million total views in Season 2 alone."
+        },
+        "points": {
+          "label": "Points",
+          "description": "The Season 2 winner was Ottogerd “Otto” Karasch, an ex-Bundeswehr soldier. He achieved a final score of 40 points from completing various daily challenges (edging out second-place Joris with 38 points). Otto survived all 7 days and earned the title “King of the Jungle.” As per the rules, he donated the €10,000 prize to a charity of his choice. (Five of the seven contestants finished the full 7-day duration, so the point tally broke the tie to decide the champion.)"
+        }
+      },
+      "interestingFacts": {
+        "pearl-islands-name-the-pearl-islands-get-their-nam": {
+          "text": "Pearl Islands Name: The Pearl Islands get their name from the vast quantities of pearls found there by the Spanish in the 16th century. Balboa named the archipelago after discovering “many pearls” during his 1513 expedition. The Spaniards extracted pearls so intensively (using enslaved divers) that a single expedition supposedly yielded 31 pounds of pearls."
+        },
+        "wildcard-entry-season-2-was-the-first-to-include-a": {
+          "text": "Wildcard Entry: Season 2 was the first to include a wildcard contestant – a member of the general public. A botany enthusiast named Joris won a video application contest (the “7 vs. Wildcard”) to join the show. Despite being the unknown underdog, Joris impressed by surviving 7 days and nearly winning, finishing second with 38 points."
+        },
+        "differing-gear-limits-to-balance-skills-season-2-e": {
+          "text": "Differing Gear Limits: To balance skills, Season 2 enforced asymmetric gear limits. Otto Karasch, as one of the most experienced survivalists, was only allowed one item (he chose a machete). In contrast, the least experienced participant Knossi – a popular entertainer with no survival background – was allowed the full seven items. This handicap system was a twist not seen in Season 1."
+        },
+        "isla-san-joss-secret-the-seemingly-idyllic-isla-sa": {
+          "text": "Isla San José’s Secret: The seemingly idyllic Isla San José has a hidden danger from its past – unexploded ordnance. Between 1945 and 1947, the U.S. military tested chemical weapons on the deserted island, leaving behind at least eight unexploded 500–1000 lb bombs and traces of nerve agents like VX and sarin. The contestants were unaware of this history during filming, but it adds a real-world layer of peril to the island’s lore."
+        },
+        "reality-tv-hotspot-the-pearl-islands-have-a-reputa": {
+          "text": "Reality TV Hotspot: The Pearl Islands have a reputation as a reality TV hotspot. Before 7 vs. Wild, the islands hosted three seasons of the American Survivor (including the famous Survivor: Pearl Islands in 2003) and several international versions of Survivor (French, Israeli, South African, etc.). The archipelago’s mix of beautiful beaches and unforgiving jungle has made it a favorite setting for survival and adventure shows."
+        }
+      },
+      "historicalInfo": {
+        "text": "The Pearl Islands, once home to the Cuevas and Coclé peoples, were “discovered” by Vasco Núñez de Balboa in 1513 and quickly exploited for their abundant pearls. Within two years, most of the indigenous population had been decimated by conquistadors and enslaved divers were brought in to harvest pearls. Over the next centuries, the islands served as pirate hideouts before evolving into a quiet archipelago of small villages (mainly on Isla del Rey) and resorts. Today they’re prized for their pristine coral reefs, diverse marine and bird life, and lush landscapes—making them a popular setting for survival‐themed media, including several seasons of Survivor."
+      },
+      "pois": {
+        "isla-del-rey": {
+          "title": "Isla Del Rey",
+          "description": "The largest Pearl Island (234 km²) and one of the few with a permanent population. Isla del Rey hosts four small villages (total ~1,600 people as of 2000) and has over 15 pre-Columbian archaeological sites from indigenous Coclé and Cuevas peoples. It’s rich in history – Balboa sighted it in 1513 – and is the second-largest island in Panama (after Coiba). Travelers find mangrove forests, beaches, and even a landing strip on this island.",
+          "openingHours": "Always",
+          "accessibility": "Via boat or plane",
+          "gallery": {
+            "images": {
+              "8947773723-799629a24c-b": {
+                "caption": "San Miguel, Isla del Rey"
+              }
+            }
+          }
+        },
+        "panama-canal-pacific-entrance": {
+          "title": "Panama Canal (Pacific Entrance)",
+          "description": "Though not in the Pearl Islands, the Panama Canal on the mainland is a defining landmark of the country. This 82 km engineering marvel connects the Atlantic and Pacific Oceans, cutting across the Isthmus of Panama. The canal’s Pacific entrance is near Panama City, just northwest of the Pearl Islands’ gulf. Many Season 2 viewers traveling through Panama might pass through Panama City to reach the islands, perhaps flying over the canal – a reminder of Panama’s strategic importance.",
+          "openingHours": "Always",
+          "accessibility": "By boat ",
+          "gallery": {
+            "images": {
+              "vessels-locking-into-the-panama-canal": {
+                "caption": "Vessels locking into the Panama Canal"
+              }
+            }
+          }
+        }
+      },
+      "quiz": {
+        "title": "Season 2 - Quiz",
+        "description": "A short quiz about Season 2 of 7 vs Wild. ",
+        "questions": {
+          "where-was-7-vs-wild-season-2-filmed": {
+            "question": "Where was 7 vs. Wild Season 2 filmed?",
+            "options": [
+              "Costa Rica",
+              "Colombia",
+              "Panama",
+              "Philippines"
+            ],
+            "explanation": {
+              "text": "Season 2 was filmed on Isla San José in Panama. "
+            }
+          },
+          "how-long-did-contestants-have-to-survive-in-season": {
+            "question": "How long did contestants have to survive in Season 2?",
+            "options": [
+              "5 days",
+              "7 days",
+              "10 days",
+              "14 Days"
+            ],
+            "explanation": {
+              "text": "As with season 1, participants had to survive for 7 days. "
+            }
+          },
+          "how-many-items-were-allowed-and-how-were-they-dist": {
+            "question": "How many items were allowed, and how were they distributed in Season 2?",
+            "options": [
+              "7 for all participants",
+              "Unlimited gear",
+              "1 item each",
+              "Skill-based item limits"
+            ],
+            "explanation": {
+              "text": "Each participant was allowed items according to their skill level. "
+            }
+          },
+          "who-won-season-2": {
+            "question": "Who won Season 2?",
+            "options": [
+              "Joris",
+              "Fritz Meinecke",
+              "Otto \"Bulletproof\" Karasch",
+              "Sabrina Outdoor"
+            ],
+            "explanation": {
+              "text": "Otto won season 2. "
+            }
+          },
+          "why-are-the-pearl-islands-called-that": {
+            "question": "Why are the Pearl Islands called that?",
+            "options": [
+              "They were shaped like pearls",
+              "They were rich in pearl oysters",
+              "Pirates named them that",
+              "Spanish explorers brought pearls there from Asia"
+            ],
+            "explanation": {
+              "text": "The islands got their name because of high occurance of pearl oysters. "
+            }
+          }
+        }
+      }
+    },
+    "ja": {
+      "name": "7 vs Wild - Season 2 Location",
+      "region": "Panama’s Isla San José",
+      "description": "7 vs Wild Season 2 was shot on Isla San José, a 44 km² private island in Panama’s Pearl Islands. Covered in dense rainforest and ringed by over 50 beaches, it’s sparsely inhabited—an ideal, remote wilderness. Filming took place during the rainy season, with daytime highs of 30–35 °C, nights around 20–25 °C, and frequent tropical downpours. Wildlife abounds: wild pigs, deer, venomous snakes, spiders, crocodiles in the mangroves and sharks offshore. Although the U.S. military tested chemical weapons there in the 1940s, production zones were certified safe. The island remains largely undeveloped and accessible only by boat or small airstrip.",
+      "heroImage": {
+        "caption": "Aerial Image of the island"
+      },
+      "stats": {
+        "episoden": {
+          "label": "Episoden",
+          "description": " Filmed on Isla San José, Panama, Season 2 consisted of 16 episodes published on YouTube between November 5 and December 28, 2022. Episodes ranged from roughly 30 minutes to over 1.5 hours in length, totaling about 19.7 hours of content (1,180 minutes)"
+        },
+        "teilnehmer": {
+          "label": "Teilnehmer",
+          "description": "There were 7 contestants (5 men and 2 women), each initially allowed up to 7 survival items. Uniquely, item counts were adjusted per person’s expertise – e.g. YouTuber Knossi carried all 7 items, while survival experts like Fritz Meinecke and Otto Karasch were limited to just 1 item each. This rule change added difficulty for the veterans and gave novices a better fighting chance."
+        },
+        "survival-duration": {
+          "label": "Survival Duration",
+          "description": "The challenge lasted 7 days and all participants aimed to survive the full week. In Season 2, 5 out of 7 contestants managed to endure until Day 7, while 2 participants were eliminated early (one withdrew on Day 2, another on Day 4 due to the harsh conditions). Those who lasted the distance were picked up at the end of Day 7.\n"
+        },
+        "viewership": {
+          "label": "Viewership",
+          "description": "Season 2 drew massive viewership on YouTube. Each episode amassed millions of views, with peak episodes reaching around 11–12 million views. In fact, Episode 2 (“Tödliches Paradies”) was viewed over 11 million times within three weeks of release and was named YouTube’s top trending video in Germany for 2022. The series as a whole garnered well over 100 million total views in Season 2 alone."
+        },
+        "points": {
+          "label": "Points",
+          "description": "The Season 2 winner was Ottogerd “Otto” Karasch, an ex-Bundeswehr soldier. He achieved a final score of 40 points from completing various daily challenges (edging out second-place Joris with 38 points). Otto survived all 7 days and earned the title “King of the Jungle.” As per the rules, he donated the €10,000 prize to a charity of his choice. (Five of the seven contestants finished the full 7-day duration, so the point tally broke the tie to decide the champion.)"
+        }
+      },
+      "interestingFacts": {
+        "pearl-islands-name-the-pearl-islands-get-their-nam": {
+          "text": "Pearl Islands Name: The Pearl Islands get their name from the vast quantities of pearls found there by the Spanish in the 16th century. Balboa named the archipelago after discovering “many pearls” during his 1513 expedition. The Spaniards extracted pearls so intensively (using enslaved divers) that a single expedition supposedly yielded 31 pounds of pearls."
+        },
+        "wildcard-entry-season-2-was-the-first-to-include-a": {
+          "text": "Wildcard Entry: Season 2 was the first to include a wildcard contestant – a member of the general public. A botany enthusiast named Joris won a video application contest (the “7 vs. Wildcard”) to join the show. Despite being the unknown underdog, Joris impressed by surviving 7 days and nearly winning, finishing second with 38 points."
+        },
+        "differing-gear-limits-to-balance-skills-season-2-e": {
+          "text": "Differing Gear Limits: To balance skills, Season 2 enforced asymmetric gear limits. Otto Karasch, as one of the most experienced survivalists, was only allowed one item (he chose a machete). In contrast, the least experienced participant Knossi – a popular entertainer with no survival background – was allowed the full seven items. This handicap system was a twist not seen in Season 1."
+        },
+        "isla-san-joss-secret-the-seemingly-idyllic-isla-sa": {
+          "text": "Isla San José’s Secret: The seemingly idyllic Isla San José has a hidden danger from its past – unexploded ordnance. Between 1945 and 1947, the U.S. military tested chemical weapons on the deserted island, leaving behind at least eight unexploded 500–1000 lb bombs and traces of nerve agents like VX and sarin. The contestants were unaware of this history during filming, but it adds a real-world layer of peril to the island’s lore."
+        },
+        "reality-tv-hotspot-the-pearl-islands-have-a-reputa": {
+          "text": "Reality TV Hotspot: The Pearl Islands have a reputation as a reality TV hotspot. Before 7 vs. Wild, the islands hosted three seasons of the American Survivor (including the famous Survivor: Pearl Islands in 2003) and several international versions of Survivor (French, Israeli, South African, etc.). The archipelago’s mix of beautiful beaches and unforgiving jungle has made it a favorite setting for survival and adventure shows."
+        }
+      },
+      "historicalInfo": {
+        "text": "The Pearl Islands, once home to the Cuevas and Coclé peoples, were “discovered” by Vasco Núñez de Balboa in 1513 and quickly exploited for their abundant pearls. Within two years, most of the indigenous population had been decimated by conquistadors and enslaved divers were brought in to harvest pearls. Over the next centuries, the islands served as pirate hideouts before evolving into a quiet archipelago of small villages (mainly on Isla del Rey) and resorts. Today they’re prized for their pristine coral reefs, diverse marine and bird life, and lush landscapes—making them a popular setting for survival‐themed media, including several seasons of Survivor."
+      },
+      "pois": {
+        "isla-del-rey": {
+          "title": "Isla Del Rey",
+          "description": "The largest Pearl Island (234 km²) and one of the few with a permanent population. Isla del Rey hosts four small villages (total ~1,600 people as of 2000) and has over 15 pre-Columbian archaeological sites from indigenous Coclé and Cuevas peoples. It’s rich in history – Balboa sighted it in 1513 – and is the second-largest island in Panama (after Coiba). Travelers find mangrove forests, beaches, and even a landing strip on this island.",
+          "openingHours": "Always",
+          "accessibility": "Via boat or plane",
+          "gallery": {
+            "images": {
+              "8947773723-799629a24c-b": {
+                "caption": "San Miguel, Isla del Rey"
+              }
+            }
+          }
+        },
+        "panama-canal-pacific-entrance": {
+          "title": "Panama Canal (Pacific Entrance)",
+          "description": "Though not in the Pearl Islands, the Panama Canal on the mainland is a defining landmark of the country. This 82 km engineering marvel connects the Atlantic and Pacific Oceans, cutting across the Isthmus of Panama. The canal’s Pacific entrance is near Panama City, just northwest of the Pearl Islands’ gulf. Many Season 2 viewers traveling through Panama might pass through Panama City to reach the islands, perhaps flying over the canal – a reminder of Panama’s strategic importance.",
+          "openingHours": "Always",
+          "accessibility": "By boat ",
+          "gallery": {
+            "images": {
+              "vessels-locking-into-the-panama-canal": {
+                "caption": "Vessels locking into the Panama Canal"
+              }
+            }
+          }
+        }
+      },
+      "quiz": {
+        "title": "Season 2 - Quiz",
+        "description": "A short quiz about Season 2 of 7 vs Wild. ",
+        "questions": {
+          "where-was-7-vs-wild-season-2-filmed": {
+            "question": "Where was 7 vs. Wild Season 2 filmed?",
+            "options": [
+              "Costa Rica",
+              "Colombia",
+              "Panama",
+              "Philippines"
+            ],
+            "explanation": {
+              "text": "Season 2 was filmed on Isla San José in Panama. "
+            }
+          },
+          "how-long-did-contestants-have-to-survive-in-season": {
+            "question": "How long did contestants have to survive in Season 2?",
+            "options": [
+              "5 days",
+              "7 days",
+              "10 days",
+              "14 Days"
+            ],
+            "explanation": {
+              "text": "As with season 1, participants had to survive for 7 days. "
+            }
+          },
+          "how-many-items-were-allowed-and-how-were-they-dist": {
+            "question": "How many items were allowed, and how were they distributed in Season 2?",
+            "options": [
+              "7 for all participants",
+              "Unlimited gear",
+              "1 item each",
+              "Skill-based item limits"
+            ],
+            "explanation": {
+              "text": "Each participant was allowed items according to their skill level. "
+            }
+          },
+          "who-won-season-2": {
+            "question": "Who won Season 2?",
+            "options": [
+              "Joris",
+              "Fritz Meinecke",
+              "Otto \"Bulletproof\" Karasch",
+              "Sabrina Outdoor"
+            ],
+            "explanation": {
+              "text": "Otto won season 2. "
+            }
+          },
+          "why-are-the-pearl-islands-called-that": {
+            "question": "Why are the Pearl Islands called that?",
+            "options": [
+              "They were shaped like pearls",
+              "They were rich in pearl oysters",
+              "Pirates named them that",
+              "Spanish explorers brought pearls there from Asia"
+            ],
+            "explanation": {
+              "text": "The islands got their name because of high occurance of pearl oysters. "
+            }
+          }
+        }
+      }
+    },
+    "fr": {
+      "name": "7 vs Wild - Season 2 Location",
+      "region": "Panama’s Isla San José",
+      "description": "7 vs Wild Season 2 was shot on Isla San José, a 44 km² private island in Panama’s Pearl Islands. Covered in dense rainforest and ringed by over 50 beaches, it’s sparsely inhabited—an ideal, remote wilderness. Filming took place during the rainy season, with daytime highs of 30–35 °C, nights around 20–25 °C, and frequent tropical downpours. Wildlife abounds: wild pigs, deer, venomous snakes, spiders, crocodiles in the mangroves and sharks offshore. Although the U.S. military tested chemical weapons there in the 1940s, production zones were certified safe. The island remains largely undeveloped and accessible only by boat or small airstrip.",
+      "heroImage": {
+        "caption": "Aerial Image of the island"
+      },
+      "stats": {
+        "episoden": {
+          "label": "Episoden",
+          "description": " Filmed on Isla San José, Panama, Season 2 consisted of 16 episodes published on YouTube between November 5 and December 28, 2022. Episodes ranged from roughly 30 minutes to over 1.5 hours in length, totaling about 19.7 hours of content (1,180 minutes)"
+        },
+        "teilnehmer": {
+          "label": "Teilnehmer",
+          "description": "There were 7 contestants (5 men and 2 women), each initially allowed up to 7 survival items. Uniquely, item counts were adjusted per person’s expertise – e.g. YouTuber Knossi carried all 7 items, while survival experts like Fritz Meinecke and Otto Karasch were limited to just 1 item each. This rule change added difficulty for the veterans and gave novices a better fighting chance."
+        },
+        "survival-duration": {
+          "label": "Survival Duration",
+          "description": "The challenge lasted 7 days and all participants aimed to survive the full week. In Season 2, 5 out of 7 contestants managed to endure until Day 7, while 2 participants were eliminated early (one withdrew on Day 2, another on Day 4 due to the harsh conditions). Those who lasted the distance were picked up at the end of Day 7.\n"
+        },
+        "viewership": {
+          "label": "Viewership",
+          "description": "Season 2 drew massive viewership on YouTube. Each episode amassed millions of views, with peak episodes reaching around 11–12 million views. In fact, Episode 2 (“Tödliches Paradies”) was viewed over 11 million times within three weeks of release and was named YouTube’s top trending video in Germany for 2022. The series as a whole garnered well over 100 million total views in Season 2 alone."
+        },
+        "points": {
+          "label": "Points",
+          "description": "The Season 2 winner was Ottogerd “Otto” Karasch, an ex-Bundeswehr soldier. He achieved a final score of 40 points from completing various daily challenges (edging out second-place Joris with 38 points). Otto survived all 7 days and earned the title “King of the Jungle.” As per the rules, he donated the €10,000 prize to a charity of his choice. (Five of the seven contestants finished the full 7-day duration, so the point tally broke the tie to decide the champion.)"
+        }
+      },
+      "interestingFacts": {
+        "pearl-islands-name-the-pearl-islands-get-their-nam": {
+          "text": "Pearl Islands Name: The Pearl Islands get their name from the vast quantities of pearls found there by the Spanish in the 16th century. Balboa named the archipelago after discovering “many pearls” during his 1513 expedition. The Spaniards extracted pearls so intensively (using enslaved divers) that a single expedition supposedly yielded 31 pounds of pearls."
+        },
+        "wildcard-entry-season-2-was-the-first-to-include-a": {
+          "text": "Wildcard Entry: Season 2 was the first to include a wildcard contestant – a member of the general public. A botany enthusiast named Joris won a video application contest (the “7 vs. Wildcard”) to join the show. Despite being the unknown underdog, Joris impressed by surviving 7 days and nearly winning, finishing second with 38 points."
+        },
+        "differing-gear-limits-to-balance-skills-season-2-e": {
+          "text": "Differing Gear Limits: To balance skills, Season 2 enforced asymmetric gear limits. Otto Karasch, as one of the most experienced survivalists, was only allowed one item (he chose a machete). In contrast, the least experienced participant Knossi – a popular entertainer with no survival background – was allowed the full seven items. This handicap system was a twist not seen in Season 1."
+        },
+        "isla-san-joss-secret-the-seemingly-idyllic-isla-sa": {
+          "text": "Isla San José’s Secret: The seemingly idyllic Isla San José has a hidden danger from its past – unexploded ordnance. Between 1945 and 1947, the U.S. military tested chemical weapons on the deserted island, leaving behind at least eight unexploded 500–1000 lb bombs and traces of nerve agents like VX and sarin. The contestants were unaware of this history during filming, but it adds a real-world layer of peril to the island’s lore."
+        },
+        "reality-tv-hotspot-the-pearl-islands-have-a-reputa": {
+          "text": "Reality TV Hotspot: The Pearl Islands have a reputation as a reality TV hotspot. Before 7 vs. Wild, the islands hosted three seasons of the American Survivor (including the famous Survivor: Pearl Islands in 2003) and several international versions of Survivor (French, Israeli, South African, etc.). The archipelago’s mix of beautiful beaches and unforgiving jungle has made it a favorite setting for survival and adventure shows."
+        }
+      },
+      "historicalInfo": {
+        "text": "The Pearl Islands, once home to the Cuevas and Coclé peoples, were “discovered” by Vasco Núñez de Balboa in 1513 and quickly exploited for their abundant pearls. Within two years, most of the indigenous population had been decimated by conquistadors and enslaved divers were brought in to harvest pearls. Over the next centuries, the islands served as pirate hideouts before evolving into a quiet archipelago of small villages (mainly on Isla del Rey) and resorts. Today they’re prized for their pristine coral reefs, diverse marine and bird life, and lush landscapes—making them a popular setting for survival‐themed media, including several seasons of Survivor."
+      },
+      "pois": {
+        "isla-del-rey": {
+          "title": "Isla Del Rey",
+          "description": "The largest Pearl Island (234 km²) and one of the few with a permanent population. Isla del Rey hosts four small villages (total ~1,600 people as of 2000) and has over 15 pre-Columbian archaeological sites from indigenous Coclé and Cuevas peoples. It’s rich in history – Balboa sighted it in 1513 – and is the second-largest island in Panama (after Coiba). Travelers find mangrove forests, beaches, and even a landing strip on this island.",
+          "openingHours": "Always",
+          "accessibility": "Via boat or plane",
+          "gallery": {
+            "images": {
+              "8947773723-799629a24c-b": {
+                "caption": "San Miguel, Isla del Rey"
+              }
+            }
+          }
+        },
+        "panama-canal-pacific-entrance": {
+          "title": "Panama Canal (Pacific Entrance)",
+          "description": "Though not in the Pearl Islands, the Panama Canal on the mainland is a defining landmark of the country. This 82 km engineering marvel connects the Atlantic and Pacific Oceans, cutting across the Isthmus of Panama. The canal’s Pacific entrance is near Panama City, just northwest of the Pearl Islands’ gulf. Many Season 2 viewers traveling through Panama might pass through Panama City to reach the islands, perhaps flying over the canal – a reminder of Panama’s strategic importance.",
+          "openingHours": "Always",
+          "accessibility": "By boat ",
+          "gallery": {
+            "images": {
+              "vessels-locking-into-the-panama-canal": {
+                "caption": "Vessels locking into the Panama Canal"
+              }
+            }
+          }
+        }
+      },
+      "quiz": {
+        "title": "Season 2 - Quiz",
+        "description": "A short quiz about Season 2 of 7 vs Wild. ",
+        "questions": {
+          "where-was-7-vs-wild-season-2-filmed": {
+            "question": "Where was 7 vs. Wild Season 2 filmed?",
+            "options": [
+              "Costa Rica",
+              "Colombia",
+              "Panama",
+              "Philippines"
+            ],
+            "explanation": {
+              "text": "Season 2 was filmed on Isla San José in Panama. "
+            }
+          },
+          "how-long-did-contestants-have-to-survive-in-season": {
+            "question": "How long did contestants have to survive in Season 2?",
+            "options": [
+              "5 days",
+              "7 days",
+              "10 days",
+              "14 Days"
+            ],
+            "explanation": {
+              "text": "As with season 1, participants had to survive for 7 days. "
+            }
+          },
+          "how-many-items-were-allowed-and-how-were-they-dist": {
+            "question": "How many items were allowed, and how were they distributed in Season 2?",
+            "options": [
+              "7 for all participants",
+              "Unlimited gear",
+              "1 item each",
+              "Skill-based item limits"
+            ],
+            "explanation": {
+              "text": "Each participant was allowed items according to their skill level. "
+            }
+          },
+          "who-won-season-2": {
+            "question": "Who won Season 2?",
+            "options": [
+              "Joris",
+              "Fritz Meinecke",
+              "Otto \"Bulletproof\" Karasch",
+              "Sabrina Outdoor"
+            ],
+            "explanation": {
+              "text": "Otto won season 2. "
+            }
+          },
+          "why-are-the-pearl-islands-called-that": {
+            "question": "Why are the Pearl Islands called that?",
+            "options": [
+              "They were shaped like pearls",
+              "They were rich in pearl oysters",
+              "Pirates named them that",
+              "Spanish explorers brought pearls there from Asia"
+            ],
+            "explanation": {
+              "text": "The islands got their name because of high occurance of pearl oysters. "
+            }
+          }
+        }
+      }
+    }
+  }
+}

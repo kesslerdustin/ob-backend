@@ -33,7 +33,7 @@
   "stats": {
     "survival-duration": {
       "icon": "calendar",
-      "value": "7 Days",
+      "value": "7",
       "unit": "",
       "secondaryValue": "",
       "secondaryUnit": ""
@@ -47,7 +47,7 @@
     },
     "participants": {
       "icon": "groups",
-      "value": "7 contestants",
+      "value": "7",
       "unit": "",
       "secondaryValue": "",
       "secondaryUnit": ""
